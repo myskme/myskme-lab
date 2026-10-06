@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>守夜灯火 · 原型 v0.5 | MYSKME</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { background:#050508; color:#e8dcc0; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+         display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:12px; }
+  h1 { font-family:"STKaiti","KaiTi",serif; color:#e8c26a; letter-spacing:6px; font-size:26px; margin:10px 0 4px; }
+  .sub { color:#8a7a5c; font-size:12px; letter-spacing:2px; margin-bottom:10px; }
+  #wrap { position:relative; width:960px; max-width:100%; }
+  canvas { width:100%; display:block; border:1px solid #3a2f1d; border-radius:8px; background:#050508; cursor:pointer; }
+  #overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+             background:rgba(5,5,8,.76); border-radius:8px; z-index:5; overflow:auto; padding:10px; }
+  #overlay.hidden { display:none; }
+  .card { background:#0d0d14; border:1px solid #b08d57; border-radius:10px; padding:22px 26px;
+          max-width:94%; text-align:center; box-shadow:0 0 40px rgba(232,194,106,.12);
+          border-top:6px solid transparent;
+          border-image:repeating-linear-gradient(90deg,#b08d57 0 10px,#0d0d14 10px 20px) 1; }
+  .card h2 { font-family:"STKaiti","KaiTi",serif; color:#e8c26a; letter-spacing:4px; margin-bottom:8px; font-size:22px; }
+  .card p { color:#c9b98f; font-size:14px; line-height:1.9; margin-bottom:6px; }
+  .card .rule { text-align:left; font-size:13px; color:#a89878; margin:10px 0; line-height:2; }
+  .card .rule b { color:#e8c26a; }
+  .omen { background:#14101e; border:1px dashed #7a5aa0; border-radius:8px; padding:10px 14px; margin:10px 0; }
+  .omen b { color:#b48ad0; letter-spacing:2px; font-size:14px; }
+  .omen .verse { color:#c9b98f; font-style:italic; font-size:13px; margin:6px 0; font-family:"STKaiti","KaiTi",serif; }
+  .omen .meta { color:#8a7a5c; font-size:12px; }
+  .omen .meta em { color:#e8c26a; font-style:normal; }
+  .solve { font-size:12px; color:#6f6350; letter-spacing:1px; margin-top:6px; }
+  .btnrow { display:flex; gap:12px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+  button { background:#1a1409; color:#e8c26a; border:1px solid #b08d57; border-radius:8px;
+           padding:10px 16px; font-size:14px; letter-spacing:1px; cursor:pointer; transition:.2s; }
+  button:hover { background:#2a2110; box-shadow:0 0 14px rgba(232,194,106,.35); }
+  button:disabled { opacity:.4; cursor:not-allowed; }
+  button small { display:block; color:#8a7a5c; font-size:11px; letter-spacing:0; margin-top:4px; line-height:1.7; }
+  button .flavor { color:#6f6350 !important; font-style:italic; }
+  button .vs { color:#b48ad0 !important; }
+  .rolebtn { min-width:160px; max-width:215px; }
+  .pwrap { display:block; width:64px; height:64px; margin:0 auto 8px; }
+  .pwrap img { width:64px; height:64px; border-radius:50%; object-fit:cover; border:2px solid #b08d57; background:#14101c; }
+  .badge { width:64px; height:64px; border-radius:50%; display:grid; place-items:center; margin:0 auto;
+           background:radial-gradient(circle at 50% 38%,#241d12,#14101c); border:2px solid #b08d57;
+           color:#e8c26a; font-size:26px; font-family:"STKaiti","KaiTi",serif; }
+  #hud { display:flex; gap:12px; align-items:center; justify-content:center; margin-top:10px;
+         font-size:12px; color:#8a7a5c; flex-wrap:wrap; }
+  .meter { width:130px; height:8px; background:#1a1a22; border-radius:4px; overflow:hidden; border:1px solid #3a2f1d; }
+  .meter > div { height:100%; border-radius:4px; transition:width .2s; }
+  #oilfill { background:linear-gradient(90deg,#b08d57,#e8c26a); }
+  #erofill { background:linear-gradient(90deg,#4a3a6a,#1a0f2a); }
+  #toast { position:absolute; top:16%; left:50%; transform:translateX(-50%); z-index:6;
+           background:rgba(13,13,20,.92); border:1px solid #b08d57; border-radius:8px;
+           padding:10px 22px; color:#e8c26a; font-size:14px; letter-spacing:1px;
+           opacity:0; transition:opacity .3s; pointer-events:none; text-align:center; max-width:86%; }
+  #toast.show { opacity:1; }
+  #toast.whisper { border-color:#7a5aa0; color:#b48ad0; }
+  .tip { margin-top:8px; font-size:11px; color:#5c5340; letter-spacing:1px; text-align:center; }
+  .abtn { position:absolute; bottom:14px; z-index:4; display:none; }
+  .abtn.show { display:block; }
+  #candybtn { right:14px; } #fortunebtn { left:14px; }
+  .canon-note { margin-top:10px; font-size:10px; color:#4a4238; letter-spacing:1px; }
+  .logline { text-align:left; font-size:12px; color:#a89878; line-height:2; }
+  .logline b { color:#b48ad0; }
+  .logline .hit { color:#e8c26a; }
+  .stick { width:34px; height:150px; margin:6px auto; border-radius:6px;
+           background:linear-gradient(180deg,#c9a64a,#8a6d35); position:relative;
+           box-shadow:0 0 18px rgba(232,194,106,.35); }
+  .stick::after { content:'籤'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+           font-family:"STKaiti","KaiTi",serif; font-size:22px; color:#2a1f0d; }
+  .verse4 { font-family:"STKaiti","KaiTi",serif; font-size:15px; color:#c9b98f; line-height:2.2; font-style:italic; }
+  .merchant { font-family:"STKaiti","KaiTi",serif; color:#b48ad0; font-size:15px; font-style:italic; margin:8px 0; }
+</style>
+</head>
+<body>
+  <h1>守夜灯火</h1>
+  <div class="sub">MYSKME · 原型 v0.5 —— 夜行商人 · 子夜异变</div>
+  <div id="wrap">
+    <canvas id="cv" width="960" height="600"></canvas>
+    <div id="toast"></div>
+    <button id="candybtn" class="abtn" onclick="openCandy()">吃颗糖</button>
+    <button id="fortunebtn" class="abtn" onclick="openFortune()">求一签</button>
+    <div id="overlay"><div class="card" id="ocard"></div></div>
+  </div>
+  <div id="hud">
+    <span>灯油</span><div class="meter"><div id="oilfill" style="width:60%"></div></div>
+    <span>黑域侵蚀</span><div class="meter"><div id="erofill" style="width:0%"></div></div>
+    <span id="genglabel"></span>
+  </div>
+  <div class="tip">观异象 → 选守夜人 → 取信物 → 添油守灯 · 三更夜行商人 · 传说：五更尽时侵蚀极低，子夜有异变</div>
+  <div class="canon-note">角色·信物·判词取自《世界编年史 II》正典 · 本地美术见文件头 ART 表</div>
+
+<script>
+/* ART 映射层：本 html 与 assets/ 同目录即自动换装，缺图回退字形徽章 */
+const ART = {
+  watchers: {
+    xi:  ['assets/portraits/xi.png','assets/portraits/xi.webp'],
+    yang:['assets/portraits/yang.png','assets/portraits/yang.webp'],
+    lin: ['assets/portraits/lin.png','assets/portraits/lin.webp'],
+    master:['assets/portraits/master.png','assets/portraits/master.webp'],
+  },
+  relics: {
+    lamp:['assets/relics/relic-lamp.webp'], urn:['assets/relics/relic-urn.webp'],
+    seal:['assets/relics/relic-seal.webp'], bell:['assets/relics/relic-bell.webp'],
+    plaque:['assets/relics/relic-plaque.webp'], astro:['assets/relics/relic-astro.webp'],
+    dice:['assets/relics/relic-dice.webp'],
+  },
+  bg: ['assets/scenes/shouye-night.png','assets/scenes/shouye-night.webp'],
+};
+const ARTIMG = { bg:null };
+(function preload(){
+  const im = new Image(); let i = 0;
+  const next = () => { if(i>=ART.bg.length) return; im.src = ART.bg[i++];
+    im.onload = ()=>{ ARTIMG.bg = im; }; im.onerror = next; };
+  next();
+})();
+function artFail(el){
+  const list = JSON.parse(el.dataset.fb||'[]'), badge = el.dataset.badge||'?';
+  if(list.length){ el.dataset.fb = JSON.stringify(list.slice(1)); el.src = list[0]; }
+  else { const s=document.createElement('span'); s.className='badge'; s.textContent=badge; el.replaceWith(s); }
+}
+function artImgHTML(key, map, badge){
+  const list = (map[key]||[]);
+  if(!list.length) return `<span class="badge">${badge}</span>`;
+  return `<span class="pwrap"><img src="${list[0]}" data-fb='${JSON.stringify(list.slice(1))}' data-badge="${badge}" onerror="artFail(this)" alt=""></span>`;
+}
+
+/* ============ 正典数据 ============ */
+const WATCHERS = {
+  xi:  { name:'晰', title:'棒棒糖的主人', flavor:'草莓是快乐，蓝莓是冷静，牛奶是安慰。',
+         ability:'每更可吃一颗糖，三选一', vs:['wind'], vsLabel:'克制 · 风雾' },
+  yang:{ name:'洋', title:'掷骰的人', flavor:'骰子比星座更诚实。',
+         ability:'每更开始掷一骰补给灯油', vs:['wind'], vsLabel:'克制 · 风雾' },
+  lin: { name:'琳', title:'灯猫相随的猫女', flavor:'夜里最深的那一盏，始终跟着她。',
+         ability:'灯油消耗 -35%，添油 +2', vs:['wind'], vsLabel:'克制 · 风雾' },
+  master:{ name:'狼先生', title:'导师', flavor:'只教一件事：把自己变得有趣一点。',
+         ability:'侵蚀增速 -20%，添油 +2', vs:[], vsLabel:'子夜亲守' },
+};
+const RELICS = {
+  lamp:  { name:'灯猫的小灯', flavor:'夜里最深的那一盏。', desc:'侵蚀度 -25', vs:['ink','grasp'], vsLabel:'克制 · 墨雾 / 挽留',
+           fx:g=>{ g.erosion=Math.max(0,g.erosion-25); } },
+  urn:   { name:'薪火陶罐', flavor:'罐口那一点火种从没灭过。', desc:'灯油回满', vs:['wind'], vsLabel:'克制 · 风雾',
+           fx:g=>{ g.oil=100; } },
+  seal:  { name:'狼先生的铜印', flavor:'呵一口气，按在纸上——「该到了」。', desc:'冻结侵蚀 8 秒', vs:['ink'], vsLabel:'克制 · 墨雾',
+           fx:g=>{ g.freeze=8; } },
+  bell:  { name:'塔顶旧铃', flavor:'非响不可的日子，到了。', desc:'本更侵蚀增速 -50%', vs:['ink'], vsLabel:'克制 · 墨雾',
+           fx:g=>{ g.rateMul*=0.5; } },
+  plaque:{ name:'门神匾', flavor:'有人得站在最前面。', desc:'本更侵蚀不超 90', vs:['grasp'], vsLabel:'克制 · 挽留',
+           fx:g=>{ g.shield=true; } },
+  astro: { name:'断云星盘', flavor:'云飘到线前就停下，像约好了似的。', desc:'侵蚀度 -15', vs:['grasp'], vsLabel:'克制 · 挽留',
+           fx:g=>{ g.erosion=Math.max(0,g.erosion-15); } },
+  dice:  { name:'洋的骰子', flavor:'觉醒那天他骰出了学期最高点，只耸了耸肩。', desc:'掷骰定吉凶', vs:[], vsLabel:'听天由命',
+           fx:g=>{ const d=1+Math.floor(Math.random()*6);
+             if(d<=3){ g.oil=Math.min(100,g.oil+10); toast(`骰子 <b>${d}</b> 点：灯油 +10`); }
+             else if(d<=5){ g.erosion=Math.max(0,g.erosion-10); toast(`骰子 <b>${d}</b> 点：侵蚀 -10`); }
+             else { g.oil=Math.min(100,g.oil+15); g.erosion=Math.max(0,g.erosion-10);
+                    toast(`骰子 <b>${d}</b> 点：大成功！灯油 +15，侵蚀 -10`); } } },
+};
+const OMENS = {
+  ink:  { name:'墨雾', verse:'雾凝如墨，步步为营——今夜它不急，只坚定。', tell:'雾色泛紫',
+          effect:'侵蚀增速 +45%', apply:g=>{ g.rateMul*=1.45; } },
+  wind: { name:'风雾', verse:'风助雾势，灯火摇曳——油烧得格外快。', tell:'雾流湍急',
+          effect:'灯油消耗 +70%', apply:g=>{ g.oilBurnMul*=1.7; } },
+  grasp:{ name:'挽留之雾', verse:'雾里似有挽留之意，一步三回头。', tell:'雾中浮现面具',
+          effect:'每 6 秒侵蚀突涨', apply:g=>{ g.grasp=true; } },
+  mask: { name:'面具亲临', verse:'它不再藏在雾里了——它睁着眼，朝灯走来。', tell:'面具睁眼',
+          effect:'侵蚀极快，且会被凝视', apply:g=>{ g.rateMul*=1.35; g.boss=true; } },
+};
+const FORTUNES = [
+  { w:15, grade:'上上签', name:'龙跃云津',
+    verse:['龙跃云津雾自开，','金灯一盏照苍苔。','今宵黑域空回首，','天亮方知是福来。'],
+    desc:'侵蚀 -20，灯油 +20', fx:g=>{ g.erosion=Math.max(0,g.erosion-20); g.oil=Math.min(100,g.oil+20); } },
+  { w:25, grade:'上签', name:'月出东山',
+    verse:['月出东山雾渐薄，','铜铃无声自定波。','守得灯前人不寐，','六时冻结任君过。'],
+    desc:'冻结侵蚀 6 秒', fx:g=>{ g.freeze=Math.max(g.freeze,6); } },
+  { w:30, grade:'中签', name:'守株有兔',
+    verse:['守株未必真无兔，','壶中火种未曾枯。','且添一勺桐油去，','灯下平安到五更。'],
+    desc:'灯油 +25', fx:g=>{ g.oil=Math.min(100,g.oil+25); } },
+  { w:20, grade:'中下签', name:'雾里看花',
+    verse:['雾里看花花不真，','祸福相倚在一瞬。','若得天公掷骰子，','输赢都付笑谈中。'],
+    desc:'天意：或侵蚀 -12，或侵蚀 +8', fx:g=>{ if(Math.random()<0.5){ g.erosion=Math.max(0,g.erosion-12); toast('天意：侵蚀 -12'); }
+      else { g.erosion+=8; toast('天意：侵蚀 +8'); } } },
+  { w:10, grade:'下签', name:'夜半惊魂',
+    verse:['夜半惊魂灯影乱，','黑雾欺人太无端。','莫道今宵全是晦，','明朝油满照阑干。'],
+    desc:'侵蚀 +10，但下更开始灯油回满（否极泰来）', fx:g=>{ g.erosion+=8; g.blessing=true; } },
+];
+const WHISPERS = [
+  '戴上它，就不用再选了……',
+  '第八天，他清醒地自己戴上。',
+  '每写一页，就更透明一寸。',
+  '相信正确答案只有一个。',
+  '雾里有灯，灯下有人。',
+  '鳞下藏着从前的自己……',
+];
+const CANDIES = {
+  strawberry:{ name:'草莓 · 快乐', desc:'侵蚀度 -8', fx:g=>{ g.erosion=Math.max(0,g.erosion-8); } },
+  blueberry: { name:'蓝莓 · 冷静', desc:'本更侵蚀增速 -30%', fx:g=>{ g.rateMul*=0.7; } },
+  milk:      { name:'牛奶 · 安慰', desc:'灯油 +15', fx:g=>{ g.oil=Math.min(100,g.oil+15); } },
+};
+/* 夜行商人：三更现身，以物易物 */
+const TRADES = [
+  { name:'油换宝', desc:'灯油 -25，随机信物立即生效', can:g=>g.oil>=25,
+    fx:g=>{ g.oil-=25;
+      const ks=Object.keys(RELICS).filter(k=>!g.usedRelics.includes(RELICS[k].name));
+      const k=ks.length?ks[Math.floor(Math.random()*ks.length)]:'lamp';
+      RELICS[k].fx(g); g.usedRelics.push(RELICS[k].name+'（商人）');
+      return `换得<b>${RELICS[k].name}</b>：${RELICS[k].desc}`; } },
+  { name:'饮鸩止渴', desc:'侵蚀 +12，灯油回满', can:()=>true,
+    fx:g=>{ g.erosion+=12; g.oil=100; return '灯油回满，侵蚀 +12——值吗？'; } },
+  { name:'买平安', desc:'灯油 -15，侵蚀 -12 且本更增速 -20%', can:g=>g.oil>=15,
+    fx:g=>{ g.oil-=15; g.erosion=Math.max(0,g.erosion-12); g.rateMul*=0.8; return '侵蚀 -12，本更增速 -20%'; } },
+];
+
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const W=960, H=600, LX=W/2, LY=400, MASKX=W/2, MASKY=150;
+const GENGS=['初更','二更','三更','四更','五更','子夜'];
+const G = { state:'title', geng:0, gengLen:20, t:0, oil:60, erosion:0, watcher:null, omen:null, prevOmen:null,
+            cd:0, win:false, bossWin:false, time:0, rateMul:1, shield:false, freeze:0,
+            grasp:false, graspT:0, boss:false, gazeT:0, gazeWarn:0, gazeWarned:false,
+            oilBurnMul:1, clickBonus:0, candyUsed:false, fortuneUsed:false, blessing:false, merchantDone:false,
+            usedRelics:[], usedWatchers:[], omenLog:[], fortuneLog:[], listenCount:0,
+            whisperT:5, listenWindow:0, pulse:0, pendingFortune:null };
+
+const stars=[];
+for(let i=0;i<110;i++) stars.push({x:Math.random()*W,y:Math.random()*H*0.55,r:Math.random()*1.6+0.4,ph:Math.random()*6.28});
+const streaks=[];
+for(let i=0;i<46;i++) streaks.push({x:Math.random()*W,y:Math.random()*H,len:20+Math.random()*50,sp:30+Math.random()*60});
+
+function show(html){ document.getElementById('ocard').innerHTML=html;
+  document.getElementById('overlay').classList.remove('hidden'); }
+function hide(){ document.getElementById('overlay').classList.add('hidden'); }
+let toastTimer=null;
+function toast(msg, ms=2200, whisper=false){ const t=document.getElementById('toast');
+  t.innerHTML=msg; t.classList.toggle('whisper', whisper); t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'), ms); }
+function hideBtns(){ document.getElementById('candybtn').classList.remove('show');
+  document.getElementById('fortunebtn').classList.remove('show'); }
+
+/* ---------- 流程 ---------- */
+function titleScreen(){
+  G.state='title'; hideBtns();
+  show(`<h2>守夜灯火</h2>
+    <p>黑域在谷地之外翻涌，今夜，灯塔需要守夜人。</p>
+    <div class="rule">
+      <b>·</b> 每更先<b>夜观异象</b>：读判词、看雾象，推理黑域今夜的变招<br>
+      <b>·</b> 选<b>守夜人</b>、取<b>信物</b>——卡面「克制」即是判词的解<br>
+      <b>·</b> 每更可<b>求一签</b>；雾中<b>呓语</b>时点击面具可聆听（有风险）<br>
+      <b>·</b> 三更会有<b>夜行商人</b>，以物易物<br>
+      <b>·</b> 熬过 <b>五更</b>（每更 20 秒），<b>点击灯盏</b>添油，天亮即胜利<br>
+      <b>·</b> 传说：若五更结束时侵蚀极低，<b>子夜会有异变</b>
+    </div>
+    <div class="btnrow"><button onclick="startGame()">开始守夜</button></div>`);
+}
+function startGame(){
+  G.geng=0; G.gengLen=20; G.oil=60; G.erosion=0; G.win=false; G.bossWin=false; G.prevOmen=null;
+  G.usedRelics=[]; G.usedWatchers=[]; G.omenLog=[]; G.fortuneLog=[]; G.listenCount=0;
+  G.blessing=false; G.merchantDone=false;
+  pickWatcher();
+}
+function resetGeng(){
+  G.t=0; G.rateMul=1; G.shield=false; G.freeze=0; G.grasp=false; G.graspT=0;
+  G.boss=false; G.gazeT=0; G.gazeWarn=0; G.gazeWarned=false;
+  G.oilBurnMul=1; G.clickBonus=0; G.candyUsed=false; G.fortuneUsed=false;
+  G.whisperT=6+Math.random()*5; G.listenWindow=0;
+}
+function drawOmen(){
+  const keys=Object.keys(OMENS).filter(k=>k!=='mask'&&k!==G.prevOmen);
+  const id=keys[Math.floor(Math.random()*keys.length)];
+  G.prevOmen=id; G.omen=id;
+  const o=OMENS[id];
+  return { id, html:`<div class="omen"><b>夜观异象 · ${o.name}</b>
+    <div class="verse">「${o.verse}」</div>
+    <div class="meta">雾象：<em>${o.tell}</em> ｜ 判词示警：<em>${o.effect}</em></div></div>
+    <div class="solve">读判词 → 推变招 → 选克制。卡面「克制」即是解。</div>` };
+}
+function pickWatcher(){
+  G.state='pick'; hideBtns();
+  if(G.geng===2 && !G.merchantDone){ merchantScreen(); return; }
+  const om=drawOmen();
+  show(`<h2>${GENGS[G.geng]} · 夜观之后，选守夜人</h2>
+    ${om.html}
+    <div class="btnrow">${Object.keys(WATCHERS).filter(k=>k!=='master').map(k=>{
+      const w=WATCHERS[k];
+      return `<button class="rolebtn" onclick="chooseWatcher('${k}')">
+        ${artImgHTML(k, ART.watchers, w.name)}
+        <b>${w.name}</b> · ${w.title}
+        <small>${w.ability}</small><small class="vs">${w.vsLabel}</small>
+        <small class="flavor">「${w.flavor}」</small></button>`;}).join('')}
+    </div>`);
+}
+function merchantScreen(){
+  G.state='merchant';
+  show(`<h2>三更 · 夜行商人</h2>
+    <div class="merchant">「客官，雾里做生意，童叟无欺。<br>三更半夜还在守灯的，卖你个人情。」</div>
+    <div class="btnrow">${TRADES.map((t,i)=>
+      `<button class="rolebtn" ${t.can(G)?'':''} onclick="doTrade(${i})" ${t.can(G)?'':'disabled'}>
+        <b>${t.name}</b><small>${t.desc}</small></button>`).join('')}
+    </div>
+    <div class="btnrow"><button onclick="skipTrade()">不交易，继续守夜</button></div>`);
+}
+function doTrade(i){
+  const msg=TRADES[i].fx(G);
+  G.merchantDone=true;
+  toast(`夜行商人：${msg}`, 2600);
+  pickWatcher();
+}
+function skipTrade(){ G.merchantDone=true; pickWatcher(); }
+function chooseWatcher(k){
+  G.watcher=k; resetGeng();
+  G.usedWatchers.push(WATCHERS[k].name);
+  if(G.blessing){ G.oil=100; G.blessing=false; setTimeout(()=>toast('否极泰来：灯油回满'), 600); }
+  OMENS[G.omen].apply(G);
+  const hitW = WATCHERS[k].vs.includes(G.omen);
+  G.omenLog.push({geng:GENGS[G.geng], omen:OMENS[G.omen].name, effect:OMENS[G.omen].effect,
+                  watcher:WATCHERS[k].name, hitW, hitR:null});
+  if(k==='lin'){ G.oilBurnMul*=0.65; G.clickBonus=2; }
+  if(k==='yang'){
+    const d=1+Math.floor(Math.random()*6); let msg=`洋掷出了 <b>${d}</b> 点——`;
+    if(d<=2){ G.oil=Math.min(100,G.oil+8); msg+='灯油 +8'; }
+    else if(d<=4){ G.oil=Math.min(100,G.oil+14); msg+='灯油 +14'; }
+    else if(d===5){ G.oil=Math.min(100,G.oil+20); msg+='灯油 +20'; }
+    else { G.oil=Math.min(100,G.oil+20); G.erosion=Math.max(0,G.erosion-8); msg+='灯油 +20，侵蚀 -8！'; }
+    setTimeout(()=>toast(msg), 300);
+  }
+  if(k==='xi') document.getElementById('candybtn').classList.add('show');
+  if(G.geng===4){ G.rateMul*=0.85; setTimeout(()=>toast('狼先生压阵五更：侵蚀增速 -15%<br>「该到了。」'), 900); }
+  document.getElementById('genglabel').textContent=`${GENGS[G.geng]} · ${WATCHERS[k].name}守夜 · ${OMENS[G.omen].name}`;
+  draftRelic();
+}
+/* 隐藏六更 · 子夜异变 */
+function startBoss(){
+  G.geng=5; G.gengLen=25; G.watcher='master'; resetGeng();
+  G.omen='mask'; OMENS.mask.apply(G);
+  G.clickBonus=2; G.rateMul*=0.8; // 狼先生亲守
+  G.usedWatchers.push('狼先生（子夜）');
+  G.omenLog.push({geng:'子夜', omen:'面具亲临', effect:'侵蚀极快，且会被凝视', watcher:'狼先生', hitW:false, hitR:null});
+  document.getElementById('genglabel').textContent='子夜 · 狼先生亲守 · 面具亲临';
+  G.state='bossintro';
+  show(`<h2 style="color:#b48ad0">子夜 · 异变</h2>
+    <div class="omen"><b>夜观异象 · 面具亲临</b>
+    <div class="verse">「它不再藏在雾里了——它睁着眼，朝灯走来。」</div>
+    <div class="meta">雾象：<em>面具睁眼</em> ｜ 判词示警：<em>侵蚀极快，且会被凝视——凝视前灯油不足 40 则侵蚀 +10</em></div></div>
+    <div class="merchant">狼先生按住铜印，站在灯前：<br>「这一更，我来。你们添油，别停。」</div>
+    <div class="btnrow"><button onclick="draftRelic()">迎战</button></div>`);
+}
+function draftRelic(){
+  G.state='relic';
+  const keys=Object.keys(RELICS).sort(()=>Math.random()-0.5).slice(0,3);
+  const omenHtml = G.geng===5
+    ? `<div class="omen" style="border-color:#b08d57"><b style="color:#e8c26a">异象 · 面具亲临</b>
+       <div class="meta">要快，要准——凝视之前把灯烧旺。</div></div>`
+    : `<div class="omen" style="border-color:#b08d57"><b style="color:#e8c26a">异象 · ${OMENS[G.omen].name}</b>
+       <div class="meta">雾象：<em>${OMENS[G.omen].tell}</em> ｜ 判词示警：<em>${OMENS[G.omen].effect}</em></div></div>`;
+  show(`<h2>${GENGS[G.geng]} · 取用信物</h2>${omenHtml}
+    <div class="btnrow">${keys.map(k=>{
+      const r=RELICS[k];
+      return `<button class="rolebtn" onclick="chooseRelic('${k}')">
+        ${artImgHTML(k, ART.relics, r.name[0])}
+        <b>${r.name}</b><small>${r.desc}</small><small class="vs">${r.vsLabel}</small>
+        <small class="flavor">「${r.flavor}」</small></button>`;}).join('')}
+    </div>`);
+}
+function chooseRelic(k){
+  RELICS[k].fx(G); G.usedRelics.push(RELICS[k].name);
+  const last=G.omenLog[G.omenLog.length-1];
+  if(last && G.geng<5) last.hitR = RELICS[k].vs.includes(G.omen);
+  toast(`取用信物：<b>${RELICS[k].name}</b><br><span style="font-size:12px;color:#8a7a5c">${RELICS[k].desc}</span>`);
+  G.state='play'; hide();
+  document.getElementById('fortunebtn').classList.add('show');
+}
+function openFortune(){
+  if(G.state!=='play'||G.fortuneUsed) return;
+  G.state='fortune';
+  const total=FORTUNES.reduce((a,f)=>a+f.w,0);
+  let r=Math.random()*total, f=FORTUNES[0];
+  for(const c of FORTUNES){ r-=c.w; if(r<=0){ f=c; break; } }
+  G.pendingFortune=f;
+  show(`<h2>求签</h2>
+    <div class="stick"></div>
+    <div class="verse4">${f.verse.join('<br>')}</div>
+    <p style="font-size:12px;color:#6f6350">签文隐晦——解签方见吉凶。</p>
+    <div class="btnrow"><button onclick="breakFortune()">解签</button></div>`);
+}
+function breakFortune(){
+  const f=G.pendingFortune; G.fortuneUsed=true;
+  document.getElementById('fortunebtn').classList.remove('show');
+  f.fx(G); G.fortuneLog.push(`${f.grade} · ${f.name}`);
+  toast(`<b>${f.grade} · ${f.name}</b><br><span style="font-size:12px;color:#8a7a5c">${f.desc}</span>`, 2600);
+  G.state='play'; hide();
+}
+function openCandy(){
+  if(G.state!=='play'||G.watcher!=='xi'||G.candyUsed) return;
+  G.state='candy';
+  show(`<h2>晰的糖</h2><p>口袋里永远备着三种口味——</p>
+    <div class="btnrow">${Object.keys(CANDIES).map(k=>{
+      const c=CANDIES[k];
+      return `<button class="rolebtn" onclick="eatCandy('${k}')"><b>${c.name}</b><small>${c.desc}</small></button>`;}).join('')}
+    </div>`);
+}
+function eatCandy(k){
+  CANDIES[k].fx(G); G.candyUsed=true;
+  document.getElementById('candybtn').classList.remove('show');
+  toast(`晰吃了一颗<b>${CANDIES[k].name}</b>：${CANDIES[k].desc}`);
+  G.state='play'; hide();
+}
+function endGame(win){
+  G.state='end'; G.win=win; hideBtns();
+  const oil=Math.round(G.oil), ero=Math.round(G.erosion);
+  const log=G.omenLog.map(l=>{
+    const mark=(l.hitW||l.hitR)?' <span class="hit">✓克制命中</span>':'';
+    return `<div class="logline"><b>${l.geng} · ${l.omen}</b>（${l.effect}）——${l.watcher}守夜${mark}</div>`;}).join('');
+  const extra=`<div class="logline">求签：${G.fortuneLog.join('；')||'未求'} ｜ 聆听呓语 ${G.listenCount} 次</div>`;
+  const winTitle = G.bossWin ? '异变平息' : '天亮了';
+  const winText = G.bossWin
+    ? `子夜已过，面具退回雾中。<br>狼先生收起铜印：「记下来——它怕的，是有人一直添油。」<br>剩余灯油 ${oil} · 终局侵蚀 ${ero}`
+    : `五更守尽，谷地灯火未熄。<br>剩余灯油 ${oil} · 终局侵蚀 ${ero}`;
+  show(win
+    ? `<h2>${winTitle}</h2><p>${winText}</p>
+       <p style="font-size:13px;color:#b48ad0;letter-spacing:2px">—— 判词复盘 ——</p>${log}${extra}
+       <p style="color:#8a7a5c;font-size:12px;margin-top:8px">「愿每一次远征，都让你更接近想成为的自己。」</p>
+       <div class="btnrow"><button onclick="titleScreen()">再守一夜</button></div>`
+    : `<h2 style="color:#7a5a8a">灯火熄灭了</h2><p>黑域漫过谷地，停在${GENGS[G.geng]}。<br>剩余灯油 ${oil} · 侵蚀 ${ero}</p>
+       <p style="font-size:13px;color:#b48ad0;letter-spacing:2px">—— 判词复盘 ——</p>${log}${extra}
+       <div class="btnrow"><button onclick="titleScreen()">卷土重来</button></div>`);
+}
+
+cv.addEventListener('pointerdown', e=>{
+  if(G.state!=='play') return;
+  const r=cv.getBoundingClientRect();
+  const x=(e.clientX-r.left)*(W/r.width), y=(e.clientY-r.top)*(H/r.height);
+  if(G.listenWindow>0 && Math.hypot(x-MASKX,y-MASKY)<85){
+    G.listenWindow=0; G.listenCount++;
+    G.oil=Math.min(100,G.oil+10); G.erosion+=5;
+    toast('你听清了呓语——<b>灯油 +10</b>，但有什么顺着声音爬了进来：<b>侵蚀 +5</b>', 2600);
+    return;
+  }
+  if(G.cd>0) return;
+  if(Math.hypot(x-LX,y-LY)<80){ G.oil=Math.min(100, G.oil+8+G.clickBonus); G.cd=0.25; }
+});
+
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(0.05,(now-last)/1000); last=now; G.time+=dt; G.pulse=Math.max(0,G.pulse-dt*2);
+  if(G.state==='play'){
+    G.cd=Math.max(0,G.cd-dt);
+    G.listenWindow=Math.max(0,G.listenWindow-dt);
+    G.whisperT-=dt;
+    if(G.whisperT<=0){
+      G.whisperT=8+Math.random()*7; G.listenWindow=4;
+      toast(`<span style="font-style:italic">「${WHISPERS[Math.floor(Math.random()*WHISPERS.length)]}」</span><br><span style="font-size:11px;color:#6f6350">点击雾中面具，可聆听——有风险</span>`, 3800, true);
+    }
+    // Boss 凝视
+    if(G.boss){
+      if(!G.gazeWarned){
+        G.gazeT+=dt;
+        if(G.gazeT>=8){ G.gazeWarned=true; G.gazeWarn=2;
+          toast('<b>面具凝视着你</b>——灯油不足 40 则侵蚀 +10！', 2000, true); }
+      } else {
+        G.gazeWarn-=dt;
+        if(G.gazeWarn<=0){
+          if(G.oil<40){ G.erosion+=10; G.pulse=1; toast('凝视命中：<b>侵蚀 +10</b>', 1800); }
+          else toast('灯火炽盛，面具移开了视线。', 1500);
+          G.gazeT=0; G.gazeWarned=false;
+        }
+      }
+    }
+    if(G.freeze>0){ G.freeze-=dt; }
+    else {
+      let rate=(2.2+G.geng*0.6)*G.rateMul;
+      const bright=Math.max(0,Math.min(1,G.oil/100));
+      rate*=(1-bright*0.65);
+      if(G.oil<=0) rate*=1.6;
+      G.erosion+=rate*dt;
+      if(G.shield&&G.erosion>90) G.erosion=90;
+    }
+    if(G.grasp){ G.graspT+=dt; if(G.graspT>=6){ G.graspT=0; G.erosion+=4; G.pulse=1; } }
+    G.oil=Math.max(0,G.oil-3.4*G.oilBurnMul*dt);
+    G.t+=dt;
+    if(G.erosion>=100){ endGame(false); }
+    else if(G.t>=G.gengLen){
+      if(G.geng===4){ // 五更结束：判定隐藏六更
+        if(G.erosion<30){ startBoss(); }
+        else endGame(true);
+      } else if(G.geng>=5){ G.bossWin=true; endGame(true); }
+      else { G.geng++; pickWatcher(); }
+    }
+    document.getElementById('oilfill').style.width=G.oil+'%';
+    document.getElementById('erofill').style.width=Math.min(100,G.erosion)+'%';
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+
+/* ---------- 图案绘制 ---------- */
+function fretBand(x,y,w,h){
+  ctx.save(); ctx.strokeStyle='rgba(176,141,87,.85)'; ctx.lineWidth=2;
+  const seg=26, n=Math.max(1,Math.floor(w/seg));
+  for(let i=0;i<n;i++){ const x0=x+i*seg;
+    ctx.strokeRect(x0+3,y+3,seg-6,h-6);
+    ctx.beginPath();
+    ctx.moveTo(x0+seg/2,y+3); ctx.lineTo(x0+seg/2,y+h/2);
+    ctx.lineTo(x0+seg-6,y+h/2); ctx.stroke();
+  }
+  ctx.restore();
+}
+function drawMask(cx,cy,s,alpha,angry){
+  if(alpha<=0.01) return;
+  ctx.save(); ctx.globalAlpha=Math.min(1,alpha);
+  ctx.strokeStyle='#8a5aa0'; ctx.fillStyle='#8a5aa0';
+  ctx.shadowColor='#8a5aa0'; ctx.shadowBlur=angry?40:24;
+  ctx.lineWidth=3;
+  ctx.beginPath(); ctx.ellipse(cx,cy,s*0.62,s,0,0,6.29); ctx.stroke();
+  const eyeC = angry ? '#e08ae0' : '#8a5aa0';
+  ctx.fillStyle=eyeC;
+  ctx.beginPath();
+  ctx.moveTo(cx-s*0.42,cy-s*0.28); ctx.lineTo(cx-s*0.12,cy-s*0.18);
+  ctx.lineTo(cx-s*0.14,cy-s*0.02); ctx.lineTo(cx-s*0.44,cy-s*0.12); ctx.closePath(); ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(cx+s*0.42,cy-s*0.28); ctx.lineTo(cx+s*0.12,cy-s*0.18);
+  ctx.lineTo(cx+s*0.14,cy-s*0.02); ctx.lineTo(cx+s*0.44,cy-s*0.12); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='#8a5aa0';
+  ctx.beginPath();
+  ctx.moveTo(cx-s*0.2,cy+s*0.42); ctx.lineTo(cx+s*0.2,cy+s*0.42); ctx.stroke();
+  ctx.lineWidth=2;
+  for(let i=-1;i<=1;i++){ ctx.beginPath(); ctx.moveTo(cx+i*s*0.3,cy+s); ctx.lineTo(cx+i*s*0.3,cy+s*1.5); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx+i*s*0.3,cy+s*1.56,s*0.06,0,6.29); ctx.fill(); }
+  ctx.restore();
+}
+
+function draw(){
+  if(ARTIMG.bg){
+    const im=ARTIMG.bg, s=Math.max(W/im.width,H/im.height);
+    ctx.drawImage(im,(W-im.width*s)/2,(H-im.height*s)/2,im.width*s,im.height*s);
+    ctx.fillStyle='rgba(5,5,10,.45)'; ctx.fillRect(0,0,W,H);
+  } else {
+    const sky=ctx.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0,'#06060f'); sky.addColorStop(.6,'#0a0a16'); sky.addColorStop(1,'#050508');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+    const tw=0.5+0.5*Math.sin(G.time*2);
+    stars.forEach(p=>{ ctx.globalAlpha=0.25+0.55*tw*(0.5+0.5*Math.sin(G.time+p.ph));
+      ctx.fillStyle='#e8dcc0'; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.29); ctx.fill(); });
+    ctx.globalAlpha=1;
+    ctx.fillStyle='#0c0c14'; ctx.beginPath(); ctx.moveTo(0,470);
+    for(let x=0;x<=W;x+=40) ctx.lineTo(x,470-30*Math.sin(x*0.01+2)-14*Math.sin(x*0.023));
+    ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.fill();
+    ctx.fillStyle='#08080d'; ctx.fillRect(0,500,W,100);
+  }
+  const e=Math.min(1,G.erosion/100);
+  const inPlay=(G.state==='play'||G.state==='candy'||G.state==='fortune');
+  const windF = (G.omen==='wind' && inPlay) ? 3 : 1;
+  let fogCol='26,12,44';
+  if((G.omen==='ink'||G.boss) && G.state!=='title') fogCol='52,24,88';
+  const fogA=Math.min(0.85, 0.12+e*0.55+G.pulse*0.15+(G.boss?0.12:0));
+  [[0,0,W,120,'v'],[0,H-120,W,120,'v'],[0,0,140,H,'h'],[W-140,0,140,H,'h']].forEach(r=>{
+    let g;
+    if(r[4]==='v'){ g=ctx.createLinearGradient(0,r[1],0,r[1]+(r[1]===0?r[3]:-r[3]));
+      g.addColorStop(0,`rgba(${fogCol},${fogA})`); g.addColorStop(1,`rgba(${fogCol},0)`); }
+    else { g=ctx.createLinearGradient(r[0],0,r[0]+(r[0]===0?r[2]:-r[2]),0);
+      g.addColorStop(0,`rgba(${fogCol},${fogA})`); g.addColorStop(1,`rgba(${fogCol},0)`); }
+    ctx.fillStyle=g; ctx.fillRect(r[0],r[1],r[2],r[3]);
+  });
+  if(inPlay){
+    ctx.save(); ctx.strokeStyle=`rgba(140,110,200,${0.10+e*0.25})`; ctx.lineWidth=2;
+    streaks.forEach(p=>{
+      p.x-=p.sp*windF*0.016; if(p.x<-80){ p.x=W+40; p.y=Math.random()*H; }
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x+p.len*windF,p.y); ctx.stroke();
+    });
+    ctx.restore();
+  }
+  const bossActive = G.boss && inPlay;
+  const maskA = bossActive ? 1 : ((G.omen==='grasp'&&inPlay) ? Math.max(0.35, e) : e*0.85);
+  const maskS = bossActive ? 90 : 46+e*30;
+  const maskY = bossActive ? 170 : MASKY+Math.sin(G.time*0.8)*8;
+  drawMask(MASKX, maskY, maskS, maskA, bossActive&&G.gazeWarned);
+  if(G.listenWindow>0 && G.state==='play'){
+    ctx.save(); ctx.strokeStyle=`rgba(180,138,208,${0.5+0.4*Math.sin(G.time*6)})`;
+    ctx.lineWidth=2; ctx.beginPath(); ctx.arc(MASKX,MASKY,86,0,6.29); ctx.stroke(); ctx.restore();
+  }
+  const bright=Math.max(0,Math.min(1,G.oil/100));
+  const flick=0.9+0.1*Math.sin(G.time*9)+0.05*Math.sin(G.time*23);
+  const R=(60+bright*190)*flick;
+  const glow=ctx.createRadialGradient(LX,LY,10,LX,LY,R);
+  glow.addColorStop(0,`rgba(232,194,106,${0.5*bright+0.08})`);
+  glow.addColorStop(0.5,`rgba(176,141,87,${0.22*bright})`);
+  glow.addColorStop(1,'rgba(176,141,87,0)');
+  ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(LX,LY,R,0,6.29); ctx.fill();
+  ctx.fillStyle='#2a2110'; ctx.fillRect(LX-7,LY,14,100);
+  ctx.fillStyle='#3a2f1d'; ctx.beginPath(); ctx.ellipse(LX,LY+104,52,12,0,0,6.29); ctx.fill();
+  fretBand(LX-52,LY+96,104,16);
+  ctx.strokeStyle='#b08d57'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.ellipse(LX,LY,34,14,0,0,6.29); ctx.stroke();
+  ctx.save(); ctx.strokeStyle='rgba(176,141,87,.6)'; ctx.lineWidth=1.5;
+  for(let a=0;a<6.29;a+=0.52){ const px=LX+Math.cos(a)*34, py=LY+Math.sin(a)*14;
+    ctx.beginPath(); ctx.arc(px,py,3.5,a,a+4.2); ctx.stroke(); }
+  ctx.restore();
+  if(G.oil>0){
+    const fh=(14+bright*22)*flick;
+    const fg=ctx.createLinearGradient(0,LY,0,LY-fh-14);
+    fg.addColorStop(0,'rgba(232,194,106,.95)'); fg.addColorStop(1,'rgba(232,120,60,0)');
+    ctx.fillStyle=fg; ctx.beginPath(); ctx.ellipse(LX,LY-8-fh/2,9,fh/2+7,0,0,6.29); ctx.fill();
+  }
+  if(inPlay){
+    ctx.fillStyle='rgba(232,220,192,.75)'; ctx.font='14px "PingFang SC",sans-serif'; ctx.textAlign='left';
+    let label=`${GENGS[G.geng]} · ${WATCHERS[G.watcher].name}守夜 · ${G.boss?'面具亲临':OMENS[G.omen].name} · ${Math.ceil(G.gengLen-G.t)}s`;
+    if(G.freeze>0) label+=` · 冻结${Math.ceil(G.freeze)}s`;
+    if(G.shield) label+=' · 门神护持';
+    if(G.boss&&G.gazeWarned) label+=' · ⚠凝视中';
+    ctx.fillText(label,24,36);
+    ctx.textAlign='right'; ctx.fillStyle='#8a7a5c'; ctx.fillText('点击灯盏添油',W-24,36);
+  }
+}
+titleScreen();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

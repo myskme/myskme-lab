@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>星尘打捞 · 原型 v0.1 | MYSKME</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { background:#050508; color:#e8dcc0; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
+         display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:12px; }
+  h1 { font-family:"STKaiti","KaiTi",serif; color:#e8c26a; letter-spacing:6px; font-size:26px; margin:10px 0 4px; }
+  .sub { color:#8a7a5c; font-size:12px; letter-spacing:2px; margin-bottom:10px; }
+  #wrap { position:relative; width:960px; max-width:100%; }
+  canvas { width:100%; display:block; border:1px solid #3a2f1d; border-radius:8px; background:#050508; cursor:pointer; }
+  #overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+             background:rgba(5,5,8,.72); border-radius:8px; z-index:5; }
+  #overlay.hidden { display:none; }
+  .card { background:#0d0d14; border:1px solid #b08d57; border-radius:10px; padding:28px 34px;
+          max-width:88%; text-align:center; box-shadow:0 0 40px rgba(232,194,106,.12); }
+  .card h2 { font-family:"STKaiti","KaiTi",serif; color:#e8c26a; letter-spacing:4px; margin-bottom:10px; font-size:24px; }
+  .card p { color:#c9b98f; font-size:14px; line-height:2; margin-bottom:6px; }
+  .card .rule { font-size:13px; color:#a89878; line-height:2.1; margin:10px 0; }
+  .card .rule b { color:#e8c26a; }
+  .btnrow { display:flex; gap:12px; justify-content:center; margin-top:14px; }
+  button { background:#1a1409; color:#e8c26a; border:1px solid #b08d57; border-radius:8px;
+           padding:12px 30px; font-size:16px; letter-spacing:3px; cursor:pointer; transition:.2s; }
+  button:hover { background:#2a2110; box-shadow:0 0 14px rgba(232,194,106,.35); }
+  #hud { display:flex; gap:18px; align-items:center; justify-content:center; margin-top:10px;
+         font-size:14px; color:#8a7a5c; }
+  #hud b { color:#e8c26a; font-size:18px; }
+  .meter { width:170px; height:8px; background:#1a1a22; border-radius:4px; overflow:hidden; border:1px solid #3a2f1d; }
+  .meter > div { height:100%; border-radius:4px; background:linear-gradient(90deg,#b08d57,#e8c26a); transition:width .2s; }
+  .tip { margin-top:8px; font-size:11px; color:#5c5340; letter-spacing:1px; }
+  .canon-note { margin-top:10px; font-size:10px; color:#4a4238; letter-spacing:1px; }
+</style>
+</head>
+<body>
+  <h1>星尘打捞</h1>
+  <div class="sub">MYSKME · 原型 v0.1 —— 点一下，放钩</div>
+  <div id="wrap">
+    <canvas id="cv" width="960" height="600"></canvas>
+    <div id="overlay"><div class="card" id="ocard"></div></div>
+  </div>
+  <div id="hud">
+    <span>得分 <b id="score">0</b></span>
+    <span>目标 <b>300</b></span>
+    <div class="meter"><div id="timefill" style="width:100%"></div></div>
+    <span id="timelabel">60s</span>
+  </div>
+  <div class="tip">看准时机点一下就行 · 大的越值钱也越沉 · 别碰雾团</div>
+  <div class="canon-note">星尘袋 · 金叶徽章 · 灯猫的小灯 —— 取自《世界编年史 II》正典信物</div>
+
+<script>
+/* ART 映射层：本 html 与 assets/ 同目录即自动换装（relic-dustbag / relic-goldleaf / relic-lamp） */
+const ART = {
+  items: {
+    dust_s:['assets/relics/relic-dustbag.webp'], dust_l:['assets/relics/relic-dustbag.webp'],
+    leaf:['assets/relics/relic-goldleaf.webp'], lamp:['assets/relics/relic-lamp.webp'],
+  },
+};
+const ARTIMG = {};
+Object.keys(ART.items).forEach(k=>{
+  const im=new Image(); let i=0;
+  const next=()=>{ if(i>=ART.items[k].length) return; im.src=ART.items[k][i++];
+    im.onload=()=>{ ARTIMG[k]=im; }; im.onerror=next; };
+  next();
+});
+
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+const W=960, H=600, PX=W/2, PY=86, MAXLEN=500;
+const TIME_LIMIT=60, TARGET=300;
+/* 类型：分值 / 重量（越重收绳越慢）/ 半径 */
+const TYPES = {
+  dust_s:{ v:10, w:1,   r:14, name:'小星尘' },
+  dust_l:{ v:25, w:2,   r:20, name:'大星尘' },
+  leaf:  { v:50, w:3.5, r:18, name:'金叶徽章' },
+  lamp:  { v:30, w:1.5, r:18, name:'灯猫的小灯' },
+  fog:   { v:-15,w:1,   r:22, name:'雾团' },
+};
+const G = { state:'title', score:0, time:TIME_LIMIT, ang:0, t:0,
+            rope:'swing', len:80, grab:null, stun:0, items:[], floats:[] };
+
+function show(html){ document.getElementById('ocard').innerHTML=html;
+  document.getElementById('overlay').classList.remove('hidden'); }
+function hide(){ document.getElementById('overlay').classList.add('hidden'); }
+
+function titleScreen(){
+  G.state='title';
+  show(`<h2>星尘打捞</h2>
+    <p>星尘泉的夜晚，星屑沉在泉底。<br>摇钩，看准，点一下。</p>
+    <div class="rule">
+      <b>点一下</b> 就放钩，钩到东西自动收回来<br>
+      小星尘 <b>+10</b> · 大星尘 <b>+25</b> · 灯猫的小灯 <b>+30</b> · 金叶徽章 <b>+50</b>（最沉）<br>
+      别碰<b>雾团</b>：扣 15 分，钩子还会被缠住 2 秒<br>
+      <b>60 秒</b>内拿到 <b>300 分</b>，泉眼就认可你
+    </div>
+    <div class="btnrow"><button onclick="startGame()">下钩</button></div>`);
+}
+function spawnItem(){
+  const roll=Math.random();
+  let type = roll<0.34?'dust_s' : roll<0.58?'dust_l' : roll<0.72?'leaf' : roll<0.84?'lamp' : 'fog';
+  G.items.push({ x:60+Math.random()*(W-120), y:200+Math.random()*(H-260), type, ph:Math.random()*6.28 });
+}
+function startGame(){
+  G.state='play'; G.score=0; G.time=TIME_LIMIT; G.items=[]; G.floats=[];
+  G.rope='swing'; G.len=80; G.grab=null; G.stun=0;
+  for(let i=0;i<10;i++) spawnItem();
+  document.getElementById('score').textContent='0';
+  hide();
+}
+function endGame(win){
+  G.state='end';
+  show(win
+    ? `<h2>泉眼认可了你</h2><p>${TIME_LIMIT} 秒，得分 <b style="color:#e8c26a">${G.score}</b>。<br>
+       星尘袋又沉了一点——最亮的那颗，从来不是数出来的。</p>
+       <div class="btnrow"><button onclick="startGame()">再捞一次</button></div>`
+    : `<h2 style="color:#7a5a8a">差一点</h2><p>得分 <b style="color:#e8c26a">${G.score}</b>，离 ${TARGET} 还差一点。<br>
+       雾团不好惹，但金叶值得。</p>
+       <div class="btnrow"><button onclick="startGame()">再试一次</button></div>`);
+}
+function floatText(x,y,txt,color){
+  G.floats.push({x,y,txt,color:color||'#e8c26a',life:1.2});
+}
+
+cv.addEventListener('pointerdown', ()=>{
+  if(G.state!=='play'||G.rope!=='swing'||G.stun>0) return;
+  G.rope='extend';
+});
+
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(0.05,(now-last)/1000); last=now;
+  if(G.state==='play'){
+    G.t+=dt; G.time-=dt; G.stun=Math.max(0,G.stun-dt);
+    G.ang=Math.sin(G.t*1.4)*1.05; // 摆动 ±60°
+    const dx=Math.sin(G.ang), dy=Math.cos(G.ang);
+    if(G.rope==='extend'){
+      G.len+=460*dt;
+      const hx=PX+dx*G.len, hy=PY+dy*G.len;
+      for(let i=G.items.length-1;i>=0;i--){
+        const it=G.items[i], T=TYPES[it.type];
+        if(Math.hypot(hx-it.x,hy-it.y) < T.r+12){
+          G.grab=it; G.items.splice(i,1); G.rope='retract'; break;
+        }
+      }
+      if(G.len>=MAXLEN || HXout(hx,hy)){ G.rope='retract'; }
+    } else if(G.rope==='retract'){
+      const w=G.grab?TYPES[G.grab.type].w:1;
+      G.len-=300/w*dt;
+      if(G.len<=80){
+        G.len=80; G.rope='swing';
+        if(G.grab){
+          const T=TYPES[G.grab.type];
+          if(G.grab.type==='fog'){
+            G.score=Math.max(0,G.score+T.v); G.stun=2;
+            floatText(G.grab.x,G.grab.y,'雾团缠钩! -15','#8a5aa0');
+          } else {
+            G.score+=T.v;
+            floatText(G.grab.x,G.grab.y,'+'+T.v,'#e8c26a');
+          }
+          document.getElementById('score').textContent=G.score;
+          G.grab=null;
+        }
+      }
+    }
+    if(Math.random()<dt*1.4 && G.items.length<12) spawnItem();
+    // 漂字
+    for(let i=G.floats.length-1;i>=0;i--){ const f=G.floats[i]; f.y-=34*dt; f.life-=dt;
+      if(f.life<=0) G.floats.splice(i,1); }
+    document.getElementById('timefill').style.width=(G.time/TIME_LIMIT*100)+'%';
+    document.getElementById('timelabel').textContent=Math.ceil(G.time)+'s';
+    if(G.time<=0) endGame(G.score>=TARGET);
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+function HXout(x,y){ return x<10||x>W-10||y>H-10; }
+
+function drawItem(it){
+  const T=TYPES[it.type], bob=Math.sin(G.t*2+it.ph)*4, y=it.y+bob;
+  const im=ARTIMG[it.type];
+  if(im){ const s=T.r*2.4; ctx.drawImage(im,it.x-s/2,y-s/2,s,s); return; }
+  ctx.save(); ctx.translate(it.x,y);
+  if(it.type==='fog'){
+    ctx.fillStyle='rgba(60,30,90,.85)';
+    ctx.beginPath(); ctx.arc(0,0,T.r,0,6.29); ctx.fill();
+    ctx.fillStyle='rgba(90,50,130,.5)';
+    ctx.beginPath(); ctx.arc(-6,-5,T.r*0.55,0,6.29); ctx.fill();
+    ctx.strokeStyle='#8a5aa0'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(0,0,T.r,0,6.29); ctx.stroke();
+  } else if(it.type==='leaf'){
+    const g=ctx.createLinearGradient(-T.r,0,T.r,0);
+    g.addColorStop(0,'#8a6d35'); g.addColorStop(.5,'#e8c26a'); g.addColorStop(1,'#8a6d35');
+    ctx.fillStyle=g; ctx.rotate(0.5);
+    ctx.beginPath(); ctx.ellipse(0,0,T.r,T.r*0.55,0,0,6.29); ctx.fill();
+    ctx.strokeStyle='#5c4a22'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(-T.r,0); ctx.lineTo(T.r,0); ctx.stroke();
+  } else if(it.type==='lamp'){
+    const gl=ctx.createRadialGradient(0,0,2,0,0,T.r*2);
+    gl.addColorStop(0,'rgba(232,194,106,.8)'); gl.addColorStop(1,'rgba(232,194,106,0)');
+    ctx.fillStyle=gl; ctx.beginPath(); ctx.arc(0,0,T.r*2,0,6.29); ctx.fill();
+    ctx.fillStyle='#e8c26a';
+    ctx.beginPath(); ctx.arc(0,0,T.r*0.55,0,6.29); ctx.fill();
+    ctx.strokeStyle='#b08d57'; ctx.lineWidth=2;
+    ctx.strokeRect(-T.r*0.7,-T.r*0.9,T.r*1.4,T.r*0.5);
+  } else { // 星尘
+    const g=ctx.createRadialGradient(0,0,1,0,0,T.r);
+    g.addColorStop(0,'#fff3d0'); g.addColorStop(.4,'#e8c26a'); g.addColorStop(1,'rgba(232,194,106,0)');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,0,T.r,0,6.29); ctx.fill();
+    ctx.strokeStyle='#fff3d0'; ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(-T.r*1.3,0); ctx.lineTo(T.r*1.3,0);
+    ctx.moveTo(0,-T.r*1.3); ctx.lineTo(0,T.r*1.3); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function draw(){
+  const sky=ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#06060f'); sky.addColorStop(.55,'#0b0b18'); sky.addColorStop(1,'#101a2a');
+  ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+  // 泉水波纹
+  ctx.strokeStyle='rgba(120,150,200,.14)'; ctx.lineWidth=2;
+  for(let i=0;i<5;i++){ const yy=220+i*80+Math.sin(G.t+i)*6;
+    ctx.beginPath();
+    for(let x=0;x<=W;x+=24) ctx.lineTo(x, yy+Math.sin(x*0.03+G.t*1.5+i)*5);
+    ctx.stroke(); }
+  // 物品
+  G.items.forEach(drawItem);
+  // 绞盘架
+  ctx.fillStyle='#2a2110'; ctx.fillRect(PX-70,PY-24,140,22);
+  ctx.fillStyle='#3a2f1d'; ctx.beginPath(); ctx.arc(PX,PY-13,16,0,6.29); ctx.fill();
+  ctx.strokeStyle='#b08d57'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(PX,PY-13,16,0,6.29); ctx.stroke();
+  // 绳钩
+  const dx=Math.sin(G.ang), dy=Math.cos(G.ang);
+  const hx=PX+dx*G.len, hy=PY+dy*G.len;
+  ctx.strokeStyle=G.stun>0?'#8a5aa0':'#c9b98f'; ctx.lineWidth=3;
+  ctx.beginPath(); ctx.moveTo(PX,PY); ctx.lineTo(hx,hy); ctx.stroke();
+  ctx.strokeStyle='#e8c26a'; ctx.lineWidth=4;
+  ctx.beginPath(); ctx.arc(hx,hy,10,0.3,2.8); ctx.stroke(); // 钩
+  if(G.grab){ // 抓着的东西跟钩走
+    const T=TYPES[G.grab.type];
+    const gy=hy+14;
+    const im=ARTIMG[G.grab.type];
+    if(im){ const s=T.r*2.2; ctx.drawImage(im,hx-s/2,gy-s/2,s,s); }
+    else { ctx.fillStyle='#e8c26a'; ctx.beginPath(); ctx.arc(hx,gy,8,0,6.29); ctx.fill(); }
+  }
+  if(G.stun>0){ // 被缠住提示
+    ctx.fillStyle='#b48ad0'; ctx.font='15px "PingFang SC",sans-serif'; ctx.textAlign='center';
+    ctx.fillText(`雾团缠钩…${G.stun.toFixed(1)}s`, PX, PY+44);
+  }
+  // 漂字
+  G.floats.forEach(f=>{
+    ctx.globalAlpha=Math.min(1,f.life);
+    ctx.fillStyle=f.color; ctx.font='bold 20px "PingFang SC",sans-serif'; ctx.textAlign='center';
+    ctx.fillText(f.txt,f.x,f.y); ctx.globalAlpha=1;
+  });
+  // 瞄准虚线（摆动时）
+  if(G.state==='play'&&G.rope==='swing'){
+    ctx.save(); ctx.setLineDash([8,10]); ctx.strokeStyle='rgba(201,185,143,.28)'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(PX,PY); ctx.lineTo(PX+dx*120,PY+dy*120); ctx.stroke(); ctx.restore();
+  }
+}
+titleScreen();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
