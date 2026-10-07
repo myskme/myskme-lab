@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>寻微乐园 v0.3</title>
+<title>寻微乐园 v0.2</title>
 <style>
-:root{--p:#FFB7C5;--mint:#A8E6CF;--lav:#C3B2E8;--peach:#FFD8B8;--gold:#E8B84B;--ink:#5A4A42;--bg:#FFF9F5;--card:#fff;--sh:0 4px 18px rgba(255,183,197,.28)}
+:root{--p:#C9A86A;--blu:#7A9BB5;--mint:#A8E6CF;--lav:#C3B2E8;--peach:#FFD8B8;--gold:#E8B84B;--ink:#5A4A42;--bg:#FFF9F5;--card:#fff;--sh:0 4px 18px rgba(201,168,106,.28)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 #app{max-width:560px;margin:0 auto;min-height:100vh;padding:10px 10px 94px}
@@ -15,15 +15,15 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:"
 .top b{font-size:20px}
 .sd{background:#fff;border-radius:999px;padding:6px 14px;box-shadow:var(--sh);font-weight:700}
 .card{background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:12px;margin:8px 0}
-.btn{display:block;width:100%;border:0;border-radius:18px;padding:14px;margin:10px 0;font-size:17px;font-weight:800;color:var(--ink);background:linear-gradient(135deg,var(--p),var(--peach));box-shadow:var(--sh);transition:transform .12s}
+.btn{display:block;width:100%;border:0;border-radius:18px;padding:14px;margin:10px 0;font-size:17px;font-weight:800;color:#fff;background:linear-gradient(135deg,#C9A86A,#E8B84B);box-shadow:var(--sh);transition:transform .12s}
 .btn:active{transform:scale(.96)}
 .btn.mint{background:linear-gradient(135deg,var(--mint),#d6f5e6)}
-.btn.lav{background:linear-gradient(135deg,var(--lav),#e6ddf7)}
+.btn.lav{background:linear-gradient(135deg,var(--blu),#d8e8f2)}
 .btn.ghost{background:#fff;border:2px solid var(--p)}
 .row{display:flex;gap:10px}.row .btn{margin:6px 0}
 .pill{display:inline-block;background:#fff;border-radius:999px;padding:4px 12px;margin:2px;box-shadow:var(--sh);font-size:13px}
 .bar{height:12px;background:#f3e7df;border-radius:99px;overflow:hidden;margin:6px 0}
-.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--p),var(--gold));border-radius:99px;transition:width .4s}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#7BA08B,var(--gold));border-radius:99px;transition:width .4s}
 .gbar{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:16px;box-shadow:var(--sh);padding:10px 14px;margin:8px 0;font-size:15px;font-weight:700;position:sticky;top:0;z-index:5}
 .pics{display:flex;flex-direction:column;gap:10px}
 @media(min-width:820px) and (orientation:landscape){.pics{flex-direction:row}.pics .pdiv{display:none}#app{max-width:1060px}}
@@ -40,7 +40,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:"
 .mk.ans circle{stroke:#ff8a8a}
 @keyframes draw{to{stroke-dashoffset:0}}
 @keyframes hintp{50%{opacity:.5}}
-.rip{position:absolute;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:3px solid #eec9c2;pointer-events:none;z-index:3;animation:rip .65s ease-out forwards}
+.rip{position:absolute;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;border:3px solid #d8c9bd;pointer-events:none;z-index:3;animation:rip .65s ease-out forwards}
 @keyframes rip{from{transform:scale(.35);opacity:.95}to{transform:scale(1.6);opacity:0}}.zoomtag{position:absolute;right:8px;top:8px;z-index:4;background:rgba(255,255,255,.94);border:1px solid #F5E6DC;border-radius:99px;padding:6px 14px;font-size:14px;font-weight:700;color:#5A4A42}#zoom{position:fixed;inset:0;z-index:99;display:none;background:rgba(43,32,26,.94);overflow:auto;-webkit-overflow-scrolling:touch}#zoom.on{display:block}#zoom .pic{width:170%;max-width:720px;flex:none;margin:14px auto}#zoom .pic img{width:100%}#zoom .zoomtag{display:none}.zth{position:sticky;bottom:12px;text-align:center;color:#fff;font-size:15px;font-weight:700;background:rgba(43,32,26,.7);border-radius:99px;padding:8px 16px;width:max-content;margin:0 auto}
 .slot{display:inline-block;width:46px;height:46px;line-height:46px;text-align:center;border-radius:50%;background:#f3e7df;margin:4px;font-weight:800;color:#b9a89e;font-size:18px}
 .slot.hit{background:var(--mint);color:var(--ink);animation:pop .3s}
@@ -70,7 +70,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:"
 .stars{color:var(--gold);font-size:26px;letter-spacing:2px}
 h2.st{margin:8px 0}
 .kv{display:flex;justify-content:space-between;font-size:14px;padding:3px 0}
-.ic{width:1.15em;height:1.15em;vertical-align:-.22em}.big .ic{width:64px;height:64px;color:var(--gold)}.mg{display:inline-flex;align-items:center;justify-content:center;min-width:2.2em;height:2.2em;padding:0 .4em;border-radius:999px;background:linear-gradient(135deg,#FFD9B3,#FFB7C5);color:#5A4A42;font-weight:800;font-size:.95em;vertical-align:middle}.cell .mg{width:44px;height:44px;padding:0;font-size:20px;border-radius:50%}.mg.hid{background:linear-gradient(135deg,#C3B2E8,#8f7cc9);color:#fff}.mg.q{background:#f3e7df;color:#b9a89e}.bdg{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#f8dc8f,#E8B84B);color:#5a3d1e;font-size:36px;box-shadow:0 6px 18px rgba(232,184,75,.45)}.bdg.dim{background:#e8ddd4;color:#a68d80;box-shadow:none}#b-mute.off{opacity:.55}.okk{color:var(--gold);font-weight:800}.noo{color:#d8c9bd;font-weight:800}</style>
+.ic{width:1.15em;height:1.15em;vertical-align:-.22em}.big .ic{width:64px;height:64px;color:var(--gold)}.mg{display:inline-flex;align-items:center;justify-content:center;min-width:2.2em;height:2.2em;padding:0 .4em;border-radius:999px;background:linear-gradient(135deg,#C9A86A,#E8B84B);color:#fff;font-weight:800;font-size:.95em;vertical-align:middle}.cell .mg{width:44px;height:44px;padding:0;font-size:20px;border-radius:50%}.mg.hid{background:linear-gradient(135deg,#7A9BB5,#5a7d99);color:#fff}.mg.q{background:#f3e7df;color:#b9a89e}.bdg{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#f8dc8f,#E8B84B);color:#5a3d1e;font-size:36px;box-shadow:0 6px 18px rgba(232,184,75,.45)}.bdg.dim{background:#e8ddd4;color:#a68d80;box-shadow:none}#b-mute.off{opacity:.55}.okk{color:var(--gold);font-weight:800}.noo{color:#d8c9bd;font-weight:800}</style>
 </head>
 <body>
 <div id="app">
@@ -177,7 +177,7 @@ var IMG=["data:image/webp;base64,UklGRqAzAABXRUJQVlA4IJQzAADQ8wCdASrgAQ4BPslYp06
 var CARDS=[["card-wolf","狼先生","狼"],["card-yang","洋","洋"],["card-xi","Xi","X"],["card-lin","Lin","L"],["card-lu","璐","璐"],["card-parrot","鹦鹉教授","鹦"],["card-duo","Duo","D"],["card-xuan","Xuan","Xu"]];
 var HIDDEN=["card-hidden-星语","星语","语"];
 var TITLES=["title-锦鲤附体","title-火眼金睛","title-连击王","title-欧皇"];
-var THEMES=[["theme-樱粉","#FFB7C5"],["theme-薄荷","#A8E6CF"],["theme-薰衣草","#C3B2E8"]];
+var THEMES=[["theme-樱粉","#C9A86A"],["theme-薄荷","#A8E6CF"],["theme-薰衣草","#7A9BB5"]];var THEME_NAMES={"theme-樱粉":"暖金","theme-薄荷":"薄荷","theme-薰衣草":"雾蓝"};function tName(id){return THEME_NAMES[id]||id.slice(6)}
 var LVL=[
  {n:"云巅学宫",e:"",d:[[0.1681,0.6611,0.06],[0.7344,0.1611,0.05],[0.9575,0.3111,0.06],[0.5188,0.5611,0.045],[0.0375,0.9556,0.06]]},
  {n:"天之国",e:"",d:[[0.84,0.25,0.05],[0.161,0.572,0.05],[0.74,0.49,0.04],[0.331,0.648,0.05],[0.10,0.20,0.05]]},{n:"雾隐茶肆",e:"",d:[[0.82,0.18,0.055],[0.379,0.43,0.05],[0.308,0.681,0.05],[0.546,0.778,0.04],[0.121,0.733,0.045],[0.5,0.259,0.045],[0.65,0.474,0.06],[0.468,0.589,0.045]]}];
@@ -209,7 +209,7 @@ function renderHome(){
   $("b-mute").classList.toggle("off",MU);$("b-mute-t").textContent=MU?"音效关":"音效开";
   applyTheme(TH);
 }
-function renderThemes(){var h="";for(var i=0;i<THEMES.length;i++){var id=THEMES[i][0],own=has(id);h+="<span class='pill' data-t='"+id+"' style='"+(own?"cursor:pointer":"opacity:.5")+(id==TH?";outline:2px solid "+THEMES[i][1]:"")+"'><i style='display:inline-block;width:12px;height:12px;border-radius:50%;background:"+THEMES[i][1]+"'></i> "+id.slice(6)+(own?(id==TH?" ✓":""):"")+"</span>"}var el=$("themes");if(el){el.innerHTML=h;var ps=el.children;for(var j=0;j<ps.length;j++)ps[j].onclick=function(){var id=this.dataset.t;if(has(id)){applyTheme(id);sfx("hit");toast("已切换 "+id.slice(6))}else toast("盲盒中抽取主题色")}}}
+function renderThemes(){var h="";for(var i=0;i<THEMES.length;i++){var id=THEMES[i][0],own=has(id);h+="<span class='pill' data-t='"+id+"' style='"+(own?"cursor:pointer":"opacity:.5")+(id==TH?";outline:2px solid "+THEMES[i][1]:"")+"'><i style='display:inline-block;width:12px;height:12px;border-radius:50%;background:"+THEMES[i][1]+"'></i> "+tName(id)+(own?(id==TH?" ✓":""):"")+"</span>"}var el=$("themes");if(el){el.innerHTML=h;var ps=el.children;for(var j=0;j<ps.length;j++)ps[j].onclick=function(){var id=this.dataset.t;if(has(id)){applyTheme(id);sfx("hit");toast("已切换 "+id.slice(6))}else toast("盲盒中抽取主题色")}}}
 var lastLv=0;
 function Gd(){return G_.daily?G_.dd:LVL[G_.lv].d}
 /* ===== 游戏 ===== */
@@ -247,7 +247,7 @@ function zoomPic(k,ev){ev.stopPropagation();if(!G_)return;var src=$("p"+k),z=$("
     if(G_.bonus<10){G_.bonus+=2;G_.time+=2;toast("+2 秒！")}
     $("slot"+hit).classList.add("hit");addMark(d[hit][0],d[hit][1],"mk");
     var f=document.createElement("div");f.className="float";f.textContent="+8";f.style.left=(x*100)+"%";f.style.top=(y*100)+"%";pic.appendChild(f);setTimeout(function(){f.remove()},1000);
-    sfx("hit",G_.combo);confetti({particleCount:18,spread:55,startVelocity:28,origin:{x:e.clientX/innerWidth,y:e.clientY/innerHeight},colors:["#FFB7C5","#E8B84B","#A8E6CF"]});
+    sfx("hit",G_.combo);confetti({particleCount:18,spread:55,startVelocity:28,origin:{x:e.clientX/innerWidth,y:e.clientY/innerHeight},colors:["#C9A86A","#E8B84B","#7BA08B"]});
     AC.found++;save();
     if(G_.found.every(Boolean))win();
   }else{
@@ -383,7 +383,7 @@ function renderAlbum(){
   $("a-bond").innerHTML=bondOn()?"<b>谷地四人羁绊已激活</b>：狼先生·洋·Xi·Lin 集齐，每局结算星尘 +15% ★":"谷地四人羁绊：集齐 狼先生·洋·Xi·Lin（"+["card-wolf","card-yang","card-xi","card-lin"].filter(has).length+"/4）→ 结算 +15%";
   var ht="";for(var j=0;j<TITLES.length;j++){var own2=TI.indexOf(TITLES[j])>=0;ht+="<div class='cell"+(own2?"":" lock")+"'><div class='e'>"+(own2?'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/><path d="M12 18v-2h-.5"/></svg>':"?")+"</div>"+TITLES[j].slice(6)+"</div>"}
   $("a-titles").innerHTML=ht;
-  var hm="";for(var k=0;k<THEMES.length;k++){var id2=THEMES[k][0],own3=has(id2);hm+="<span class='pill' style='"+(own3?"":"opacity:.5")+"'><i style='display:inline-block;width:12px;height:12px;border-radius:50%;background:"+THEMES[k][1]+"'></i> "+id2.slice(6)+(own3?"":"")+"</span>"}
+  var hm="";for(var k=0;k<THEMES.length;k++){var id2=THEMES[k][0],own3=has(id2);hm+="<span class='pill' style='"+(own3?"":"opacity:.5")+"'><i style='display:inline-block;width:12px;height:12px;border-radius:50%;background:"+THEMES[k][1]+"'></i> "+tName(id2)+(own3?"":"")+"</span>"}
   $("a-themes").innerHTML=hm;
   var pts=AC.zero*10+AC.found+AC.draws*2+(SG.streak||0)*3;
   var tiers=[["青铜",0],["白银",50],["黄金",150],["铂金",300],["星尘大师",600]],tn=tiers[0][0],nx=tiers[1][1];
