@@ -18,11 +18,11 @@
 -->
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  body { background:#050508; color:#e8dcc0; font-family:"PingFang SC","Microsoft YaHei",sans-serif;
-         display:flex; flex-direction:column; align-items:center; min-height:100vh; padding:12px; }
+  html,body{height:100dvh;overflow:hidden;overscroll-behavior:none}
+  body{background:#050508;color:#e8dcc0;font-family:"PingFang SC","Microsoft YaHei",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;max-height:100dvh;overflow:hidden;padding:8px 12px;}
   h1 { font-family:"STKaiti","KaiTi",serif; color:#e8c26a; letter-spacing:6px; font-size:26px; margin:10px 0 4px; }
   .sub { color:#8a7a5c; font-size:12px; letter-spacing:2px; margin-bottom:10px; }
-  #wrap { position:relative; width:960px; max-width:100%; }
+  #wrap { position:relative; width:960px; max-width:100%; flex:none; }
   canvas { width:100%; display:block; border:1px solid #3a2f1d; border-radius:8px; background:#050508; cursor:pointer; }
   #overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
              background:rgba(5,5,8,.72); border-radius:8px; z-index:5; }

@@ -8,8 +8,13 @@
 :root{--p:#C9A86A;--blu:#7A9BB5;--mint:#A8E6CF;--lav:#C3B2E8;--peach:#FFD8B8;--gold:#E8B84B;--ink:#5A4A42;--bg:#FFF9F5;--card:#fff;--sh:0 4px 18px rgba(201,168,106,.28)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;touch-action:manipulation;user-select:none;-webkit-user-select:none}
-#app{max-width:560px;margin:0 auto;min-height:100vh;padding:10px 10px 94px}
-.scr{display:none}.scr.on{display:block;animation:fade .25s}
+html,body{height:100dvh;overflow:hidden;overscroll-behavior:none}
+#app{max-width:560px;margin:0 auto;height:100dvh;max-height:100dvh;overflow:hidden;padding:10px;display:flex;flex-direction:column}
+.scr{display:none}.scr.on{display:flex;flex-direction:column;height:100%;overflow:hidden;min-height:0;animation:fade .25s}
+.scroll-inner{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.scr .top{flex:none}
+#s-game .pics{flex:1;min-height:0}
+#s-game .gbar,#s-game .row{flex:none}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
 .top{display:flex;justify-content:space-between;align-items:center;padding:6px 2px}
 .top b{font-size:20px}
@@ -76,7 +81,7 @@ h2.st{margin:8px 0}
 <div id="app">
 <!-- 首页 -->
 <div class="scr" id="s-home">
-  <div class="top"><div><b>寻微乐园</b> <span class="small">v0.3</span></div><div class="sd">★<span id="h-sd">0</span></div></div>
+  <div class="top"><div><b>寻微乐园</b> <span class="small">v0.3</span></div><div class="sd">★<span id="h-sd">0</span></div></div><div class="scroll-inner">
   <div class="card"><div class="kv"><span id="h-lv">Lv.1</span><span class="small" id="h-xp"></span></div><div class="bar"><i id="h-xpbar" style="width:0%"></i></div>
   <div class="kv"><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> 图鉴 <span id="h-prog">0/15</span></span><span class="small" id="h-bond"></span></div><div class="bar"><i id="h-progbar" style="width:0%"></i></div></div>
   <div class="card" id="buddy"></div>
@@ -85,7 +90,7 @@ h2.st{margin:8px 0}
   <button class="btn" id="b-start">开始寻微</button>
   <div class="row"><button class="btn mint" id="b-box"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg> 盲盒</button><button class="btn lav" id="b-album"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> 集卡册</button></div>
   <div class="row"><button class="btn ghost" id="b-mute" style="font-size:14px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> <span id="b-mute-t">音效开</span></button><button class="btn ghost" id="b-week" style="font-size:14px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg> 每周任务</button></div>
-</div>
+</div></div>
 <!-- 游戏 -->
 <div class="scr" id="s-game">
   <div class="gbar"><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><b id="g-t">120</b>s</span><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><b id="g-f">0/5</b></span><span id="g-sh"></span><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg><b id="g-h">3</b></span></div>
@@ -102,7 +107,7 @@ h2.st{margin:8px 0}
 <div class="scr" id="s-over"><div class="card" style="text-align:center" id="over-box"></div></div>
 <!-- 盲盒 -->
 <div class="scr" id="s-box">
-  <div class="top"><div><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg><b>星语盲盒</b></div><div class="sd">★<span id="x-sd">0</span></div></div>
+  <div class="top"><div><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg><b>星语盲盒</b></div><div class="sd">★<span id="x-sd">0</span></div></div><div class="scroll-inner">
   <div class="card" style="text-align:center"><div class="big" id="box-emoji"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></div><div id="box-msg" class="small">单抽 50 星尘 · 每局结算送 1 次免费抽</div>
   <div class="kv"><span>免费抽</span><b id="x-free">0</b></div>
   <div class="kv"><span>保底进度</span><b id="x-pity">0/10</b></div></div>
@@ -110,16 +115,16 @@ h2.st{margin:8px 0}
   <button class="btn mint" id="b-drawf">免费抽一次</button>
   <div class="card"><b><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h2.996A5.002 5.002 0 0 0 22 12c0-5.5-4.5-10-10-10z"/></svg> 主题色</b><div id="themes" class="small" style="margin-top:6px"></div></div>
   <button class="btn ghost" id="b-boxhome"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg> 返回</button>
-</div>
+</div></div>
 <!-- 集卡册 -->
 <div class="scr" id="s-album">
-  <div class="top"><div><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><b>集卡册</b></div><div class="sd">★<span id="a-sd">0</span></div></div>
+  <div class="top"><div><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><b>集卡册</b></div><div class="sd">★<span id="a-sd">0</span></div></div><div class="scroll-inner">
   <div class="card"><b><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> 角色卡 <span class="small" id="a-cprog"></span></b><div class="grid" id="a-cards"></div><div class="bond" id="a-bond"></div></div>
   <div class="card"><b><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.21 15 2.66 7.14a2 2 0 0 1 .13-2.2L4.4 2.8A2 2 0 0 1 6 2h12a2 2 0 0 1 1.6.8l1.6 2.14a2 2 0 0 1 .14 2.2L16.79 15"/><path d="M11 12 5.12 2.2"/><path d="m13 12 5.88-9.8"/><path d="M8 7h8"/><circle cx="12" cy="17" r="5"/><path d="M12 18v-2h-.5"/></svg> 称号</b><div class="grid" id="a-titles"></div></div>
   <div class="card"><b><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h2.996A5.002 5.002 0 0 0 22 12c0-5.5-4.5-10-10-10z"/></svg> 主题色</b><div id="a-themes"></div></div>
   <div class="card"><b><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> 成就墙</b><div id="a-ach"></div></div>
   <button class="btn ghost" id="b-albumhome"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg> 返回</button>
-</div>
+</div></div>
 </div>
 <div id="toast"></div>
 <div id="modal"><div class="mbox" id="mbox"></div></div>
