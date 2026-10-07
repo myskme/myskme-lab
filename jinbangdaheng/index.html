@@ -26,11 +26,16 @@ padding:8px 4px;border-bottom:2px solid var(--gold);margin-bottom:10px}
 border-radius:10px;padding:8px 10px;font-size:13px;min-height:40px}
 /* 棋盘 */
 #boardWrap{position:relative}
-#board{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+#board{display:grid;grid-template-columns:repeat(8,1fr);gap:3px}
 .tile{position:relative;background:var(--card);border:1px solid var(--line);
-border-radius:8px;min-height:52px;padding:2px;
+border-radius:8px;min-height:48px;padding:2px;
 display:flex;flex-direction:column;align-items:center;justify-content:center;
 font-size:10px;color:var(--ink2);text-align:center;box-shadow:var(--shadow)}
+@media (max-width:420px){
+.tile{min-height:44px}
+.tile.tn{font-size:10px}
+.tk{width:12px;height:12px;font-size:8px}
+}
 .tile.tn{font-size:11px;font-weight:bold;color:var(--ink);line-height:1.25}
 .tile.tp{font-size:10px;color:var(--gold-d)}
 .tile.t-start{background:linear-gradient(135deg,#F6ECD8,#EFDDB8);border-color:var(--gold)}
@@ -43,10 +48,19 @@ font-size:10px;color:var(--ink2);text-align:center;box-shadow:var(--shadow)}
 .tile.cur{outline:3px solid var(--gold);outline-offset:-1px}
 .tile.own{position:absolute;top:1px;left:3px;font-size:9px;font-weight:bold}
 .tile.lv{position:absolute;top:1px;right:3px;font-size:9px;color:var(--gold-d)}
-.tile.tks{position:absolute;bottom:1px;left:0;right:0;display:flex;justify-content:center;gap:1px}
-.tk{width:16px;height:16px;border-radius:50%;font-size:10px;color:#fff;
+.tile.tks{position:absolute;bottom:1px;left:0;right:0;display:flex;justify-content:center;gap:1px;flex-wrap:nowrap}
+.tk{width:14px;height:14px;border-radius:50%;font-size:9px;color:#fff;
 display:flex;align-items:center;justify-content:center;font-weight:bold;
-border:1px solid rgba(255,255,255,.7)}
+border:1px solid rgba(255,255,255,.7);flex:0 0 auto}
+.tk.more{background:#8A7F72!important}
+/* 套色集齐标记：暖金光晕 */
+.tile.setdone{box-shadow:0 0 0 2px var(--gold),var(--shadow)}
+/* 开局分段选择器 */
+.seg{display:flex;gap:6px;justify-content:center;margin:6px 0}
+.seg button{border:1px solid var(--line);background:var(--card);color:var(--ink2);
+border-radius:10px;padding:8px 14px;font-size:14px;min-height:44px}
+.seg button.sel{background:linear-gradient(135deg,var(--gold),var(--gold-d));color:#fff;border-color:var(--gold);font-weight:bold}
+.seglab{font-size:12px;color:var(--ink2);text-align:center;margin-top:10px}
 /* 中央面板 */
 #center{grid-area:2/2/5/8;background:var(--card);border:2px solid var(--gold);
 border-radius:12px;padding:10px;display:flex;flex-direction:column;
@@ -123,13 +137,25 @@ min-height:44px;padding:8px 12px;font-size:15px}
 <button class="btn ghost" id="pPlus">＋</button>
 </div>
 <div id="pnames"></div>
+<div class="seglab">回合数</div>
+<div class="seg" id="segRound">
+<button data-v="15">15 回合</button><button data-v="20" class="sel">20 回合</button><button data-v="25">25 回合</button>
+</div>
+<div class="seglab">起始金币</div>
+<div class="seg" id="segCash">
+<button data-v="1000">1000</button><button data-v="1500" class="sel">1500</button><button data-v="2000">2000</button>
+</div>
+<div class="seglab">出题方式</div>
+<div class="seg" id="segQmode">
+<button data-v="bank" class="sel">内置题库</button><button data-v="offline">线下出题</button>
+</div>
 <div class="btnrow" style="margin-top:14px">
 <button class="btn" id="btnStart">开始游戏</button>
 </div>
 <div class="btnrow" style="margin-top:8px">
 <button class="btn ghost hidden" id="btnContinue">继续上局</button>
 </div>
-<div class="note">2～6 人本地轮流。棋子按顺序：狼先生、晰、海、子鱼、瑾、鹦鹉教授。每人起始 1500 金币，走完 20 回合后资产最高者胜；破产即淘汰。</div>
+<div class="note">2～6 人本地轮流。棋子按顺序：猴先生、鱼小姐、蛋、驴、茶壶、蛇（猴先生系列）。2 人局默认 15 回合，多人默认 20 回合。集齐同色系地产（竹青/雾蓝/暖金各 5 块）该系租金翻倍。破产即淘汰。</div>
 </div>
 </div>
 <!-- 游戏页 -->
@@ -151,18 +177,20 @@ min-height:44px;padding:8px 12px;font-size:15px}
 <script>
 "use strict";
 /* ============================================================
-课堂大富翁 v0.1 —— MYSKME × 英语课堂
+金榜大亨 v0.2 —— MYSKME × 英语课堂
 单文件离线版。题库 QBANK 为内置中考英语样例，
 ：保持 {q,opts,a,tag} 格式即可。
+v0.2 新增：地产套色收集加成（同色系集齐租金翻倍）、
+开局可选回合数/起始金币、题库 50 道、手机 UI 打磨。
 ============================================================ */
 /* ---------- 角色棋子（按用户定优先级） ---------- */
 var CHARAS=[
-{id:'wolf', name:'狼先生', color:'#C9A86A'},
-{id:'xi', name:'晰', color:'#7A9BB5'},
-{id:'hai', name:'海', color:'#7BA08B'},
-{id:'ziyu', name:'子鱼', color:'#D98E8E'},
-{id:'jin', name:'瑾', color:'#9B8BD4'},
-{id:'prof', name:'鹦鹉教授', color:'#5FA8A0'}
+{id:'monkey', name:'猴先生', color:'#C9A86A'},
+{id:'fish', name:'鱼小姐', color:'#7FA8B8'},
+{id:'egg', name:'蛋', color:'#E8C87F'},
+{id:'donkey', name:'驴', color:'#9B8B7A'},
+{id:'teapot', name:'茶壶', color:'#6FA287'},
+{id:'snake', name:'蛇', color:'#8A6FA8'}
 ];
 /* ---------- 棋盘：8×5 周长 22 格 ---------- */
 var TILES=[
@@ -170,31 +198,49 @@ var TILES=[
 {t:'land', name:'青石巷', price:120},
 {t:'land', name:'墨香斋', price:140},
 {t:'box', name:'盲盒'},
-{t:'land', name:'竹林径', price:160},
-{t:'land', name:'望湖亭', price:180},
+{t:'land', name:'竹林径', price:145},
+{t:'land', name:'望湖亭', price:175},
 {t:'fate', name:'命运'},
-{t:'land', name:'云锦坊', price:200},
-{t:'land', name:'金桂园', price:220},
-{t:'land', name:'听涛阁', price:180},
+{t:'land', name:'云锦坊', price:195},
+{t:'land', name:'金桂园', price:200},
+{t:'land', name:'听涛阁', price:140},
 {t:'box', name:'盲盒'},
-{t:'land', name:'砚台街', price:160},
+{t:'land', name:'砚台街', price:145},
 {t:'land', name:'灯市口', price:240},
 {t:'tax', name:'税所', amt:150},
-{t:'land', name:'茶马道', price:200},
-{t:'land', name:'书山路', price:220},
+{t:'land', name:'茶马道', price:185},
+{t:'land', name:'书山路', price:200},
 {t:'fate', name:'命运'},
 {t:'land', name:'学海涯', price:260},
 {t:'land', name:'杏坛', price:280},
 {t:'box', name:'盲盒'},
-{t:'land', name:'状元桥', price:240},
-{t:'land', name:'及第坊', price:260}
+{t:'land', name:'状元桥', price:250},
+{t:'land', name:'及第坊', price:270}
 ];
-var SALARY=300, START_CASH=1500, MAX_ROUND=20;
-/* 租金 = 地价 × [0.3, 0.6, 1.0][等级-1]；升级费 = 地价 × 0.5 */
-function rentOf(tile){ return Math.round(tile.price*[0.3,0.6,1.0][(tile.level||1)-1]);}
+/* 套色：三档各 5 块。竹青系(<150)：青石巷/墨香斋/竹林径/听涛阁/砚台街；
+   雾蓝系(150-200)：望湖亭/云锦坊/金桂园/茶马道/书山路；
+   暖金系(>200)：灯市口/学海涯/杏坛/状元桥/及第坊 */
+var TIERNAME={1:'竹青系',2:'雾蓝系',3:'暖金系'};
+var SALARY=300;
+/* 租金 = 地价 × [0.3, 0.6, 1.0][等级-1]；升级费 = 地价 × 0.5；
+   套色加成：集齐同色系 5 块地产，该系租金 ×2 */
+function rentOf(tile){ return Math.round(tile.price*[0.3,0.6,1.0][(tile.level||1)-1]*setMult(tile));}
 function upCost(tile){ return Math.round(tile.price*0.5);}
+function setMult(tile){
+  if(tile.t!=='land'||tile.owner==null||!G)return 1;
+  return hasSet(tile.owner,landTier(tile.price))?2:1;
+}
+function hasSet(pid,tier){
+  var all=G.tiles.filter(function(t){return t.t==='land'&&landTier(t.price)===tier;});
+  return all.length>0&&all.every(function(t){return t.owner===pid;});
+}
+function setProgress(pid,tier){
+  var all=G.tiles.filter(function(t){return t.t==='land'&&landTier(t.price)===tier;});
+  var mine=all.filter(function(t){return t.owner===pid;}).length;
+  return mine+'/'+all.length;
+}
 /* ---------- 题库：内置中考英语样例（词汇+语法选择题）
-
+待王老师提供纸质题电子版后替换。
 格式：{q:题干, opts:[A,B,C,D], a:正确选项下标0-3, tag:'vocab'|'grammar'} */
 var QBANK=[
 {q:"—___ is your English teacher? —Mr. Wang.",opts:["What","Who","Whose","Which"],a:1,tag:"grammar"},
@@ -226,7 +272,27 @@ var QBANK=[
 {q:"She is too tired ___ any further.",opts:["to walk","walking","walk","walked"],a:0,tag:"grammar"},
 {q:"___ is wrong to tell lies.",opts:["This","That","It","What"],a:2,tag:"grammar"},
 {q:"I prefer tea ___ coffee.",opts:["than","to","with","for"],a:1,tag:"vocab"},
-{q:"He asked ___ the meeting would start.",opts:["when","what","that","which"],a:0,tag:"grammar"}
+{q:"He asked ___ the meeting would start.",opts:["when","what","that","which"],a:0,tag:"grammar"},
+{q:"—___ do you go to the library? —Twice a week.",opts:["How often","How soon","How long","How much"],a:0,tag:"grammar"},
+{q:"My father ___ up at six every morning.",opts:["get","gets","getting","got"],a:1,tag:"grammar"},
+{q:"The dictionary ___ me 50 yuan.",opts:["cost","costs","took","spent"],a:0,tag:"grammar"},
+{q:"She is good at ___ basketball.",opts:["play","plays","playing","played"],a:2,tag:"grammar"},
+{q:"___ the weather is today!",opts:["What nice","How nice","What a nice","How a nice"],a:1,tag:"grammar"},
+{q:"I was born ___ a cold winter morning.",opts:["in","on","at","for"],a:1,tag:"grammar"},
+{q:"The old man lives ___, but he doesn't feel ___.",opts:["alone…lonely","lonely…alone","alone…alone","lonely…lonely"],a:0,tag:"vocab"},
+{q:"He ___ his homework before dinner yesterday.",opts:["finishes","finished","has finished","will finish"],a:1,tag:"grammar"},
+{q:"Would you mind ___ the window?",opts:["open","to open","opening","opened"],a:2,tag:"grammar"},
+{q:"There is ___ milk in the fridge. Let's buy some.",opts:["little","a little","few","a few"],a:0,tag:"vocab"},
+{q:"—I missed the bus. —___ a taxi!",opts:["Take","Taking","To take","Takes"],a:0,tag:"grammar"},
+{q:"The students are ___ about the coming exam.",opts:["worried","worry","worrying","to worry"],a:0,tag:"vocab"},
+{q:"He ran ___ fast that I couldn't catch him.",opts:["so","such","very","too"],a:0,tag:"grammar"},
+{q:"My bike is broken. I need to have it ___.",opts:["repair","repaired","repairing","to repair"],a:1,tag:"grammar"},
+{q:"___ of my parents are teachers.",opts:["Both","All","Each","Every"],a:0,tag:"grammar"},
+{q:"The teacher asked the students ___ quiet.",opts:["keep","to keep","keeping","kept"],a:1,tag:"grammar"},
+{q:"She ___ an English song when I called her.",opts:["sang","was singing","sings","has sung"],a:1,tag:"grammar"},
+{q:"This is the best movie ___ I have ever seen.",opts:["which","that","what","who"],a:1,tag:"grammar"},
+{q:"He didn't go to school ___ his illness.",opts:["because","because of","as","since"],a:1,tag:"vocab"},
+{q:"—___ will you stay in Beijing? —For two weeks.",opts:["How often","How soon","How long","How far"],a:2,tag:"grammar"}
 ];
 /* ---------- 盲盒池（w=权重，good=好东西用于保底） ---------- */
 var BOXPOOL=[
@@ -250,7 +316,7 @@ var FATEPOOL=[
 ];
 /* ================= 状态 ================= */
 var G=null, QIDX=[];
-var SAVE_KEY='myskme_dfw_v1';
+var SAVE_KEY='myskme_dfw_v2';
 function $(i){return document.getElementById(i);}
 function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
 function showM(html){$('mbox').innerHTML=html;$('modal').classList.remove('hidden');}
@@ -314,6 +380,7 @@ function buildBoard(){
       d.id='tile'+idx;
       var cls='tile t-'+t.t;
       if(t.t==='land')cls+=' l'+landTier(t.price);
+      if(t.t==='land'&&t.owner!=null&&hasSet(t.owner,landTier(t.price)))cls+=' setdone';
       d.className=cls;
       var inner='<div class="tn">'+t.name+'</div>';
       if(t.t==='land')inner+='<div class="tp">'+t.price+'</div>';
@@ -339,12 +406,17 @@ function renderTiles(){
         l.textContent='Lv'+(t.level||1); d.appendChild(l);
       }
       var tk=$('tks'+idx); tk.innerHTML='';
-      G.players.forEach(function(p){
-        if(p.elim||p.pos!==idx)return;
+      var here=[];
+      G.players.forEach(function(p){ if(!p.elim&&p.pos===idx)here.push(p); });
+      here.slice(0,3).forEach(function(p){
         var s=document.createElement('span'); s.className='tk';
         s.style.background=p.chara.color; s.textContent=p.chara.name[0];
         tk.appendChild(s);
       });
+      if(here.length>3){
+        var m=document.createElement('span'); m.className='tk more';
+        m.textContent='+'+(here.length-3); tk.appendChild(m);
+      }
     })(i);
   }
 }
@@ -364,12 +436,29 @@ function renderPlayers(){
       '<div class="pit">'+(p.elim?'已破产':(items.join(' ')||'无道具'))+(p.dbl?' · 双倍租金生效中':'')+'</div>';
     pl.appendChild(d);
   });
-  $('roundLab').textContent='第 '+Math.min(G.round,MAX_ROUND)+'/'+MAX_ROUND+' 回合';
+  $('roundLab').textContent='第 '+Math.min(G.round,G.cfg.maxRound)+'/'+G.cfg.maxRound+' 回合';
 }
 function renderAll(){ renderTiles(); renderPlayers(); }
 function setCenter(html){ $('center').innerHTML=html; }
 /* ================= 开局 ================= */
-var PCOUNT=4;
+var PCOUNT=4, SEL_ROUNDS=20, SEL_CASH=1500, SEL_QMODE='bank';
+function segWire(id,cb){
+  var el=$(id);
+  el.onclick=function(e){
+    var b=e.target.closest('button'); if(!b)return;
+    var bs=el.querySelectorAll('button');
+    for(var i=0;i<bs.length;i++)bs[i].classList.remove('sel');
+    b.classList.add('sel'); cb(+b.getAttribute('data-v'));
+  };
+}
+function segSet(id,v){
+  var bs=$(id).querySelectorAll('button');
+  for(var i=0;i<bs.length;i++)bs[i].classList.toggle('sel',+bs[i].getAttribute('data-v')===v);
+}
+/* 2 人默认 15 回合，多人默认 20 回合 */
+function syncRoundDefault(){
+  SEL_ROUNDS=(PCOUNT===2?15:20); segSet('segRound',SEL_ROUNDS);
+}
 function renderSetupNames(){
   var w=$('pnames'); w.innerHTML='';
   for(var i=0;i<PCOUNT;i++){
@@ -383,14 +472,15 @@ function newGame(){
   var players=[];
   for(var i=0;i<PCOUNT;i++){
     var nm=($('pn'+i)&&$('pn'+i).value.trim())||CHARAS[i].name;
-    players.push({id:i, chara:CHARAS[i], name:nm, cash:START_CASH, pos:0,
+    players.push({id:i, chara:CHARAS[i], name:nm, cash:SEL_CASH, pos:0,
       combo:0, elim:false, dbl:false, rmt:false,
       items:{remote:0, free:0, double:0}});
   }
   G={players:players, turn:0, round:1, pity:0, over:false,
+     cfg:{maxRound:SEL_ROUNDS, startCash:SEL_CASH, qmode:SEL_QMODE},
      tiles:TILES.map(function(t){var n={t:t.t,name:t.name};if(t.price){n.price=t.price;n.owner=null;n.level=1;n.upSpent=0;}if(t.amt)n.amt=t.amt;return n;})};
   $('sSetup').classList.add('hidden'); $('sGame').classList.remove('hidden');
-  buildBoard(); addLog('游戏开始！'+PCOUNT+' 位玩家，'+players[0].name+' 先手。');
+  buildBoard(); addLog('游戏开始！'+PCOUNT+' 位玩家，'+SEL_ROUNDS+' 回合，起始金币 '+SEL_CASH+'，'+(SEL_QMODE==='offline'?'线下出题':'内置题库')+'，'+players[0].name+' 先手。');
   save(); doTurn();
 }
 /* ================= 回合 ================= */
@@ -421,18 +511,28 @@ async function doTurn(){
 }
 /* ---------- 答题 ---------- */
 async function quizPhase(p){
-  var q=drawQ();
-  var opts=q.opts.map(function(o,i){
-    return '<button class="qopt" data-v="'+i+'">'+'ABCD'[i]+'. '+o+'</button>';
-  }).join('');
-  showM('<h2>'+p.name+' 请答题</h2><div class="q">'+q.q+'</div>'+opts+'<div class="c">答对才能掷骰子</div>');
-  var v=await waitBtn('.qopt');
-  var btns=document.querySelectorAll('.qopt');
-  var ok=(+v===q.a);
-  btns[q.a].classList.add('right');
-  if(!ok&&btns[+v])btns[+v].classList.add('wrong');
-  await sleep(ok?600:1400);
-  hideM();
+  var ok;
+  if(G.cfg.qmode==='offline'){
+    showM('<h2>'+p.name+' 请答题</h2><div class="q">请老师线下出题，学生作答后判定</div>'+
+      '<div class="btnrow"><button class="qopt" data-v="1">答对</button><button class="qopt" data-v="0">答错</button></div>'+
+      '<div class="c">线下出题模式：用纸质题提问，手动判定</div>');
+    var v=await waitBtn('.qopt');
+    ok=(v==='1');
+    hideM();
+  }else{
+    var q=drawQ();
+    var opts=q.opts.map(function(o,i){
+      return '<button class="qopt" data-v="'+i+'">'+'ABCD'[i]+'. '+o+'</button>';
+    }).join('');
+    showM('<h2>'+p.name+' 请答题</h2><div class="q">'+q.q+'</div>'+opts+'<div class="c">答对才能掷骰子</div>');
+    var v2=await waitBtn('.qopt');
+    var btns=document.querySelectorAll('.qopt');
+    ok=(+v2===q.a);
+    btns[q.a].classList.add('right');
+    if(!ok&&btns[+v2])btns[+v2].classList.add('wrong');
+    await sleep(ok?600:1400);
+    hideM();
+  }
   if(ok){
     p.combo++;
     addLog(p.name+' 答对了'+(p.combo>=2?'（'+p.combo+'连击！）':''));
@@ -504,7 +604,7 @@ async function settle(p){
   if(t.t==='start'){ addLog(p.name+' 回到起点'); return; }
   if(t.t==='tax'){
     p.cash-=t.amt;
-    showM('<h2>税所</h2><div class="big">-'+t.amt+'</div><div class="c">'+p.name+' 缴纳税款</div>'+
+    showM('<h2>税所</h2><div class="big">-'+t.amt+'</div><div class="c">'+p.name+' 缴纳税款<br>剩余金币 '+p.cash+'</div>'+
       '<div class="btnrow"><button class="btn" data-v="ok">知道了</button></div>');
     await waitBtn('.btn'); hideM();
     checkBankrupt(p); return;
@@ -521,13 +621,17 @@ async function landSettle(p,t){
         '<div class="btnrow"><button class="btn" data-v="ok">好吧</button></div>');
       await waitBtn('.btn'); hideM(); return;
     }
-    showM('<h2>'+t.name+'</h2><div class="c">空地 · 售价 '+t.price+' 金币<br>租金 '+rentOf({price:t.price,level:1})+' / 级</div>'+
+    var tier0=landTier(t.price);
+    showM('<h2>'+t.name+'</h2><div class="c">空地 · 售价 '+t.price+' 金币<br>租金 '+rentOf({t:'land',price:t.price,level:1})+' / 级<br>'+
+      TIERNAME[tier0]+' '+setProgress(p.id,tier0)+'（集齐 5/5 租金翻倍）</div>'+
       '<div class="btnrow"><button class="btn" data-v="buy">购买（-'+t.price+'）</button>'+
       '<button class="btn ghost" data-v="no">放弃</button></div>');
     var v=await waitBtn('.btn'); hideM();
     if(v==='buy'){
       p.cash-=t.price; t.owner=p.id; t.level=1; t.upSpent=0;
-      addLog(p.name+' 买下 '+t.name+'（-'+t.price+'）');
+      addLog(p.name+' 买下 '+t.name+'（-'+t.price+'，剩余 '+p.cash+'）');
+      var tier=landTier(t.price);
+      if(hasSet(p.id,tier))addLog(p.name+' 集齐'+TIERNAME[tier]+'（'+setProgress(p.id,tier)+'）！该系租金翻倍');
     }
     renderAll(); checkBankrupt(p); return;
   }
@@ -538,20 +642,22 @@ async function landSettle(p,t){
       await waitBtn('.btn'); hideM(); return;
     }
     var cost=upCost(t);
-    showM('<h2>'+t.name+'</h2><div class="c">你的地 · Lv'+t.level+' → Lv'+(t.level+1)+'<br>升级费 '+cost+'，租金 '+rentOf(t)+' → '+rentOf({price:t.price,level:t.level+1})+'</div>'+
+    showM('<h2>'+t.name+'</h2><div class="c">你的地 · Lv'+t.level+' → Lv'+(t.level+1)+'<br>升级费 '+cost+'，租金 '+rentOf({t:'land',price:t.price,level:t.level,owner:t.owner})+' → '+rentOf({t:'land',price:t.price,level:t.level+1,owner:t.owner})+(setMult(t)===2?'<br><b style="color:var(--gold-d)">'+TIERNAME[landTier(t.price)]+'集齐，租金 ×2 生效中</b>':'')+'</div>'+
       '<div class="btnrow">'+(p.cash>=cost?'<button class="btn" data-v="up">升级（-'+cost+'）</button>':'')+
       '<button class="btn ghost" data-v="no">跳过</button></div>');
     var v2=await waitBtn('.btn'); hideM();
-    if(v2==='up'){ p.cash-=cost; t.level++; t.upSpent+=cost; addLog(p.name+' 把 '+t.name+' 升到 Lv'+t.level); }
+    if(v2==='up'){ p.cash-=cost; t.level++; t.upSpent+=cost; addLog(p.name+' 把 '+t.name+' 升到 Lv'+t.level+'（-'+cost+'，剩余 '+p.cash+'）'); }
     renderAll(); checkBankrupt(p); return;
   }
   /* 别人的地：交租 / 免租卡 / 答题免租 */
-  var owner=G.players[t.owner], rent=rentOf(t);
+  var owner=G.players[t.owner], rent=rentOf(t), setOn=setMult(t)===2;
   if(p.dbl){ /* 双倍租金卡只影响收租方，这里是交租方，无事 */ }
   var btns='<button class="btn" data-v="pay">交租 '+rent+'</button>';
   if(p.items.free)btns+='<button class="btn blue" data-v="card">使用免租卡 ×'+p.items.free+'</button>';
   btns+='<button class="btn ghost" data-v="quiz">答题免租</button>';
-  showM('<h2>'+t.name+'</h2><div class="c">这是 '+owner.name+' 的地（Lv'+t.level+'）<br>应交租金 <b>'+rent+'</b></div>'+
+  showM('<h2>'+t.name+'</h2><div class="c">这是 '+owner.name+' 的地（Lv'+t.level+'）<br>'+
+    (setOn?'<b style="color:var(--gold-d)">'+TIERNAME[landTier(t.price)]+'集齐，租金 ×2</b><br>':'')+
+    '应交租金 <b>'+rent+'</b></div>'+
     '<div class="btnrow">'+btns+'</div>');
   var v3=await waitBtn('.btn'); hideM();
   if(v3==='card'){
@@ -575,7 +681,7 @@ function payRent(p,owner,rent){
   var real=rent;
   if(owner.dbl){ real=rent*2; owner.dbl=false; addLog(owner.name+' 的双倍租金卡生效！租金 ×2'); }
   p.cash-=real; owner.cash+=real;
-  addLog(p.name+' 交租 '+real+' 给 '+owner.name);
+  addLog(p.name+' 交租 '+real+' 给 '+owner.name+'（'+p.name+' 剩余 '+p.cash+'）');
 }
 /* ---------- 盲盒（含保底） ---------- */
 function drawBox(){
@@ -590,11 +696,11 @@ async function blindBox(p){
   var b=drawBox();
   if(b.good)G.pity=0; else G.pity++;
   var desc='';
-  if(b.k==='cash'){ p.cash+=b.v; desc='金币 +'+b.v; }
+  if(b.k==='cash'){ p.cash+=b.v; desc='金币 +'+b.v+'（剩余 '+p.cash+'）'; }
   else if(b.k==='step'){ desc='额外前进 '+b.v+' 步'; }
   else if(b.k==='item'){ p.items[b.v]++; desc='获得道具：'+({remote:'遥控骰子',free:'免租卡',double:'双倍租金卡'}[b.v]); }
   else if(b.k==='back'){ desc='倒退 '+b.v+' 步…'; }
-  else if(b.k==='tax'){ p.cash-=b.v; desc='交税 -'+b.v; }
+  else if(b.k==='tax'){ p.cash-=b.v; desc='交税 -'+b.v+'（剩余 '+p.cash+'）'; }
   showM('<h2>盲盒</h2><div class="big">'+b.label+'</div><div class="c">'+desc+'</div>'+
     '<div class="btnrow"><button class="btn" data-v="ok">收下</button></div>');
   await waitBtn('.btn'); hideM();
@@ -634,9 +740,9 @@ function endTurn(){
   if(i<=G.turn){ G.round++; }
   G.turn=i;
   save(); renderAll();
-  if(G.round>MAX_ROUND){
+  if(G.round>G.cfg.maxRound){
     var rk=rankList();
-    gameOver(rk[0],'20 回合结束，资产最高');
+    gameOver(rk[0],G.cfg.maxRound+' 回合结束，资产最高');
     return;
   }
   /* 延迟一拍再开下回合，避免 modal 残留 */
@@ -657,23 +763,30 @@ function gameOver(winner,reason){
 /* ================= 规则 / 设置页接线 ================= */
 function showRule(){
   showM('<h2>玩法规则</h2><div style="font-size:14px">'+
-    '<p><b>1. 答题掷骰</b>：每回合先答一道英语选择题，答对才能掷骰子。连续答对有连击：2 连击移动 +1 步，3 连击以上再掷一次。</p>'+
+    '<p><b>1. 答题掷骰</b>：每回合先答题，答对才能掷骰子。内置题库模式用屏幕题目；线下出题模式由老师用纸质题提问、手动判定对错。连续答对有连击：2 连击移动 +1 步，3 连击以上再掷一次。</p>'+
     '<p><b>2. 买地收租</b>：走到空地可购买；自己的地可升级到 Lv3，租金递增；走到别人的地要交租，也可以用免租卡或再答一题免租。</p>'+
-    '<p><b>3. 盲盒格</b>：随机开奖，有金币、道具、额外步数，也有整蛊；连续 3 次没开出好东西必保底。</p>'+
-    '<p><b>4. 命运格</b>：随机事件，前进后退、奖惩金币。</p>'+
-    '<p><b>5. 道具</b>：遥控骰子（自选点数）、免租卡、双倍租金卡，盲盒里开。</p>'+
-    '<p><b>6. 胜负</b>：金币归零即破产，地产释放；20 回合后资产（金币+地产）最高者胜。经过起点领 '+SALARY+' 工资。</p></div>'+
+    '<p><b>3. 套色加成</b>：地产分竹青 / 雾蓝 / 暖金三系，每系 5 块。集齐一系 5 块，该系所有地产租金翻倍（金色光晕标记）。</p>'+
+    '<p><b>4. 盲盒格</b>：随机开奖，有金币、道具、额外步数，也有整蛊；连续 3 次没开出好东西必保底。</p>'+
+    '<p><b>5. 命运格</b>：随机事件，前进后退、奖惩金币。</p>'+
+    '<p><b>6. 道具</b>：遥控骰子（自选点数）、免租卡、双倍租金卡，盲盒里开。</p>'+
+    '<p><b>7. 胜负</b>：金币归零即破产，地产释放；回合走完后资产（金币+地产）最高者胜。经过起点领 '+SALARY+' 工资。</p></div>'+
     '<div class="btnrow"><button class="btn" data-v="ok">知道了</button></div>');
   waitBtn('.btn').then(hideM);
 }
 function boot(){
   renderSetupNames();
   $('pcount').textContent=PCOUNT;
-  $('pMinus').onclick=function(){ if(PCOUNT>2){PCOUNT--;renderSetupNames();$('pcount').textContent=PCOUNT;} };
-  $('pPlus').onclick=function(){ if(PCOUNT<6){PCOUNT++;renderSetupNames();$('pcount').textContent=PCOUNT;} };
+  syncRoundDefault();
+  segWire('segRound',function(v){SEL_ROUNDS=v;});
+  segWire('segCash',function(v){SEL_CASH=v;});
+  segWire('segQmode',function(v){SEL_QMODE=v;});
+  $('pMinus').onclick=function(){ if(PCOUNT>2){PCOUNT--;renderSetupNames();$('pcount').textContent=PCOUNT;syncRoundDefault();} };
+  $('pPlus').onclick=function(){ if(PCOUNT<6){PCOUNT++;renderSetupNames();$('pcount').textContent=PCOUNT;syncRoundDefault();} };
   $('btnStart').onclick=function(){ clearSave(); newGame(); };
   var sv=loadSave();
   if(sv&&sv.players&&!sv.over){
+    if(!sv.cfg)sv.cfg={maxRound:20,startCash:1500};
+    if(!sv.cfg.qmode)sv.cfg.qmode='bank';
     $('btnContinue').classList.remove('hidden');
     $('btnContinue').onclick=function(){
       G=sv;
