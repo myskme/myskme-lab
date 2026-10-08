@@ -28,7 +28,6 @@ padding:8px 4px;border-bottom:2px solid var(--gold);margin-bottom:10px}
 .tbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);
 border-radius:10px;padding:8px 10px;font-size:13px;min-height:40px}
 /* 棋盘 */
-#boardWrap{position:relative}
 #board{display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
 .tile{position:relative;background:var(--card);border:1px solid var(--line);
 border-radius:8px;min-height:48px;padding:2px;
@@ -45,10 +44,10 @@ font-size:10px;color:var(--ink2);text-align:center;box-shadow:var(--shadow)}
 .tile.t-box{background:#EDF2F7;border-color:var(--blue)}
 .tile.t-fate{background:#EDF5F1;border-color:var(--bamboo)}
 .tile.t-tax{background:#F9EFEF;border-color:var(--red)}
-.tile.t-land.l1{border-left:4px solid var(--bamboo)}
-.tile.t-land.l2{border-left:4px solid var(--blue)}
-.tile.t-land.l3{border-left:4px solid var(--gold)}
-.tile.t-land.l4{border-left:4px solid #B8860B;background:#FFF8E6}
+.tile.t-land.l1{border:2px solid #5E9C7B;background:linear-gradient(135deg,#FFFFFF,#E2F0E8)}
+.tile.t-land.l2{border:2px solid #6B9BC3;background:linear-gradient(135deg,#FFFFFF,#E1ECF6)}
+.tile.t-land.l3{border:2px solid #D9A521;background:linear-gradient(135deg,#FFFFFF,#FBF0D0)}
+.tile.t-land.l4{border:2px solid #3E8EBA;background:linear-gradient(135deg,#FFFFFF,#DFF0F9)}
 .tile.t-redbag{background:#FFFDF7;border-color:#2f4f4f}
 .tile.t-trap{background:#FFFDF7;border-color:#2f4f4f}
 .tile.t-teleport{background:#FFFDF7;border-color:#2f4f4f}
@@ -62,13 +61,16 @@ border:1px solid rgba(255,255,255,.7);flex:0 0 auto}
 .tk.more{background:#8A7F72!important}
 img.av{object-fit:cover;border-radius:50%;border:2px solid #C9A86A;background:#fff}
 /* 套色集齐标记：暖金光晕 */
-.tile.setdone{box-shadow:0 0 0 2px var(--gold),var(--shadow)}
+.tile.tile.setdone.l1{box-shadow:0 0 0 2px #5E9C7B,0 0 14px #5E9C7B}
+.tile.setdone.l2{box-shadow:0 0 0 2px #6B9BC3,0 0 14px #6B9BC3}
+.tile.setdone.l3{box-shadow:0 0 0 2px #D9A521,0 0 14px #D9A521}
+.tile.setdone.l4{box-shadow:0 0 0 2px #3E8EBA,0 0 14px #3E8EBA}
 /* ===== v0.8 棋盘视觉升级 ===== */
 .tico{width:24px;height:24px;margin:0 auto;flex:none}
 .tico svg{width:100%;height:100%;display:block}
-.tile.t-land.l1{background:#F1F6F0}
-.tile.t-land.l2{background:#EFF3F8}
-.tile.t-land.l3{background:#FBF5E9}
+/*v0.14 tier merged*/
+/*v0.14 tier merged*/
+/*v0.14 tier merged*/
 .tile .obdg{position:absolute;bottom:2px;left:3px;width:16px;height:16px;border-radius:50%;border:1px solid var(--gold);object-fit:cover}
 #topbar h1{position:relative;padding-left:12px}
 #topbar h1::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:4px;border-radius:2px;background:linear-gradient(var(--gold),var(--gold-d))}
@@ -152,7 +154,11 @@ padding:10px 12px;font-size:15px;margin-bottom:8px;color:var(--ink)}
 .fcback{background:var(--card);border:2px solid var(--gold);color:var(--ink);font-size:15px;transform:rotateY(180deg);padding:10px;text-align:center;position:relative;min-height:120px}
 @keyframes edgesh{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
 body.edgeshake #app{animation:edgesh .4s ease}
-#sSetup,#sGame{display:flex;flex-direction:column;height:100%;overflow:hidden;min-height:0}
+#sSetup,#sGame{display:flex;flex-direction:column;height:100dvh;overflow:hidden;min-height:0}
+#boardWrap{flex:1 1 auto;min-height:0;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+#board{transform-origin:center center;width:100%}
+#plist{flex:none;max-height:30dvh;overflow-y:auto}
+#topbar{flex:none}
 #setbox{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .scroll-inner{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 #sGame #topbar{flex:none}
@@ -214,8 +220,12 @@ color:#8a857c;font-size:13px;padding:9px;margin-bottom:6px;min-height:40px}
 #dbgbox .dbtn:active{background:#e9e5da}
 /* ===== v0.10：房子 / 设置分组 / 视觉收敛 ===== */
 .tile .lv svg{width:20px;height:20px;display:block;margin:0 auto}
+.lv.hlv2 svg{width:22px;height:22px}
+.lv.hlv3 svg{width:24px;height:24px}
+.lv.hlv4 svg{width:26px;height:26px}
+.lv.hlv5 svg{width:30px;height:30px;filter:drop-shadow(0 0 4px #FFD966)}
 .tile .lv .lvnum{display:block;font-size:8px;color:var(--gold-d);line-height:1.1}
-@keyframes housegrow{0%{transform:scale(.55)}55%{transform:scale(1.28)}100%{transform:scale(1)}}
+@keyframes housegrow{0%{transform:scale(.5) rotate(-4deg)}40%{transform:scale(1.35) rotate(3deg)}70%{transform:scale(.92) rotate(-1deg)}100%{transform:scale(1) rotate(0)}}
 .lv.housegrow svg{animation:housegrow .85s ease}
 @keyframes setflash{0%,100%{box-shadow:var(--shadow)}50%{box-shadow:0 0 0 3px var(--gold),0 0 16px var(--gold)}}
 .tile.setflash{animation:setflash 1.3s ease}
@@ -242,9 +252,9 @@ color:#8a857c;font-size:13px;padding:9px;margin-bottom:6px;min-height:40px}
 .tile.t-box{background:#FFFDF7;border-color:#2f4f4f}
 .tile.t-fate{background:#FFFDF7;border-color:#2f4f4f}
 .tile.t-tax{background:#FFFDF7;border-color:var(--gold)}
-.tile.t-land.l1{border-left:4px solid #9DB8A8}
-.tile.t-land.l2{border-left:4px solid #2f4f4f}
-.tile.t-land.l3{border-left:4px solid var(--gold)}
+/*v0.14 tier merged*/
+/*v0.14 tier merged*/
+/*v0.14 tier merged*/
 #eggLayer .egg.rpfall{left:auto;top:-64px;animation:rpfall 3.2s ease-in forwards}
 #eggLayer .egg.rpfall svg{width:44px;height:44px}
 @keyframes rpfall{to{transform:translateY(calc(100vh + 140px))}}
@@ -267,6 +277,68 @@ border-radius:10px;padding:6px 10px;margin-top:6px;line-height:1.6}
 .cntrow.btn{min-width:52px}
 #pcount{font-size:22px;font-weight:bold;min-width:40px;text-align:center}
 .note{font-size:12px;color:var(--ink2);background:#F6F1E7;border-radius:10px;padding:10px;margin-top:12px}
+
+/* v0.14：头像选择器 */
+.avpick{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.avbtn{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);padding:0;background:#fff;cursor:pointer;overflow:hidden}
+.avbtn img{width:100%;height:100%;object-fit:cover;display:block}
+.avbtn.sel{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.avbtn.taken{opacity:.25;filter:grayscale(1);cursor:not-allowed}
+/* v0.14：排行榜 */
+.ranktab{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.ranktab td,.ranktab th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left}
+.ranktab th{color:var(--ink2);font-weight:normal;font-size:12px}
+/* ================= v0.15 新增 ================= */
+#wxpill{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--ink2);border:1px solid var(--line);border-radius:20px;padding:2px 8px;background:#FBF6EA;white-space:nowrap}
+#wxpill svg{width:16px;height:16px}
+.achigrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0;max-height:46vh;overflow-y:auto}
+.achi{border:1px solid var(--line);border-radius:10px;padding:8px;background:#FBF6EA;font-size:12px}
+.achi.lock{opacity:.45;filter:grayscale(.6)}
+.achi b{display:block;font-size:13px;color:var(--ink)}
+.achi .ad{color:var(--ink2);font-size:11px;margin-top:2px}
+.achi .dt{color:var(--gold-d);font-size:10px;margin-top:2px}
+.dexgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0;max-height:40vh;overflow-y:auto}
+.dexcell{border:1px solid var(--line);border-radius:8px;padding:4px;text-align:center;font-size:10px;background:#FBF6EA}
+.dexcell.lock{opacity:.4;filter:grayscale(.8)}
+.dexcell .tico{width:28px;height:28px;margin:0 auto}
+.dexsec{font-size:13px;font-weight:bold;margin:10px 0 4px;color:var(--ink)}
+.careertab{width:100%;font-size:13px;border-collapse:collapse;margin:8px 0}
+.careertab td{padding:5px 4px;border-bottom:1px dashed var(--line)}
+.careertab td:last-child{text-align:right;font-weight:bold;color:var(--gold-d)}
+.titlechip{display:inline-block;font-size:10px;color:#7A5A1E;background:linear-gradient(#FFE9A8,#F6DEA8);border:1px solid var(--gold);border-radius:10px;padding:0 6px;margin-left:4px;vertical-align:1px}
+.tdots i{animation:tblink 1s infinite;font-style:normal}
+.tdots i:nth-child(2){animation-delay:.2s}.tdots i:nth-child(3){animation-delay:.4s}
+@keyframes tblink{0%,100%{opacity:.2}50%{opacity:1}}
+#wxfx{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+#wxfx .rain{position:absolute;inset:-20%;background:repeating-linear-gradient(100deg,transparent 0 14px,rgba(107,155,195,.35) 14px 16px);animation:rainfall 1.1s linear infinite}
+@keyframes rainfall{to{transform:translateY(12%)}}
+#wxfx .leaf{position:absolute;top:-30px;width:14px;height:10px;background:#7BA08B;border-radius:60% 10%;animation:leaffly 2.2s linear forwards}
+@keyframes leaffly{to{transform:translateX(60vw) translateY(110vh) rotate(540deg)}}
+#wxfx .goldflash{position:absolute;inset:0;background:radial-gradient(circle,rgba(255,217,102,.55),transparent 70%);animation:goldflash 1.4s ease forwards}
+@keyframes goldflash{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+.scrollx{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scaleX(.2);z-index:70;background:linear-gradient(#FFF6DC,#F6DEA8);border:2px solid var(--gold);border-radius:6px;padding:14px 26px;text-align:center;opacity:0;pointer-events:none;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.scrollx.go{animation:scrollopen .8s ease forwards}
+@keyframes scrollopen{0%{opacity:0;transform:translate(-50%,-50%) scaleX(.2)}40%{opacity:1;transform:translate(-50%,-50%) scaleX(1.05)}70%{transform:translate(-50%,-50%) scaleX(1)}100%{opacity:0;transform:translate(-50%,-60%) scaleX(1)}}
+.scrollx b{color:#7A5A1E;font-size:16px;display:block}
+.dicestars{position:fixed;z-index:70;pointer-events:none}
+.dicestars i{position:absolute;width:8px;height:8px;background:#FFD966;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);animation:starburst .7s ease-out forwards}
+@keyframes starburst{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.moneyfall{position:fixed;top:-30px;z-index:65;pointer-events:none;width:26px;height:14px;border-radius:2px;animation:moneydrop 1.8s ease-in forwards}
+@keyframes moneydrop{to{transform:translateY(110vh) rotate(360deg);opacity:.9}}
+.hammerm{text-align:center}
+.hammeranim{display:inline-block;animation:hammerhit .5s ease 3}
+@keyframes hammerhit{0%,100%{transform:rotate(0)}30%{transform:rotate(-32deg)}60%{transform:rotate(6deg)}}
+.tico svg,.tileart svg{filter:drop-shadow(0 1px 0 rgba(47,79,79,.18))}
+.ichip,.skillbtn{background:radial-gradient(circle at 50% 35%,#FFFDF6,#F6EDD8)!important}
+.ichip svg,.skillbtn svg{width:16px;height:16px}
+.winglow{animation:winglow 1.8s ease-in-out infinite alternate}
+@keyframes winglow{from{opacity:.65}to{opacity:1}}
+.flagwave{transform-origin:left center;animation:flagwave 1.2s ease-in-out infinite alternate}
+@keyframes flagwave{from{transform:skewY(-4deg)}to{transform:skewY(5deg)}}
+body.bkshake{animation:bkshake .5s ease}
+@keyframes bkshake{0%,100%{transform:translate(0)}25%{transform:translate(-6px,3px)}50%{transform:translate(5px,-3px)}75%{transform:translate(-3px,-2px)}}
+.pcard.dead{filter:grayscale(1);transform:rotate(-4deg);opacity:.55}
+
 </style>
 </head>
 <body>
@@ -276,7 +348,20 @@ border-radius:10px;padding:6px 10px;margin-top:6px;line-height:1.6}
 <div id="topbar"><h1>金榜大亨 <small>课堂版 · MYSKME</small></h1></div>
 <div id="setbox">
 <h2>开局设置</h2>
-<div class="setgroup">
+<div class="setgroup"><h3>模式</h3>
+<div class="seg" id="segMode">
+<button data-v="multi" class="sel">多人对战</button><button data-v="solo">单人挑战</button>
+</div>
+<div id="soloBox" class="hidden">
+<div style="font-size:13px;color:var(--ink2);margin:8px 0">1 人挑战 20 回合，刷最高资产分上榜！道具技能彩蛋全开，没有对手，税所陷阱照常。</div>
+<div class="seglab">AI 对手</div>
+<div class="seg" id="segAI">
+<button data-v="0" class="sel">纯刷分</button><button data-v="1">+1 AI</button><button data-v="2">+2 AI</button><button data-v="3">+3 AI</button>
+</div>
+<div id="soloRank"></div>
+<div class="btnrow" style="margin-top:6px"><button class="btn ghost" id="btnClearRank" style="font-size:12px">清空榜单</button></div>
+</div></div>
+<div class="setgroup" id="grpCount">
 <h3>人数</h3>
 <div class="cntrow">
 <button class="btn ghost" id="pMinus">−</button>
@@ -285,7 +370,7 @@ border-radius:10px;padding:6px 10px;margin-top:6px;line-height:1.6}
 </div>
 <div id="pnames"></div>
 </div>
-<div class="setgroup">
+<div class="setgroup" id="grpRule">
 <h3>规则</h3>
 <div class="seglab">回合数</div>
 <div class="seg" id="segRound">
@@ -311,7 +396,13 @@ border-radius:10px;padding:6px 10px;margin-top:6px;line-height:1.6}
 <button class="toggle on" id="tgAnim"><span>动画效果</span><i></i></button>
 </div>
 </div>
-<div class="setgroup"><h3>地名包</h3><div class="packrow"><button class="packbtn sel" data-v="generic"><b>通用版</b><span>经典 32 格：沙县大酒店、捞力士表行，全国通用梗</span></button><button class="packbtn" data-v="dalian"><b>大连风情版</b><span>家乡 32 格：红圆购物广场、瓦国粥城，大连瓦房店专属</span></button></div></div> <div class="btnrow" style="margin-top:14px">
+<div class="setgroup"><h3>地名包</h3><div class="packrow"><button class="packbtn sel" data-v="generic"><b>通用版</b><span>经典 32 格：沙县大酒店、捞力士表行，全国通用梗</span></button><button class="packbtn" data-v="dalian"><b>大连风情版</b><span>家乡 32 格：红圆购物广场、瓦国粥城，大连瓦房店专属</span></button></div></div> <div class="setgroup"><h3>收藏</h3><div class="btnrow">
+<button class="btn ghost" id="btnAchi">成就墙</button>
+<button class="btn ghost" id="btnDex">图鉴</button>
+<button class="btn ghost" id="btnCareer">我的数据</button>
+<button class="btn ghost" id="btnTitles">称号</button>
+</div></div>
+<div class="btnrow" style="margin-top:14px">
 <button class="btn big" id="btnStart">开始游戏</button>
 </div>
 <div class="btnrow" style="margin-top:8px">
@@ -325,7 +416,7 @@ border-radius:10px;padding:6px 10px;margin-top:6px;line-height:1.6}
 <div id="topbar">
 <h1 id="gameTitle">金榜大亨 <small id="roundLab">第 1/20 回合</small></h1>
 <div class="grp">
-<button class="tbtn" id="btnRule">规则</button>
+<span id="wxpill"></span><button class="tbtn" id="btnRule">规则</button>
 <button class="tbtn" id="btnEnd">结算</button>
 <button class="tbtn" id="btnNew">重开</button>
 </div>
@@ -379,7 +470,7 @@ v0.11 新增：奢华 5 图标夸张重绘（镶钻捞力士/镀金宝驴/
 发光黑卡/三层游艇/喷火火箭）、棋盘 22→32 格+5 奢华新
 地块（鱼子酱/钻石水/金马桶/飞机/太空酒店，土豪金系套色）、
 3 种新特殊格（红包/陷阱/驴车顺风车）、命运 15 张/盲盒
-16 种、街头小剧场（每回合 12% 随机旁白+小效果）。 v0.12 新增：地名包系统（开局二选一：通用版/大连风情版 32 家乡梗地名，每块配简介）、12 个大连主题 SVG 图标、地块点击弹窗、街头小剧场大连版 5 条、修图标不显示 bug（G.tiles 未拷贝 ic）。 v0.13 新增：12 张 AI 插画（256px WebP 内嵌），地块点击弹窗有插画的大图展示。
+16 种、街头小剧场（每回合 12% 随机旁白+小效果）。 v0.12 新增：地名包系统（开局二选一：通用版/大连风情版 32 家乡梗地名，每块配简介）、12 个大连主题 SVG 图标、地块点击弹窗、街头小剧场大连版 5 条、修图标不显示 bug（G.tiles 未拷贝 ic）。 v0.13 新增：12 张 AI 插画（256px WebP 内嵌），地块点击弹窗有插画的大图展示。\nv0.14 新增：手机端显示全面（棋盘自适应缩放完整显示）；4 套色系主题色（竹青/雾蓝/土豪金/海蓝渐变）+集齐系色光晕；5 级房子重绘（一级比一级大一级比一级壕，Lv5 金色宫殿+光效）；开局头像选择器（6 选 1 不可重复）+自定义名字；单人挑战模式（20 回合刷资产分，本地排行榜前 10）。
 ============================================================ */
 /* ---------- 角色棋子（猴先生系列） ---------- */
 var CHARAS=[
@@ -419,11 +510,11 @@ var ITEMDESC={remote:'下次掷骰自选 1-6 点，想掷几掷几',
 var ITEMKEYS=['remote','free','barrier','swap','shield'];
 /* v0.10：道具 SVG 图标 */
 var ITEMICON={
-remote:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round"><rect x="5" y="8" width="14" height="14" rx="3" fill="#F6DEA8"/><circle cx="10" cy="13" r="1.2" fill="#2f4f4f"/><circle cx="14" cy="17" r="1.2" fill="#2f4f4f"/><path d="M15 8V4.5M15 4.5l-2-2M15 4.5l2-2"/></svg>',
-free:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="10" rx="2" fill="#F6DEA8"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" fill="#EFDDB8"/><path d="M12 9.5v3M10.5 11h3"/></svg>',
-barrier:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L21 20H3z" fill="#F6DEA8"/><path d="M12 10v4" /><path d="M12 17v.5"/></svg>',
-swap:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4L3.5 7.5 7 11" fill="#F6DEA8"/><path d="M3.5 7.5H17"/><path d="M17 13l3.5 3.5L17 20" fill="#F6DEA8"/><path d="M20.5 16.5H7"/></svg>',
-shield:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 6 4.5 8.5 4.5 12h15C19.5 8.5 17 6 12 3z" fill="#F6DEA8"/><path d="M12 3v9M12 12v7" /><path d="M4.5 12h15"/></svg>'};
+remote:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round"><rect x="5" y="8" width="14" height="14" rx="3" fill="#F6DEA8"/><circle cx="10" cy="13" r="1.2" fill="#2f4f4f"/><circle cx="14" cy="17" r="1.2" fill="#2f4f4f"/><path d="M15 8V4.5M15 4.5l-2-2M15 4.5l2-2"/></svg>',
+free:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="14" height="10" rx="2" fill="#F6DEA8"/><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" fill="#EFDDB8"/><path d="M12 9.5v3M10.5 11h3"/></svg>',
+barrier:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L21 20H3z" fill="#F6DEA8"/><path d="M12 10v4" /><path d="M12 17v.5"/></svg>',
+swap:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4L3.5 7.5 7 11" fill="#F6DEA8"/><path d="M3.5 7.5H17"/><path d="M17 13l3.5 3.5L17 20" fill="#F6DEA8"/><path d="M20.5 16.5H7"/></svg>',
+shield:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C7 6 4.5 8.5 4.5 12h15C19.5 8.5 17 6 12 3z" fill="#F6DEA8"/><path d="M12 3v9M12 12v7" /><path d="M4.5 12h15"/></svg>'};
 var SKILLS={
  monkey:{name:'顺手牵羊',cd:4,desc:'随机偷一位玩家 200 金币'},
  fish:{name:'锦鲤附体',cd:5,desc:'下次掷骰必出 6 点'},
@@ -433,12 +524,12 @@ var SKILLS={
  snake:{name:'滑',cd:4,desc:'瞬移到最近的一处己方地产'}};
 /* v0.10：技能小图标 */
 var SKILLICON={
-monkey:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round"><path d="M7 20c-2-1.5-3-4-2.5-7 3-.5 5.5-2.5 6.5-6 2.5 1 4.5 1.5 7 1.5.5 3-.5 5.5-2.5 7L12 18z" fill="#F6DEA8"/><path d="M9 14l3 3 3-3"/></svg>',
-fish:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-4 7-6 11-6 2.5 0 4.5 1 6 2.5L16.5 12l3.5 3.5c-1.5 1.5-3.5 2.5-6 2.5-4 0-8-2-11-6z" fill="#EFDDB8"/><circle cx="8" cy="11.5" r="1.2" fill="#2f4f4f"/><path d="M14 6v12"/></svg>',
-egg:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round"><ellipse cx="12" cy="13" rx="6.5" ry="8" fill="#F6DEA8" transform="rotate(20 12 13)"/><circle cx="10" cy="11" r="1.2" fill="#2f4f4f"/><path d="M9 16.5c1.5 1 3.5 1 5 0" transform="rotate(20 12 13)"/><path d="M3 5c2-1.5 4-1.5 6 0M15 4c2-1.5 4-1.5 6 0" stroke-width="1.2"/></svg>',
-donkey:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="8" cy="15" rx="3.5" ry="2.5" fill="#F6DEA8"/><ellipse cx="16" cy="15" rx="3.5" ry="2.5" fill="#F6DEA8"/><path d="M8 8c-1 2-1 4 0 6M16 8c1 2 1 4 0 6" stroke-width="1.2"/></svg>',
-teapot:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h10v7a3 3 0 01-3 3H10a3 3 0 01-3-3z" fill="#F6DEA8"/><path d="M17 11l2.5-1.5L21 12M7 11L4.5 9.5 3 12" /><path d="M9 7.5h6" /><path d="M12 3c-1 1.5 1 2 0 3.5" stroke-width="1.2"/></svg>',
-snake:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round"><path d="M3 8c3-3 6 3 9 0s6 3 9 0" /><path d="M3 14c3-3 6 3 9 0s6 3 9 0" /><path d="M3 20c3-3 6 3 9 0s6 3 9 0" stroke-width="1.2"/></svg>'};
+monkey:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M7 20c-2-1.5-3-4-2.5-7 3-.5 5.5-2.5 6.5-6 2.5 1 4.5 1.5 7 1.5.5 3-.5 5.5-2.5 7L12 18z" fill="#F6DEA8"/><path d="M9 14l3 3 3-3"/></svg>',
+fish:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12c3-4 7-6 11-6 2.5 0 4.5 1 6 2.5L16.5 12l3.5 3.5c-1.5 1.5-3.5 2.5-6 2.5-4 0-8-2-11-6z" fill="#EFDDB8"/><circle cx="8" cy="11.5" r="1.2" fill="#2f4f4f"/><path d="M14 6v12"/></svg>',
+egg:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round"><ellipse cx="12" cy="13" rx="6.5" ry="8" fill="#F6DEA8" transform="rotate(20 12 13)"/><circle cx="10" cy="11" r="1.2" fill="#2f4f4f"/><path d="M9 16.5c1.5 1 3.5 1 5 0" transform="rotate(20 12 13)"/><path d="M3 5c2-1.5 4-1.5 6 0M15 4c2-1.5 4-1.5 6 0" stroke-width="2.5"/></svg>',
+donkey:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="8" cy="15" rx="3.5" ry="2.5" fill="#F6DEA8"/><ellipse cx="16" cy="15" rx="3.5" ry="2.5" fill="#F6DEA8"/><path d="M8 8c-1 2-1 4 0 6M16 8c1 2 1 4 0 6" stroke-width="2.5"/></svg>',
+teapot:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10h10v7a3 3 0 01-3 3H10a3 3 0 01-3-3z" fill="#F6DEA8"/><path d="M17 11l2.5-1.5L21 12M7 11L4.5 9.5 3 12" /><path d="M9 7.5h6" /><path d="M12 3c-1 1.5 1 2 0 3.5" stroke-width="2.5"/></svg>',
+snake:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M3 8c3-3 6 3 9 0s6 3 9 0" /><path d="M3 14c3-3 6 3 9 0s6 3 9 0" /><path d="M3 20c3-3 6 3 9 0s6 3 9 0" stroke-width="2.5"/></svg>'};
 var SNAP=null;
 function countItems(p){ var n=0; ITEMKEYS.forEach(function(k){n+=p.items[k]||0;}); return n; }
 function randItemKey(){ return ITEMKEYS[(Math.random()*ITEMKEYS.length)|0]; }
@@ -472,34 +563,34 @@ function avImg(c, cls){
 /* ---------- 棋盘：12×6 周长 32 格 ---------- */
 /* ---------- v0.8 地块图标：手绘线条风 inline SVG ---------- */
 var ICONS={
-'hotel':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="7" width="14" height="13" rx="1"/><path d="M9 7V4h6v3"/><path d="M9 11h1.5M13.5 11H15M9 14.5h1.5M13.5 14.5H15"/><path d="M10 20v-3h4v3"/></svg>',
-'desk':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="6" rx="1"/><path d="M12 9v2M9.5 12h5"/><path d="M3 13h18"/><path d="M6 13v8M18 13v8"/></svg>',
-'store':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-4h13.6L20 9"/><path d="M4 9a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0 2.7 2.7 0 005.3 0"/><path d="M5.5 11v9M18.5 11v9M5.5 20h13"/><rect x="10" y="13" width="4" height="7"/></svg>',
-'noodle':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16a8 8 0 01-16 0z"/><path d="M10 20h4"/><path d="M14 2l4 8M17.5 2l2.5 6"/><path d="M9 9c-1-1.5 1-2 0-3.5M13 9c-1-1.5 1-2 0-3.5"/></svg>',
-'warehouse':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v9l-8 4-8-4V7z"/><path d="M4 7l8 4 8-4M12 11v9"/><path d="M8 5l8 4"/></svg>',
-'thermos':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="8" height="12" rx="2.5"/><path d="M7 4.5h10V8H7z"/><path d="M12 4.5V3"/><circle cx="12" cy="14" r="1.6"/></svg>',
-'neck':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="5.5" r="2.5"/><path d="M10 8v3.5"/><path d="M3.5 20c.8-3.5 3.4-5 6.5-5s5.7 1.5 6.5 5"/><path d="M17 3.5h4M19 1.5v4"/></svg>',
-'pants':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h11"/><path d="M6.5 3v18h3.2L11 10l1.3 11h3.2V3"/></svg>',
-'shampoo':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="9" width="8" height="11" rx="2"/><path d="M10.5 9V6h3v3"/><path d="M10.5 6h3M12 6V4h4"/><circle cx="12" cy="14.5" r="1.8"/></svg>',
-'clock':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="6.5"/><path d="M12 9.5V13l2.5 1.5"/><path d="M6 3.5L4 2M18 3.5l2-1.5"/><path d="M9.5 20.5h5"/></svg>',
-'watch':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5.5" fill="#FFD98A"/><circle cx="12" cy="12" r="4" fill="#FFF3D6"/><path d="M12 9.5V12l1.8 1.2" stroke-width="2"/><path d="M9.5 6.5V3h5v3.5M9.5 17.5V21h5v-3.5"/><circle cx="12" cy="5" r="0.9" fill="#C9A86A" stroke="none"/><circle cx="15.5" cy="8.5" r="0.9" fill="#C9A86A" stroke="none"/><circle cx="8.5" cy="15.5" r="0.9" fill="#C9A86A" stroke="none"/><path d="M18.5 3.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="1.2"/></svg>',
-'car':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15v-3.5L5.5 7h10L20 11.5H21V15" fill="#FFD98A"/><path d="M3 15h1.5M8.5 15h7M17.5 15H21"/><circle cx="8" cy="17" r="1.8" fill="#F6DEA8"/><circle cx="16.5" cy="17" r="1.8" fill="#F6DEA8"/><path d="M13 7l.8-2.8 1.2 2.8M15.8 7l.8-2.8 1.2 2.8"/><path d="M18.5 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="1.2"/></svg>',
-'bankcard':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2" fill="#2f4f4f"/><path d="M3 10h18" stroke="#C9A86A"/><path d="M6.5 15h4" stroke="#C9A86A"/><path d="M6 12.8l1.8 1.8 1.8-1.8M12 12.8l1.8 1.8 1.8-1.8" stroke="#C9A86A" stroke-width="1.1"/><path d="M18.5 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="1.2"/></svg>',
-'yacht':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15h16l-2.5 4.5h-11z" fill="#FFD98A"/><path d="M7 15v-3.5h10V15" fill="#F6DEA8"/><path d="M9.5 11.5V8h5v3.5" fill="#F6DEA8"/><path d="M11.5 8V5.5h1V8"/><path d="M2.5 21.5c1.5-1 3-1 4.5 0s3 1 4.5 0 3-1 4.5 0 2.5 1 4.5 0" stroke-width="1.2"/><path d="M19 2.5l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z" fill="#FFD98A" stroke-width="1"/></svg>',
-'rocket':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1.5c2.8 2 4 5.5 4 9.5L12 14.5l-4-3.5C8 7 9.2 3.5 12 1.5z" fill="#FFD98A"/><circle cx="12" cy="8.5" r="1.4" fill="#FFF3D6"/><path d="M8.5 12.5L6 16M15.5 12.5L18 16"/><path d="M10 15.5c.2 2 1 3.5 2 5.5.9-1.8 1.6-3.2 2-5.5" fill="#E8843C"/><path d="M11.3 16.5c.1 1 .3 2 .7 3 .4-1 .6-2 .7-3" fill="#FFD98A" stroke-width="1.2"/><path d="M18.5 3l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="1.2"/></svg>',
-'flag':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4.5h11l-2.8 3.7L17 12H6"/></svg>',
-'coin':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M9 9l3 3.5L15 9M12 12.5V17M9 15h6"/></svg>',
-'fate':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.8 9.6a2.4 2.4 0 114.4 1.3c-.6 1.4-2.2 1.6-2.2 3.1"/><path d="M12 17.2v.3"/></svg>',
-'gift':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="3.5" rx="1"/><path d="M6 13.5V20h12v-6.5M12 10v10"/><path d="M12 10C8.5 10 7 8.5 7.8 6.8c.7-1.4 2.9-.6 4.2 3.2 1.3-3.8 3.5-4.6 4.2-3.2.8 1.7-.7 3.2-4.2 3.2z"/></svg>',
+'hotel':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="7" width="14" height="13" rx="1"/><path d="M9 7V4h6v3"/><path d="M9 11h1.5M13.5 11H15M9 14.5h1.5M13.5 14.5H15"/><path d="M10 20v-3h4v3"/></svg>',
+'desk':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="6" rx="1"/><path d="M12 9v2M9.5 12h5"/><path d="M3 13h18"/><path d="M6 13v8M18 13v8"/></svg>',
+'store':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-4h13.6L20 9"/><path d="M4 9a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0 2.7 2.7 0 005.3 0"/><path d="M5.5 11v9M18.5 11v9M5.5 20h13"/><rect x="10" y="13" width="4" height="7"/></svg>',
+'noodle':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16a8 8 0 01-16 0z"/><path d="M10 20h4"/><path d="M14 2l4 8M17.5 2l2.5 6"/><path d="M9 9c-1-1.5 1-2 0-3.5M13 9c-1-1.5 1-2 0-3.5"/></svg>',
+'warehouse':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v9l-8 4-8-4V7z"/><path d="M4 7l8 4 8-4M12 11v9"/><path d="M8 5l8 4"/></svg>',
+'thermos':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="8" height="12" rx="2.5"/><path d="M7 4.5h10V8H7z"/><path d="M12 4.5V3"/><circle cx="12" cy="14" r="1.6"/></svg>',
+'neck':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="5.5" r="2.5"/><path d="M10 8v3.5"/><path d="M3.5 20c.8-3.5 3.4-5 6.5-5s5.7 1.5 6.5 5"/><path d="M17 3.5h4M19 1.5v4"/></svg>',
+'pants':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h11"/><path d="M6.5 3v18h3.2L11 10l1.3 11h3.2V3"/></svg>',
+'shampoo':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="9" width="8" height="11" rx="2"/><path d="M10.5 9V6h3v3"/><path d="M10.5 6h3M12 6V4h4"/><circle cx="12" cy="14.5" r="1.8"/></svg>',
+'clock':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="6.5"/><path d="M12 9.5V13l2.5 1.5"/><path d="M6 3.5L4 2M18 3.5l2-1.5"/><path d="M9.5 20.5h5"/></svg>',
+'watch':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5.5" fill="#FFD98A"/><circle cx="12" cy="12" r="4" fill="#FFF3D6"/><path d="M12 9.5V12l1.8 1.2" stroke-width="2.5"/><path d="M9.5 6.5V3h5v3.5M9.5 17.5V21h5v-3.5"/><circle cx="12" cy="5" r="0.9" fill="#C9A86A" stroke="none"/><circle cx="15.5" cy="8.5" r="0.9" fill="#C9A86A" stroke="none"/><circle cx="8.5" cy="15.5" r="0.9" fill="#C9A86A" stroke="none"/><path d="M18.5 3.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="2.5"/></svg>',
+'car':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15v-3.5L5.5 7h10L20 11.5H21V15" fill="#FFD98A"/><path d="M3 15h1.5M8.5 15h7M17.5 15H21"/><circle cx="8" cy="17" r="1.8" fill="#F6DEA8"/><circle cx="16.5" cy="17" r="1.8" fill="#F6DEA8"/><path d="M13 7l.8-2.8 1.2 2.8M15.8 7l.8-2.8 1.2 2.8"/><path d="M18.5 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="2.5"/></svg>',
+'bankcard':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2" fill="#2f4f4f"/><path d="M3 10h18" stroke="#C9A86A"/><path d="M6.5 15h4" stroke="#C9A86A"/><path d="M6 12.8l1.8 1.8 1.8-1.8M12 12.8l1.8 1.8 1.8-1.8" stroke="#C9A86A" stroke-width="2.5"/><path d="M18.5 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="2.5"/></svg>',
+'yacht':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15h16l-2.5 4.5h-11z" fill="#FFD98A"/><path d="M7 15v-3.5h10V15" fill="#F6DEA8"/><path d="M9.5 11.5V8h5v3.5" fill="#F6DEA8"/><path d="M11.5 8V5.5h1V8"/><path d="M2.5 21.5c1.5-1 3-1 4.5 0s3 1 4.5 0 3-1 4.5 0 2.5 1 4.5 0" stroke-width="2.5"/><path d="M19 2.5l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z" fill="#FFD98A" stroke-width="2.5"/></svg>',
+'rocket':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1.5c2.8 2 4 5.5 4 9.5L12 14.5l-4-3.5C8 7 9.2 3.5 12 1.5z" fill="#FFD98A"/><circle cx="12" cy="8.5" r="1.4" fill="#FFF3D6"/><path d="M8.5 12.5L6 16M15.5 12.5L18 16"/><path d="M10 15.5c.2 2 1 3.5 2 5.5.9-1.8 1.6-3.2 2-5.5" fill="#E8843C"/><path d="M11.3 16.5c.1 1 .3 2 .7 3 .4-1 .6-2 .7-3" fill="#FFD98A" stroke-width="2.5"/><path d="M18.5 3l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="2.5"/></svg>',
+'flag':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4.5h11l-2.8 3.7L17 12H6"/></svg>',
+'coin':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M9 9l3 3.5L15 9M12 12.5V17M9 15h6"/></svg>',
+'fate':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.8 9.6a2.4 2.4 0 114.4 1.3c-.6 1.4-2.2 1.6-2.2 3.1"/><path d="M12 17.2v.3"/></svg>',
+'gift':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="3.5" rx="1"/><path d="M6 13.5V20h12v-6.5M12 10v10"/><path d="M12 10C8.5 10 7 8.5 7.8 6.8c.7-1.4 2.9-.6 4.2 3.2 1.3-3.8 3.5-4.6 4.2-3.2.8 1.7-.7 3.2-4.2 3.2z"/></svg>',
 /* v0.11：奢华新地块 + 新特殊格图标 */
-'caviar':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="9" width="12" height="10" rx="2" fill="#FFD98A"/><path d="M5 9h14"/><path d="M8 5.5h8V9H8z" fill="#F6DEA8"/><circle cx="10" cy="13" r="1" fill="#2f4f4f" stroke="none"/><circle cx="13" cy="14.5" r="1" fill="#2f4f4f" stroke="none"/><circle cx="11.5" cy="16.2" r="1" fill="#2f4f4f" stroke="none"/><path d="M18.5 3l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="1.2"/></svg>',
-'diamond':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 8h6v3l2 3v5a1 1 0 01-1 1H8a1 1 0 01-1-1v-5l2-3z" fill="#D6EBF5"/><path d="M10 5h4v3h-4z" fill="#F6DEA8"/><path d="M12 2l1.5 2h-3z" fill="#C9A86A"/><path d="M10 12l2 2 2-2M9.5 16h5" stroke-width="1.2"/><path d="M18 3.5l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z" fill="#FFD98A" stroke-width="1"/></svg>',
-'toilet':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5h9v5H6z" fill="#F6DEA8"/><path d="M6 10h9v3H6z" fill="#FFD98A"/><path d="M15 13c2 0 3 1.5 3 3.5V19H6v-2.5C6 14 8 13 9.5 13" fill="#FFD98A"/><path d="M18.5 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="1.2"/></svg>',
-'plane':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12.5L21 4l-6 8.5 6 8.5z" fill="#FFD98A"/><path d="M2.5 12.5L10 14l-2 4.5" fill="#F6DEA8"/><path d="M10 14l5-1.5"/><path d="M17 4.5l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z" fill="#FFD98A" stroke-width="1"/></svg>',
-'spacehotel':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="4.5" fill="#FFD98A"/><path d="M9.5 10h5M8 8.5h8" stroke-width="1.2"/><ellipse cx="12" cy="10" rx="10" ry="3"/><path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="1.2"/></svg>',
-'redbag':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="13" rx="1.5" fill="#E86A5B"/><path d="M7 10.5h10" stroke="#FFD98A"/><circle cx="12" cy="14.5" r="2" fill="#FFD98A"/><path d="M9.5 7V5h5v2"/></svg>',
-'trap':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="16" rx="8" ry="3.5" fill="#2f4f4f"/><path d="M4 16c2 2 5 3 8 3s6-1 8-3"/><path d="M12 5v4" stroke-width="2.2"/><circle cx="12" cy="11" r="1.2" fill="#E86A5B" stroke="none"/></svg>',
-'teleport':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="4" ry="8"/><ellipse cx="12" cy="12" rx="2" ry="5" fill="#C9A86A"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2" stroke-width="1.2"/></svg>','plaza':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M10 20v-5h4v5"/><path d="M7 15a5 5 0 0110 0"/><path d="M12 10V7"/><path d="M9.5 7h5"/></svg>','harbor':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h18l-2.5 5h-13z"/><path d="M12 14V5"/><path d="M12 5l7 9"/><path d="M4 21c1.2.8 2.4-.8 3.6 0s2.4-.8 3.6 0 2.4-.8 3.6 0 2.4-.8 3.6 0"/></svg>','pancake':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="8" ry="5"/><circle cx="12" cy="14" r="2.2"/><path d="M8 11.5l1-2M12 11l.5-2M16 11.5l-1-2"/></svg>','aquarium':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h14v3.5a7 7 0 01-14 0z"/><path d="M9 14.5c1-1.2 2-1.2 3 0s2 1.2 3 0"/><circle cx="16" cy="12" r=".9"/><circle cx="17.5" cy="9.5" r=".6"/><path d="M9 21h6"/></svg>','citygate':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M6 20v-7a6 6 0 0112 0v7"/><path d="M3 13l9-7 9 7"/><rect x="10" y="14" width="4" height="6"/></svg>','porridge':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13h14a7 7 0 01-14 0z"/><path d="M10 9c-1-1.5 1-2 0-3.5M14 9c-1-1.5 1-2 0-3.5"/><path d="M16 3l4 7"/><path d="M9 16.5h6"/></svg>','lollipop':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M12 9a3 3 0 013-3"/><path d="M12 9a1.5 1.5 0 00-1.5 1.5"/><path d="M12 15v7"/></svg>','dumpling':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 6 0 0116 0z"/><path d="M8 10.5l1.5 2M12 9.5l1 2.5M16 10.5l-1.5 2"/><path d="M7 18h10"/></svg>','bathtub':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M5 12v1a7 5.5 0 0014 0v-1"/><path d="M7 19.5L6 22M17 19.5l1 2"/><path d="M9 8c-1-1.5 1-2 0-3.5M14 8c-1-1.5 1-2 0-3.5"/></svg>','fruit':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8.5c-4-3-9 .5-8 5 1 4 4 6.5 8 6.5s7-2.5 8-6.5c1-4.5-4-8-8-5z"/><path d="M12 8.5V5"/><path d="M12 5.5c2-2.2 5-2.2 6-.5-2 1.2-4 1.2-6 .5z"/></svg>','goldmountain':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="6" r="2.6" fill="#F6DEA8"/><path d="M3 20l6.5-9 4 5 3-3.5L21 20z"/><path d="M17 1.5v1M21.5 6h-1"/></svg>','calligraphy':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="14" width="13" height="7" rx="1"/><path d="M16 14h5M3 14H1.5"/><path d="M17.5 2.5l4 4-8.5 8.5-4.5 1 1-4.5z"/><path d="M15.5 4.5l4 4"/></svg>',
+'caviar':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="9" width="12" height="10" rx="2" fill="#FFD98A"/><path d="M5 9h14"/><path d="M8 5.5h8V9H8z" fill="#F6DEA8"/><circle cx="10" cy="13" r="1" fill="#2f4f4f" stroke="none"/><circle cx="13" cy="14.5" r="1" fill="#2f4f4f" stroke="none"/><circle cx="11.5" cy="16.2" r="1" fill="#2f4f4f" stroke="none"/><path d="M18.5 3l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="2.5"/></svg>',
+'diamond':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 8h6v3l2 3v5a1 1 0 01-1 1H8a1 1 0 01-1-1v-5l2-3z" fill="#D6EBF5"/><path d="M10 5h4v3h-4z" fill="#F6DEA8"/><path d="M12 2l1.5 2h-3z" fill="#C9A86A"/><path d="M10 12l2 2 2-2M9.5 16h5" stroke-width="2.5"/><path d="M18 3.5l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z" fill="#FFD98A" stroke-width="2.5"/></svg>',
+'toilet':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5h9v5H6z" fill="#F6DEA8"/><path d="M6 10h9v3H6z" fill="#FFD98A"/><path d="M15 13c2 0 3 1.5 3 3.5V19H6v-2.5C6 14 8 13 9.5 13" fill="#FFD98A"/><path d="M18.5 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="2.5"/></svg>',
+'plane':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12.5L21 4l-6 8.5 6 8.5z" fill="#FFD98A"/><path d="M2.5 12.5L10 14l-2 4.5" fill="#F6DEA8"/><path d="M10 14l5-1.5"/><path d="M17 4.5l.6 1.5 1.5.6-1.5.6-.6 1.5-.6-1.5-1.5-.6 1.5-.6z" fill="#FFD98A" stroke-width="2.5"/></svg>',
+'spacehotel':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="4.5" fill="#FFD98A"/><path d="M9.5 10h5M8 8.5h8" stroke-width="2.5"/><ellipse cx="12" cy="10" rx="10" ry="3"/><path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#FFD98A" stroke-width="2.5"/></svg>',
+'redbag':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="7" width="10" height="13" rx="1.5" fill="#E86A5B"/><path d="M7 10.5h10" stroke="#FFD98A"/><circle cx="12" cy="14.5" r="2" fill="#FFD98A"/><path d="M9.5 7V5h5v2"/></svg>',
+'trap':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="16" rx="8" ry="3.5" fill="#2f4f4f"/><path d="M4 16c2 2 5 3 8 3s6-1 8-3"/><path d="M12 5v4" stroke-width="2.2"/><circle cx="12" cy="11" r="1.2" fill="#E86A5B" stroke="none"/></svg>',
+'teleport':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="4" ry="8"/><ellipse cx="12" cy="12" rx="2" ry="5" fill="#C9A86A"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2" stroke-width="2.5"/></svg>','plaza':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M10 20v-5h4v5"/><path d="M7 15a5 5 0 0110 0"/><path d="M12 10V7"/><path d="M9.5 7h5"/></svg>','harbor':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 14h18l-2.5 5h-13z"/><path d="M12 14V5"/><path d="M12 5l7 9"/><path d="M4 21c1.2.8 2.4-.8 3.6 0s2.4-.8 3.6 0 2.4-.8 3.6 0 2.4-.8 3.6 0"/></svg>','pancake':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="14" rx="8" ry="5"/><circle cx="12" cy="14" r="2.2"/><path d="M8 11.5l1-2M12 11l.5-2M16 11.5l-1-2"/></svg>','aquarium':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h14v3.5a7 7 0 01-14 0z"/><path d="M9 14.5c1-1.2 2-1.2 3 0s2 1.2 3 0"/><circle cx="16" cy="12" r=".9"/><circle cx="17.5" cy="9.5" r=".6"/><path d="M9 21h6"/></svg>','citygate':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M6 20v-7a6 6 0 0112 0v7"/><path d="M3 13l9-7 9 7"/><rect x="10" y="14" width="4" height="6"/></svg>','porridge':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13h14a7 7 0 01-14 0z"/><path d="M10 9c-1-1.5 1-2 0-3.5M14 9c-1-1.5 1-2 0-3.5"/><path d="M16 3l4 7"/><path d="M9 16.5h6"/></svg>','lollipop':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M12 9a3 3 0 013-3"/><path d="M12 9a1.5 1.5 0 00-1.5 1.5"/><path d="M12 15v7"/></svg>','dumpling':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 6 0 0116 0z"/><path d="M8 10.5l1.5 2M12 9.5l1 2.5M16 10.5l-1.5 2"/><path d="M7 18h10"/></svg>','bathtub':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M5 12v1a7 5.5 0 0014 0v-1"/><path d="M7 19.5L6 22M17 19.5l1 2"/><path d="M9 8c-1-1.5 1-2 0-3.5M14 8c-1-1.5 1-2 0-3.5"/></svg>','fruit':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8.5c-4-3-9 .5-8 5 1 4 4 6.5 8 6.5s7-2.5 8-6.5c1-4.5-4-8-8-5z"/><path d="M12 8.5V5"/><path d="M12 5.5c2-2.2 5-2.2 6-.5-2 1.2-4 1.2-6 .5z"/></svg>','goldmountain':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="6" r="2.6" fill="#F6DEA8"/><path d="M3 20l6.5-9 4 5 3-3.5L21 20z"/><path d="M17 1.5v1M21.5 6h-1"/></svg>','calligraphy':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="14" width="13" height="7" rx="1"/><path d="M16 14h5M3 14H1.5"/><path d="M17.5 2.5l4 4-8.5 8.5-4.5 1 1-4.5z"/><path d="M15.5 4.5l4 4"/></svg>',
 };
 /* ---------- v0.13：AI 插画（256px WebP，base64 内嵌） ---------- */
 var ART={
@@ -533,16 +624,16 @@ var ART_BY_NAME={
 
 /* ---------- v0.10：5 级房子 SVG（深青线条 + 暖色填充） ---------- */
 var HOUSES=[
-/* Lv1 茅草屋 */
-'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L3.5 11h17z" fill="#E8D5A8"/><path d="M6 11v8M18 11v8M6 19h12" fill="#F6DEA8"/><path d="M12 3v3M9 5.5L7 8M15 5.5l2 2.5" stroke-width="1.2"/></svg>',
+/* Lv1 茅草屋（小） */
+'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5L5 11.5h14z" fill="#E8D5A8"/><path d="M7.5 11.5v6M16.5 11.5v6M7.5 17.5h9" fill="#F6DEA8"/><rect x="10.8" y="13" width="2.4" height="4.5" fill="#8A6F4D"/><circle class="winglow" cx="14.2" cy="14" r="1" fill="#FFD966"/><path d="M12 5v2M10 7l-1.5 2M14 7l1.5 2" stroke-width="1.1"/></svg>',
 /* Lv2 小砖房 */
-'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4L4 11h16z" fill="#D9A05B"/><rect x="6.5" y="11" width="11" height="8" fill="#F6DEA8"/><path d="M6.5 13.5h11M6.5 16h11M10 11v8M14 11v8" stroke-width="1"/><rect x="10.5" y="15" width="3" height="4" fill="#C9A86A"/></svg>',
-/* Lv3 二层小洋楼 */
-'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5L5 8h14z" fill="#C9A86A"/><rect x="6" y="8" width="12" height="5.5" fill="#F6DEA8"/><rect x="6" y="13.5" width="12" height="6.5" fill="#EFDDB8"/><path d="M6 13.5h12" /><rect x="8" y="9.8" width="2.4" height="2.4"/><rect x="13.6" y="9.8" width="2.4" height="2.4"/><rect x="10.8" y="15.5" width="2.4" height="4.5" fill="#C9A86A"/></svg>',
-/* Lv4 高楼大厦 */
-'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="17.5" fill="#F6DEA8"/><path d="M7 6.5h10M7 10.5h10M7 14.5h10" stroke-width="1"/><rect x="9.5" y="4" width="2" height="1.6" fill="#C9A86A"/><rect x="12.8" y="4" width="2" height="1.6" fill="#C9A86A"/><rect x="9.5" y="8" width="2" height="1.6" fill="#C9A86A"/><rect x="12.8" y="8" width="2" height="1.6" fill="#C9A86A"/><rect x="9.5" y="12" width="2" height="1.6" fill="#C9A86A"/><rect x="12.8" y="12" width="2" height="1.6" fill="#C9A86A"/><path d="M10.5 20v-3h3v3" fill="#C9A86A"/></svg>',
-/* Lv5 金色宫殿 */
-'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2.5 2 3.5 4 3.5 6.5h-7C8.5 6 9.5 4 12 2z" fill="#FFD98A"/><rect x="6" y="8.5" width="12" height="11.5" fill="#F6DEA8"/><path d="M6 12h12M6 15.5h12" stroke-width="1"/><rect x="10.8" y="16" width="2.4" height="4" fill="#C9A86A"/><path d="M3.5 8.5L2 5.5l2.5-.5M20.5 8.5l1.5-3-2.5-.5" stroke-width="1.4"/><circle cx="12" cy="5.5" r="1" fill="#C9A86A"/></svg>'
+'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5L3.5 10.5h17z" fill="#D9A05B"/><rect x="6" y="10.5" width="12" height="9" fill="#F6DEA8"/><path d="M6 13h12M6 15.5h12M6 18h12M9.5 10.5v9M14.5 10.5v9" stroke-width="1"/><rect x="15" y="5.5" width="2" height="4" fill="#C9A86A"/><rect x="10.6" y="15" width="2.8" height="4.5" fill="#C9A86A"/><circle cx="12.6" cy="17.2" r="0.4" fill="#2f4f4f"/><rect x="7.6" y="12" width="2.2" height="1.8" fill="#BFD9E2"/></svg>',
+/* Lv3 小洋楼+阳台 */
+'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4.5 8h15z" fill="#C9A86A"/><path d="M12 2V0.4" stroke-width="1"/><path class="flagwave" d="M12 0.4l3.2 0.9-3.2 0.9z" fill="#D98E8E"/><rect x="5.5" y="8" width="13" height="6" fill="#F6DEA8"/><rect x="5.5" y="14" width="13" height="6.5" fill="#EFDDB8"/><rect x="7" y="9.3" width="10" height="2.6"/><path d="M7 12.5h10M8.5 9.3v2.6M10.5 9.3v2.6M12.5 9.3v2.6M14.5 9.3v2.6" stroke-width="1"/><rect x="10.8" y="16" width="2.4" height="4.5" fill="#C9A86A"/><rect x="7" y="15.5" width="2" height="2" fill="#BFD9E2"/><rect x="15" y="15.5" width="2" height="2" fill="#BFD9E2"/></svg>',
+/* Lv4 大厦+灯光 */
+'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2V0.6" stroke-width="1.2"/><circle class="winglow" cx="12" cy="0.6" r="0.7" fill="#FF6B6B"/><rect x="6.5" y="2" width="11" height="18" fill="#E8EDF2"/><path d="M6.5 6h11M6.5 10h11M6.5 14h11" stroke-width="1"/><rect x="8.3" y="3.4" width="2.2" height="1.7" fill="#FFD966"/><rect x="13.5" y="3.4" width="2.2" height="1.7" fill="#FFD966"/><rect x="8.3" y="7.4" width="2.2" height="1.7" fill="#FFD966"/><rect x="13.5" y="7.4" width="2.2" height="1.7" fill="#BFD9E2"/><rect x="8.3" y="11.4" width="2.2" height="1.7" fill="#FFD966"/><rect x="13.5" y="11.4" width="2.2" height="1.7" fill="#FFD966"/><rect x="4.5" y="20" width="15" height="2.2" fill="#C9A86A"/><path d="M10.8 20v-2.6h2.4V20" fill="#8A6F4D"/></svg>',
+/* Lv5 金色宫殿（大+金光+飘带） */
+'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1.5c3 2.2 4.2 4.4 4.2 7h-8.4c0-2.6 1.2-4.8 4.2-7z" fill="#FFD966"/><path d="M12 1.5V0.2" stroke-width="1.2"/><path class="flagwave" d="M12 0.2l3.6 1-3.6 1z" fill="#D9A521"/><path d="M4.5 8.5h15V21h-15z" fill="#FFE9A8"/><path d="M4.5 12h15M4.5 15.5h15" stroke-width="1"/><path d="M7 8.5V6.5M10.5 8.5V6.5M13.5 8.5V6.5M17 8.5V6.5" stroke-width="1.2"/><rect x="10.6" y="16" width="2.8" height="5" fill="#C9A86A"/><circle cx="7.5" cy="13.8" r="0.9" fill="#FFD966"/><circle cx="16.5" cy="13.8" r="0.9" fill="#FFD966"/><path d="M2.5 9.5c-1 2 1 3 0 5M21.5 9.5c1 2-1 3 0 5" stroke="#D9A521" stroke-width="1.4"/><path d="M9 3.2l-1.2-1M15 3.2l1.2-1M12 4.5v-1.5" stroke="#D9A521" stroke-width="1.2"/></svg>'
 ];
 var TILES=[
 {t:'start', name:'起点', ic:'flag'},
@@ -613,7 +704,13 @@ var TIERNAME={1:'竹青系',2:'雾蓝系',3:'暖金系',4:'土豪金系'};
 var SALARY=350;
 /* 租金 = 地价 × [0.3, 0.6, 1.0][等级-1]；升级费 = 地价 × 0.5（集齐该系套色后 8 折）；
    套色加成：集齐同色系 5 块地产，该系租金 ×2、升级费 8 折 */
-function rentOf(tile){ return Math.round(tile.price*[0.3,0.5,0.7,1.0,1.4][(tile.level||1)-1]*setMult(tile));}
+function rentOf(tile){
+  var r=Math.round(tile.price*[0.3,0.5,0.7,1.0,1.4][(tile.level||1)-1]*setMult(tile));
+  if(typeof G!=='undefined'&&G&&G.weather){
+    if(G.weather.type==='storm')r=Math.round(r*1.2);
+    if(G.weather.type==='gold'&&landTier(tile.price)===4)r=r*2;
+  }
+  return r;}
 function upCost(tile){
   var base=tile.price*0.5;
   if(tile.owner!=null&&typeof G!=='undefined'&&G&&hasSet(tile.owner,landTier(tile.price)))base*=0.8;
@@ -685,7 +782,57 @@ var QBANK=[
 {q:"She ___ an English song when I called her.",opts:["sang","was singing","sings","has sung"],a:1,tag:"grammar"},
 {q:"This is the best movie ___ I have ever seen.",opts:["which","that","what","who"],a:1,tag:"grammar"},
 {q:"He didn't go to school ___ his illness.",opts:["because","because of","as","since"],a:1,tag:"vocab"},
-{q:"—___ will you stay in Beijing? —For two weeks.",opts:["How often","How soon","How long","How far"],a:2,tag:"grammar"}
+{q:"—___ will you stay in Beijing? —For two weeks.",opts:["How often","How soon","How long","How far"],a:2,tag:"grammar"},
+{q:"—___ do you like China? —Very much.",opts:["How","What","Why","Which"],a:0,tag:"grammar"},
+{q:"My sister is good ___ drawing.",opts:["at","in","for","with"],a:0,tag:"vocab"},
+{q:"___ fine day it is! Let's go outside.",opts:["What","How","What a","How a"],a:2,tag:"grammar"},
+{q:"They ___ the classroom after school yesterday.",opts:["clean","cleaned","will clean","are cleaning"],a:1,tag:"grammar"},
+{q:"Hurry up! There is ___ time left.",opts:["few","a few","little","a little"],a:2,tag:"vocab"},
+{q:"The girl ___ hair is long is my deskmate.",opts:["who","whose","whom","which"],a:1,tag:"grammar"},
+{q:"—Must I finish it now? —No, you ___.",opts:["mustn't","needn't","can't","shouldn't"],a:1,tag:"grammar"},
+{q:"I ___ TV when my mother came in.",opts:["watched","am watching","was watching","watch"],a:2,tag:"grammar"},
+{q:"This box is ___ heavy for me to carry.",opts:["so","such","too","very"],a:2,tag:"grammar"},
+{q:"He is interested ___ playing basketball.",opts:["in","on","at","for"],a:0,tag:"vocab"},
+{q:"___ of them has been to Shanghai.",opts:["Each","Every","All","Both"],a:0,tag:"grammar"},
+{q:"The Eiffel Tower is in ___.",opts:["London","Paris","Rome","Berlin"],a:1,tag:"vocab"},
+{q:"She ___ a cold last week.",opts:["catches","caught","has caught","will catch"],a:1,tag:"grammar"},
+{q:"—___ bag is this? —It's mine.",opts:["Who","Whose","Which","What"],a:1,tag:"grammar"},
+{q:"He speaks English ___ than me.",opts:["well","better","best","good"],a:1,tag:"grammar"},
+{q:"We will go hiking ___ it rains tomorrow.",opts:["if","unless","when","until"],a:1,tag:"grammar"},
+{q:"The population of China is ___ than that of Japan.",opts:["large","larger","largest","more large"],a:1,tag:"grammar"},
+{q:"She ___ to the Great Wall twice.",opts:["has gone","has been","went","goes"],a:1,tag:"grammar"},
+{q:"___ you please pass me the salt?",opts:["Could","Must","Should","May be"],a:0,tag:"grammar"},
+{q:"He didn't come to school ___ his illness.",opts:["because","because of","since","as"],a:1,tag:"vocab"},
+{q:"The work is difficult, but he managed ___ it.",opts:["finish","to finish","finishing","finished"],a:1,tag:"grammar"},
+{q:"—How long have you lived here? —___ 2015.",opts:["For","Since","From","At"],a:1,tag:"grammar"},
+{q:"Neither of the answers ___ correct.",opts:["are","is","were","be"],a:1,tag:"grammar"},
+{q:"She is ___ honest girl.",opts:["a","an","the","/"],a:1,tag:"grammar"},
+{q:"He ___ off the bike and hurt his leg.",opts:["falls","fell","has fallen","is falling"],a:1,tag:"grammar"},
+{q:"The teacher asked the students ___ quietly.",opts:["to read","read","reading","reads"],a:0,tag:"grammar"},
+{q:"___ is the capital of Australia?",opts:["Sydney","Canberra","Melbourne","Perth"],a:1,tag:"vocab"},
+{q:"I ___ my English teacher for three years.",opts:["have known","know","knew","am knowing"],a:0,tag:"grammar"},
+{q:"The thief ___ by the police yesterday.",opts:["caught","was caught","is caught","has caught"],a:1,tag:"grammar"},
+{q:"She is too young ___ go to school.",opts:["to","for","that","so"],a:0,tag:"grammar"},
+{q:"He ___ in the library when I saw him.",opts:["is reading","was reading","reads","has read"],a:1,tag:"grammar"},
+{q:"___ delicious the dumplings are!",opts:["What","How","What a","How a"],a:1,tag:"grammar"},
+{q:"The boy is ___ to carry the heavy box.",opts:["strong enough","enough strong","so strong","too strong"],a:0,tag:"grammar"},
+{q:"She spends an hour ___ English every day.",opts:["practise","to practise","practising","practised"],a:2,tag:"grammar"},
+{q:"—Where ___ you go last Sunday? —I went to the park.",opts:["do","did","are","will"],a:1,tag:"grammar"},
+{q:"He ___ his keys at home this morning.",opts:["leaves","left","has left","is leaving"],a:1,tag:"grammar"},
+{q:"The river is about three ___ wide.",opts:["meter","meters","metre's","meteres"],a:1,tag:"vocab"},
+{q:"She ___ her mother with housework on Sundays.",opts:["helps","help","is helping","has helped"],a:0,tag:"grammar"},
+{q:"___ you ever tried Chinese food?",opts:["Have","Did","Do","Are"],a:0,tag:"grammar"},
+{q:"She is good at singing, and she sings ___.",opts:["beautiful","beautifully","more beautiful","most beautiful"],a:1,tag:"vocab"},
+{q:"He is the ___ student in our class.",opts:["tall","taller","tallest","more tall"],a:2,tag:"grammar"},
+{q:"My hobby is ___ stamps.",opts:["collect","to collect","collecting","collected"],a:2,tag:"vocab"},
+{q:"She ___ to Beijing tomorrow.",opts:["is flying","flies","flew","has flown"],a:0,tag:"grammar"},
+{q:"The meeting will be ___ next Monday.",opts:["held","hold","holding","holds"],a:0,tag:"grammar"},
+{q:"He ___ a letter to his friend last night.",opts:["writes","wrote","has written","is writing"],a:1,tag:"grammar"},
+{q:"___ it is raining, ___ he goes out.",opts:["Although…but","Though…yet","Although…/","Because…so"],a:2,tag:"grammar"},
+{q:"She is afraid ___ the dark.",opts:["of","at","in","for"],a:0,tag:"vocab"},
+{q:"The children ___ games in the park now.",opts:["are playing","play","played","will play"],a:0,tag:"grammar"},
+{q:"He ___ be a doctor when he grows up.",opts:["wants to","want to","wants","want"],a:0,tag:"grammar"},
+{q:"This is the best movie I have ___ seen.",opts:["ever","never","already","just"],a:0,tag:"vocab"}
 ];
 /* ---------- 盲盒池（w=权重，good=好东西用于保底） ---------- */
 var BOXPOOL=[
@@ -728,7 +875,7 @@ var FATEPOOL=[
 ];
 /* ================= 状态 ================= */
 var G=null, QIDX=[];
-var SAVE_KEY='myskme_dfw_v13';
+var SAVE_KEY='myskme_dfw_v15';
 function $(i){return document.getElementById(i);}
 function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
 function showM(html){$('mbox').innerHTML=html;$('modal').classList.remove('hidden');}
@@ -885,7 +1032,7 @@ function confetti(o){
   }catch(e){}
 }
 function loadSave(){ try{var v=localStorage.getItem(SAVE_KEY); if(v)return JSON.parse(v);
-  var olds=['myskme_dfw_v12','myskme_dfw_v11','myskme_dfw_v10','myskme_dfw_v9','myskme_dfw_v8'];
+  var olds=['myskme_dfw_v14','myskme_dfw_v13','myskme_dfw_v12','myskme_dfw_v11','myskme_dfw_v10','myskme_dfw_v9'];
   for(var i=0;i<olds.length;i++){var o=localStorage.getItem(olds[i]); if(o)return JSON.parse(o);}
   return null;}catch(e){return null;} }
 function clearSave(){ try{localStorage.removeItem(SAVE_KEY);}catch(e){} }
@@ -952,7 +1099,7 @@ function renderTiles(){
         var o=document.createElement('span'); o.className='own';
         o.style.color=p.chara.color; o.textContent=p.chara.name;
         d.appendChild(o);
-        var l=document.createElement('span'); l.className='lv';
+        var l=document.createElement('span'); l.className='lv hlv'+(t.level||1);
         l.innerHTML=HOUSES[(t.level||1)-1]+'<span class="lvnum">Lv'+(t.level||1)+'</span>'; d.appendChild(l);
       }
       var tk=$('tks'+idx); tk.innerHTML='';
@@ -988,7 +1135,8 @@ function renderPlayers(){
     if(sk&&!p.elim&&skillOn()){
       skHtml='<button class="skillbtn'+((me&&p.skillCd<=0)?'':' off')+'" data-sk="'+p.id+'">'+SKILLICON[p.chara.id]+'【'+sk.name+'】'+sk.desc+' · '+(p.skillCd>0?'冷却 '+p.skillCd:'可释放')+'</button>';
     }
-    d.innerHTML='<div class="ph">'+avImg(p.chara,'pdot')+p.name+'<span class="rank">第'+(ri+1)+'名</span></div>'+
+    var ttlHtml=(p.titles&&p.titles.length)?'<span class="titlechip">'+esc(titleName(p.titles[p.titles.length-1]))+'</span>':'';
+    d.innerHTML='<div class="ph">'+avImg(p.chara,'pdot')+esc(p.name)+ttlHtml+'<span class="rank">第'+(ri+1)+'名</span></div>'+
       '<div>金币 <span class="pa">'+p.cash+'</span> · 资产 '+assets(p)+
       (p.combo>=2?' · <b style="color:var(--gold-d)">'+p.combo+'连击</b>':'')+'</div>'+
       '<div class="pit">'+(p.elim?'已破产':(items.join('')||'无道具'))+'</div>'+skHtml;
@@ -996,10 +1144,23 @@ function renderPlayers(){
   });
   $('roundLab').textContent='第 '+Math.min(G.round,G.cfg.maxRound)+'/'+G.cfg.maxRound+' 回合';
 }
-function renderAll(){ renderTiles(); renderPlayers(); }
+function renderAll(){ renderTiles(); renderPlayers(); if(typeof renderWx==='function')renderWx(); }
+function fitBoard(){
+  var wrap=$('boardWrap'), b=$('board');
+  if(!wrap||!b||!b.children.length)return;
+  b.style.transform='';
+  var r=wrap.getBoundingClientRect(), br=b.getBoundingClientRect();
+  if(br.width<=0||br.height<=0||r.width<=0||r.height<=0)return;
+  var sc=Math.min(1, r.width/br.width, r.height/br.height);
+  if(sc<0.995)b.style.transform='scale('+sc.toFixed(3)+')';
+}
 function setCenter(html){ $('center').innerHTML=html; }
 /* ================= 开局 ================= */
-var PCOUNT=4, SEL_ROUNDS=20, SEL_CASH=1500, SEL_QMODE='bank', SEL_ANIM=1, SEL_EGG=1, SEL_ITEMS=1, SEL_SKILL=1, SEL_PACK='generic';
+var PCOUNT=4, SEL_ROUNDS=20, SEL_CASH=1500, SEL_QMODE='bank', SEL_ANIM=1, SEL_EGG=1, SEL_ITEMS=1, SEL_SKILL=1, SEL_PACK='generic', SEL_MODE='multi';
+var SEL_CHARAS=[0,1,2,3,4,5], SEL_NAMES=['','','','','',''];
+var SEL_AI=0;
+var RANK_KEY='myskme_dfw_rank';
+function esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function itemsOn(){ return G&&G.cfg&&G.cfg.items!==false; }
 function skillOn(){ return G&&G.cfg&&G.cfg.skill!==false; }
 function segWire(id,cb){
@@ -1029,36 +1190,523 @@ function segSet(id,v){
 function syncRoundDefault(){
   SEL_ROUNDS=(PCOUNT===2?15:20); segSet('segRound',SEL_ROUNDS);
 }
+function syncSetupSel(){
+  while(SEL_CHARAS.length<PCOUNT)SEL_CHARAS.push(SEL_CHARAS.length);
+  SEL_CHARAS.length=PCOUNT;
+  while(SEL_NAMES.length<PCOUNT)SEL_NAMES.push('');
+  SEL_NAMES.length=PCOUNT;
+  var used={},i,c;
+  for(i=0;i<PCOUNT;i++){
+    c=SEL_CHARAS[i];
+    if(c==null||used[c]){c=0;while(used[c])c=(c+1)%CHARAS.length;SEL_CHARAS[i]=c;}
+    used[c]=1;
+    if(!SEL_NAMES[i])SEL_NAMES[i]=CHARAS[c].name;
+  }
+}
+function pickChara(pi,ci){
+  if(SEL_CHARAS[pi]===ci)return;
+  if(SEL_CHARAS.indexOf(ci)>=0){sNo();return;}
+  for(var i=0;i<PCOUNT;i++){var el=$('pn'+i);if(el)SEL_NAMES[i]=el.value;}
+  SEL_CHARAS[pi]=ci;SEL_NAMES[pi]=CHARAS[ci].name;
+  renderSetupNames();
+}
 function renderSetupNames(){
+  syncSetupSel();
   var w=$('pnames'); w.innerHTML='';
   for(var i=0;i<PCOUNT;i++){
-    var r=document.createElement('div'); r.className='pblock';
-    r.innerHTML='<div class="prow">'+avImg(CHARAS[i],'pdot')+
-      '<input id="pn'+i+'" value="'+CHARAS[i].name+'" maxlength="6"></div>'+
-      '<div class="chara-card"><b>【'+CHARAS[i].skill+'】</b>'+CHARAS[i].skillDesc+
-      '<br><span class="intro">'+CHARAS[i].intro+'</span></div>';
-    w.appendChild(r);
+    (function(pi){
+      var ci=SEL_CHARAS[pi], c=CHARAS[ci];
+      var r=document.createElement('div'); r.className='pblock';
+      var avrow=document.createElement('div'); avrow.className='avpick';
+      CHARAS.forEach(function(cc,cci){
+        var b=document.createElement('button');
+        b.className='avbtn'+(cci===ci?' sel':'')+((SEL_CHARAS.indexOf(cci)>=0&&cci!==ci)?' taken':'');
+        b.innerHTML=avImg(cc,'pdot'); b.title=cc.name; b.type='button';
+        b.onclick=function(){pickChara(pi,cci);};
+        avrow.appendChild(b);
+      });
+      r.appendChild(avrow);
+      var nm=document.createElement('input');
+      nm.id='pn'+pi; nm.maxLength=6; nm.placeholder='名字（最多6字）';
+      nm.value=SEL_NAMES[pi]||c.name;
+      nm.oninput=function(){SEL_NAMES[pi]=this.value;};
+      var prow=document.createElement('div'); prow.className='prow';
+      prow.appendChild(nm); r.appendChild(prow);
+      var card=document.createElement('div'); card.className='chara-card';
+      card.innerHTML='<b>【'+c.skill+'】</b>'+c.skillDesc+'<br><span class="intro">'+c.intro+'</span>';
+      r.appendChild(card);
+      w.appendChild(r);
+    })(i);
   }
+}
+/* ---------- v0.14：单人挑战排行榜 ---------- */
+function getRank(){try{var r=JSON.parse(localStorage.getItem(RANK_KEY));return r||[]}catch(e){return[]}}
+function saveRank(e){var r=getRank();r.push(e);r.sort(function(a,b){return b.score-a.score;});r=r.slice(0,10);try{localStorage.setItem(RANK_KEY,JSON.stringify(r))}catch(e){}}
+function fmtDate(d){return (d.getMonth()+1)+'/'+d.getDate();}
+function renderSoloRank(){
+  var w=$('soloRank'); if(!w)return;
+  var r=getRank();
+  if(!r.length){w.innerHTML='<div style="font-size:13px;color:var(--ink2)">暂无上榜，快来当第一个！</div>';return;}
+  w.innerHTML='<table class="ranktab"><tr><th>名次</th><th>玩家</th><th>角色</th><th>资产分</th><th>日期</th></tr>'+
+    r.map(function(e,i){return '<tr><td>'+(i+1)+'</td><td>'+esc(e.name)+'</td><td>'+esc(e.chara)+'</td><td><b>'+e.score+'</b></td><td>'+esc(e.date)+'</td></tr>'}).join('')+'</table>';
+}
+function toggleSoloUI(){
+  var solo=SEL_MODE==='solo';
+  $('soloBox').classList.toggle('hidden',!solo);
+  $('grpCount').style.display=solo?'none':'';
+  if(solo){PCOUNT=1;syncRoundDefault();renderSoloRank();}
+  else{if(PCOUNT<2)PCOUNT=2;}
+  $('pcount').textContent=PCOUNT;
+  renderSetupNames();
 }
 function newGame(){
   var BT=SEL_PACK==='dalian'?DL_TILES:TILES;
+  var solo=SEL_MODE==='solo';
+  var cnt=solo?1:PCOUNT;
   var players=[];
-  for(var i=0;i<PCOUNT;i++){
-    var nm=($('pn'+i)&&$('pn'+i).value.trim())||CHARAS[i].name;
-    players.push({id:i, chara:CHARAS[i], name:nm, cash:SEL_CASH, pos:0,
+  for(var i=0;i<cnt;i++){
+    var ci=(SEL_CHARAS[i]!=null?SEL_CHARAS[i]:i)%CHARAS.length;
+    var nm=(($('pn'+i)&&$('pn'+i).value.trim())||SEL_NAMES[i]||'').trim()||CHARAS[ci].name;
+    nm=nm.slice(0,6);
+    players.push({id:i, chara:CHARAS[ci], name:nm, cash:SEL_CASH, pos:0,
       combo:0, elim:false, rmt:false, koi:false, halfBuy:false, stuck:false, skipTurn:false, skillCd:0,
       items:{remote:0, free:0, barrier:0, swap:0, shield:0},
       st:{qOk:0,qTot:0,mx:0,box:0}});
   }
+  if(solo&&SEL_AI>0){
+    var usedC=players.map(function(x){return x.chara.id;});
+    for(var ai=0;ai<SEL_AI&&ai<3;ai++){
+      var fci=-1;
+      for(var ci2=0;ci2<CHARAS.length;ci2++){ if(usedC.indexOf(CHARAS[ci2].id)<0){fci=ci2;break;} }
+      if(fci<0)break; usedC.push(CHARAS[fci].id);
+      players.push({id:players.length, chara:CHARAS[fci], name:AI_NAMES[ai], cash:SEL_CASH, pos:0, ai:true,
+        combo:0, elim:false, rmt:false, koi:false, halfBuy:false, stuck:false, skipTurn:false, skillCd:0,
+        items:{remote:0, free:0, barrier:0, swap:0, shield:0},
+        st:{qOk:0,qTot:0,mx:0,box:0}, titles:[]});
+    }
+  }
   SNAP=null;
-  G={players:players, turn:0, round:1, pity:0, over:false, barriers:[], turnSeq:0, snapSeq:-1, phase:'start',
-     cfg:{pack:SEL_PACK, maxRound:SEL_ROUNDS, startCash:SEL_CASH, qmode:SEL_QMODE, anim:SEL_ANIM===1, egg:SEL_EGG===1, items:SEL_ITEMS===1, skill:SEL_SKILL===1},
+  G={players:players, turn:0, round:1, pity:0, over:false, solo:solo, barriers:[], turnSeq:0, snapSeq:-1, phase:'start',
+     cfg:{pack:SEL_PACK, maxRound:solo?20:SEL_ROUNDS, startCash:SEL_CASH, qmode:SEL_QMODE, anim:SEL_ANIM===1, egg:SEL_EGG===1, items:SEL_ITEMS===1, skill:SEL_SKILL===1},
+     weather:{type:'sunny',until:5}, sessionEggs:0, skitRound:-1,
      tiles:BT.map(function(t){var n={t:t.t,name:t.name,ic:t.ic};if(t.desc)n.desc=t.desc;if(t.price){n.price=t.price;n.owner=null;n.level=1;n.upSpent=0;}if(t.amt)n.amt=t.amt;return n;})};
   $('sSetup').classList.add('hidden'); $('sGame').classList.remove('hidden');
   applyAnimClass();
-  buildBoard(); addLog('游戏开始！'+PCOUNT+' 位玩家，'+SEL_ROUNDS+' 回合，起始金币 '+SEL_CASH+'，'+(SEL_PACK==='dalian'?'大连风情版':'通用版')+'地名'+'，'+(SEL_QMODE==='offline'?'线下出题':'内置题库')+'，'+players[0].name+' 先手。');
+  buildBoard(); fitBoard(); renderWx(); addLog('游戏开始！'+(solo?(SEL_AI>0?('单人对战（+'+SEL_AI+' AI）'):'单人挑战'):' '+cnt+' 位玩家')+'，'+(solo?20:SEL_ROUNDS)+' 回合，起始金币 '+SEL_CASH+'，'+(SEL_PACK==='dalian'?'大连风情版':'通用版')+'地名'+'，'+(SEL_QMODE==='offline'?'线下出题':'内置题库')+'，'+players[0].name+' 先手。');
   save(); doTurn();
 }
+/* ============================================================
+   v0.15 系统补完：成就/图鉴/交易/AI/战报/天气/称号/生涯/小剧场/拍卖/图形/动画
+   ============================================================ */
+var ACHI_KEY='myskme_dfw_achi', ACHISTAT_KEY='myskme_dfw_achistat';
+var DEX_KEY='myskme_dfw_dex', DEXEGG_KEY='myskme_dfw_dexegg';
+var TITLE_KEY='myskme_dfw_title', CAREER_KEY='myskme_dfw_career';
+function lsGet(k,d){ try{var v=JSON.parse(localStorage.getItem(k)); return v==null?d:v;}catch(e){return d;} }
+function lsSet(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
+/* ---------- 成就（12） ---------- */
+var ACHI=[
+ {id:'first',n:'初露锋芒',d:'完成第一局游戏'},
+ {id:'rich',n:'富可敌国',d:'单局资产超过 10000'},
+ {id:'tycoon',n:'地产大亨',d:'单局拥有 10 块地'},
+ {id:'setc',n:'套色收藏家',d:'集齐一套套色'},
+ {id:'combo5',n:'连击之王',d:'答题 5 连击'},
+ {id:'egghunter',n:'彩蛋猎人',d:'累计抓到 5 个彩蛋'},
+ {id:'goldmonkey',n:'金猴眷顾',d:'抓到稀有金猴'},
+ {id:'rent1k',n:'一掷千金',d:'单次租金收入超过 1000'},
+ {id:'scholar',n:'学霸',d:'单局答题正确率 90%+（≥10 题）'},
+ {id:'lone',n:'独行侠',d:'单人挑战登上排行榜'},
+ {id:'dalian',n:'大连通',d:'大连风情版完成一局'},
+ {id:'comeback',n:'绝境逢生',d:'资产跌破 500 后回升超过 2000'}
+];
+function unlockAchi(id){
+  var a=lsGet(ACHI_KEY,{}); if(a[id])return false;
+  var nm='成就'; for(var i=0;i<ACHI.length;i++)if(ACHI[i].id===id)nm=ACHI[i].n;
+  a[id]=fmtDate(new Date()); lsSet(ACHI_KEY,a);
+  sWin(); scrollToast('成就解锁',nm); addLog('★ 成就解锁【'+nm+'】');
+  return true;
+}
+function achiAdd(stat,n){ var s=lsGet(ACHISTAT_KEY,{}); s[stat]=(s[stat]||0)+(n||1); lsSet(ACHISTAT_KEY,s); return s[stat]; }
+/* ---------- 称号（10） ---------- */
+var TITLES=[
+ {id:'richman',n:'粥城首富',d:'资产破万'},
+ {id:'laolishi',n:'捞力士传人',d:'买过捞力士表行'},
+ {id:'lvdagun',n:'驴打滚',d:'被路障绊倒 3 次'},
+ {id:'goldfriend',n:'金猴之友',d:'抓到金猴'},
+ {id:'scholar',n:'学霸',d:'单局正确率 90%+'},
+ {id:'landlord',n:'包租公',d:'拥有 10 块地'},
+ {id:'egghunter2',n:'彩蛋猎手',d:'累计抓到 10 个彩蛋'},
+ {id:'dalianwin',n:'大连通',d:'大连包夺冠'},
+ {id:'eggroller',n:'滚蛋高手',d:'蛋【滚】用 10 次'},
+ {id:'teahost',n:'茶话会主席',d:'【请喝茶】用 5 次'}
+];
+function titleName(id){ for(var i=0;i<TITLES.length;i++)if(TITLES[i].id===id)return TITLES[i].n; return id; }
+function awardTitle(p,id){
+  p.titles=p.titles||[];
+  var g=lsGet(TITLE_KEY,{});
+  if(p.titles.indexOf(id)<0){ p.titles.push(id); }
+  if(!g[id]){ g[id]=fmtDate(new Date()); lsSet(TITLE_KEY,g); }
+  else if(g[id+'_'+p.name]){ return false; }
+  g[id+'_'+p.name]=1; lsSet(TITLE_KEY,g);
+  sWin(); scrollToast('称号授予',p.name+' · '+titleName(id));
+  addLog('★ '+p.name+' 获得称号【'+titleName(id)+'】');
+  renderAll();
+  return true;
+}
+/* ---------- 生涯 ---------- */
+function career(){ return lsGet(CAREER_KEY,{games:0,wins:0,maxAssets:0,maxCombo:0,eggs:0,qTot:0,qOk:0}); }
+function careerSave(c){ lsSet(CAREER_KEY,c); }
+function careerUpdate(rk){
+  var c=career(); c.games++;
+  (rk||[]).forEach(function(pl){
+    var av=assets(pl), st=pl.st||{qOk:0,qTot:0,mx:0,box:0};
+    if(av>c.maxAssets)c.maxAssets=av;
+    if(st.mx>c.maxCombo)c.maxCombo=st.mx;
+    c.qTot+=st.qTot; c.qOk+=st.qOk;
+  });
+  c.eggs+=(G.sessionEggs||0);
+  careerSave(c);
+}
+/* ---------- 图鉴 ---------- */
+function dexMark(kind,name){
+  if(!G||!name)return;
+  var d=lsGet(DEX_KEY,{}), pk=(G.cfg&&G.cfg.pack)||'generic';
+  d[pk]=d[pk]||{}; d[pk][name]=d[pk][name]||{};
+  d[pk][name][kind]=1; lsSet(DEX_KEY,d);
+}
+function dexEgg(id){ var d=lsGet(DEXEGG_KEY,{}); d[id]=1; lsSet(DEXEGG_KEY,d); }
+/* ---------- 天气 ---------- */
+var WX_SVG={
+ sunny:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round"><circle cx="12" cy="12" r="5" fill="#FFD966"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5 5l1.8 1.8M17.2 17.2L19 19M19 5l-1.8 1.8M6.8 17.2L5 19"/></svg>',
+ storm:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M7 15a4.5 4.5 0 1 1 .8-8.9A5.5 5.5 0 0 1 18.5 8 3.8 3.8 0 0 1 17.5 15z" fill="#BFD9E2"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/></svg>',
+ wind:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/></svg>',
+ gold:'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l7 12H5z" fill="#FFD966"/><circle cx="18.5" cy="5.5" r="2.5" fill="#FFE9A8"/><path d="M9 12l2 3 2-2 2 2"/></svg>'
+};
+var WX={
+ sunny:{n:'大晴天',d:'适合买地，宜出行'},
+ storm:{n:'暴雨',d:'雨大房租涨：所有租金 +20%'},
+ wind:{n:'大风',d:'风把骰子吹歪了：掷骰结果 ±1'},
+ gold:{n:'日照金山',d:'土豪金系地块租金翻倍'}
+};
+var WX_KEYS=['sunny','sunny','storm','wind','gold'];
+function renderWx(){
+  var el=$('wxpill'); if(!el||!G||!G.weather)return;
+  var w=WX[G.weather.type]||WX.sunny;
+  el.innerHTML=WX_SVG[G.weather.type]+'<span>'+w.n+'</span>';
+  el.title=w.d;
+}
+function rollWeather(){
+  if(!G||G.over)return;
+  var t=WX_KEYS[(Math.random()*WX_KEYS.length)|0];
+  G.weather={type:t,until:G.round+4};
+  renderWx(); wxFx(t);
+  addLog('天气突变：'+WX[t].n+'！'+WX[t].d+'（持续 5 回合）');
+}
+function wxFx(t){
+  if(!anim())return;
+  var layer=$('wxfx');
+  if(!layer){ layer=document.createElement('div'); layer.id='wxfx'; document.body.appendChild(layer); }
+  layer.innerHTML='';
+  if(t==='storm'){
+    var r=document.createElement('div'); r.className='rain'; layer.appendChild(r);
+    setTimeout(function(){layer.innerHTML='';},2000);
+  }else if(t==='wind'){
+    for(var i=0;i<10;i++){ (function(i){
+      var l=document.createElement('div'); l.className='leaf';
+      l.style.left=(Math.random()*90)+'vw'; l.style.animationDelay=(i*0.18)+'s';
+      layer.appendChild(l);
+    })(i); }
+    setTimeout(function(){layer.innerHTML='';},2600);
+  }else if(t==='gold'){
+    var g=document.createElement('div'); g.className='goldflash'; layer.appendChild(g);
+    setTimeout(function(){layer.innerHTML='';},1500);
+  }
+}
+/* ---------- 卷轴 toast（成就/称号） ---------- */
+function scrollToast(top,txt){
+  if(!anim()){ floatBig(txt); return; }
+  var d=document.createElement('div'); d.className='scrollx';
+  d.innerHTML='<div style="font-size:11px;color:#9A7A2E">'+top+'</div><b>'+esc(txt)+'</b>';
+  document.body.appendChild(d);
+  requestAnimationFrame(function(){ d.classList.add('go'); });
+  setTimeout(function(){ if(d.parentNode)d.parentNode.removeChild(d); },900);
+}
+function toast(txt){ floatBig(txt); }
+/* ---------- AI 对手 ---------- */
+var AI_NAMES=['AI·算盘','AI·老谋','AI·锦囊'];
+function aiBuy(p,t,pay){ return p.cash>pay*1.4&&Math.random()<0.7; }
+function aiUp(p,cost){ return p.cash>cost*2&&Math.random()<0.5; }
+function aiRentChoice(p,rent){
+  if(itemsOn()&&p.items.free>0&&rent>400)return 'card';
+  if(Math.random()<0.3)return 'quiz';
+  return 'pay';
+}
+function aiRollSteps(p){
+  var steps=1+((Math.random()*6)|0);
+  if(p.koi){steps=6;p.koi=false;}
+  if(p.dicePlus){steps+=p.dicePlus;p.dicePlus=0;}
+  if(p.diceMod){steps+=p.diceMod;p.diceMod=0;}
+  if(p.combo>=2)steps+=1;
+  if(G.weather&&G.weather.type==='wind')steps+=Math.random()<0.5?-1:1;
+  return Math.max(1,steps);
+}
+async function aiTurn(p){
+  setCenter('<div class="cp">'+avImg(p.chara,'dot')+esc(p.name)+' 思考中<span class="tdots"><i>.</i><i>.</i><i>.</i></span></div><div class="csub">AI 正在算计…</div>');
+  await sleep(anim()?900:120);
+  p.st=p.st||{qOk:0,qTot:0,mx:0,box:0};
+  /* 答题 70% */
+  var ok=Math.random()<0.7;
+  p.st.qTot++;
+  if(p.quizPass){ ok=true; p.quizPass=false; addLog(p.name+' 听故事听入迷，超常发挥直接答对！'); }
+  if(ok){
+    p.st.qOk++; p.combo++; p.st.mx=Math.max(p.st.mx,p.combo);
+    sOk(); addLog(p.name+' 答对了（AI 正确率 70%，这次蒙对了）'+(p.combo>=2?'（'+p.combo+'连击！）':''));
+    if(p.combo>=5)unlockAchi('combo5');
+    if(p.combo===3){
+      var rk3=randItemKey();
+      if(itemsOn()&&giveItem(p,rk3))addLog('3 连击奖励：'+p.name+' 获得道具【'+ITEMNAME[rk3]+'】');
+    }
+  }else{
+    p.combo=0; sNo(); addLog(p.name+' 答错了，AI 也有今天'); save(); renderAll(); endTurn(); return;
+  }
+  /* 技能：20% 随机用（冷却好时） */
+  if(skillOn()&&p.skillCd<=0&&Math.random()<0.2){ await useSkill(p); if(p.elim||G.over)return; }
+  var steps=aiRollSteps(p);
+  addLog(p.name+' 掷出 '+steps+' 点');
+  await moveSteps(p,steps); renderAll();
+  await sleep(anim()?400:60);
+  await settle(p);
+  await maybeChase(p); await maybeSkit(p);
+  if(p.elim||G.over)return;
+  if(p.combo>=3){
+    addLog(p.name+' 触发 3 连击：再掷一次！');
+    await moveAndSettle(p,aiRollSteps(p),true);
+  }else{ endTurn(); }
+}
+/* ---------- 玩家间交易 ---------- */
+async function tradeFlow(p){
+  if(G.solo||p.ai)return;
+  var buyers=alivePlayers().filter(function(x){return x!==p;});
+  if(buyers.length<1){ addLog('没人可交易'); return; }
+  var myLands=[];
+  G.tiles.forEach(function(t,i){ if(t.t==='land'&&t.owner===p.id)myLands.push({t:t,i:i}); });
+  if(!myLands.length){ addLog(p.name+' 名下没地，拿什么交易？先去买一块吧'); sNo(); return; }
+  showM('<h2>发起交易</h2><div class="c">选一块你的地</div><div class="btnrow">'+
+    myLands.map(function(x){return '<button class="btn ghost" data-v="'+x.i+'">'+esc(x.t.name)+'</button>';}).join('')+'</div>'+
+    '<div class="btnrow"><button class="btn ghost" data-v="x">取消</button></div>');
+  var li=await waitBtn('.btn'); hideM();
+  if(li==='x'||li==null)return;
+  var t=G.tiles[+li], price=t.price;
+  while(true){
+    showM('<h2>定个价</h2><div class="big">'+price+' 金币</div><div class="c">'+esc(t.name)+'（原价 '+t.price+'）</div>'+
+      '<div class="btnrow"><button class="btn ghost" data-v="dec">-100</button><button class="btn ghost" data-v="inc">+100</button></div>'+
+      '<div class="btnrow"><button class="btn" data-v="ok">定价</button><button class="btn ghost" data-v="x">取消</button></div>');
+    var pv=await waitBtn('.btn'); hideM();
+    if(pv==='x')return;
+    if(pv==='dec')price=Math.max(100,price-100);
+    else if(pv==='inc')price+=100;
+    else break;
+  }
+  showM('<h2>卖给谁</h2><div class="c">「'+esc(t.name)+'」售价 '+price+'</div><div class="btnrow">'+
+    buyers.map(function(x){return '<button class="btn ghost" data-v="'+x.id+'">'+esc(x.name)+'</button>';}).join('')+'</div>'+
+    '<div class="btnrow"><button class="btn ghost" data-v="x">取消</button></div>');
+  var bi=await waitBtn('.btn'); hideM();
+  if(bi==='x'||bi==null)return;
+  var b=G.players[+bi];
+  if(b.ai){ addLog('AI '+b.name+'：不卖！我的地我做主'); sNo(); floatBig('AI 拒绝交易'); return; }
+  showM('<h2>'+esc(b.name)+'，有人想交易</h2><div class="c">'+esc(p.name)+' 想以 <b>'+price+'</b> 金币把「'+esc(t.name)+'」卖给你<br>你剩余 '+b.cash+' 金币</div>'+
+    '<div class="btnrow"><button class="btn" data-v="yes">接受</button><button class="btn ghost" data-v="no">拒绝</button></div>');
+  var acc=await waitBtn('.btn'); hideM();
+  if(acc!=='yes'){ addLog(b.name+' 拒绝了交易，转身就走'); sNo(); return; }
+  if(b.cash<price){ addLog(b.name+' 钱不够（'+b.cash+'/'+price+'），交易告吹'); sNo(); return; }
+  /* 二次确认 */
+  showM('<h2>确认交易</h2><div class="c">'+esc(b.name)+' 以 '+price+' 买下「'+esc(t.name)+'」？</div>'+
+    '<div class="btnrow"><button class="btn" data-v="yes">确认</button><button class="btn ghost" data-v="no">再想想</button></div>');
+  var cf=await waitBtn('.btn'); hideM();
+  if(cf!=='yes'){ addLog('交易取消'); return; }
+  b.cash-=price; p.cash+=price; t.owner=b.id;
+  dexMark('own',t.name);
+  sCoin(); addLog('交易达成！'+b.name+' 以 '+price+' 从 '+p.name+' 手中买下「'+t.name+'」');
+  if(G.tiles.filter(function(x){return x.t==='land'&&x.owner===b.id;}).length>=10){ unlockAchi('tycoon'); awardTitle(b,'landlord'); }
+  if(hasSet(b.id,landTier(t.price))){ unlockAchi('setc'); addLog(b.name+' 集齐'+TIERNAME[landTier(t.price)]+'！租金翻倍'); flashTier(landTier(t.price)); }
+  renderAll(); save();
+}
+/* ---------- 角色小剧场（同格互动） ---------- */
+async function maybeSkit(p){
+  if(G.over||p.elim)return;
+  if(G.skitRound===G.round)return;
+  var others=G.players.filter(function(q){return q!==p&&!q.elim&&q.pos===p.pos;});
+  if(!others.length||Math.random()>0.6)return;
+  G.skitRound=G.round;
+  var q=others[0], a=p.chara?p.chara.id:'', b=q.chara?q.chara.id:'';
+  var pair=[a,b].sort().join('+');
+  if(pair==='donkey+teapot'){
+    addLog('小剧场：驴帮茶壶搬家！两人哼哧哼哧各前进 1 格（茶壶：轻点，我的盖子！）');
+    p.pos=(p.pos+TILES.length)%TILES.length; p.pos=(p.pos+1)%TILES.length;
+    q.pos=(q.pos+1)%TILES.length; sStep();
+  }else if(pair==='monkey+snake'){
+    var sn=a==='snake'?p:q;
+    sn.pos=(sn.pos-1+TILES.length)%TILES.length;
+    addLog('小剧场：猴耍蛇！蛇吓得后退 1 格（蛇：你等着！）'); sStep();
+  }else if(pair==='egg+fish'){
+    var eg=a==='egg'?p:q;
+    eg.quizPass=true;
+    addLog('小剧场：鱼给蛋讲海的故事，蛋听入迷了——下次答题直接算对！'); sOk(); floatBig('听入迷了');
+  }else{ return; }
+  renderAll(); save();
+  await sleep(anim()?600:80);
+}
+/* ---------- 破产拍卖 ---------- */
+function hammerFx(){
+  if(!anim())return;
+  var d=document.createElement('div'); d.className='hammerm';
+  d.innerHTML='<svg class="hammeranim" width="72" height="72" viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round"><rect x="8" y="3" width="9" height="5" rx="1" fill="#C9A86A"/><path d="M11 8v13"/></svg><div style="font-size:13px;color:#7A5A1E;font-weight:bold">哐！哐！哐！</div>';
+  d.style.cssText='position:fixed;left:50%;top:34%;transform:translate(-50%,-50%);z-index:70;pointer-events:none';
+  document.body.appendChild(d);
+  setTimeout(function(){ if(d.parentNode)d.parentNode.removeChild(d); },1600);
+}
+function dealFx(winner){
+  floatBig('成交！');
+  var el=cardOf(winner.id); if(el)coinFly($('board'),el);
+  sCoin();
+}
+async function auctionLands(p){
+  var lands=G.tiles.filter(function(t){return t.t==='land'&&t.owner===p.id;});
+  if(!lands.length)return;
+  addLog('拍卖师驴登场：'+p.name+' 的 '+lands.length+' 块地，全部拍卖！这地，值！');
+  hammerFx();
+  await sleep(anim()?1500:100);
+  for(var li=0; li<lands.length; li++){
+    var t=lands[li], start=Math.max(100,Math.round(t.price/2)), winner=null;
+    var bidders=alivePlayers().filter(function(x){return x!==p&&!x.elim;});
+    if(!bidders.length){ t.owner=null;t.level=1;t.upSpent=0; addLog('「'+t.name+'」流拍，收归银行'); continue; }
+    addLog('拍卖「'+t.name+'」（Lv'+t.level+'），起拍 '+start+' 金币！');
+    for(var bi=0;bi<bidders.length;bi++){
+      var b=bidders[bi], bid=false;
+      if(b.ai){ bid=b.cash>start*2&&Math.random()<0.55; }
+      else{
+        showM('<h2>拍卖 '+esc(t.name)+'</h2><div class="c">起拍 <b>'+start+'</b>（原价 '+t.price+'，Lv'+t.level+'）<br>'+esc(b.name)+'，出价吗？剩余 '+b.cash+'</div>'+
+          '<div class="btnrow"><button class="btn" data-v="bid">出价 '+start+'</button><button class="btn ghost" data-v="pass">放弃</button></div>');
+        var v=await waitBtn('.btn'); hideM();
+        bid=(v==='bid'&&b.cash>=start);
+      }
+      if(bid){ winner=b; break; }
+    }
+    if(winner){
+      winner.cash-=start; t.owner=winner.id; dexMark('own',t.name);
+      addLog('成交！'+winner.name+' 以 '+start+' 拍下「'+t.name+'」'); dealFx(winner);
+      if(G.tiles.filter(function(x){return x.t==='land'&&x.owner===winner.id;}).length>=10){ unlockAchi('tycoon'); awardTitle(winner,'landlord'); }
+    }else{
+      t.owner=null;t.level=1;t.upSpent=0;
+      addLog('「'+t.name+'」流拍，收归银行，欢迎下次捡漏');
+    }
+    renderAll(); save();
+    await sleep(anim()?600:80);
+  }
+}
+/* ---------- 结算战报 ---------- */
+function warReport(rk,reason,solo){
+  var L=['【金榜大亨战报】'+reason];
+  var medals=['冠军','亚军','季军'];
+  rk.forEach(function(p,i){
+    var st=p.st||{qOk:0,qTot:0,mx:0,box:0};
+    var lands=G.tiles.filter(function(t){return t.owner===p.id;}).length;
+    L.push((medals[i]||('第'+(i+1)+'名'))+' '+p.name+'：资产 '+assets(p)+'，地产 '+lands+' 块，答题 '+st.qOk+'/'+st.qTot+'，最高连击 '+st.mx);
+  });
+  var jokes=['驴说：这局地的价格，值！','茶壶：喝杯茶，复盘一下','蛋：我还没熟，但我尽力了','蛇：下次我先滑为敬','猴先生：主角光环偶尔也断电','鱼小姐：如鱼得水，下次还来'];
+  L.push('神点评：'+jokes[(Math.random()*jokes.length)|0]);
+  L.push('—— 金榜大亨 MYSKME');
+  return L.join('\n');
+}
+function copyText(txt,okmsg){
+  function done(){ toast(okmsg||'战报已复制，快去炫耀吧！'); }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done,function(){ toast('复制失败，换个浏览器试试'); });
+  }else toast('浏览器不支持复制');
+}
+/* ---------- 主菜单：成就墙 / 图鉴 / 生涯 / 称号 ---------- */
+function achiWall(){
+  var a=lsGet(ACHI_KEY,{});
+  var h='<h2>成就墙</h2><div class="c">已解锁 '+(Object.keys(a).length)+'/'+ACHI.length+'</div><div class="achigrid">'+
+    ACHI.map(function(x){
+      var un=!!a[x.id];
+      return '<div class="achi'+(un?'':' lock')+'"><b>'+(un?'★ ':'')+x.n+'</b><div class="ad">'+x.d+'</div>'+(un?'<div class="dt">'+a[x.id]+'</div>':'')+'</div>';
+    }).join('')+'</div><div class="btnrow"><button class="btn" data-v="ok">关闭</button></div>';
+  showM(h); waitBtn('.btn').then(hideM);
+}
+function dexUI(){
+  var d=lsGet(DEX_KEY,{}), pk=(typeof SEL_PACK!=='undefined'?SEL_PACK:'generic');
+  var tiles=(pk==='dalian'?DL_TILES:TILES).filter(function(t){return t.t==='land';});
+  var mine=d[pk]||{}, seen=0, owned=0;
+  var cells=tiles.map(function(t){
+    var m=mine[t.name]||{}, s=m.s||m.o;
+    if(s)seen++; if(m.o)owned++;
+    return '<div class="dexcell'+(s?'':' lock')+'"><div class="tico">'+(ICONS[t.ic]||'')+'</div><div>'+esc(t.name)+'</div><div style="color:var(--gold-d)">'+(m.o?'已拥有':(m.s?'到过':''))+'</div></div>';
+  }).join('');
+  var eggs=lsGet(DEXEGG_KEY,{}), eggN=Object.keys(eggs).length;
+  var eggCells=EGGS.map(function(e){
+    var un=!!eggs[e.id];
+    var nm={ingot:'金元宝',donkey:'驴',egg:'蛋',qbox:'问号盒',goldmonkey:'金猴',redpack:'红包雨',donkeystrike:'驴罢工',goldteapot:'金茶壶'}[e.id]||e.id;
+    return '<div class="dexcell'+(un?'':' lock')+'"><div>'+nm+'</div><div style="color:var(--gold-d)">'+(un?'已抓到':'')+'</div></div>';
+  }).join('');
+  showM('<h2>图鉴</h2><div class="c">'+(pk==='dalian'?'大连风情版':'通用版')+'地块 '+seen+'/'+tiles.length+'（拥有 '+owned+'）· 彩蛋 '+eggN+'/'+EGGS.length+'</div>'+
+    '<div class="dexsec">地块图鉴</div><div class="dexgrid">'+cells+'</div>'+
+    '<div class="dexsec">彩蛋图鉴</div><div class="dexgrid">'+eggCells+'</div>'+
+    '<div class="btnrow"><button class="btn" data-v="ok">关闭</button></div>');
+  waitBtn('.btn').then(hideM);
+}
+function careerUI(){
+  var c=career();
+  var rate=c.qTot?Math.round(c.qOk/c.qTot*100)+'%':'—';
+  showM('<h2>我的数据</h2><table class="careertab">'+
+    '<tr><td>总对局数</td><td>'+c.games+'</td></tr>'+
+    '<tr><td>总胜场</td><td>'+c.wins+'</td></tr>'+
+    '<tr><td>历史最高资产</td><td>'+c.maxAssets+'</td></tr>'+
+    '<tr><td>历史最长连击</td><td>'+c.maxCombo+'</td></tr>'+
+    '<tr><td>累计抓到彩蛋</td><td>'+c.eggs+'</td></tr>'+
+    '<tr><td>累计答题</td><td>'+c.qOk+'/'+c.qTot+'（'+rate+'）</td></tr>'+
+    '</table><div class="btnrow"><button class="btn" data-v="ok">关闭</button></div>');
+  waitBtn('.btn').then(hideM);
+}
+function titlesUI(){
+  var g=lsGet(TITLE_KEY,{});
+  var un=TITLES.filter(function(x){return g[x.id];});
+  showM('<h2>称号</h2><div class="c">已解锁 '+un.length+'/'+TITLES.length+'</div><div class="achigrid">'+
+    TITLES.map(function(x){
+      var has=!!g[x.id];
+      return '<div class="achi'+(has?'':' lock')+'"><b>'+(has?'★ ':'')+x.n+'</b><div class="ad">'+x.d+'</div></div>';
+    }).join('')+'</div><div class="btnrow"><button class="btn" data-v="ok">关闭</button></div>');
+  waitBtn('.btn').then(hideM);
+}
+/* ---------- 掷出 6 点爆炸星星 ---------- */
+function diceBoom(){
+  if(!anim())return;
+  var d=document.createElement('div'); d.className='dicestars';
+  var r=$('dice')?$('dice').getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};
+  d.style.left=(r.left+r.width/2)+'px'; d.style.top=(r.top+r.height/2)+'px';
+  var html='';
+  for(var i=0;i<10;i++){
+    var a=Math.random()*Math.PI*2, dist=40+Math.random()*60;
+    html+='<i style="--dx:'+Math.cos(a)*dist+'px;--dy:'+Math.sin(a)*dist+'px;animation-delay:'+(i*0.03)+'s"></i>';
+  }
+  d.innerHTML=html; document.body.appendChild(d);
+  setTimeout(function(){ if(d.parentNode)d.parentNode.removeChild(d); },900);
+}
+/* ---------- 集齐套色：纸币飘落（加强） ---------- */
+function moneyFall(tier){
+  if(!anim())return;
+  var colors={1:'#7BA08B',2:'#7A9BB5',3:'#C9A86A',4:'#D9A521'};
+  var c=colors[tier]||'#C9A86A';
+  for(var i=0;i<14;i++){
+    (function(i){
+      var d=document.createElement('div'); d.className='moneyfall';
+      d.style.background=c; d.style.left=(Math.random()*92)+'vw';
+      d.style.animationDelay=(i*0.09)+'s';
+      document.body.appendChild(d);
+      setTimeout(function(){ if(d.parentNode)d.parentNode.removeChild(d); },2600);
+    })(i);
+  }
+}
+
 /* ================= 回合 ================= */
 function nextAlive(from){
   var n=G.players.length, i=from;
@@ -1129,6 +1777,12 @@ function spawnRedpack(layer){
 }
 function eggCatch(t,d){
   if(!d||d._caught)return; d._caught=true;
+  dexEgg(t.id);
+  G.sessionEggs=(G.sessionEggs||0)+1;
+  var egtot=achiAdd('egg',1);
+  if(egtot>=5)unlockAchi('egghunter');
+  if(egtot>=10&&p)awardTitle(p,'egghunter2');
+  if(t.id==='goldmonkey'){ unlockAchi('goldmonkey'); }
   if(d._timer)clearTimeout(d._timer);
   var p=cur(); if(!p||p.elim){ var al=alivePlayers(); p=al.length?al[0]:null; }
   if(!p){ if(d.parentNode)d.parentNode.removeChild(d); return; }
@@ -1164,6 +1818,7 @@ function eggCatch(t,d){
     floatBig('请大家喝茶 +'+each); sWin();
     if(anim())confetti({particleCount:40,spread:70,colors:['#C9A86A','#F6DEA8','#2F4F4F']});
   }else if(t.id==='goldmonkey'){
+    awardTitle(p,'goldfriend');
     p.cash+=500;
     addLog('金猴现身！'+p.name+' 被金光闪到，+500 金币');
     floatBig('+500 金猴'); sWin();
@@ -1176,6 +1831,7 @@ function eggCatch(t,d){
 async function doTurn(){
   if(G.over)return;
   var p=cur();
+  if(p.ai){ await aiTurn(p); return; }
   /* v0.9：彩蛋惊喜（不阻塞主流程） */
   spawnEgg();
   /* v0.11：街头小剧场（12% 概率，不阻塞） */
@@ -1189,7 +1845,10 @@ async function doTurn(){
   if(p.skillCd>0)p.skillCd--;
   G.phase='start';
   renderAll();
-  /* 回合面板：道具 + 答题 */
+  showTurnPanel(p);
+}
+function showTurnPanel(p){
+  /* 回合面板：道具 + 答题 + 交易 */
   var it=[];
   if(itemsOn())ITEMKEYS.forEach(function(k){
     if(p.items[k])it.push('<button class="ichip" data-k="'+k+'">'+ITEMICON[k]+ITEMNAME[k]+' ×'+p.items[k]+'</button>');
@@ -1197,10 +1856,12 @@ async function doTurn(){
   setCenter('<div class="cp">'+avImg(p.chara,'dot')+p.name+' 的回合</div>'+
     '<div class="csub">金币 '+p.cash+' · 资产 '+assets(p)+(p.combo>=2?' · '+p.combo+'连击中':'')+(p.dicePlus?' · 蛋buff +'+p.dicePlus:'')+'</div>'+
     (it.length?'<div class="btnrow">'+it.join('')+'</div>':'')+
+    ((!G.solo&&!p.ai&&alivePlayers().length>=2)?'<button class="btn ghost" id="btnTrade" style="margin-bottom:6px">发起交易</button>':'')+
     '<button class="btn" id="btnQuiz">答题掷骰</button>');
   $('center').onclick=function(e){
     var b=e.target.closest('button'); if(!b)return;
     if(b.id==='btnQuiz'){ $('center').onclick=null; quizPhase(p); return; }
+    if(b.id==='btnTrade'){ tradeFlow(p).then(function(){ if(!G.over&&!p.elim)showTurnPanel(p); }); return; }
     var k=b.getAttribute('data-k'); if(k)useItem(p,k);
   };
 }
@@ -1254,7 +1915,9 @@ async function useItem(p,k){
   }
   if(k==='swap'){
     var cands=alivePlayers().filter(function(q){return q!==p;});
-    if(!cands.length){ addLog('没人可换，换位卡省下了'); return; }
+    if(!cands.length){
+      if(G.solo){ p.items.swap--; var sd=(Math.random()*TILES.length)|0; p.pos=sd; addLog(p.name+' 使用换位卡：没对手，驴车把你拉到了「'+G.tiles[sd].name+'」'); sOk(); renderAll(); save(); await settle(p); return; }
+      addLog('没人可换，换位卡省下了'); return; }
     showM('<h2>换位卡</h2><div class="c">和谁交换位置？乾坤大挪移！</div>'+
       '<div class="btnrow">'+cands.map(function(q){return '<button class="btn ghost" data-v="'+q.id+'">'+q.name+'</button>';}).join('')+'</div>'+
       '<div class="btnrow" style="margin-top:6px"><button class="btn ghost" data-v="x">取消</button></div>');
@@ -1272,7 +1935,9 @@ async function useSkill(p){
   var cid=p.chara.id, sk=SKILLS[cid], q, cands, v;
   if(cid==='monkey'){
     cands=alivePlayers().filter(function(x){return x!==p&&x.cash>0;});
-    if(!cands.length){ addLog(p.name+'【顺手牵羊】：大家都穷得叮当响，顺了个寂寞'); sNo(); return; }
+    if(!cands.length){
+      if(G.solo){ p.cash+=200; p.skillCd=sk.cd; addLog(p.name+'【顺手牵羊】：没对手，顺手从钱庄摸走 200 金币！钱庄：你礼貌吗'); floatBig('顺手牵羊！'); sOk(); renderAll(); save(); return; }
+      addLog(p.name+'【顺手牵羊】：大家都穷得叮当响，顺了个寂寞'); sNo(); return; }
     q=cands[(Math.random()*cands.length)|0];
     var got=Math.min(200,q.cash);
     q.cash-=got; p.cash+=got; p.skillCd=sk.cd;
@@ -1286,7 +1951,9 @@ async function useSkill(p){
   }
   if(cid==='egg'){
     p.skillCd=sk.cd;
-    addLog(p.name+'【滚】：蛋滚起来了，前进 3 格！');
+    p.st=p.st||{qOk:0,qTot:0,mx:0,box:0}; p.st.rollN=(p.st.rollN||0)+1;
+    if(p.st.rollN>=10)awardTitle(p,'eggroller');
+    addLog(p.name+'【滚】：蛋滚起来了，前进 3 格！（第 '+p.st.rollN+' 滚）');
     floatBig('滚！'); sStep();
     await moveSteps(p,3);
     renderAll(); save(); return;
@@ -1298,13 +1965,17 @@ async function useSkill(p){
   }
   if(cid==='teapot'){
     cands=alivePlayers().filter(function(x){return x!==p;});
-    if(!cands.length){ addLog('没人可请，茶先自己喝了'); sNo(); return; }
+    if(!cands.length){
+      if(G.solo){ p.cash+=150; p.skillCd=sk.cd; addLog(p.name+'【请喝茶】：没对手，自己喝！神清气爽 +150'); floatBig('请喝茶！'); sOk(); renderAll(); save(); return; }
+      addLog('没人可请，茶先自己喝了'); sNo(); return; }
     showM('<h2>请喝茶</h2><div class="c">请谁喝茶？喝完再走，罚站 1 回合</div>'+
       '<div class="btnrow">'+cands.map(function(x){return '<button class="btn ghost" data-v="'+x.id+'">'+x.name+'</button>';}).join('')+'</div>'+
       '<div class="btnrow" style="margin-top:6px"><button class="btn ghost" data-v="x">取消</button></div>');
-    v=await waitBtn('.btn'); hideM();
+    v=p.ai?String(cands[(Math.random()*cands.length)|0].id):await waitBtn('.btn'); hideM();
     if(v==='x'||v==null)return;
     var t=G.players[+v]; t.skipTurn=true; p.skillCd=sk.cd;
+    p.st=p.st||{qOk:0,qTot:0,mx:0,box:0}; p.st.teaN=(p.st.teaN||0)+1;
+    if(p.st.teaN>=5)awardTitle(p,'teahost');
     addLog(p.name+'【请喝茶】请 '+t.name+' 喝茶，'+t.name+' 喝完这壶再走，罚站 1 回合');
     floatBig('请喝茶！'); sOk(); renderAll(); save(); return;
   }
@@ -1322,6 +1993,13 @@ async function useSkill(p){
 /* ---------- 答题 ---------- */
 async function quizPhase(p){
   G.phase='quiz';
+  p.st=p.st||{qOk:0,qTot:0,mx:0,box:0};
+  if(p.quizPass){
+    p.quizPass=false; p.st.qTot++; p.st.qOk++; p.combo++; p.st.mx=Math.max(p.st.mx,p.combo);
+    sOk(); addLog(p.name+' 听故事听入迷，超常发挥直接答对！');
+    if(p.combo>=5)unlockAchi('combo5');
+    dicePhase(p,false); return;
+  }
   var ok;
   if(G.cfg.qmode==='offline'){
     showM('<h2>'+p.name+' 请答题</h2><div class="q">请老师线下出题，学生作答后判定</div>'+
@@ -1350,6 +2028,7 @@ async function quizPhase(p){
     p.st.qOk++;
     p.combo++;
     p.st.mx=Math.max(p.st.mx,p.combo);
+    if(p.combo>=5)unlockAchi('combo5');
     sOk();
     addLog(p.name+' 答对了'+(p.combo>=2?'（'+p.combo+'连击！）':''));
     if(p.combo===3){
@@ -1391,7 +2070,9 @@ async function dicePhase(p,bonus){
   var steps=face+1;
   if(p.diceMod){ steps+=p.diceMod; addLog('舌头打结：掷骰 '+(p.diceMod>0?'+':'')+p.diceMod+' 点'); p.diceMod=0; }
   if(p.dicePlus){ steps+=p.dicePlus; addLog('接住滚来的蛋：掷骰 +'+p.dicePlus+' 点，稳！'); p.dicePlus=0; }
+  if(G.weather&&G.weather.type==='wind'){ var dw=Math.random()<0.5?-1:1; steps+=dw; addLog('大风：风把骰子吹歪了，掷骰 '+(dw>0?'+1':'-1')); }
   steps=Math.max(1,steps);
+  if(face===5)diceBoom();
   if(p.koi){ face=5; steps=6; p.koi=false; addLog(p.name+'【锦鲤附体】：必出 6 点！'); $('dice').textContent=DICEFACE[5]; }
   if(p.combo>=2){
     steps+=1; addLog('连击加成：+1 步');
@@ -1455,9 +2136,11 @@ async function moveAndSettle(p,steps,bonus){
   await moveSteps(p,steps);
   await settle(p);
   await maybeChase(p);
+  await maybeSkit(p);
   if(p.elim||G.over)return;
   if(p.combo>=3&&!bonus){
     addLog(p.name+' 触发 3 连击：再掷一次！');
+    if(p.ai){ await moveAndSettle(p,aiRollSteps(p),true); return; }
     setCenter('<div class="cp">连击奖励</div><div class="csub">再掷一次骰子</div>');
     await sleep(800);
     dicePhase(p,true);
@@ -1468,6 +2151,7 @@ async function moveAndSettle(p,steps,bonus){
 /* ================= 落格结算 ================= */
 async function settle(p){
   var t=G.tiles[p.pos];
+  if(t.t==='land'&&t.name)dexMark('see',t.name);
   renderAll();
   if(t.t==='start'){ addLog(p.name+' 回到起点，歇口气'); return; }
   if(t.t==='tax'){
@@ -1476,13 +2160,13 @@ async function settle(p){
       addLog(p.name+' 保护伞自动撑开！免交税款 '+t.amt+'，税所：你伞大你说了算');
       showM('<h2>税所</h2><div class="big">保护伞</div><div class="c">'+p.name+' 撑开保护伞，免交 '+t.amt+' 税款</div>'+
         '<div class="btnrow"><button class="btn" data-v="ok">好险</button></div>');
-      await waitBtn('.btn'); hideM();
+      if(!p.ai)await waitBtn('.btn'); hideM();
       renderAll(); return;
     }
     p.cash-=t.amt;
     showM('<h2>税所</h2><div class="big">-'+t.amt+'</div><div class="c">'+p.name+' 含泪缴税<br>剩余金币 '+p.cash+'</div>'+
       '<div class="btnrow"><button class="btn" data-v="ok">知道了</button></div>');
-    await waitBtn('.btn'); hideM();
+    if(!p.ai)await waitBtn('.btn'); hideM();
     await checkBankrupt(p); return;
   }
   if(t.t==='box'){ await blindBox(p); return; }
@@ -1496,6 +2180,8 @@ async function settle(p){
   if(t.t==='trap'){
     if(Math.random()<0.5){
       p.stuck=true; sNo();
+      p.st=p.st||{qOk:0,qTot:0,mx:0,box:0}; p.st.trapN=(p.st.trapN||0)+1;
+      if(p.st.trapN>=3)awardTitle(p,'lvdagun');
       addLog(p.name+' 踩中陷阱：被驴绊倒，罚站 1 回合！驴：不是我，是腿自己伸的');
     }else{
       p.cash-=100; sNo();
@@ -1529,17 +2215,21 @@ async function landSettle(p,t){
       TIERNAME[tier0]+' '+setProgress(p.id,tier0)+'（集齐 5/5 租金翻倍）</div>'+
       '<div class="btnrow"><button class="btn" data-v="buy">购买（-'+pay+'）</button>'+
       '<button class="btn ghost" data-v="no">放弃</button></div>');
-    var v=await waitBtn('.btn'); hideM();
-    if(v==='buy'&&pay>=240){
+    var v=p.ai?(aiBuy(p,t,pay)?'buy':'no'):await waitBtn('.btn'); hideM();
+    if(v==='buy'&&pay>=240&&!p.ai){
       showM('<h2>确认购买</h2><div class="c">'+t.name+' 售价 <b>'+pay+'</b> 金币，可不是小钱…<br>买完还剩 '+(p.cash-pay)+' 金币</div>'+
         '<div class="btnrow"><button class="btn" data-v="yes">确认购买</button><button class="btn ghost" data-v="no">再想想</button></div>');
-      var vc=await waitBtn('.btn'); hideM();
+      var vc=p.ai?'yes':await waitBtn('.btn'); hideM();
       if(vc!=='yes'){ addLog(p.name+' 放弃购买 '+t.name); renderAll(); return; }
     }
     if(v==='buy'){
       sBuy();
       p.cash-=pay; t.owner=p.id; t.level=1; t.upSpent=0;
       if(p.halfBuy){ p.halfBuy=false; addLog(p.name+'【脚踏实地】5 折拿下！'); }
+      dexMark('own',t.name);
+      var lcnt=G.tiles.filter(function(x){return x.t==='land'&&x.owner===p.id;}).length;
+      if(lcnt>=10){ unlockAchi('tycoon'); awardTitle(p,'landlord'); }
+      if(t.name&&t.name.indexOf('捞力士')>=0)awardTitle(p,'laolishi');
       addLog(p.name+' 买下 '+t.name+'（'+(donk?'倔驴讲价 9 折 -':'-')+pay+'，剩余 '+p.cash+'）');
       /* 人物关系：买地时的互怼 */
       (function(){
@@ -1552,7 +2242,7 @@ async function landSettle(p,t){
         if(tx)addLog(tx);
       })();
       var tier=landTier(t.price);
-      if(hasSet(p.id,tier)){ addLog(p.name+' 集齐'+TIERNAME[tier]+'（'+setProgress(p.id,tier)+'）！该系租金翻倍，升级费 8 折'); flashTier(tier); }
+      if(hasSet(p.id,tier)){ addLog(p.name+' 集齐'+TIERNAME[tier]+'（'+setProgress(p.id,tier)+'）！该系租金翻倍，升级费 8 折'); unlockAchi('setc'); flashTier(tier); moneyFall(tier); }
       renderAll();
       flagOn(p.pos);
       await sleep(anim()?650:60);
@@ -1569,11 +2259,11 @@ async function landSettle(p,t){
     showM('<h2>'+t.name+'</h2><div class="c">你的地 · Lv'+t.level+' → Lv'+(t.level+1)+'<br>升级费 '+cost+(setDone&&cost<full?'（集齐 8 折，原价 '+full+'）':'')+'，租金 '+rentOf({t:'land',price:t.price,level:t.level,owner:t.owner})+' → '+rentOf({t:'land',price:t.price,level:t.level+1,owner:t.owner})+(setDone?'<br><b style="color:var(--gold-d)">'+TIERNAME[landTier(t.price)]+'集齐，租金 ×2 生效中</b>':'')+'</div>'+
       '<div class="btnrow">'+(p.cash>=cost?'<button class="btn" data-v="up">升级（-'+cost+'）</button>':'')+
       '<button class="btn ghost" data-v="no">跳过</button></div>');
-    var v2=await waitBtn('.btn'); hideM();
+    var v2=p.ai?(aiUp(p,cost)?'up':'no'):await waitBtn('.btn'); hideM();
     if(v2==='up'&&cost>=150){
       showM('<h2>确认升级</h2><div class="c">'+t.name+' Lv'+t.level+' → Lv'+(t.level+1)+'<br>升级费 <b>'+cost+'</b> 金币，升完还剩 '+(p.cash-cost)+'</div>'+
         '<div class="btnrow"><button class="btn" data-v="yes">确认升级</button><button class="btn ghost" data-v="no">再想想</button></div>');
-      var vc2=await waitBtn('.btn'); hideM();
+      var vc2=p.ai?'yes':await waitBtn('.btn'); hideM();
       if(vc2!=='yes'){ renderAll(); return; }
     }
     if(v2==='up'){ sBuy(); p.cash-=cost; t.level++; t.upSpent+=cost; addLog(p.name+' 把 '+t.name+' 升到 Lv'+t.level+'（-'+cost+'，剩余 '+p.cash+'）');
@@ -1592,7 +2282,7 @@ async function landSettle(p,t){
   if(isSnake&&p.items.free>0){
     showM('<h2>见好就收</h2><div class="c">'+p.name+' 有免租卡 ×'+p.items.free+'<br>本轮租金 '+rent+'，要现在用掉吗？</div>'+
       '<div class="btnrow"><button class="btn" data-v="use">用掉免租卡</button><button class="btn ghost" data-v="keep">先留着</button></div>');
-    var sv2=await waitBtn('.btn'); hideM();
+    var sv2=p.ai?(rent>300?'use':'keep'):await waitBtn('.btn'); hideM();
     if(sv2==='use'){
       p.items.free--;
       if(rentBuffed)owner.rentBuff++;
@@ -1611,7 +2301,7 @@ async function landSettle(p,t){
     (setOn?'<b style="color:var(--gold-d)">'+TIERNAME[landTier(t.price)]+'集齐，租金 ×2</b><br>':'')+
     '应交租金 <b>'+rent+'</b></div>'+
     '<div class="btnrow">'+btns+'</div>');
-  var v3=await waitBtn('.btn'); hideM();
+  var v3=p.ai?aiRentChoice(p,rent):await waitBtn('.btn'); hideM();
   if(v3==='card'){
     p.items.free--; if(rentBuffed)owner.rentBuff++;
     addLog(p.name+' 使用免租卡，免交 '+rent+' 给 '+owner.name); renderAll(); return;
@@ -1620,7 +2310,7 @@ async function landSettle(p,t){
     var q=drawQ();
     showM('<h2>答题免租</h2><div class="q">'+q.q+'</div>'+
       q.opts.map(function(o,i){return '<button class="qopt" data-v="'+i+'">'+'ABCD'[i]+'. '+o+'</button>';}).join(''));
-    var a=await waitBtn('.qopt');
+    var a=p.ai?String(Math.random()<0.7?q.a:(q.a+1)%4):await waitBtn('.qopt');
     var bs=document.querySelectorAll('.qopt'); bs[q.a].classList.add('right');
     if(+a!==q.a&&bs[+a])bs[+a].classList.add('wrong');
     await sleep(1200); hideM();
@@ -1635,6 +2325,7 @@ async function payRent(p,owner,rent){
   sRent();
   var oldP=p.cash, oldO=owner.cash;
   p.cash-=real; owner.cash+=real;
+  if(real>1000)unlockAchi('rent1k');
   addLog(p.name+' 交租 '+real+' 给 '+owner.name+'（'+p.name+' 剩余 '+p.cash+'）');
   renderAll();
   var pc=cardOf(p.id), oc=cardOf(owner.id);
@@ -1679,7 +2370,7 @@ async function blindBox(p){
   else if(b.k==='diceminus'){ p.diceMod=-1; desc='下回合掷骰 -1 点，舌头还没捋直'; }
   showM('<h2>盲盒</h2><div class="big">'+b.label+'</div><div class="c">'+desc+'</div>'+
     '<div class="btnrow"><button class="btn" data-v="ok">收下</button></div>');
-  await waitBtn('.btn'); hideM();
+  if(!p.ai)await waitBtn('.btn'); hideM();
   addLog(p.name+' 开盲盒：'+b.label+((p.chara&&p.chara.id==='monkey'&&b.good)?'【主角光环】':''));
   if(b.k==='step'){ await moveSteps(p,b.v); await settle(p); await maybeChase(p); }
   else if(b.k==='back'){ await moveSteps(p,b.v,-1); await settle(p); await maybeChase(p); }
@@ -1694,7 +2385,7 @@ async function fateFlipAnim(label){
   var c=$('fcard'); if(c)c.classList.add('flip');
   await sleep(anim()?700:60);
   var b=$('fcardBtn'); if(b)b.style.visibility='visible';
-  await waitBtn('#fcardBtn .btn'); hideM();
+  if(!p.ai)await waitBtn('#fcardBtn .btn'); hideM();
 }
 async function fateDraw(p){
   var pool=FATEPOOL;
@@ -1746,14 +2437,14 @@ async function tongueChallenge(p,v){
       '<div class="c">请'+p.name+'一口气念出来，老师判定</div>'+
       '<div class="btnrow"><button class="btn" data-v="1">念对了</button>'+
       '<button class="btn ghost" data-v="0">念错了</button></div>');
-    var r=await waitBtn('.btn'); hideM();
+    var r=p.ai?(Math.random()<0.7?'1':'0'):await waitBtn('.btn'); hideM();
     if(r==='1'){ p.cash+=v; sOk(); addLog(p.name+' 绕口令挑战成功！+'+v); }
     else{ sNo(); addLog(p.name+' 舌头打结，倒退 2 格'); await moveSteps(p,2,-1); await settle(p); await maybeChase(p); }
   }else{
     showM('<h2>绕口令挑战</h2><div class="big">'+tw+'</div>'+
       '<div class="c">一口气念出来，红要读成猴！</div>'+
       '<div class="btnrow"><button class="btn" data-v="ok">念出来了</button></div>');
-    await waitBtn('.btn'); hideM();
+    if(!p.ai)await waitBtn('.btn'); hideM();
     p.cash+=v; sOk(); addLog(p.name+' 绕口令挑战成功！+'+v);
   }
 }
@@ -1765,7 +2456,7 @@ async function tongueContest(p,v){
   showM('<h2>黑化肥来了</h2><div class="big">黑化肥发灰</div>'+
     '<div class="c">全场绕口令大赛——<b>'+winp.name+'</b> 夺冠！+'+v+' 金币</div>'+
     '<div class="btnrow"><button class="btn" data-v="ok">恭喜夺冠</button></div>');
-  await waitBtn('.btn'); hideM();
+  if(!p.ai)await waitBtn('.btn'); hideM();
   sOk();
   addLog(winp.name+' 绕口令夺冠（黑化肥发灰），+'+v);
 }
@@ -1781,11 +2472,16 @@ async function checkBankrupt(p){
     renderAll(); return;
   }
   p.elim=true;
-  G.tiles.forEach(function(t){ if(t.owner===p.id){t.owner=null;t.level=1;t.upSpent=0;} });
-  addLog(p.name+' 破产淘汰！地产全部释放，大家快来捡漏');
+  var hasBidder=G.players.some(function(x){return x!==p&&!x.elim;});
+  if(hasBidder){ await auctionLands(p); addLog(p.name+' 破产淘汰！'); }
+  else{ G.tiles.forEach(function(t){ if(t.owner===p.id){t.owner=null;t.level=1;t.upSpent=0;} }); addLog(p.name+' 破产淘汰！地产全部释放，大家快来捡漏'); }
   renderAll();
   bankruptStamp(p.name);
+  document.body.classList.add('bkshake');
+  setTimeout(function(){document.body.classList.remove('bkshake');},600);
+  var __pc=cardOf(p.id); if(__pc)__pc.classList.add('dead');
   await sleep(anim()?1150:60);
+  if(G.solo&&!hasBidder){ gameOver(p,'单人挑战失败：破产了，地产全没了'); return; }
 }
 /* ================= 回合结束 / 胜负 ================= */
 function endTurn(){
@@ -1793,12 +2489,20 @@ function endTurn(){
   G.phase='end';
   G.turnSeq=(G.turnSeq||0)+1;
   var alive=alivePlayers();
-  if(alive.length===1){ gameOver(alive[0],'对手全部破产'); return; }
+  if(alive.length===1&&!G.solo){ gameOver(alive[0],'对手全部破产'); return; }
   var n=G.players.length, i=G.turn;
   for(var k=0;k<n;k++){ i=(i+1)%n; if(!G.players[i].elim)break; }
   if(i<=G.turn){ G.round++; }
   G.turn=i;
-  save(); renderAll();
+  if(G.round%5===1&&G.round>1)rollWeather();
+  G.players.forEach(function(pl){
+    if(pl.elim)return;
+    var av=assets(pl);
+    if(av>10000){ unlockAchi('rich'); awardTitle(pl,'richman'); }
+    if(av<500){ pl.st=pl.st||{qOk:0,qTot:0,mx:0,box:0}; pl.st.lowMark=true; }
+    if(pl.st&&pl.st.lowMark&&av>2000){ pl.st.lowMark=false; unlockAchi('comeback'); }
+  });
+  save(); renderAll(); renderWx();
   if(G.round>G.cfg.maxRound){
     var rk=rankList();
     gameOver(rk[0],G.cfg.maxRound+' 回合结束，资产最高');
@@ -1821,8 +2525,45 @@ function endTurn(){
 }
 function gameOver(winner,reason){
   G.over=true; clearSave(); renderAll(); sWin();
+  /* v0.15：单人结算（纯刷分走排行榜，+AI 走多人分支） */
+  var hasAI=G.players.some(function(x){return x.ai;});
+  if(G.solo&&!hasAI){
+    var me=G.players[0], sc=assets(me);
+    var lands=G.tiles.filter(function(t){return t.owner===me.id;}).length;
+    var st=me.st||{qOk:0,qTot:0,mx:0,box:0};
+    var e={name:me.name,chara:me.chara.name,score:sc,date:fmtDate(new Date())};
+    saveRank(e);
+    unlockAchi('first'); unlockAchi('lone');
+    if(G.cfg.pack==='dalian')unlockAchi('dalian');
+    if(st.qTot>=10&&st.qOk/st.qTot>=0.9){ unlockAchi('scholar'); awardTitle(me,'scholar'); }
+    careerUpdate([me]);
+    if(!me.elim&&anim())confetti({particleCount:130,spread:110,colors:['#C9A86A','#7A9BB5','#7BA08B','#F6DEA8']});
+    var r=getRank();
+    var myRank=0;
+    for(var ri=0;ri<r.length;ri++){if(r[ri].name===e.name&&r[ri].score===e.score&&r[ri].date===e.date){myRank=ri+1;break;}}
+    showM('<h2>挑战结束</h2><div class="big">资产分 '+sc+'</div>'+
+      '<div class="c">'+reason+'</div>'+
+      '<div class="c">地产 '+lands+' 块 · 答题 '+(st.qTot?Math.round(st.qOk/st.qTot*100)+'%':'—')+' · 本次第 '+myRank+' 名</div>'+
+      '<table class="ranktab"><tr><th>名次</th><th>玩家</th><th>角色</th><th>资产分</th><th>日期</th></tr>'+
+      r.map(function(x,i){return '<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.chara)+'</td><td><b>'+x.score+'</b></td><td>'+esc(x.date)+'</td></tr>'}).join('')+'</table>'+
+      '<div class="btnrow" style="margin-top:12px"><button class="btn" data-v="ok">再来一局</button><button class="btn ghost" data-v="report">复制战报</button></div>');
+    (function waitReport2(){
+      waitBtn('.btn').then(function(v){
+        if(v==='report'){ copyText(warReport([me],reason,true)); waitReport2(); }
+        else location.reload();
+      });
+    })();
+    return;
+  }
   if(anim())confetti({particleCount:130,spread:110,colors:['#C9A86A','#7A9BB5','#7BA08B','#F6DEA8']});
   var rk=rankList();
+  unlockAchi('first');
+  if(G.cfg.pack==='dalian'){ unlockAchi('dalian'); if(winner)awardTitle(winner,'dalianwin'); }
+  rk.forEach(function(pl){
+    var st=pl.st||{qOk:0,qTot:0,mx:0,box:0};
+    if(st.qTot>=10&&st.qOk/st.qTot>=0.9){ unlockAchi('scholar'); awardTitle(pl,'scholar'); }
+  });
+  careerUpdate(rk);
   var medals=['冠军','亚军','季军'];
   var rows=rk.map(function(p,i){
     var st=p.st||{qOk:0,qTot:0,mx:0,box:0};
@@ -1835,8 +2576,13 @@ function gameOver(winner,reason){
   }).join('');
   showM('<h2>比赛结束</h2><div class="big">★ '+winner.name+' 夺冠 ★</div>'+
     '<div class="c">'+reason+'</div>'+rows+
-    '<div class="btnrow" style="margin-top:12px"><button class="btn" data-v="ok">再来一局</button></div>');
-  waitBtn('.btn').then(function(){ location.reload(); });
+    '<div class="btnrow" style="margin-top:12px"><button class="btn" data-v="ok">再来一局</button><button class="btn ghost" data-v="report">复制战报</button></div>');
+  (function waitReport(){
+    waitBtn('.btn').then(function(v){
+      if(v==='report'){ copyText(warReport(rk,reason)); waitReport(); }
+      else location.reload();
+    });
+  })();
 }
 /* ================= 规则 / 设置页接线 ================= */
 function showRule(){
@@ -1901,6 +2647,8 @@ function boot(){
   segWire('segRound',function(v){SEL_ROUNDS=v;});
   segWire('segCash',function(v){SEL_CASH=v;});
   segWire('segQmode',function(v){SEL_QMODE=v;});
+  segWire('segMode',function(v){SEL_MODE=v; toggleSoloUI();});
+  segWire('segAI',function(v){SEL_AI=v;});
   segWire('segRound',function(v){SEL_ROUNDS=v; $('roundCustom').value='';});
   segWire('segCash',function(v){SEL_CASH=v; $('cashCustom').value='';});
   $('roundCustom').onchange=function(){
@@ -1946,7 +2694,13 @@ function boot(){
   };
   try{ if(!localStorage.getItem(TUTKEY))showTut(); }catch(e){}
   document.addEventListener('pointerdown',function(){ac();},{passive:true});
+  $('btnClearRank').onclick=function(){ try{localStorage.removeItem(RANK_KEY);}catch(e){} renderSoloRank(); };
+  window.addEventListener('resize',function(){ if(!$('sGame').classList.contains('hidden'))fitBoard(); });
   $('btnRule').onclick=showRule;
+  $('btnAchi').onclick=achiWall;
+  $('btnDex').onclick=dexUI;
+  $('btnCareer').onclick=careerUI;
+  $('btnTitles').onclick=titlesUI;
   $('btnNew').onclick=function(){
     if(confirm('确定重开一局吗？当前进度会丢失。')){ clearSave(); location.reload(); }
   };
