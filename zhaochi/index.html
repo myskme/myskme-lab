@@ -128,7 +128,27 @@ h2.st{margin:8px 0}
 </div>
 <div id="toast"></div>
 <div id="modal"><div class="mbox" id="mbox"></div></div>
-<script>/**
+<script>
+/* 存档键命名空间迁移（2026-10-08）：游戏专属键加 zc 前缀；星尘/签到/伙伴/成就/盲盒保持双游戏共享 */
+(function(){try{
+var map={'myskme_weekly_v1':'myskme_zc_weekly_v1',
+    'myskme_collect_v1':'myskme_zc_collect_v1',
+    'myskme_cards_v1':'myskme_zc_cards_v1',
+    'myskme_daily_v1':'myskme_zc_daily_v1',
+    'myskme_evo_v1':'myskme_zc_evo_v1',
+    'myskme_level_v1':'myskme_zc_level_v1',
+    'myskme_titles_v1':'myskme_zc_titles_v1',
+    'myskme_wistreak_v1':'myskme_zc_wistreak_v1',
+    'myskme_winstreak_v1':'myskme_zc_winstreak_v1',
+    'myskme_theme_v1':'myskme_zc_theme_v1',
+    'myskme_firstgame_v1':'myskme_zc_firstgame_v1',
+    'myskme_lastplay_v1':'myskme_zc_lastplay_v1',
+    'myskme_mute_v1':'myskme_zc_mute_v1'};
+var bak={};Object.keys(map).forEach(function(k){var v=localStorage.getItem(k);if(v!==null)bak[k]=v;});
+if(Object.keys(bak).length)localStorage.setItem('myskme_keys_bak_20261008',JSON.stringify(bak));
+Object.keys(map).forEach(function(k){var nk=map[k];if(localStorage.getItem(nk)===null){var v=localStorage.getItem(k);if(v!==null)localStorage.setItem(nk,v);}});
+}catch(e){}})();
+/**
  * Minified by jsDelivr using Terser v5.39.0.
  * Original file: /npm/canvas-confetti@1.9.4/dist/confetti.browser.js
  *
@@ -151,14 +171,14 @@ $("modal").addEventListener("click",function(e){if(e.target.id=="modal")modalOff
 function show(id){var s=document.querySelectorAll(".scr");for(var i=0;i<s.length;i++)s[i].className="scr";$(id).className="scr on";window.scrollTo(0,0)}
 /* ===== 全局成长线（与连连看共用 key） ===== */
 var SD=G("myskme_stardust_v1",0),SG=G("myskme_signin_v1",{last:"",streak:0}),
-CL=G("myskme_collect_v1",[]),TI=G("myskme_titles_v1",[]),
-CD=G("myskme_cards_v1",{}),LV=G("myskme_level_v1",{lv:1,xp:0}),
-WK=G("myskme_weekly_v1",{week:"",done:{},games:0}),
-BU=G("myskme_buddy_v1",null),FG=G("myskme_firstgame_v1",""),
-LP=G("myskme_lastplay_v1",""),AC=G("myskme_achieve_v1",{zero:0,found:0,draws:0,unlock:[]}),
-MU=G("myskme_mute_v1",false),FD=G("myskme_freedraw_v1",0),
-PT=G("myskme_pity_v1",0),TH=G("myskme_theme_v1","theme-樱粉"),DY=G("myskme_daily_v1",{date:"",done:false});
-function save(){Sv("myskme_stardust_v1",SD);Sv("myskme_signin_v1",SG);Sv("myskme_collect_v1",CL);Sv("myskme_titles_v1",TI);Sv("myskme_cards_v1",CD);Sv("myskme_level_v1",LV);Sv("myskme_weekly_v1",WK);Sv("myskme_buddy_v1",BU);Sv("myskme_firstgame_v1",FG);Sv("myskme_lastplay_v1",LP);Sv("myskme_achieve_v1",AC);Sv("myskme_mute_v1",MU);Sv("myskme_freedraw_v1",FD);Sv("myskme_pity_v1",PT);Sv("myskme_theme_v1",TH);Sv("myskme_daily_v1",DY)}
+CL=G("myskme_zc_collect_v1",[]),TI=G("myskme_zc_titles_v1",[]),
+CD=G("myskme_zc_cards_v1",{}),LV=G("myskme_zc_level_v1",{lv:1,xp:0}),
+WK=G("myskme_zc_weekly_v1",{week:"",done:{},games:0}),
+BU=G("myskme_buddy_v1",null),FG=G("myskme_zc_firstgame_v1",""),
+LP=G("myskme_zc_lastplay_v1",""),AC=G("myskme_achieve_v1",{zero:0,found:0,draws:0,unlock:[]}),
+MU=G("myskme_zc_mute_v1",false),FD=G("myskme_freedraw_v1",0),
+PT=G("myskme_pity_v1",0),TH=G("myskme_zc_theme_v1","theme-樱粉"),DY=G("myskme_zc_daily_v1",{date:"",done:false});
+function save(){Sv("myskme_stardust_v1",SD);Sv("myskme_signin_v1",SG);Sv("myskme_zc_collect_v1",CL);Sv("myskme_zc_titles_v1",TI);Sv("myskme_zc_cards_v1",CD);Sv("myskme_zc_level_v1",LV);Sv("myskme_zc_weekly_v1",WK);Sv("myskme_buddy_v1",BU);Sv("myskme_zc_firstgame_v1",FG);Sv("myskme_zc_lastplay_v1",LP);Sv("myskme_achieve_v1",AC);Sv("myskme_zc_mute_v1",MU);Sv("myskme_freedraw_v1",FD);Sv("myskme_pity_v1",PT);Sv("myskme_zc_theme_v1",TH);Sv("myskme_zc_daily_v1",DY)}
 function updSD(){$("h-sd").textContent=SD;$("x-sd").textContent=SD;$("a-sd").textContent=SD}
 function addSD(n){SD+=n;updSD();save()}
 function addXP(n){LV.xp+=n;var up=false;while(LV.xp>=LV.lv*100){LV.xp-=LV.lv*100;LV.lv++;up=true}if(up){toast("升级！Lv."+LV.lv+" 更强了");confetti({particleCount:90,spread:80});sfx("win")}save();renderHome()}
