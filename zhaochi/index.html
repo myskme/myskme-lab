@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>寻微乐园 v0.2</title>
+<title>寻珍大亨 v0.3 | MYSKME</title>
 <style>
 :root{--p:#C9A86A;--blu:#7A9BB5;--mint:#A8E6CF;--lav:#C3B2E8;--peach:#FFD8B8;--gold:#E8B84B;--ink:#5A4A42;--bg:#FFF9F5;--card:#fff;--sh:0 4px 18px rgba(201,168,106,.28)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -81,13 +81,13 @@ h2.st{margin:8px 0}
 <div id="app">
 <!-- 首页 -->
 <div class="scr" id="s-home">
-  <div class="top"><div><b>寻微乐园</b> <span class="small">v0.3</span></div><div class="sd">★<span id="h-sd">0</span></div></div><div class="scroll-inner">
+  <div class="top"><div><b>寻珍大亨</b> <span class="small">v0.3</span></div><div class="sd">★<span id="h-sd">0</span></div></div><div class="scroll-inner">
   <div class="card"><div class="kv"><span id="h-lv">Lv.1</span><span class="small" id="h-xp"></span></div><div class="bar"><i id="h-xpbar" style="width:0%"></i></div>
   <div class="kv"><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> 图鉴 <span id="h-prog">0/15</span></span><span class="small" id="h-bond"></span></div><div class="bar"><i id="h-progbar" style="width:0%"></i></div></div>
   <div class="card" id="buddy"></div>
   <div class="row" style="margin:4px 0"><button class="btn ghost" id="lv0" style="flex:1">云巅学宫</button><button class="btn ghost" id="lv1" style="flex:1">天之国</button><button class="btn ghost" id="lv2" style="flex:1">雾隐茶肆</button></div>
   <div class="row" style="margin:4px 0"><button class="btn lav" id="b-daily" style="flex:1">每日挑战</button></div>
-  <button class="btn" id="b-start">开始寻微</button>
+  <button class="btn" id="b-start">开始寻珍</button>
   <div class="row"><button class="btn mint" id="b-box"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg> 盲盒</button><button class="btn lav" id="b-album"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> 集卡册</button></div>
   <div class="row"><button class="btn ghost" id="b-mute" style="font-size:14px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg> <span id="b-mute-t">音效开</span></button><button class="btn ghost" id="b-week" style="font-size:14px"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg> 每周任务</button></div>
 </div></div>
@@ -169,7 +169,7 @@ function modal(html){$("mbox").innerHTML=html;$("modal").className="on"}
 function modalOff(){$("modal").className=""}
 $("modal").addEventListener("click",function(e){if(e.target.id=="modal")modalOff()});
 function show(id){var s=document.querySelectorAll(".scr");for(var i=0;i<s.length;i++)s[i].className="scr";$(id).className="scr on";window.scrollTo(0,0)}
-/* ===== 全局成长线（与连连看共用 key） ===== */
+/* ===== 全局成长线（与连星大亨共用 key） ===== */
 var SD=G("myskme_stardust_v1",0),SG=G("myskme_signin_v1",{last:"",streak:0}),
 CL=G("myskme_zc_collect_v1",[]),TI=G("myskme_zc_titles_v1",[]),
 CD=G("myskme_zc_cards_v1",{}),LV=G("myskme_zc_level_v1",{lv:1,xp:0}),
@@ -260,7 +260,7 @@ function startGame(lv){
 function updG(){$("g-t").textContent=G_.time;$("g-f").textContent=G_.found.filter(Boolean).length+"/"+Gd().length;$("g-h").textContent=G_.hints;$("g-sh").innerHTML=G_.shield?'<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>':""}
 function addMark(x,y,cls){var ps=["p0","p1"];for(var k=0;k<2;k++){var m=document.createElement("div");m.className=cls;m.innerHTML='<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45"/></svg>';m.style.left=(x*100)+"%";m.style.top=(y*100)+"%";var d=Gd();var rad=0;for(var i=0;i<5;i++){if(Math.abs(d[i][0]-x)<.001&&Math.abs(d[i][1]-y)<.001){rad=d[i][2];break}}
     var w=$("p"+k).getBoundingClientRect().width;m.style.width=m.style.height=(rad*w*2)+"px";$("p"+k).appendChild(m)}}
-function zoomPic(k,ev){ev.stopPropagation();if(!G_)return;var src=$("p"+k),z=$("zoom"),ow=src.getBoundingClientRect().width;z.innerHTML='<div class="pic" id="zp">'+src.innerHTML+'</div><div class="zth">点按任意处关闭 · 回原图上点按寻微</div>';z.classList.add("on");var zb=z.querySelector(".zoomtag");if(zb)zb.remove();var nw=z.querySelector("#zp").getBoundingClientRect().width,r=nw/ow;z.querySelectorAll(".mk").forEach(function(m){var s=parseFloat(m.style.width)*r;if(s>0){m.style.width=m.style.height=s+"px"}});z.onclick=function(){z.classList.remove("on")}}function tap(e){
+function zoomPic(k,ev){ev.stopPropagation();if(!G_)return;var src=$("p"+k),z=$("zoom"),ow=src.getBoundingClientRect().width;z.innerHTML='<div class="pic" id="zp">'+src.innerHTML+'</div><div class="zth">点按任意处关闭 · 回原图上点按寻珍</div>';z.classList.add("on");var zb=z.querySelector(".zoomtag");if(zb)zb.remove();var nw=z.querySelector("#zp").getBoundingClientRect().width,r=nw/ow;z.querySelectorAll(".mk").forEach(function(m){var s=parseFloat(m.style.width)*r;if(s>0){m.style.width=m.style.height=s+"px"}});z.onclick=function(){z.classList.remove("on")}}function tap(e){
   if(!G_||G_.over)return;
   var pic=e.currentTarget,r=pic.getBoundingClientRect();
   var x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
@@ -415,7 +415,7 @@ function renderAlbum(){
   for(var x=0;x<tiers.length;x++)if(pts>=tiers[x][1]){tn=tiers[x][0];nx=x<4?tiers[x+1][1]:null}
   var mys=[["night","深夜玩家"],["dawn","晨曦追光者"],["hidden","星语收藏家"]];
   var mh="";for(var m=0;m<mys.length;m++){var u=AC.unlock.indexOf(mys[m][0])>=0;mh+="<span class='pill' style='"+(u?"":"opacity:.5")+"'>"+(u?mys[m][1]:"??? 神秘成就")+"</span>"}
-  $("a-ach").innerHTML="<div class='kv'><span>段位</span><b>"+tn+"</b></div><div class='bar'><i style='width:"+(nx?Math.min(100,pts/nx*100):100)+"%'></i></div><div class='small'>成就点 "+pts+(nx?" / "+nx:" MAX")+" · 零失误局 "+AC.zero+" · 累计寻微 "+AC.found+" · 抽卡 "+AC.draws+" · 连签 "+(SG.streak||0)+" 天</div><div style='margin-top:6px'>"+mh+"</div>";
+  $("a-ach").innerHTML="<div class='kv'><span>段位</span><b>"+tn+"</b></div><div class='bar'><i style='width:"+(nx?Math.min(100,pts/nx*100):100)+"%'></i></div><div class='small'>成就点 "+pts+(nx?" / "+nx:" MAX")+" · 零失误局 "+AC.zero+" · 累计寻珍 "+AC.found+" · 抽卡 "+AC.draws+" · 连签 "+(SG.streak||0)+" 天</div><div style='margin-top:6px'>"+mh+"</div>";
 }
 function unlock(id,name,how){
   if(AC.unlock.indexOf(id)>=0)return;
