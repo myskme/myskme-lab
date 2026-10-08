@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>金榜大亨 | MYSKME</title>
+<title>金榜大亨 v0.9 | MYSKME</title>
 <style>
 :root{
 --bg:#FAF7F0; --card:#FFFFFF; --ink:#4A4238; --ink2:#8A7F72;
@@ -12,7 +12,9 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,html,body{height:100dvh;overflow:hidden;overscroll-behavior:none}
-body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+body{margin:0;padding:0;color:var(--ink);
+background-color:#FAF7F0;
+background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 0.30 0 0 0 0 0.27 0 0 0 0 0.22 0 0 0 0.035 0"/></filter><rect width="140" height="140" filter="url(%23n)"/></svg>');
 font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
 font-size:15px;line-height:1.5}
 .hidden{display:none!important}
@@ -57,6 +59,16 @@ border:1px solid rgba(255,255,255,.7);flex:0 0 auto}
 img.av{object-fit:cover;border-radius:50%;border:2px solid #C9A86A;background:#fff}
 /* 套色集齐标记：暖金光晕 */
 .tile.setdone{box-shadow:0 0 0 2px var(--gold),var(--shadow)}
+/* ===== v0.8 棋盘视觉升级 ===== */
+.tico{width:24px;height:24px;margin:0 auto;flex:none}
+.tico svg{width:100%;height:100%;display:block}
+.tile.t-land.l1{background:#F1F6F0}
+.tile.t-land.l2{background:#EFF3F8}
+.tile.t-land.l3{background:#FBF5E9}
+.tile .obdg{position:absolute;bottom:2px;left:3px;width:16px;height:16px;border-radius:50%;border:1px solid var(--gold);object-fit:cover}
+#topbar h1{position:relative;padding-left:12px}
+#topbar h1::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:4px;border-radius:2px;background:linear-gradient(var(--gold),var(--gold-d))}
+
 /* 开局分段选择器 */
 .seg{display:flex;gap:6px;justify-content:center;margin:6px 0}
 .seg button{border:1px solid var(--line);background:var(--card);color:var(--ink2);
@@ -145,6 +157,23 @@ body.edgeshake #app{animation:edgesh .4s ease}
 #log{flex:none}
 .bigpop{position:fixed;left:50%;top:36%;transform:translate(-50%,-50%) scale(.5);font-size:44px;font-weight:900;color:var(--gold-d);text-shadow:0 2px 0 #fff,0 4px 14px rgba(201,168,106,.55);z-index:80;pointer-events:none;animation:bigpop .85s ease-out forwards;white-space:nowrap}
 @keyframes bigpop{30%{transform:translate(-50%,-50%) scale(1.18);opacity:1}100%{transform:translate(-50%,-64%) scale(1);opacity:0}}
+/* ===== v0.9 彩蛋惊喜 ===== */
+#eggLayer{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+#eggLayer .egg{position:absolute;left:-70px;top:60vh;width:56px;height:56px;cursor:pointer;pointer-events:auto;animation:eggrun 4s linear forwards,eggbob .55s ease-in-out infinite alternate}
+#eggLayer .egg.rtl{animation-name:eggrunR,eggbob}
+#eggLayer .egg .eggav,#eggLayer .egg svg{width:56px;height:56px;display:block}
+#eggLayer .egg svg{filter:drop-shadow(0 3px 5px rgba(0,0,0,.25))}
+#eggLayer .egg .eggav{border-radius:50%;filter:drop-shadow(0 3px 5px rgba(0,0,0,.25))}
+#eggLayer .egg.roll .eggav{animation:eggroll .7s linear infinite}
+#eggLayer .egg.goldm .eggav{filter:sepia(.9) saturate(2.6) hue-rotate(-12deg) brightness(1.12) drop-shadow(0 0 10px #f6dea8)}
+#eggLayer .egg .trail{position:absolute;inset:-8px;border-radius:50%;background:radial-gradient(circle,rgba(246,222,168,.6),transparent 70%);animation:trailpulse .6s ease-in-out infinite alternate;pointer-events:none}
+#eggLayer .egg.caught{pointer-events:none;animation:eggpop .32s ease-out forwards}
+@keyframes eggrun{from{left:-70px}to{left:calc(100vw + 70px)}}
+@keyframes eggrunR{from{left:calc(100vw + 70px)}to{left:-70px}}
+@keyframes eggbob{from{transform:translateY(-7px)}to{transform:translateY(7px)}}
+@keyframes eggroll{to{transform:rotate(360deg)}}
+@keyframes eggpop{40%{transform:scale(1.35)}100%{transform:scale(.1);opacity:0}}
+@keyframes trailpulse{from{opacity:.5;transform:scale(.92)}to{opacity:1;transform:scale(1.08)}}
 .dust{position:fixed;width:9px;height:9px;border-radius:50%;background:#CBBFAE;z-index:70;pointer-events:none;animation:dustup .7s ease-out forwards}
 @keyframes dustup{to{transform:translateY(-28px) scale(1.7);opacity:0}}
 .stamp{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%) rotate(-12deg) scale(2.4);border:4px solid #C05555;color:#C05555;font-size:42px;font-weight:900;padding:4px 20px;border-radius:10px;z-index:80;pointer-events:none;opacity:0;background:rgba(255,255,255,.88);text-align:center;line-height:1.3}
@@ -165,6 +194,20 @@ body.noanim *{animation-duration:.01ms!important;transition-duration:.01ms!impor
 .srow.win{border:2px solid var(--gold);background:#FBF6EA}
 .sdot{width:16px;height:16px;border-radius:50%;flex:0 0 auto;margin-top:2px}
 .sstat{font-size:11px;color:var(--ink2);margin-top:2px;line-height:1.5}
+/* ===== v0.7 道具/技能/调试 ===== */
+.ichip{border:1px solid var(--gold);background:#FBF6EA;color:var(--gold-d);
+border-radius:8px;padding:3px 7px;font-size:11px;margin:1px 2px 1px 0;min-height:30px}
+.ichip.off{opacity:.45;border-color:var(--line);color:var(--ink2);background:var(--card)}
+.skillbtn{border:1px solid var(--blue);background:#EDF2F7;color:#5E84A0;
+border-radius:8px;padding:3px 7px;font-size:11px;margin-top:4px;min-height:30px;width:100%}
+.skillbtn.off{opacity:.45;border-color:var(--line);color:var(--ink2);background:var(--card)}
+.pit{line-height:1.9}
+.bdg{position:absolute;bottom:1px;right:3px;font-size:9px;background:var(--red);color:#fff;
+border-radius:6px;padding:0 4px;font-weight:bold;z-index:2}
+#dbgbox h3{margin:0 0 8px;font-size:13px;color:#9a958c;text-align:center;font-weight:normal}
+#dbgbox .dbtn{display:block;width:100%;background:none;border:1px solid #ddd8cc;border-radius:8px;
+color:#8a857c;font-size:13px;padding:9px;margin-bottom:6px;min-height:40px}
+#dbgbox .dbtn:active{background:#e9e5da}
 /* 设置页 */
 #setbox{background:var(--card);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
 #setbox h2{margin-top:0;text-align:center}
@@ -213,6 +256,10 @@ border-radius:10px;padding:6px 10px;margin-top:6px;line-height:1.6}
 <div class="seg" id="segAnim">
 <button data-v="1" class="sel">开启动画</button><button data-v="0">减弱动画</button>
 </div>
+<div class="seglab">彩蛋惊喜</div>
+<div class="seg" id="segEgg">
+<button data-v="1" class="sel">开</button><button data-v="0">关</button>
+</div>
 <div class="btnrow" style="margin-top:14px">
 <button class="btn" id="btnStart">开始游戏</button>
 </div>
@@ -225,9 +272,10 @@ border-radius:10px;padding:6px 10px;margin-top:6px;line-height:1.6}
 <!-- 游戏页 -->
 <div id="sGame" class="hidden">
 <div id="topbar">
-<h1>金榜大亨 <small id="roundLab">第 1/20 回合</small></h1>
+<h1 id="gameTitle">金榜大亨 <small id="roundLab">第 1/20 回合</small></h1>
 <div class="grp">
 <button class="tbtn" id="btnRule">规则</button>
+<button class="tbtn" id="btnEnd">结算</button>
 <button class="tbtn" id="btnNew">重开</button>
 </div>
 </div>
@@ -237,6 +285,8 @@ border-radius:10px;padding:6px 10px;margin-top:6px;line-height:1.6}
 </div>
 <!-- 弹窗 -->
 <div id="modal" class="hidden"><div id="mbox"></div></div>
+<!-- v0.9 彩蛋惊喜层 -->
+<div id="eggLayer"></div>
 <!-- 新手引导 -->
 <div id="tut" class="hidden"><div id="tutbox"><h2>玩法速览</h2><div id="tutstep"></div><div id="tutbody"></div><div class="btnrow"><button class="btn ghost" id="tutPrev">上一步</button><button class="btn" id="tutNext">下一步</button></div></div></div>
 </div>
@@ -260,6 +310,16 @@ v0.5 新增：绕口令主题事件（命运+2/盲盒+2）、角色关系
 文案（蛋蛇互怼/猴鱼相爱相杀/驴买地）、蛋蛇同格追逐、
 全套动画（插旗/生长/金币飞/摇盒/翻牌/连击/尘土/破产
 印章/胜利撒花）+减弱动画开关。
+v0.6 新增：6 位定稿角色头像（96px WebP base64 内嵌），
+棋子/玩家列表/选人/回合指示/结算屏 5 处换头像。
+v0.7 新增：道具系统 5 种（遥控骰子/免租卡/路障/换位卡/
+保护伞，每人最多 3 个）、每人 1 个主动技能（冷却制）、
+随时结算、标题连击 5 下隐藏调试菜单（含撤销上一步）。
+v0.8 新增：19 个手绘线条风 SVG 地块图标、棋盘视觉升级
+（套色淡底/主人头像角标/纸纹背景）。
+v0.9 新增：彩蛋惊喜系统——每回合 25% 概率刷出 5 种
+彩蛋（金元宝/驴/蛋/问号盒/稀有金猴）横穿屏幕，点中
+得奖励，4 秒后跑掉；设置页可开关。
 ============================================================ */
 /* ---------- 角色棋子（猴先生系列） ---------- */
 var CHARAS=[
@@ -289,33 +349,91 @@ var CHARAS=[
  intro:'嘘——我只收租不咬人（追蛋除外）'}
 ];
 
+/* ---------- v0.7：道具 & 主动技能 ---------- */
+var ITEMNAME={remote:'遥控骰子',free:'免租卡',barrier:'路障',swap:'换位卡',shield:'保护伞'};
+var ITEMDESC={remote:'下次掷骰自选 1-6 点，想掷几掷几',
+ free:'免交一次租金，房东气得直跺脚',
+ barrier:'在前方 1-6 格设卡，路过者罚站 1 回合',
+ swap:'与指定玩家交换位置，乾坤大挪移',
+ shield:'免交一次税/罚款，税务局也拿你没办法'};
+var ITEMKEYS=['remote','free','barrier','swap','shield'];
+var SKILLS={
+ monkey:{name:'顺手牵羊',cd:4,desc:'随机偷一位玩家 200 金币'},
+ fish:{name:'锦鲤附体',cd:5,desc:'下次掷骰必出 6 点'},
+ egg:{name:'滚',cd:4,desc:'立即前进 3 格，不触发格子效果'},
+ donkey:{name:'脚踏实地',cd:5,desc:'下次买地 5 折'},
+ teapot:{name:'请喝茶',cd:4,desc:'指定一名玩家罚站 1 回合'},
+ snake:{name:'滑',cd:4,desc:'瞬移到最近的一处己方地产'}};
+var SNAP=null;
+function countItems(p){ var n=0; ITEMKEYS.forEach(function(k){n+=p.items[k]||0;}); return n; }
+function randItemKey(){ return ITEMKEYS[(Math.random()*ITEMKEYS.length)|0]; }
+function giveItem(p,k){
+  if(countItems(p)>=3)return false;
+  p.items[k]=(p.items[k]||0)+1; return true;
+}
+function normalizeSave(){
+  if(!G||!G.players)return;
+  if(!G.barriers)G.barriers=[];
+  if(G.turnSeq==null)G.turnSeq=0;
+  if(G.snapSeq==null)G.snapSeq=-1;
+  G.players.forEach(function(p){
+    if(!p.items)p.items={};
+    ITEMKEYS.forEach(function(k){ if(p.items[k]==null)p.items[k]=0; });
+    delete p.items.double;
+    if(p.skillCd==null)p.skillCd=0;
+    if(p.stuck==null)p.stuck=false;
+    if(p.skipTurn==null)p.skipTurn=false;
+  });
+}
 function avImg(c, cls){
   return '<img class="'+cls+' av" src="'+c.avatar+'" alt="'+c.name+'" onerror="var s=document.createElement(\'span\');s.className=\''+cls+'\';s.style.background=\''+c.color+'\';this.replaceWith(s)">';
 }
 /* ---------- 棋盘：8×5 周长 22 格 ---------- */
+/* ---------- v0.8 地块图标：手绘线条风 inline SVG ---------- */
+var ICONS={
+'hotel':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="7" width="14" height="13" rx="1"/><path d="M9 7V4h6v3"/><path d="M9 11h1.5M13.5 11H15M9 14.5h1.5M13.5 14.5H15"/><path d="M10 20v-3h4v3"/></svg>',
+'desk':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="3" width="8" height="6" rx="1"/><path d="M12 9v2M9.5 12h5"/><path d="M3 13h18"/><path d="M6 13v8M18 13v8"/></svg>',
+'store':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1.2-4h13.6L20 9"/><path d="M4 9a2.7 2.7 0 005.3 0 2.7 2.7 0 005.4 0 2.7 2.7 0 005.3 0"/><path d="M5.5 11v9M18.5 11v9M5.5 20h13"/><rect x="10" y="13" width="4" height="7"/></svg>',
+'noodle':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16a8 8 0 01-16 0z"/><path d="M10 20h4"/><path d="M14 2l4 8M17.5 2l2.5 6"/><path d="M9 9c-1-1.5 1-2 0-3.5M13 9c-1-1.5 1-2 0-3.5"/></svg>',
+'warehouse':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4v9l-8 4-8-4V7z"/><path d="M4 7l8 4 8-4M12 11v9"/><path d="M8 5l8 4"/></svg>',
+'thermos':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="8" height="12" rx="2.5"/><path d="M7 4.5h10V8H7z"/><path d="M12 4.5V3"/><circle cx="12" cy="14" r="1.6"/></svg>',
+'neck':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="5.5" r="2.5"/><path d="M10 8v3.5"/><path d="M3.5 20c.8-3.5 3.4-5 6.5-5s5.7 1.5 6.5 5"/><path d="M17 3.5h4M19 1.5v4"/></svg>',
+'pants':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3h11"/><path d="M6.5 3v18h3.2L11 10l1.3 11h3.2V3"/></svg>',
+'shampoo':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="9" width="8" height="11" rx="2"/><path d="M10.5 9V6h3v3"/><path d="M10.5 6h3M12 6V4h4"/><circle cx="12" cy="14.5" r="1.8"/></svg>',
+'clock':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="6.5"/><path d="M12 9.5V13l2.5 1.5"/><path d="M6 3.5L4 2M18 3.5l2-1.5"/><path d="M9.5 20.5h5"/></svg>',
+'watch':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 9.5V12l1.8 1.2"/><path d="M9.5 7V3.5h5V7M9.5 17v3.5h5V17"/></svg>',
+'car':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15v-3.5L5.5 7h10L20 11.5H21V15"/><path d="M3 15h1.5M8.5 15h7M17.5 15H21"/><circle cx="8" cy="17" r="1.8"/><circle cx="16.5" cy="17" r="1.8"/><path d="M8.5 7L10 4.5h4L15.5 7"/></svg>',
+'bankcard':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M6.5 15h4"/></svg>',
+'yacht':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 14h14l-2.5 5h-9z"/><path d="M8 14V9h6v5"/><path d="M12 9V5"/><path d="M2.5 21c1.5-1 3-1 4.5 0s3 1 4.5 0 3-1 4.5 0 2.5 1 4.5 0"/></svg>',
+'rocket':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2.8 2 4 5.5 4 9.5L12 15l-4-3.5C8 7.5 9.2 4 12 2z"/><circle cx="12" cy="9" r="1.4"/><path d="M8.5 13L6 17M15.5 13L18 17"/><path d="M10.5 17.5c.3 1.8 1 3 1.5 4.5.5-1.5 1.2-2.7 1.5-4.5"/></svg>',
+'flag':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4.5h11l-2.8 3.7L17 12H6"/></svg>',
+'coin':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M9 9l3 3.5L15 9M12 12.5V17M9 15h6"/></svg>',
+'fate':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.8 9.6a2.4 2.4 0 114.4 1.3c-.6 1.4-2.2 1.6-2.2 3.1"/><path d="M12 17.2v.3"/></svg>',
+'gift':'<svg viewBox="0 0 24 24" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="3.5" rx="1"/><path d="M6 13.5V20h12v-6.5M12 10v10"/><path d="M12 10C8.5 10 7 8.5 7.8 6.8c.7-1.4 2.9-.6 4.2 3.2 1.3-3.8 3.5-4.6 4.2-3.2.8 1.7-.7 3.2-4.2 3.2z"/></svg>',
+};
 var TILES=[
-{t:'start', name:'起点'},
-{t:'land', name:'沙县大酒店', price:120},
-{t:'land', name:'工位格子间', price:140},
-{t:'box', name:'盲盒'},
-{t:'land', name:'十元连锁店', price:145},
-{t:'land', name:'枸杞保温杯厂', price:175},
-{t:'fate', name:'命运'},
-{t:'land', name:'颈椎康复中心', price:195},
-{t:'land', name:'秋裤研发基地', price:200},
-{t:'land', name:'兰州拉面旗舰店', price:140},
-{t:'box', name:'盲盒'},
-{t:'land', name:'拼夕夕中转仓', price:145},
-{t:'land', name:'捞力士表行', price:240},
-{t:'tax', name:'税所', amt:150},
-{t:'land', name:'秃头洗发水', price:185},
-{t:'land', name:'周一早会室', price:200},
-{t:'fate', name:'命运'},
-{t:'land', name:'宝驴4S店', price:260},
-{t:'land', name:'黑卡发行中心', price:280},
-{t:'box', name:'盲盒'},
-{t:'land', name:'私人游艇码头', price:250},
-{t:'land', name:'火箭发射基地', price:270}
+{t:'start', name:'起点', ic:'flag'},
+{t:'land', name:'沙县大酒店', price:120, ic:'hotel'},
+{t:'land', name:'工位格子间', price:140, ic:'desk'},
+{t:'box', name:'盲盒', ic:'gift'},
+{t:'land', name:'十元连锁店', price:145, ic:'store'},
+{t:'land', name:'枸杞保温杯厂', price:175, ic:'thermos'},
+{t:'fate', name:'命运', ic:'fate'},
+{t:'land', name:'颈椎康复中心', price:195, ic:'neck'},
+{t:'land', name:'秋裤研发基地', price:200, ic:'pants'},
+{t:'land', name:'兰州拉面旗舰店', price:140, ic:'noodle'},
+{t:'box', name:'盲盒', ic:'gift'},
+{t:'land', name:'拼夕夕中转仓', price:145, ic:'warehouse'},
+{t:'land', name:'捞力士表行', price:240, ic:'watch'},
+{t:'tax', name:'税所', amt:150, ic:'coin'},
+{t:'land', name:'秃头洗发水', price:185, ic:'shampoo'},
+{t:'land', name:'周一早会室', price:200, ic:'clock'},
+{t:'fate', name:'命运', ic:'fate'},
+{t:'land', name:'宝驴4S店', price:260, ic:'car'},
+{t:'land', name:'黑卡发行中心', price:280, ic:'bankcard'},
+{t:'box', name:'盲盒', ic:'gift'},
+{t:'land', name:'私人游艇码头', price:250, ic:'yacht'},
+{t:'land', name:'火箭发射基地', price:270, ic:'rocket'}
 ];
 /* 套色：三档各 5 块。竹青系(<150)：沙县大酒店/工位格子间/十元连锁店/兰州拉面旗舰店/拼夕夕中转仓；
    雾蓝系(150-200)：枸杞保温杯厂/颈椎康复中心/秋裤研发基地/秃头洗发水/周一早会室；
@@ -405,7 +523,9 @@ var BOXPOOL=[
 {k:'step', v:3, w:12, good:false, label:'额外前进 3 步'},
 {k:'item', v:'remote', w:12, good:true, label:'道具：遥控骰子'},
 {k:'item', v:'free', w:10, good:true, label:'道具：免租卡'},
-{k:'item', v:'double', w:8, good:true, label:'道具：双倍租金卡'},
+{k:'item', v:'barrier', w:9, good:true, label:'道具：路障'},
+{k:'item', v:'swap', w:8, good:true, label:'道具：换位卡'},
+{k:'item', v:'shield', w:9, good:true, label:'道具：保护伞'},
 {k:'back', v:3, w:10, good:false, label:'整蛊：倒退 3 步'},
 {k:'tax', v:120, w:8, good:false, label:'整蛊：交税 120'},
 {k:'tax', v:180, w:6, good:false, label:'整蛊：被猴王抓包，罚款 180'},
@@ -428,7 +548,7 @@ var FATEPOOL=[
 ];
 /* ================= 状态 ================= */
 var G=null, QIDX=[];
-var SAVE_KEY='myskme_dfw_v6';
+var SAVE_KEY='myskme_dfw_v9';
 function $(i){return document.getElementById(i);}
 function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
 function showM(html){$('mbox').innerHTML=html;$('modal').classList.remove('hidden');}
@@ -445,6 +565,7 @@ function sRent(){ap([660,520,440],.09,.2,'triangle',.11);}
 function sOk(){ap([523,659,784],.09,.25,'triangle',.13);}
 function sNo(){ap([392,330,262],.14,.3,'sine',.12);}
 function sBox(){ap([494,659,880],.09,.18,'triangle',.1);}
+function sCoin(){ap([1568,2093],.07,.18,'triangle',.12);}
 function sWin(){ap([523,587,659,784,880,1047,1319],.11,.34,'triangle',.13);}
 /* 等待用户点击指定按钮，返回其 data-v */
 function waitBtn(sel){
@@ -562,7 +683,8 @@ function confetti(o){
     else if(c.parentNode)c.parentNode.removeChild(c); })();
   }catch(e){}
 }
-function loadSave(){ try{var v=localStorage.getItem(SAVE_KEY);return v?JSON.parse(v):null;}catch(e){return null;} }
+function loadSave(){ try{var v=localStorage.getItem(SAVE_KEY); if(v)return JSON.parse(v);
+  var old=localStorage.getItem('myskme_dfw_v8'); return old?JSON.parse(old):null;}catch(e){return null;} }
 function clearSave(){ try{localStorage.removeItem(SAVE_KEY);}catch(e){} }
 /* ---------- 工具 ---------- */
 function alivePlayers(){ return G.players.filter(function(p){return !p.elim;}); }
@@ -606,7 +728,7 @@ function buildBoard(){
       if(t.t==='land')cls+=' l'+landTier(t.price);
       if(t.t==='land'&&t.owner!=null&&hasSet(t.owner,landTier(t.price)))cls+=' setdone';
       d.className=cls;
-      var inner='<div class="tn">'+t.name+'</div>';
+      var inner='<div class="tico">'+ICONS[t.ic]+'</div><div class="tn">'+t.name+'</div>';
       if(t.t==='land')inner+='<div class="tp">'+t.price+'</div>';
       if(t.t==='tax')inner+='<div class="tp">-'+t.amt+'</div>';
       d.innerHTML=inner+'<div class="tks" id="tks'+idx+'"></div>';
@@ -639,6 +761,12 @@ function renderTiles(){
         var m=document.createElement('span'); m.className='tk more';
         m.textContent='+'+(here.length-3); tk.appendChild(m);
       }
+      var bd0=d.querySelector('.bdg'); if(bd0)bd0.remove();
+      var ob0=d.querySelector('.obdg'); if(ob0)ob0.remove();
+      if(t.t==='land'&&t.owner!=null){ d.insertAdjacentHTML('beforeend', avImg(G.players[t.owner].chara,'obdg')); }
+      if(G.barriers&&G.barriers.indexOf(idx)>=0){
+        var bb=document.createElement('span'); bb.className='bdg'; bb.textContent='障'; d.appendChild(bb);
+      }
     })(i);
   }
 }
@@ -648,13 +776,18 @@ function renderPlayers(){
     var d=document.createElement('div');
     d.className='pcard'+(p===cur()&&!G.over?' on':'')+(p.elim?' out':'');
     var items=[];
-    if(p.items.remote)items.push('遥控×'+p.items.remote);
-    if(p.items.free)items.push('免租×'+p.items.free);
-    if(p.items.double)items.push('双倍×'+p.items.double);
+    var me=(p===cur()&&!G.over&&!p.elim&&G.phase==='start');
+    ITEMKEYS.forEach(function(k){
+      if(p.items[k])items.push('<button class="ichip'+(me?'':' off')+'" data-p="'+p.id+'" data-k="'+k+'">'+ITEMNAME[k]+'×'+p.items[k]+'</button>');
+    });
+    var sk=SKILLS[p.chara.id], skHtml='';
+    if(sk&&!p.elim){
+      skHtml='<button class="skillbtn'+((me&&p.skillCd<=0)?'':' off')+'" data-sk="'+p.id+'">【'+sk.name+'】'+sk.desc+' · '+(p.skillCd>0?'冷却 '+p.skillCd:'可释放')+'</button>';
+    }
     d.innerHTML='<div class="ph">'+avImg(p.chara,'pdot')+p.name+'<span class="rank">第'+(ri+1)+'名</span></div>'+
       '<div>金币 <span class="pa">'+p.cash+'</span> · 资产 '+assets(p)+
       (p.combo>=2?' · <b style="color:var(--gold-d)">'+p.combo+'连击</b>':'')+'</div>'+
-      '<div class="pit">'+(p.elim?'已破产':(items.join(' ')||'无道具'))+(p.dbl?' · 双倍租金生效中':'')+'</div>';
+      '<div class="pit">'+(p.elim?'已破产':(items.join('')||'无道具'))+'</div>'+skHtml;
     pl.appendChild(d);
   });
   $('roundLab').textContent='第 '+Math.min(G.round,G.cfg.maxRound)+'/'+G.cfg.maxRound+' 回合';
@@ -662,7 +795,7 @@ function renderPlayers(){
 function renderAll(){ renderTiles(); renderPlayers(); }
 function setCenter(html){ $('center').innerHTML=html; }
 /* ================= 开局 ================= */
-var PCOUNT=4, SEL_ROUNDS=20, SEL_CASH=1500, SEL_QMODE='bank', SEL_ANIM=1;
+var PCOUNT=4, SEL_ROUNDS=20, SEL_CASH=1500, SEL_QMODE='bank', SEL_ANIM=1, SEL_EGG=1;
 function segWire(id,cb){
   var el=$(id);
   el.onclick=function(e){
@@ -696,12 +829,13 @@ function newGame(){
   for(var i=0;i<PCOUNT;i++){
     var nm=($('pn'+i)&&$('pn'+i).value.trim())||CHARAS[i].name;
     players.push({id:i, chara:CHARAS[i], name:nm, cash:SEL_CASH, pos:0,
-      combo:0, elim:false, dbl:false, rmt:false,
-      items:{remote:0, free:0, double:0},
+      combo:0, elim:false, rmt:false, koi:false, halfBuy:false, stuck:false, skipTurn:false, skillCd:0,
+      items:{remote:0, free:0, barrier:0, swap:0, shield:0},
       st:{qOk:0,qTot:0,mx:0,box:0}});
   }
-  G={players:players, turn:0, round:1, pity:0, over:false,
-     cfg:{maxRound:SEL_ROUNDS, startCash:SEL_CASH, qmode:SEL_QMODE, anim:SEL_ANIM===1},
+  SNAP=null;
+  G={players:players, turn:0, round:1, pity:0, over:false, barriers:[], turnSeq:0, snapSeq:-1, phase:'start',
+     cfg:{maxRound:SEL_ROUNDS, startCash:SEL_CASH, qmode:SEL_QMODE, anim:SEL_ANIM===1, egg:SEL_EGG===1},
      tiles:TILES.map(function(t){var n={t:t.t,name:t.name};if(t.price){n.price=t.price;n.owner=null;n.level=1;n.upSpent=0;}if(t.amt)n.amt=t.amt;return n;})};
   $('sSetup').classList.add('hidden'); $('sGame').classList.remove('hidden');
   applyAnimClass();
@@ -714,28 +848,193 @@ function nextAlive(from){
   for(var k=0;k<n;k++){ i=(i+1)%n; if(!G.players[i].elim)return i; }
   return from;
 }
+/* ================= v0.9 彩蛋惊喜系统 ================= */
+var EGG_INGOT_SVG='<svg viewBox="0 0 24 24"><path d="M7 10.5c0-2.2 2.2-3.8 5-3.8s5 1.6 5 3.8l2.4 5.2c.6 1.3-.4 2.6-1.8 2.6H6.4c-1.4 0-2.4-1.3-1.8-2.6z" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="1.6" stroke-linejoin="round"/><ellipse cx="12" cy="9.6" rx="2.6" ry="1.4" fill="#C9A86A" stroke="#2f4f4f" stroke-width="1.3"/><path d="M9.2 14h5.6" stroke="#2f4f4f" stroke-width="1.4" stroke-linecap="round"/></svg>';
+var EGG_QBOX_SVG='<svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="13" rx="2.5" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="1.8"/><path d="M4 11.5h16" stroke="#2f4f4f" stroke-width="1.3"/><path d="M12 7V4.5M9.5 4.5h5" stroke="#2f4f4f" stroke-width="1.8" stroke-linecap="round"/><text x="12" y="18" text-anchor="middle" font-size="8.5" font-weight="900" fill="#2f4f4f" font-family="sans-serif">?</text></svg>';
+function charaById(cid){ for(var i=0;i<CHARAS.length;i++)if(CHARAS[i].id===cid)return CHARAS[i]; return null; }
+var EGGS=[{id:'ingot',w:35},{id:'donkey',w:30},{id:'egg',w:20},{id:'qbox',w:10},{id:'goldmonkey',w:5}];
+var EGG_MISS=['金元宝跑掉了，驴都替你可惜','彩蛋溜了，它说明天还来','手慢了！蛋表示很欣慰（没被接住就不用滚了）','问号盒一溜烟没了，只留下一句：你猜'];
+function eggOn(){ return G&&G.cfg&&G.cfg.egg!==false; }
+function spawnEgg(){
+  if(!eggOn()||!anim()||G.over)return;
+  var layer=$('eggLayer'); if(!layer)return;
+  if(layer.querySelector('.egg'))return;
+  if(Math.random()>=0.25)return;
+  var tot=0,i; for(i=0;i<EGGS.length;i++)tot+=EGGS[i].w;
+  var r=Math.random()*tot,t=EGGS[0];
+  for(i=0;i<EGGS.length;i++){ r-=EGGS[i].w; if(r<=0){t=EGGS[i];break;} }
+  var d=document.createElement('div');
+  d.className='egg'+(t.id==='goldmonkey'?' goldm':'')+(t.id==='egg'?' roll':'');
+  var inner='';
+  if(t.id==='ingot')inner=EGG_INGOT_SVG;
+  else if(t.id==='qbox')inner=EGG_QBOX_SVG;
+  else{ var c=charaById(t.id==='goldmonkey'?'monkey':t.id); inner=c?avImg(c,'eggav'):''; }
+  d.innerHTML=inner+(t.id==='goldmonkey'?'<span class="trail"></span>':'');
+  if(Math.random()<0.5)d.classList.add('rtl');
+  d.style.top=(55+Math.random()*25).toFixed(1)+'vh';
+  d.setAttribute('data-tid',t.id);
+  layer.appendChild(d);
+  d.onclick=function(e){ e.stopPropagation(); eggCatch(t,d); };
+  d._timer=setTimeout(function(){
+    if(d.parentNode)d.parentNode.removeChild(d);
+    addLog(EGG_MISS[(Math.random()*EGG_MISS.length)|0]);
+  },4000);
+}
+function eggCatch(t,d){
+  if(!d||d._caught)return; d._caught=true;
+  if(d._timer)clearTimeout(d._timer);
+  var p=cur(); if(!p||p.elim){ var al=alivePlayers(); p=al.length?al[0]:null; }
+  if(!p){ if(d.parentNode)d.parentNode.removeChild(d); return; }
+  var rk,k;
+  if(t.id==='ingot'){
+    rk=150+((Math.random()*151)|0); p.cash+=rk;
+    addLog(p.name+' 眼疾手快！抓住金元宝 +'+rk+' 金币');
+    floatBig('+'+rk); sCoin(); coinFly(d,cardOf(p.id));
+  }else if(t.id==='donkey'){
+    k=randItemKey();
+    if(giveItem(p,k))addLog('驴路过，掉个包裹：'+p.name+' 捡到【'+ITEMNAME[k]+'】');
+    else addLog('驴路过掉了个包裹，可惜'+p.name+'兜满了，驴又叼走了');
+    floatBig('驴的包裹'); sOk();
+  }else if(t.id==='egg'){
+    p.dicePlus=(p.dicePlus||0)+1;
+    addLog(p.name+' 接住滚来的蛋！下次掷骰 +1（蛋：轻点，我晕滚）');
+    floatBig('掷骰 +1'); sOk();
+  }else if(t.id==='qbox'){
+    var c=(Math.random()*3)|0;
+    if(c===0){ p.cash+=200; addLog(p.name+' 打开问号盒：+200 金币，天上掉馅饼了'); floatBig('+200'); sCoin(); }
+    else if(c===1){ k=randItemKey(); if(giveItem(p,k))addLog(p.name+' 打开问号盒：【'+ITEMNAME[k]+'】到手'); else addLog(p.name+' 问号盒里是道具，可惜兜满了'); floatBig('开出道具'); sOk(); }
+    else{ p.pos=(p.pos+2)%TILES.length; addLog(p.name+' 打开问号盒：被神秘力量推着前进 2 格（不触发格子）'); floatBig('前进 2 格'); sOk(); }
+  }else if(t.id==='goldmonkey'){
+    p.cash+=500;
+    addLog('金猴现身！'+p.name+' 被金光闪到，+500 金币');
+    floatBig('+500 金猴'); sWin();
+    if(anim())confetti({particleCount:80,spread:100,colors:['#C9A86A','#F6DEA8','#FFD700']});
+  }
+  save(); renderAll();
+  d.classList.add('caught');
+  setTimeout(function(){ if(d.parentNode)d.parentNode.removeChild(d); },340);
+}
 async function doTurn(){
   if(G.over)return;
   var p=cur();
+  /* v0.9：彩蛋惊喜（不阻塞主流程） */
+  spawnEgg();
   if(p.elim){ endTurn(); return; }
+  /* v0.7：回合快照（每回合开始自动保存，仅保留 1 步，供隐藏菜单撤销） */
+  if(G.snapSeq!==G.turnSeq){ try{SNAP=JSON.parse(JSON.stringify(G));}catch(e){SNAP=null;} G.snapSeq=G.turnSeq; }
+  /* v0.7：罚站（路障 / 请喝茶） */
+  if(p.stuck){ p.stuck=false; addLog(p.name+' 被路障绊住，罚站 1 回合'); sNo(); save(); renderAll(); endTurn(); return; }
+  if(p.skipTurn){ p.skipTurn=false; addLog(p.name+' 被茶壶留下喝茶，罚站 1 回合'); sNo(); save(); renderAll(); endTurn(); return; }
+  if(p.skillCd>0)p.skillCd--;
+  G.phase='start';
   renderAll();
   /* 回合面板：道具 + 答题 */
   var it=[];
-  if(p.items.double)it.push('<button class="btn ghost" data-v="dbl">双倍租金卡 ×'+p.items.double+'</button>');
-  if(p.items.remote)it.push('<button class="btn ghost" data-v="rmt">遥控骰子 ×'+p.items.remote+'</button>');
+  ITEMKEYS.forEach(function(k){
+    if(p.items[k])it.push('<button class="ichip" data-k="'+k+'">'+ITEMNAME[k]+' ×'+p.items[k]+'</button>');
+  });
   setCenter('<div class="cp">'+avImg(p.chara,'dot')+p.name+' 的回合</div>'+
-    '<div class="csub">金币 '+p.cash+' · 资产 '+assets(p)+(p.combo>=2?' · '+p.combo+'连击中':'')+'</div>'+
-    '<div class="btnrow">'+it.join('')+'</div>'+
+    '<div class="csub">金币 '+p.cash+' · 资产 '+assets(p)+(p.combo>=2?' · '+p.combo+'连击中':'')+(p.dicePlus?' · 蛋buff +'+p.dicePlus:'')+'</div>'+
+    (it.length?'<div class="btnrow">'+it.join('')+'</div>':'')+
     '<button class="btn" id="btnQuiz">答题掷骰</button>');
   $('center').onclick=function(e){
     var b=e.target.closest('button'); if(!b)return;
-    if(b.id==='btnQuiz'){ $('center').onclick=null; quizPhase(p); }
-    else if(b.getAttribute('data-v')==='dbl'){ p.items.double--; p.dbl=true; addLog(p.name+' 使用了双倍租金卡'); save(); doTurn(); }
-    else if(b.getAttribute('data-v')==='rmt'){ p.items.remote--; p.rmt=true; addLog(p.name+' 使用了遥控骰子（掷骰时自选点数）'); save(); doTurn(); }
+    if(b.id==='btnQuiz'){ $('center').onclick=null; quizPhase(p); return; }
+    var k=b.getAttribute('data-k'); if(k)useItem(p,k);
   };
+}
+/* ---------- v0.7 道具使用 ---------- */
+async function useItem(p,k){
+  if(!G||G.over||G.phase!=='start'||p!==cur()||p.elim)return;
+  if(!p.items[k])return;
+  if(k==='remote'){
+    p.items.remote--; p.rmt=true;
+    addLog(p.name+' 使用了遥控骰子（掷骰时自选点数）'); sOk(); save(); doTurn(); return;
+  }
+  if(k==='free'){ addLog(p.name+'：免租卡在交租时用，先揣兜里'); sNo(); return; }
+  if(k==='shield'){ addLog(p.name+'：保护伞会自动撑开，不用手动打'); sNo(); return; }
+  if(k==='barrier'){
+    showM('<h2>路障</h2><div class="c">在前方几格设卡？路过者罚站 1 回合</div>'+
+      '<div class="btnrow">'+[1,2,3,4,5,6].map(function(n){return '<button class="btn ghost" data-v="'+n+'">'+n+' 格</button>';}).join('')+'</div>'+
+      '<div class="btnrow" style="margin-top:6px"><button class="btn ghost" data-v="x">取消</button></div>');
+    var v=await waitBtn('.btn'); hideM();
+    if(v==='x'||v==null)return;
+    var idx=(p.pos+(+v))%TILES.length;
+    if(G.barriers.indexOf(idx)<0)G.barriers.push(idx);
+    p.items.barrier--;
+    addLog(p.name+' 在「'+G.tiles[idx].name+'」设下路障，过路的准备罚站吧');
+    sOk(); save(); doTurn(); return;
+  }
+  if(k==='swap'){
+    var cands=alivePlayers().filter(function(q){return q!==p;});
+    if(!cands.length){ addLog('没人可换，换位卡省下了'); return; }
+    showM('<h2>换位卡</h2><div class="c">和谁交换位置？乾坤大挪移！</div>'+
+      '<div class="btnrow">'+cands.map(function(q){return '<button class="btn ghost" data-v="'+q.id+'">'+q.name+'</button>';}).join('')+'</div>'+
+      '<div class="btnrow" style="margin-top:6px"><button class="btn ghost" data-v="x">取消</button></div>');
+    var v2=await waitBtn('.btn'); hideM();
+    if(v2==='x'||v2==null)return;
+    var q=G.players[+v2], tp=p.pos; p.pos=q.pos; q.pos=tp;
+    p.items.swap--;
+    addLog(p.name+' 使用换位卡，和 '+q.name+' 交换位置！'+q.name+'：我怎么在这？');
+    sOk(); renderAll(); save(); doTurn(); return;
+  }
+}
+/* ---------- v0.7 主动技能 ---------- */
+async function useSkill(p){
+  if(!G||G.over||G.phase!=='start'||p!==cur()||p.elim||p.skillCd>0)return;
+  var cid=p.chara.id, sk=SKILLS[cid], q, cands, v;
+  if(cid==='monkey'){
+    cands=alivePlayers().filter(function(x){return x!==p&&x.cash>0;});
+    if(!cands.length){ addLog(p.name+'【顺手牵羊】：大家都穷得叮当响，顺了个寂寞'); sNo(); return; }
+    q=cands[(Math.random()*cands.length)|0];
+    var got=Math.min(200,q.cash);
+    q.cash-=got; p.cash+=got; p.skillCd=sk.cd;
+    addLog(p.name+'【顺手牵羊】从 '+q.name+' 口袋里摸走 '+got+' 金币！'+q.name+'：我的钱！');
+    floatBig('顺手牵羊！'); sOk(); renderAll(); save(); return;
+  }
+  if(cid==='fish'){
+    p.koi=true; p.skillCd=sk.cd;
+    addLog(p.name+'【锦鲤附体】：锦鲤附体，下次掷骰必出 6！');
+    floatBig('锦鲤附体！'); sOk(); renderAll(); save(); return;
+  }
+  if(cid==='egg'){
+    p.skillCd=sk.cd;
+    addLog(p.name+'【滚】：蛋滚起来了，前进 3 格！');
+    floatBig('滚！'); sStep();
+    await moveSteps(p,3);
+    renderAll(); save(); return;
+  }
+  if(cid==='donkey'){
+    p.halfBuy=true; p.skillCd=sk.cd;
+    addLog(p.name+'【脚踏实地】：下次买地 5 折，实在人！');
+    floatBig('脚踏实地！'); sOk(); renderAll(); save(); return;
+  }
+  if(cid==='teapot'){
+    cands=alivePlayers().filter(function(x){return x!==p;});
+    if(!cands.length){ addLog('没人可请，茶先自己喝了'); sNo(); return; }
+    showM('<h2>请喝茶</h2><div class="c">请谁喝茶？喝完再走，罚站 1 回合</div>'+
+      '<div class="btnrow">'+cands.map(function(x){return '<button class="btn ghost" data-v="'+x.id+'">'+x.name+'</button>';}).join('')+'</div>'+
+      '<div class="btnrow" style="margin-top:6px"><button class="btn ghost" data-v="x">取消</button></div>');
+    v=await waitBtn('.btn'); hideM();
+    if(v==='x'||v==null)return;
+    var t=G.players[+v]; t.skipTurn=true; p.skillCd=sk.cd;
+    addLog(p.name+'【请喝茶】请 '+t.name+' 喝茶，'+t.name+' 喝完这壶再走，罚站 1 回合');
+    floatBig('请喝茶！'); sOk(); renderAll(); save(); return;
+  }
+  if(cid==='snake'){
+    var lands=[];
+    G.tiles.forEach(function(t,i){ if(t.t==='land'&&t.owner===p.id)lands.push(i); });
+    if(!lands.length){ addLog(p.name+'【滑】：名下无地产，滑了个寂寞'); sNo(); return; }
+    var best=lands[0], bd=99;
+    lands.forEach(function(i){ var d=(i-p.pos+TILES.length)%TILES.length; if(d>0&&d<bd){bd=d;best=i;} });
+    p.pos=best; p.skillCd=sk.cd;
+    addLog(p.name+'【滑】：滑——瞬移到「'+G.tiles[best].name+'」');
+    floatBig('滑！'); sStep(); renderAll(); save(); return;
+  }
 }
 /* ---------- 答题 ---------- */
 async function quizPhase(p){
+  G.phase='quiz';
   var ok;
   if(G.cfg.qmode==='offline'){
     showM('<h2>'+p.name+' 请答题</h2><div class="q">请老师线下出题，学生作答后判定</div>'+
@@ -766,6 +1065,11 @@ async function quizPhase(p){
     p.st.mx=Math.max(p.st.mx,p.combo);
     sOk();
     addLog(p.name+' 答对了'+(p.combo>=2?'（'+p.combo+'连击！）':''));
+    if(p.combo===3){
+      var rk3=randItemKey();
+      if(giveItem(p,rk3))addLog('3 连击奖励：'+p.name+' 获得道具【'+ITEMNAME[rk3]+'】');
+      else addLog('3 连击奖励：'+p.name+' 道具栏满了，奖励被驴叼走了');
+    }
     dicePhase(p,false);
   }else{
     p.combo=0;
@@ -777,6 +1081,7 @@ async function quizPhase(p){
 /* ---------- 掷骰 ---------- */
 var DICEFACE=['⚀','⚁','⚂','⚃','⚄','⚅'];
 async function dicePhase(p,bonus){
+  G.phase='dice';
   renderAll();
   if(p.rmt){
     setCenter('<div class="cp">'+p.name+' 遥控骰子</div><div class="csub">选择点数</div>'+
@@ -798,7 +1103,9 @@ async function dicePhase(p,bonus){
   await sleep(700); clearInterval(iv);
   var steps=face+1;
   if(p.diceMod){ steps+=p.diceMod; addLog('舌头打结：掷骰 '+(p.diceMod>0?'+':'')+p.diceMod+' 点'); p.diceMod=0; }
+  if(p.dicePlus){ steps+=p.dicePlus; addLog('接住滚来的蛋：掷骰 +'+p.dicePlus+' 点，稳！'); p.dicePlus=0; }
   steps=Math.max(1,steps);
+  if(p.koi){ face=5; steps=6; p.koi=false; addLog(p.name+'【锦鲤附体】：必出 6 点！'); $('dice').textContent=DICEFACE[5]; }
   if(p.combo>=2){
     steps+=1; addLog('连击加成：+1 步');
     floatBig('连击 ×'+p.combo);
@@ -818,6 +1125,21 @@ async function moveSteps(p,steps,dir){
       var fb=(p.chara&&p.chara.id==='fish')?100:0;
       p.cash+=SALARY+fb;
       addLog(p.name+' 经过起点，领工资 +'+(SALARY+fb)+(fb?'（如鱼得水 +100）':''));
+      /* v0.7：经过起点 30% 得随机道具（每人最多 3 个） */
+      if(Math.random()<0.3){
+        var gk=randItemKey();
+        if(giveItem(p,gk))addLog('起点福利：'+p.name+' 顺手捞到【'+ITEMNAME[gk]+'】');
+        else addLog('起点福利：'+p.name+' 道具栏满了，福利被驴叼走了');
+      }
+    }
+    /* v0.7：路障 */
+    if(dir>0&&G.barriers&&G.barriers.indexOf(p.pos)>=0){
+      G.barriers.splice(G.barriers.indexOf(p.pos),1);
+      p.stuck=true;
+      addLog(p.name+' 哎哟！踩中路障，罚站 1 回合');
+      renderTiles();
+      await sleep(anim()?500:60);
+      break;
     }
     renderTiles();
     var d=$('tile'+p.pos); if(d)d.classList.add('cur');
@@ -842,6 +1164,7 @@ async function maybeChase(p){
   renderAll();
 }
 async function moveAndSettle(p,steps,bonus){
+  G.phase='move';
   await moveSteps(p,steps);
   await settle(p);
   await maybeChase(p);
@@ -861,6 +1184,14 @@ async function settle(p){
   renderAll();
   if(t.t==='start'){ addLog(p.name+' 回到起点，歇口气'); return; }
   if(t.t==='tax'){
+    if(p.items.shield>0){
+      p.items.shield--;
+      addLog(p.name+' 保护伞自动撑开！免交税款 '+t.amt+'，税所：你伞大你说了算');
+      showM('<h2>税所</h2><div class="big">保护伞</div><div class="c">'+p.name+' 撑开保护伞，免交 '+t.amt+' 税款</div>'+
+        '<div class="btnrow"><button class="btn" data-v="ok">好险</button></div>');
+      await waitBtn('.btn'); hideM();
+      renderAll(); return;
+    }
     p.cash-=t.amt;
     showM('<h2>税所</h2><div class="big">-'+t.amt+'</div><div class="c">'+p.name+' 含泪缴税<br>剩余金币 '+p.cash+'</div>'+
       '<div class="btnrow"><button class="btn" data-v="ok">知道了</button></div>');
@@ -876,13 +1207,14 @@ async function landSettle(p,t){
   if(t.owner==null){
     var pay=t.price, donk=(p.chara&&p.chara.id==='donkey');
     if(donk)pay=Math.round(t.price*0.9);
+    if(p.halfBuy)pay=Math.round(pay*0.5);
     if(p.cash<pay){
       showM('<h2>'+t.name+'</h2><div class="c">空地售价 '+t.price+(donk?'（倔驴讲价 9 折后 '+pay+'）':'')+'，'+p.name+' 金币不够，这块地和你无缘</div>'+
         '<div class="btnrow"><button class="btn" data-v="ok">好吧</button></div>');
       await waitBtn('.btn'); hideM(); return;
     }
     var tier0=landTier(t.price);
-    showM('<h2>'+t.name+'</h2><div class="c">空地 · 售价 '+t.price+' 金币'+(donk?'<br>倔驴讲价：9 折后 <b>'+pay+'</b>':'')+'<br>租金 '+rentOf({t:'land',price:t.price,level:1})+' / 级<br>'+
+    showM('<h2>'+t.name+'</h2><div class="c">空地 · 售价 '+t.price+' 金币'+(donk?'<br>倔驴讲价：9 折后 <b>'+pay+'</b>':'')+(p.halfBuy?'<br>脚踏实地：5 折后 <b>'+pay+'</b>':'')+'<br>租金 '+rentOf({t:'land',price:t.price,level:1})+' / 级<br>'+
       TIERNAME[tier0]+' '+setProgress(p.id,tier0)+'（集齐 5/5 租金翻倍）</div>'+
       '<div class="btnrow"><button class="btn" data-v="buy">购买（-'+pay+'）</button>'+
       '<button class="btn ghost" data-v="no">放弃</button></div>');
@@ -896,6 +1228,7 @@ async function landSettle(p,t){
     if(v==='buy'){
       sBuy();
       p.cash-=pay; t.owner=p.id; t.level=1; t.upSpent=0;
+      if(p.halfBuy){ p.halfBuy=false; addLog(p.name+'【脚踏实地】5 折拿下！'); }
       addLog(p.name+' 买下 '+t.name+'（'+(donk?'倔驴讲价 9 折 -':'-')+pay+'，剩余 '+p.cash+'）');
       /* 人物关系：买地时的互怼 */
       (function(){
@@ -938,7 +1271,6 @@ async function landSettle(p,t){
   }
   /* 别人的地：交租 / 免租卡 / 答题免租 */
   var owner=G.players[t.owner], rent=rentOf(t), setOn=setMult(t)===2;
-  if(p.dbl){ /* 双倍租金卡只影响收租方，这里是交租方，无事 */ }
   var isSnake=(p.chara&&p.chara.id==='snake');
   /* 蛇【见好就收】：有免租卡先自动提示 */
   if(isSnake&&p.items.free>0){
@@ -982,7 +1314,6 @@ async function landSettle(p,t){
 }
 async function payRent(p,owner,rent){
   var real=rent;
-  if(owner.dbl){ real=rent*2; owner.dbl=false; addLog(owner.name+' 的双倍租金卡生效！租金 ×2'); }
   sRent();
   var oldP=p.cash, oldO=owner.cash;
   p.cash-=real; owner.cash+=real;
@@ -1022,9 +1353,11 @@ async function blindBox(p){
   var desc='';
   if(b.k==='cash'){ p.cash+=b.v; desc='金币 +'+b.v+'（剩余 '+p.cash+'）'; }
   else if(b.k==='step'){ desc='额外前进 '+b.v+' 步'; }
-  else if(b.k==='item'){ p.items[b.v]++; desc='获得道具：'+({remote:'遥控骰子',free:'免租卡',double:'双倍租金卡'}[b.v]); }
+  else if(b.k==='item'){ var gk=giveItem(p,b.v); desc=gk?('获得道具：'+ITEMNAME[b.v]):('道具栏满了，【'+ITEMNAME[b.v]+'】被驴叼走了'); }
   else if(b.k==='back'){ desc='倒退 '+b.v+' 步…'; }
-  else if(b.k==='tax'){ p.cash-=b.v; desc='交税 -'+b.v+'（剩余 '+p.cash+'）'; }
+  else if(b.k==='tax'){
+    if(p.items.shield>0){ p.items.shield--; desc='保护伞自动撑开！免交 '+b.v+' 罚款'; addLog(p.name+' 保护伞发动，免交罚款 '+b.v); }
+    else { p.cash-=b.v; desc='交税 -'+b.v+'（剩余 '+p.cash+'）'; } }
   else if(b.k==='diceminus'){ p.diceMod=-1; desc='下回合掷骰 -1 点，舌头还没捋直'; }
   showM('<h2>盲盒</h2><div class="big">'+b.label+'</div><div class="c">'+desc+'</div>'+
     '<div class="btnrow"><button class="btn" data-v="ok">收下</button></div>');
@@ -1123,6 +1456,8 @@ async function checkBankrupt(p){
 /* ================= 回合结束 / 胜负 ================= */
 function endTurn(){
   if(G.over)return;
+  G.phase='end';
+  G.turnSeq=(G.turnSeq||0)+1;
   var alive=alivePlayers();
   if(alive.length===1){ gameOver(alive[0],'对手全部破产'); return; }
   var n=G.players.length, i=G.turn;
@@ -1177,23 +1512,51 @@ function showRule(){
     '<p><b>3. 套色加成</b>：地产分竹青 / 雾蓝 / 暖金三系，每系 5 块。集齐一系 5 块，该系所有地产租金翻倍（金色光晕标记），升级费 8 折。</p>'+
     '<p><b>4. 盲盒格</b>：12 种开奖，有金币、道具、额外步数，也有整蛊（倒退、罚款、舌头打结）；连续 3 次没开出好东西必保底。</p>'+
     '<p><b>5. 命运格</b>：10 张命运卡，前进后退、奖惩金币、直达起点、送免租卡，外加绕口令挑战（念出\"猴鲤鱼与绿鲤鱼与驴\"）和黑化肥大赛。</p>'+
-    '<p><b>6. 道具</b>：遥控骰子（自选点数）、免租卡、双倍租金卡，盲盒里开。</p>'+
-    '<p><b>7. 胜负</b>：金币归零即破产，地产释放；回合走完后资产（金币+地产）最高者胜。经过起点领 '+SALARY+' 工资。</p>'+
-    '<p><b>8. 角色被动</b>：猴先生【主角光环】盲盒好东西概率+15%；鱼小姐【如鱼得水】过起点多领 100；蛋【蛋壳护体】首次破产保 500 金币不丢地；驴【倔驴讲价】买地 9 折；茶壶【壶里乾坤】命运必出正面；蛇【见好就收】有免租卡自动提示用，无卡租金 9 折。</p></div>'+
+    '<p><b>6. 道具</b>：遥控骰子（自选点数）、免租卡、路障（前方设卡罚站）、换位卡、保护伞（免税/罚款），每人最多 3 个；经过起点、开盲盒、3 连击可获得。</p>'+
+    '<p><b>7. 胜负</b>：金币归零即破产，地产释放；回合走完后资产（金币+地产）最高者胜。经过起点领 '+SALARY+' 工资。顶栏"结算"按钮可随时提前结算。</p>'+
+    '<p><b>8. 角色被动</b>：猴先生【主角光环】盲盒好东西概率+15%；鱼小姐【如鱼得水】过起点多领 100；蛋【蛋壳护体】首次破产保 500 金币不丢地；驴【倔驴讲价】买地 9 折；茶壶【壶里乾坤】命运必出正面；蛇【见好就收】有免租卡自动提示用，无卡租金 9 折。</p>'+
+    '<p><b>9. 主动技能</b>：每人 1 个，冷却制——猴先生【顺手牵羊】随机偷 200；鱼小姐【锦鲤附体】下次必出 6；蛋【滚】前进 3 格；驴【脚踏实地】下次买地 5 折；茶壶【请喝茶】指定对手罚站；蛇【滑】瞬移到最近己方地产。点玩家面板上的技能按钮释放。</p>'+
+    '<p><b>10. 彩蛋惊喜</b>：每回合有 25% 概率刷出小惊喜横穿屏幕——金元宝（+金币）、驴（掉道具）、蛋（下次掷骰+1）、问号盒（三选一）、稀有金猴（+500）。点中得奖，4 秒后跑掉。开局设置页可开关。</p></div>'+
     '<div class="btnrow"><button class="btn" data-v="ok">知道了</button></div>');
   waitBtn('.btn').then(hideM);
 }
-/* ---------- 新手引导（首次打开，3 步） ---------- */
+/* ---------- v0.7 隐藏调试菜单（标题连击 5 下） ---------- */
+function showDebug(){
+  showM('<div id="dbgbox"><h3>调试菜单（测试用）</h3>'+
+    '<button class="dbtn" data-v="undo">撤销上一步</button>'+
+    '<button class="dbtn" data-v="skip">跳过本回合</button>'+
+    '<button class="dbtn" data-v="end">直接结算</button>'+
+    '<button class="dbtn" data-v="x">关闭</button></div>');
+  waitBtn('.dbtn').then(function(v){
+    hideM();
+    if(!G||G.over)return;
+    if(v==='undo'){
+      if(!SNAP){ addLog('没有可撤销的快照'); return; }
+      try{ G=JSON.parse(JSON.stringify(SNAP)); }catch(e){ addLog('快照恢复失败'); return; }
+      normalizeSave();
+      save(); renderAll();
+      addLog('已撤销上一步，回到本回合开始');
+      doTurn();
+    }else if(v==='skip'){
+      addLog('调试：跳过 '+cur().name+' 的回合');
+      endTurn();
+    }else if(v==='end'){
+      var rk=rankList(); gameOver(rk[0],'调试菜单直接结算');
+    }
+  });
+}
+/* ---------- 新手引导（首次打开，4 步） ---------- */
 var TUTKEY='myskme_dfw_tut_v1', TUTI=0;
 var TUTSTEPS=[
 '<b>第一步：答题开路</b><br>每回合先答一道英语题（或老师用纸质题线下出题），答对才能掷骰子。连续答对有连击：2 连击多走 1 步，3 连击再掷一次！',
 '<b>第二步：买地收租</b><br>走到空地可以买下来，自己的地能升级到 Lv3；踩到别人的地要交租。集齐同色系 5 块地，该系租金翻倍、升级 8 折。',
-'<b>第三步：赢下比赛</b><br>回合走完后，资产（金币+地产）最高者夺冠；金币归零就破产淘汰。盲盒格和命运格里有惊喜——也有整蛊，小心驴尥蹶子！'];
+'<b>第三步：赢下比赛</b><br>回合走完后，资产（金币+地产）最高者夺冠；金币归零就破产淘汰。盲盒格和命运格里有惊喜——也有整蛊，小心驴尥蹶子！',
+'<b>第四步：道具与技能</b><br>每人最多带 3 个道具：遥控骰子自选点数、免租卡、路障设卡、换位卡、保护伞。经过起点、开盲盒、3 连击都能拿到。每人还有 1 个主动技能（冷却制），点玩家面板上的技能按钮释放！'];
 function renderTut(){
-  $('tutstep').textContent='第 '+(TUTI+1)+' / 3 步';
+  $('tutstep').textContent='第 '+(TUTI+1)+' / 4 步';
   $('tutbody').innerHTML=TUTSTEPS[TUTI];
   $('tutPrev').style.visibility=TUTI===0?'hidden':'visible';
-  $('tutNext').textContent=TUTI===2?'知道了，开玩！':'下一步';
+  $('tutNext').textContent=TUTI===3?'知道了，开玩！':'下一步';
 }
 function showTut(){ TUTI=0; renderTut(); $('tut').classList.remove('hidden'); }
 function boot(){
@@ -1204,6 +1567,7 @@ function boot(){
   segWire('segCash',function(v){SEL_CASH=v;});
   segWire('segQmode',function(v){SEL_QMODE=v;});
   segWire('segAnim',function(v){SEL_ANIM=v;});
+  segWire('segEgg',function(v){SEL_EGG=v;});
   $('pMinus').onclick=function(){ if(PCOUNT>2){PCOUNT--;renderSetupNames();$('pcount').textContent=PCOUNT;syncRoundDefault();} };
   $('pPlus').onclick=function(){ if(PCOUNT<6){PCOUNT++;renderSetupNames();$('pcount').textContent=PCOUNT;syncRoundDefault();} };
   $('btnStart').onclick=function(){ clearSave(); newGame(); };
@@ -1211,9 +1575,11 @@ function boot(){
   if(sv&&sv.players&&!sv.over){
     if(!sv.cfg)sv.cfg={maxRound:20,startCash:1500};
     if(!sv.cfg.qmode)sv.cfg.qmode='bank';
+    if(sv.cfg.egg==null)sv.cfg.egg=true;
     $('btnContinue').classList.remove('hidden');
     $('btnContinue').onclick=function(){
       G=sv;
+      normalizeSave();
       if(G.cfg&&G.cfg.anim===undefined)G.cfg.anim=true;
       $('sSetup').classList.add('hidden'); $('sGame').classList.remove('hidden');
       applyAnimClass();
@@ -1224,7 +1590,7 @@ function boot(){
   }
   $('tutPrev').onclick=function(){ if(TUTI>0){TUTI--;renderTut();} };
   $('tutNext').onclick=function(){
-    if(TUTI>=2){ $('tut').classList.add('hidden'); try{localStorage.setItem(TUTKEY,'1');}catch(e){} }
+    if(TUTI>=3){ $('tut').classList.add('hidden'); try{localStorage.setItem(TUTKEY,'1');}catch(e){} }
     else { TUTI++; renderTut(); }
   };
   try{ if(!localStorage.getItem(TUTKEY))showTut(); }catch(e){}
@@ -1233,6 +1599,36 @@ function boot(){
   $('btnNew').onclick=function(){
     if(confirm('确定重开一局吗？当前进度会丢失。')){ clearSave(); location.reload(); }
   };
+  /* v0.7：随时结算 */
+  $('btnEnd').onclick=function(){
+    if(!G||G.over)return;
+    showM('<h2>提前结算</h2><div class="c">现在就结束比赛，按当前资产排名结算？</div>'+
+      '<div class="btnrow"><button class="btn" data-v="yes">确认结算</button>'+
+      '<button class="btn ghost" data-v="no">再玩会儿</button></div>');
+    waitBtn('.btn').then(function(v){ hideM();
+      if(v==='yes'){ var rk=rankList(); gameOver(rk[0],'提前结算'); }
+    });
+  };
+  /* v0.7：玩家面板道具/技能点击 */
+  $('plist').onclick=function(e){
+    if(!G||G.over)return;
+    var b=e.target.closest('button'); if(!b)return;
+    var k=b.getAttribute('data-k'), sk=b.getAttribute('data-sk');
+    if(k){ var p=G.players[+b.getAttribute('data-p')]; useItem(p,k); }
+    else if(sk){ var p2=G.players[+sk]; useSkill(p2); }
+  };
+  /* v0.7：标题连击 5 下（每次间隔 <500ms）→ 隐藏调试菜单 */
+  (function(){
+    var taps=[], gt=$('gameTitle');
+    if(!gt)return;
+    gt.style.userSelect='none'; gt.style.webkitUserSelect='none';
+    gt.addEventListener('click',function(){
+      var now=Date.now();
+      taps=taps.filter(function(t){return now-t<500;});
+      taps.push(now);
+      if(taps.length>=5){ taps=[]; showDebug(); }
+    });
+  })();
 }
 boot();
 </script>
