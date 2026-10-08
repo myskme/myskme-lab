@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>金榜大亨 v0.19 | MYSKME</title>
+<title>金榜大亨 v0.20 | MYSKME</title>
 <style>
 :root{
 --bg:#FAF7F0; --card:#FFFFFF; --ink:#4A4238; --ink2:#8A7F72;
@@ -528,6 +528,7 @@ v0.11 新增：奢华 5 图标夸张重绘（镶钻捞力士/镀金宝驴/
 地块（鱼子酱/钻石水/金马桶/飞机/太空酒店，土豪金系套色）、
 3 种新特殊格（红包/陷阱/驴车顺风车）、命运 15 张/盲盒
 16 种、街头小剧场（每回合 12% 随机旁白+小效果）。 v0.12 新增：地名包系统（开局二选一：通用版/大连风情版 32 家乡梗地名，每块配简介）、12 个大连主题 SVG 图标、地块点击弹窗、街头小剧场大连版 5 条、修图标不显示 bug（G.tiles 未拷贝 ic）。 v0.13 新增：12 张 AI 插画（256px WebP 内嵌），地块点击弹窗有插画的大图展示。\nv0.14 新增：手机端显示全面（棋盘自适应缩放完整显示）；4 套色系主题色（竹青/雾蓝/土豪金/海蓝渐变）+集齐系色光晕；5 级房子重绘（一级比一级大一级比一级壕，Lv5 金色宫殿+光效）；开局头像选择器（6 选 1 不可重复）+自定义名字；单人挑战模式（20 回合刷资产分，本地排行榜前 10）。
+v0.20 新增：星尘联动（跨游戏只读增益：检测到连星大亨/寻珍大亨游玩痕迹时，开局发放星尘联动礼包）；命运池 +6 张猴先生系列惊喜事件（茶壶斟茶/蛇盯蛋/鱼小姐嘴硬心软等）；成就 +3（星尘联动/命运弄人/茶话会常客）配 SVG 徽章。
 ============================================================ */
 /* ---------- 角色棋子（猴先生系列） ---------- */
 var CHARAS=[
@@ -967,11 +968,17 @@ var FATEPOOL=[
 {label:'宝驴4S店提车：-300，喜提驴车前进 4 步', f:'luxcar', v:300},
 {label:'黑卡提额：+400，金主快乐', f:'cash', v:400},
 {label:'游艇派对：全场每人给你 100 份子钱', f:'party'},
-{label:'太空漫步：火箭故障，弹射回起点', f:'tostart'}
+{label:'太空漫步：火箭故障，弹射回起点', f:'tostart'},
+{label:'猴先生发红包：尾巴一扫，+250 金币', f:'cash', v:250},
+{label:'鱼小姐嘴硬心软：嫌你走得慢，推你前进 2 步', f:'move', v:2},
+{label:'茶壶斟茶：开席！全场每人 +100', f:'teaparty'},
+{label:'蛇盯上了蛋：蛋玩家得【保护伞】，其余玩家被蛇瞪得后退 1 步', f:'snakescare'},
+{label:'驴的顺风车：驴甩甩尾巴，载你前进 3 步', f:'move', v:3},
+{label:'蛋滚滚：蛋滚了一圈捡到 200 金币（蛋还是蛋，没孵化）', f:'cash', v:200}
 ];
 /* ================= 状态 ================= */
 var G=null, QIDX=[];
-var SAVE_KEY='myskme_dfw_v19';
+var SAVE_KEY='myskme_dfw_v20';
 function $(i){return document.getElementById(i);}
 function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
 function showM(html){$('mbox').innerHTML=html;$('modal').classList.remove('hidden');}
@@ -1002,6 +1009,32 @@ function waitBtn(sel){
   });
 }
 
+/* ================= v0.20 星尘联动：跨游戏只读增益 ================= */
+/* 只读取连星大亨(myskme_llk_lastplay_v1)/寻珍大亨(myskme_zc_lastplay_v1)的游玩痕迹；
+   绝不写对方存档；失败静默降级。联动礼包每个设备只发一次（自家键 myskme_dfw_link_v1）。 */
+var LINK_KEY='myskme_dfw_link_v1';
+function linkTraces(){
+  var t={llk:false,zc:false};
+  try{ if(localStorage.getItem('myskme_llk_lastplay_v1'))t.llk=true; }catch(e){}
+  try{ if(localStorage.getItem('myskme_zc_lastplay_v1'))t.zc=true; }catch(e){}
+  return t;
+}
+async function maybeStardustLink(){
+  try{
+    if(localStorage.getItem(LINK_KEY))return; /* 已发过 */
+    var t=linkTraces();
+    if(!t.llk&&!t.zc)return; /* 无游玩痕迹，静默跳过 */
+    var from=[];
+    if(t.llk)from.push('连星大亨'); if(t.zc)from.push('寻珍大亨');
+    G.players.forEach(function(pl){ if(!pl.elim){ pl.cash+=300; giveItem(pl,'free'); } });
+    unlockAchi('linkup');
+    try{localStorage.setItem(LINK_KEY,'1');}catch(e){}
+    addLog('星尘联动：检测到你在'+from.join('、')+'的游玩痕迹，发放星尘联动礼包（全员 +300 金币 + 免租卡）');
+    try{sWin();}catch(e){}
+    showM('<div class="c"><h2>星尘联动礼包</h2><div class="c">检测到你在 <b>'+from.join('、')+'</b> 留下过足迹<br>星尘大亨系列联动开启！</div><div class="btnrow"><button class="btn" data-v="ok">开启联动之旅</button></div></div>');
+    await waitBtn('.btn'); hideM();
+  }catch(e){/* 静默降级 */}
+}
 /* ================= v0.19 猴先生系列：驴财务总监查账 ================= */
 function pickAuditRounds(maxR){
   var pool=[],ar;
@@ -1160,7 +1193,7 @@ function confetti(o){
   }catch(e){}
 }
 function loadSave(){ try{var v=localStorage.getItem(SAVE_KEY); if(v)return JSON.parse(v);
-  var olds=['myskme_dfw_v18','myskme_dfw_v17','myskme_dfw_v16','myskme_dfw_v15','myskme_dfw_v14','myskme_dfw_v13','myskme_dfw_v12','myskme_dfw_v11','myskme_dfw_v10','myskme_dfw_v9'];
+  var olds=['myskme_dfw_v19','myskme_dfw_v18','myskme_dfw_v17','myskme_dfw_v16','myskme_dfw_v15','myskme_dfw_v14','myskme_dfw_v13','myskme_dfw_v12','myskme_dfw_v11','myskme_dfw_v10','myskme_dfw_v9'];
   for(var i=0;i<olds.length;i++){var o=localStorage.getItem(olds[i]); if(o)return JSON.parse(o);}
   return null;}catch(e){return null;} }
 function clearSave(){ try{localStorage.removeItem(SAVE_KEY);}catch(e){} }
@@ -1403,7 +1436,7 @@ function toggleSoloUI(){
   $('pcount').textContent=PCOUNT;
   renderSetupNames();
 }
-function newGame(){
+async function newGame(){
   var solo=SEL_MODE==='solo';
   var team=SEL_MODE==='team';
   if(SEL_QMODE==='mine'&&myQuiz().length===0){toast('我的题库是空的，先去录几道题吧，已切回内置题库');SEL_QMODE='bank';syncSegSel('segQmode','bank');}
@@ -1445,6 +1478,7 @@ function newGame(){
      weather:{type:'sunny',until:5}, sessionEggs:0, skitRound:-1,
      tiles:TILES.map(function(t){var n={t:t.t,name:t.name,ic:t.ic};if(t.t==='land'){var L=mixedLands[tierOf2(t.price)].pop();n.name=L.name;n.ic=L.ic;n.pack=L.pack;if(L.desc)n.desc=L.desc;}if(t.price){n.price=t.price;n.owner=null;n.level=1;n.upSpent=0;}if(t.amt)n.amt=t.amt;return n;})};
   G.auditRounds=pickAuditRounds(G.cfg.maxRound);G.teaLeft=2;G.players.forEach(function(pl){pl.rItems=0;});
+  await maybeStardustLink();
   $('sSetup').classList.add('hidden'); $('sGame').classList.remove('hidden');
   applyAnimClass();
   buildBoard(); fitBoard(); renderWx(); addLog('游戏开始！'+(solo?(SEL_AI>0?('单人对战（+'+SEL_AI+' 位伙伴）'):'单人挑战'):' '+cnt+' 位玩家')+'，'+(solo?20:SEL_ROUNDS)+' 回合，起始金币 '+SEL_CASH+'，'+'混合地名（52选20随机组合）'+'，'+(SEL_QMODE==='offline'?'线下出题':'内置题库')+'，'+players[0].name+' 先手。');
@@ -1458,7 +1492,7 @@ var DEX_KEY='myskme_dfw_dex', DEXEGG_KEY='myskme_dfw_dexegg';
 var TITLE_KEY='myskme_dfw_title', CAREER_KEY='myskme_dfw_career';
 function lsGet(k,d){ try{var v=JSON.parse(localStorage.getItem(k)); return v==null?d:v;}catch(e){return d;} }
 function lsSet(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} }
-/* ---------- 成就（12） ---------- */
+/* ---------- 成就（15） ---------- */
 var ACHI=[
  {id:'first',n:'初露锋芒',d:'完成第一局游戏'},
  {id:'rich',n:'富可敌国',d:'单局资产超过 10000'},
@@ -1471,10 +1505,13 @@ var ACHI=[
  {id:'scholar',n:'学霸',d:'单局答题正确率 90%+（≥10 题）'},
  {id:'lone',n:'独行侠',d:'单人挑战登上排行榜'},
  {id:'dalian',n:'大连通',d:'单局拥有 3 块大连风味地块'},
- {id:'comeback',n:'绝境逢生',d:'资产跌破 500 后回升超过 2000'}
+ {id:'comeback',n:'绝境逢生',d:'资产跌破 500 后回升超过 2000'},
+ {id:'linkup',n:'星尘联动',d:'领取过星尘联动礼包'},
+ {id:'fateking',n:'命运弄人',d:'累计抽取 10 张命运卡'},
+ {id:'teabreak',n:'茶话会常客',d:'触发过茶壶斟茶事件'}
 ];
 
-/* v0.16：12 成就徽章图标（金色徽章底 + 深青简笔） */
+/* v0.16：15 成就徽章图标（金色徽章底 + 深青简笔，v0.20 追加 3 个） */
 var ACHI_ICON={
 first:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="2.5"/><path d="M18 38V10M18 12h14l-4 5 4 5H18" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 rich:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="2.5"/><ellipse cx="24" cy="16" rx="9" ry="4" fill="#FFD966" stroke="#2f4f4f" stroke-width="2"/><path d="M15 16v8c0 2.2 4 4 9 4s9-1.8 9-4v-8M15 24v6c0 2.2 4 4 9 4s9-1.8 9-4v-6" stroke="#2f4f4f" stroke-width="2" fill="none"/></svg>',
@@ -1487,7 +1524,10 @@ rent1k:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" s
 scholar:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="2.5"/><path d="M14 16l10-5 10 5-10 5z" fill="#6B9BC3" stroke="#2f4f4f" stroke-width="2" stroke-linejoin="round"/><path d="M18 20v8c0 3 12 3 12 0v-8M34 18v9" stroke="#2f4f4f" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
 lone:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="2.5"/><circle cx="24" cy="18" r="5" fill="#FFF6E3" stroke="#2f4f4f" stroke-width="2"/><path d="M15 37c1-6 5-9 9-9s8 3 9 9" fill="#FFF6E3" stroke="#2f4f4f" stroke-width="2" stroke-linecap="round"/></svg>',
 dalian:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="2.5"/><path d="M10 30q4-4 8 0t8 0 8 0" stroke="#3E8EBA" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M10 36q4-4 8 0t8 0 8 0" stroke="#3E8EBA" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M24 8v12M18 14h12" stroke="#2f4f4f" stroke-width="2.5" stroke-linecap="round"/></svg>',
-comeback:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="2.5"/><path d="M14 32L24 12l10 20" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 12v22" stroke="#D9A521" stroke-width="2.5" stroke-linecap="round"/></svg>'
+comeback:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="2.5"/><path d="M14 32L24 12l10 20" stroke="#2f4f4f" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 12v22" stroke="#D9A521" stroke-width="2.5" stroke-linecap="round"/></svg>',
+linkup:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="2.5"/><circle cx="18" cy="24" r="7" fill="none" stroke="#2f4f4f" stroke-width="2.5"/><circle cx="30" cy="24" r="7" fill="none" stroke="#2f4f4f" stroke-width="2.5"/><path d="M24 8l1.6 3.4L29 13l-3.4 1.6L24 18l-1.6-3.4L19 13l3.4-1.6z" fill="#D9A521"/></svg>',
+fateking:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="2.5"/><rect x="16" y="12" width="16" height="22" rx="2.5" fill="#FFF6E3" stroke="#2f4f4f" stroke-width="2"/><path d="M24 16l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4L18.2 20l4-.6z" fill="#D9A521" stroke="#2f4f4f" stroke-width="1.2" stroke-linejoin="round"/></svg>',
+teabreak:'<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="21" fill="#F6DEA8" stroke="#2f4f4f" stroke-width="2.5"/><path d="M15 22h14v7a7 7 0 0 1-14 0z" fill="#FFF6E3" stroke="#2f4f4f" stroke-width="2"/><path d="M15 24H9c-2 1-2 4 0 5" fill="none" stroke="#2f4f4f" stroke-width="2" stroke-linecap="round"/><path d="M29 24l5-3" stroke="#2f4f4f" stroke-width="2" stroke-linecap="round"/><path d="M20 18c0-3 4-3 4-6" fill="none" stroke="#8A8A8A" stroke-width="2" stroke-linecap="round"/></svg>'
 };
 function unlockAchi(id){
   var a=lsGet(ACHI_KEY,{}); if(a[id])return false;
@@ -2226,7 +2266,7 @@ p.cash+=qw;
 if(crit){ floatCrit('暴击！+'+qw); sCrit(); addLog(p.name+' 答对暴击！奖励 +'+qw+' 金币，爽到飞起');}
 else { sCoin(); addLog(p.name+' 答对奖励 +'+qw+' 金币（SVIP 双倍爽）');}
 }
-function isFateGood(f){ return (f.f==='move'&&f.v>0)||(f.f==='cash'&&f.v>0)||f.f==='tostart'||f.f==='item'||f.f==='tq'||f.f==='tqall'||f.f==='luxcar'||f.f==='party';}
+function isFateGood(f){ return (f.f==='move'&&f.v>0)||(f.f==='cash'&&f.v>0)||f.f==='tostart'||f.f==='item'||f.f==='tq'||f.f==='tqall'||f.f==='luxcar'||f.f==='party'||f.f==='teaparty';}
 function salaryOf(){ return Math.round(350*1.5);}
 function eggCash(v){ return Math.round(v*1.5);}
 /* ---------- v0.11：街头小剧场 ---------- */
@@ -2802,7 +2842,7 @@ async function fateDraw(p){
   if(p.chara&&p.chara.id==='teapot'){
     pool=FATEPOOL.filter(function(f){
       return (f.f==='move'&&f.v>0)||(f.f==='cash'&&f.v>0)||f.f==='tostart'||f.f==='item'
-        ||f.f==='tq'||f.f==='tqall'||f.f==='luxcar'||f.f==='party';
+        ||f.f==='tq'||f.f==='tqall'||f.f==='luxcar'||f.f==='party'||f.f==='teaparty';
     });
     addLog(p.name+' 壶里乾坤：必出正面事件！');
   }
@@ -2811,6 +2851,7 @@ async function fateDraw(p){
   var f=pool[(Math.random()*pool.length)|0];
   await fateFlipAnim(f.label,p);
   addLog(p.name+' 抽到命运：'+f.label);
+  var __fc=achiAdd('fateDraw',1); if(__fc>=10)unlockAchi('fateking');
   if(f.f==='move'){ await moveSteps(p,Math.abs(f.v),f.v>0?1:-1); await settle(p); await maybeChase(p); }
   else if(f.f==='cash'){ var __fv=f.v<0?Math.ceil(f.v/2):f.v; p.cash+=__fv; if(f.v<0)addLog('（爽服减半，实扣 '+(-__fv)+'）'); }
   else if(f.f==='tostart'){
@@ -2837,6 +2878,20 @@ async function fateDraw(p){
     ps.forEach(function(x){ var t2=Math.min(100,x.cash); x.cash-=t2; got+=t2; });
     p.cash+=got; sCoin();
     addLog(p.name+' 开游艇派对，全场份子钱共收 '+got+'！大家：这酒真上头');
+  }
+  else if(f.f==='teaparty'){
+    G.players.forEach(function(q){ if(!q.elim)q.cash+=100; });
+    sCoin(); addLog(p.name+' 抽到命运：茶壶斟茶——开席！全场每人 +100 金币');
+    unlockAchi('teabreak');
+  }
+  else if(f.f==='snakescare'){
+    if(p.chara&&p.chara.id==='egg'){
+      var gk=giveItem(p,'shield');
+      addLog('蛇盯上了蛋！蛋缩回壳里不动如山'+(gk?'，获得【保护伞】':'（道具栏满了，保护伞被蛇叼走了）'));
+    }else{
+      addLog('蛇盯上了蛋（不是你），但你被蛇的冷笑瞪得后退 1 步');
+      await moveSteps(p,1,-1); await settle(p); await maybeChase(p);
+    }
   }
   renderAll(); await checkBankrupt(p);
 }
