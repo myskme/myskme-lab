@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>金榜大亨 v0.18 | MYSKME</title>
+<title>金榜大亨 v0.19 | MYSKME</title>
 <style>
 :root{
 --bg:#FAF7F0; --card:#FFFFFF; --ink:#4A4238; --ink2:#8A7F72;
@@ -368,6 +368,12 @@ body.bt17 .av{box-shadow:0 0 0 2px #FFD700,0 0 10px rgba(255,215,0,.7)}
 .crown svg{width:14px;height:14px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
 .buffb{display:inline-block;font-size:10px;background:#C0392B;color:#fff;border-radius:8px;padding:0 5px;margin-left:4px}
 .buffb.bl{background:#2E86C1}.buffb.gr{background:#7D8C7A}
+.seriesBadge{display:inline-flex;align-items:center;gap:4px;background:#C9A86A;color:#4A2E12;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.25);vertical-align:middle}
+.seriesBadge svg{width:13px;height:13px;flex:none}
+.qopt.teaout{opacity:.4;text-decoration:line-through}
+.auditDonkey img.dot{width:72px;height:72px;animation:abacusShake .45s ease-in-out 3}
+@keyframes abacusShake{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.abacus{font-size:12px;color:#8A5A2B;margin-top:4px}
 </style>
 <style>
 .teambadge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:9px;margin-left:4px;color:#fff}
@@ -391,7 +397,7 @@ body.bt17 .av{box-shadow:0 0 0 2px #FFD700,0 0 10px rgba(255,215,0,.7)}
 <div id="app">
 <!-- 设置页 -->
 <div id="sSetup">
-<div id="topbar"><h1>金榜大亨 <small>课堂版 · MYSKME</small></h1></div>
+<div id="topbar"><h1>金榜大亨 <small>课堂版 · MYSKME</small></h1><span class="seriesBadge"><svg viewBox="0 0 24 24"><path d="M12 5C8 5 5 8.5 5 12.5 5 17 8.5 20.5 12 20.5s7-3.5 7-8C19 8.5 16 5 12 5z" fill="#FFB27D"/><path d="M12 5c.5 2.5-.5 5-2.5 6.5" stroke="#8A5A2B" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M12.5 4.5c2-1.2 4-1 5 .5-.8 1.2-2.8 1.4-5-.5z" fill="#7CB342"/></svg>猴先生系列</span></div>
 <div id="setbox">
 <h2>开局设置</h2><div id="seasonBar"></div><div id="tierBar"></div>
 <div class="setgroup"><h3>模式</h3>
@@ -467,7 +473,7 @@ body.bt17 .av{box-shadow:0 0 0 2px #FFD700,0 0 10px rgba(255,215,0,.7)}
 <div id="topbar">
 <h1 id="gameTitle">金榜大亨 <small id="roundLab">第 1/20 回合</small></h1>
 <div class="grp">
-<span id="wxpill"></span><button class="tbtn" id="btnRule">规则</button>
+<span class="seriesBadge"><svg viewBox="0 0 24 24"><path d="M12 5C8 5 5 8.5 5 12.5 5 17 8.5 20.5 12 20.5s7-3.5 7-8C19 8.5 16 5 12 5z" fill="#FFB27D"/><path d="M12 5c.5 2.5-.5 5-2.5 6.5" stroke="#8A5A2B" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M12.5 4.5c2-1.2 4-1 5 .5-.8 1.2-2.8 1.4-5-.5z" fill="#7CB342"/></svg>猴先生系列</span><span id="wxpill"></span><button class="tbtn" id="btnRule">规则</button>
 <button class="tbtn" id="btnEnd">结算</button>
 <button class="tbtn" id="btnNew">重开</button>
 </div>
@@ -965,7 +971,7 @@ var FATEPOOL=[
 ];
 /* ================= 状态 ================= */
 var G=null, QIDX=[];
-var SAVE_KEY='myskme_dfw_v18';
+var SAVE_KEY='myskme_dfw_v19';
 function $(i){return document.getElementById(i);}
 function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
 function showM(html){$('mbox').innerHTML=html;$('modal').classList.remove('hidden');}
@@ -994,6 +1000,38 @@ function waitBtn(sel){
     }
     box.addEventListener('click',h);
   });
+}
+
+/* ================= v0.19 猴先生系列：驴财务总监查账 ================= */
+function pickAuditRounds(maxR){
+  var pool=[],ar;
+  for(ar=3;ar<=maxR-1&&ar<=20;ar++)pool.push(ar);
+  var out=[],n=Math.min(2+((Math.random()*2)|0),pool.length),k;
+  while(out.length<n&&pool.length){k=(Math.random()*pool.length)|0;out.push(pool.splice(k,1)[0]);}
+  return out;
+}
+async function donkeyAudit(){
+  var dk=null,ci;
+  for(ci=0;ci<CHARAS.length;ci++){if(CHARAS[ci].id==='donkey'){dk=CHARAS[ci];break;}}
+  var av=dk?avImg(dk,'dot'):'';
+  showM('<div class="c"><div class="auditDonkey">'+av+'<div class="abacus">算盘哗啦啦——</div></div><h2>财务总监查账！</h2><div class="c">驴举着算盘入场，挨个翻账本……</div></div>');
+  try{sNo();}catch(e){}
+  await sleep(anim()?1500:250);
+  var lines=[];
+  G.players.forEach(function(pl){
+    if(pl.elim)return;
+    var used=pl.rItems||0;
+    if(used>=2){
+      pl.cash-=200; if(pl.cash<-500)pl.cash=-500;
+      lines.push(pl.name+'：本轮用了 '+used+' 个道具，账目不清，罚款 200');
+      addLog('查账：'+pl.name+' 账目不清，罚款 200（用了 '+used+' 个道具）');
+    }
+  });
+  var res=lines.length?lines.join('<br>'):'账本干干净净，一根毛都没多。驴满意地甩了甩算盘，走了。';
+  showM('<div class="c"><div class="auditDonkey">'+av+'</div><h2>查账结果</h2><div class="c">'+res+'</div><div class="c" style="color:#8A5A2B">驴：下次再乱花钱，算盘伺候。</div></div>');
+  save(); renderAll();
+  await sleep(anim()?2000:300);
+  hideM();
 }
 function addLog(s){
   var d=document.createElement('div'); d.textContent=s;
@@ -1122,7 +1160,7 @@ function confetti(o){
   }catch(e){}
 }
 function loadSave(){ try{var v=localStorage.getItem(SAVE_KEY); if(v)return JSON.parse(v);
-  var olds=['myskme_dfw_v17','myskme_dfw_v16','myskme_dfw_v15','myskme_dfw_v14','myskme_dfw_v13','myskme_dfw_v12','myskme_dfw_v11','myskme_dfw_v10','myskme_dfw_v9'];
+  var olds=['myskme_dfw_v18','myskme_dfw_v17','myskme_dfw_v16','myskme_dfw_v15','myskme_dfw_v14','myskme_dfw_v13','myskme_dfw_v12','myskme_dfw_v11','myskme_dfw_v10','myskme_dfw_v9'];
   for(var i=0;i<olds.length;i++){var o=localStorage.getItem(olds[i]); if(o)return JSON.parse(o);}
   return null;}catch(e){return null;} }
 function clearSave(){ try{localStorage.removeItem(SAVE_KEY);}catch(e){} }
@@ -1406,6 +1444,7 @@ function newGame(){
      cfg:{pack:'mixed', maxRound:solo?20:SEL_ROUNDS, startCash:SEL_CASH, qmode:SEL_QMODE, anim:SEL_ANIM===1, egg:SEL_EGG===1, items:SEL_ITEMS===1, skill:SEL_SKILL===1},
      weather:{type:'sunny',until:5}, sessionEggs:0, skitRound:-1,
      tiles:TILES.map(function(t){var n={t:t.t,name:t.name,ic:t.ic};if(t.t==='land'){var L=mixedLands[tierOf2(t.price)].pop();n.name=L.name;n.ic=L.ic;n.pack=L.pack;if(L.desc)n.desc=L.desc;}if(t.price){n.price=t.price;n.owner=null;n.level=1;n.upSpent=0;}if(t.amt)n.amt=t.amt;return n;})};
+  G.auditRounds=pickAuditRounds(G.cfg.maxRound);G.teaLeft=2;G.players.forEach(function(pl){pl.rItems=0;});
   $('sSetup').classList.add('hidden'); $('sGame').classList.remove('hidden');
   applyAnimClass();
   buildBoard(); fitBoard(); renderWx(); addLog('游戏开始！'+(solo?(SEL_AI>0?('单人对战（+'+SEL_AI+' 位伙伴）'):'单人挑战'):' '+cnt+' 位玩家')+'，'+(solo?20:SEL_ROUNDS)+' 回合，起始金币 '+SEL_CASH+'，'+'混合地名（52选20随机组合）'+'，'+(SEL_QMODE==='offline'?'线下出题':'内置题库')+'，'+players[0].name+' 先手。');
@@ -1587,6 +1626,8 @@ async function aiTurn(p){
   p.st=p.st||{qOk:0,qTot:0,mx:0,box:0};
   /* 答题 70% */
   var ok=Math.random()<0.7;
+   if(typeof G.teaLeft!=='number')G.teaLeft=2;
+   if(G.teaLeft>0&&Math.random()<0.25){G.teaLeft--;addLog(p.name+' 请茶壶喝了杯茶，茶香里看清了！');ok=true;}
   p.st.qTot++;
   if(p.quizPass){ ok=true; p.quizPass=false; addLog(p.name+' 听故事听入迷，超常发挥直接答对！'); }
   if(ok){
@@ -1990,6 +2031,7 @@ function eggCatch(t,d){
 }
 async function doTurn(){
   if(G.over)return;
+  if(typeof G.teaLeft!=='number')G.teaLeft=2; if(!G.auditRounds)G.auditRounds=[];
   var p=cur();
   if(G.team&&!p.elim&&p.skillCd>0){
     var _done=false;
@@ -2110,26 +2152,26 @@ async function useBItem(p,k){
 if(!G||G.over||G.phase!=='start'||p!==cur()||p.elim)return;
 if(!battleOn()||!p.bitems||!p.bitems[k])return;
 if(k==='bshield'){
-p.bitems.bshield--; p.bshieldT=3;
+p.bitems.bshield--;p.rItems=(p.rItems||0)+1;; p.bshieldT=3;
 await battleFx('shield','星舰护盾展开！',p.name+' 套了个蓝色罩罩，持续 3 回合'); sOk();
 addLog(p.name+' 展开星舰护盾，3 回合内刀枪不入'); save(); renderAll();
 if(!G.over&&!p.elim)showTurnPanel(p); return;
 }
 if(k==='turbo'){
-p.bitems.turbo--;
+p.bitems.turbo--;p.rItems=(p.rItems||0)+1;;
 await battleFx('turbo','涡轮加速！',p.name+' 嗖——'); sWin();
 addLog(p.name+' 涡轮加速，风驰电掣前进 6 格'); save();
 await moveSteps(p,6); await settle(p); await maybeChase(p); await maybeSkit(p);
 renderAll(); if(!G.over&&!p.elim)showTurnPanel(p); return;
 }
 if(k==='cloak'){
-p.bitems.cloak--; p.cloakT=2;
+p.bitems.cloak--;p.rItems=(p.rItems||0)+1;; p.cloakT=2;
 await battleFx('torpedo','潜艇隐身！',p.name+' 潜入深海，2 回合没人找得到'); sOk();
 addLog(p.name+' 开启潜艇隐身，2 回合免疫攻击和陷阱'); save(); renderAll();
 if(!G.over&&!p.elim)showTurnPanel(p); return;
 }
 if(k==='banana'){
-p.bitems.banana--;
+p.bitems.banana--;p.rItems=(p.rItems||0)+1;;
 showM('<h2>香蕉皮</h2><div class="c">在身后几格放香蕉皮？踩中打滑倒退 2 格</div><div class="btnrow">'+[1,2,3].map(function(n){return '<button class="btn ghost" data-v="'+n+'">'+n+' 格</button>';}).join('')+'</div>');
 var v=await waitBtn('.btn'); hideM();
 var pos=(p.pos-(+v)+TILES.length)%TILES.length;
@@ -2159,8 +2201,8 @@ p.bitems[k]--; addLog(p.name+' 掏出了【'+BITEMNAME[k]+'】，嘿嘿一笑');
 await sleep(anim()?400:60); await fireBattle(p,tgt,k);
 save(); renderAll(); return true;
 }
-if(p.bitems.bshield>0&&Math.random()<0.15){ p.bitems.bshield--; p.bshieldT=3; addLog(p.name+' 展开星舰护盾（托管：惜命）'); renderAll(); return true;}
-if(p.bitems.turbo>0&&Math.random()<0.10){ p.bitems.turbo--; addLog(p.name+' 涡轮加速！'); await moveSteps(p,6); await settle(p); renderAll(); return true;}
+if(p.bitems.bshield>0&&Math.random()<0.15){ p.bitems.bshield--;p.rItems=(p.rItems||0)+1;; p.bshieldT=3; addLog(p.name+' 展开星舰护盾（托管：惜命）'); renderAll(); return true;}
+if(p.bitems.turbo>0&&Math.random()<0.10){ p.bitems.turbo--;p.rItems=(p.rItems||0)+1;; addLog(p.name+' 涡轮加速！'); await moveSteps(p,6); await settle(p); renderAll(); return true;}
 return false;
 }
 /* ===== v0.17 BT爽服：变态爽服，超强加强 ===== */
@@ -2218,7 +2260,7 @@ async function useItem(p,k){
   if(!G||G.over||G.phase!=='start'||p!==cur()||p.elim)return;
   if(!p.items[k])return;
   if(k==='remote'){
-    p.items.remote--; p.rmt=true;
+    p.items.remote--;p.rItems=(p.rItems||0)+1;; p.rmt=true;
     addLog(p.name+' 使用了遥控骰子（掷骰时自选点数）'); sOk(); save(); doTurn(); return;
   }
   if(k==='free'){ addLog(p.name+'：免租卡在交租时用，先揣兜里'); sNo(); return; }
@@ -2231,14 +2273,14 @@ async function useItem(p,k){
     if(v==='x'||v==null)return;
     var idx=(p.pos+(+v))%TILES.length;
     if(G.barriers.indexOf(idx)<0)G.barriers.push(idx);
-    p.items.barrier--;
+    p.items.barrier--;p.rItems=(p.rItems||0)+1;;
     addLog(p.name+' 在「'+G.tiles[idx].name+'」设下路障，过路的准备罚站吧');
     sOk(); save(); doTurn(); return;
   }
   if(k==='swap'){
     var cands=alivePlayers().filter(function(q){return q!==p;});
     if(!cands.length){
-      if(G.solo){ p.items.swap--; var sd=(Math.random()*TILES.length)|0; p.pos=sd; addLog(p.name+' 使用换位卡：没对手，驴车把你拉到了「'+G.tiles[sd].name+'」'); sOk(); renderAll(); save(); await settle(p); return; }
+      if(G.solo){ p.items.swap--;p.rItems=(p.rItems||0)+1;; var sd=(Math.random()*TILES.length)|0; p.pos=sd; addLog(p.name+' 使用换位卡：没对手，驴车把你拉到了「'+G.tiles[sd].name+'」'); sOk(); renderAll(); save(); await settle(p); return; }
       addLog('没人可换，换位卡省下了'); return; }
     showM('<h2>换位卡</h2><div class="c">和谁交换位置？乾坤大挪移！</div>'+
       '<div class="btnrow">'+cands.map(function(q){return '<button class="btn ghost" data-v="'+q.id+'">'+q.name+'</button>';}).join('')+'</div>'+
@@ -2246,7 +2288,7 @@ async function useItem(p,k){
     var v2=await waitBtn('.btn'); hideM();
     if(v2==='x'||v2==null)return;
     var q=G.players[+v2], tp=p.pos; p.pos=q.pos; q.pos=tp;
-    p.items.swap--;
+    p.items.swap--;p.rItems=(p.rItems||0)+1;;
     addLog(p.name+' 使用换位卡，和 '+q.name+' 交换位置！'+q.name+'：我怎么在这？');
     sOk(); renderAll(); save(); doTurn(); return;
   }
@@ -2336,7 +2378,21 @@ async function quizPhase(p){
     var opts=q.opts.map(function(o,i){
       return '<button class="qopt" data-v="'+i+'">'+'ABCD'[i]+'. '+o+'</button>';
     }).join('');
-    showM('<h2>'+p.name+' 请答题</h2><div class="q">'+q.q+'</div>'+opts+'<div class="c">答对才能掷骰子</div>');
+    showM('<h2>'+p.name+' 请答题</h2><div class="q">'+q.q+'</div>'+opts+'<div class="c">答对才能掷骰子</div><div class="c"><button class="tbtn" id="teaBtn">请茶壶喝杯茶（剩'+G.teaLeft+'次）</button></div>');
+    (function(){
+      var tb=$('teaBtn'); if(!tb)return;
+      if(G.teaLeft<=0){tb.disabled=true;tb.textContent='茶壶下班了';return;}
+      tb.onclick=function(){
+        if(G.teaLeft<=0||tb.disabled)return;
+        G.teaLeft--; tb.disabled=true;
+        var btns=document.querySelectorAll('.qopt'),wr=[],bi;
+        for(bi=0;bi<btns.length;bi++){if(bi!==q.a&&!btns[bi].disabled)wr.push(btns[bi]);}
+        if(wr.length){var w=wr[(Math.random()*wr.length)|0];w.classList.add('teaout');w.disabled=true;}
+        addLog('茶壶过来斟了杯茶：'+p.name+' 茶香里看清了！划掉一个错误选项');
+        try{sOk();}catch(e){}
+        tb.textContent='茶香里看清了！（剩'+G.teaLeft+'次）';
+      };
+    })();
     var v2=await waitBtn('.qopt');
     var btns=document.querySelectorAll('.qopt');
     ok=(+v2===q.a);
@@ -2506,7 +2562,7 @@ async function settle(p){
   if(t.t==='start'){ addLog(p.name+' 回到起点，歇口气'); return; }
   if(t.t==='tax'){
     if(p.items.shield>0){
-      p.items.shield--;
+      p.items.shield--;p.rItems=(p.rItems||0)+1;;
       addLog(p.name+' 保护伞自动撑开！免交税款 '+t.amt+'，税所：你伞大你说了算');
       showM('<h2>税所</h2><div class="big">保护伞</div><div class="c">'+p.name+' 撑开保护伞，免交 '+Math.ceil(t.amt/2)+' 税款（爽服减半）</div>'+
         '<div class="btnrow"><button class="btn" data-v="ok">好险</button></div>');
@@ -2636,7 +2692,7 @@ async function landSettle(p,t){
       '<div class="btnrow"><button class="btn" data-v="use">用掉免租卡</button><button class="btn ghost" data-v="keep">先留着</button></div>');
     var sv2=p.ai?(rent>300?'use':'keep'):await waitBtn('.btn'); hideM();
     if(sv2==='use'){
-      p.items.free--;
+      p.items.free--;p.rItems=(p.rItems||0)+1;;
       if(rentBuffed)owner.rentBuff++;
       addLog(p.name+'【见好就收】使用免租卡，免交 '+rent+' 给 '+owner.name);
       renderAll(); return;
@@ -2655,7 +2711,7 @@ async function landSettle(p,t){
     '<div class="btnrow">'+btns+'</div>');
   var v3=p.ai?aiRentChoice(p,rent):await waitBtn('.btn'); hideM();
   if(v3==='card'){
-    p.items.free--; if(rentBuffed)owner.rentBuff++;
+    p.items.free--;p.rItems=(p.rItems||0)+1;; if(rentBuffed)owner.rentBuff++;
     addLog(p.name+' 使用免租卡，免交 '+rent+' 给 '+owner.name); renderAll(); return;
   }
   if(v3==='quiz'){
@@ -2717,7 +2773,7 @@ async function blindBox(p){
   else if(b.k==='item'){ var gk=giveItem(p,b.v); desc=gk?('获得道具：'+ITEMNAME[b.v]):('道具栏满了，【'+ITEMNAME[b.v]+'】被驴叼走了'); }
   else if(b.k==='back'){ desc='倒退 '+b.v+' 步…'; }
   else if(b.k==='tax'){
-    if(p.items.shield>0){ p.items.shield--; desc='保护伞自动撑开！免交 '+b.v+' 罚款'; addLog(p.name+' 保护伞发动，免交罚款 '+b.v); }
+    if(p.items.shield>0){ p.items.shield--;p.rItems=(p.rItems||0)+1;; desc='保护伞自动撑开！免交 '+b.v+' 罚款'; addLog(p.name+' 保护伞发动，免交罚款 '+b.v); }
     else { var __bv=Math.ceil(b.v/2); p.cash-=__bv; desc='交税 -'+__bv+'（爽服减半，剩余 '+p.cash+'）'; } }
   else if(b.k==='diceminus'){ p.diceMod=-1; desc='下回合掷骰 -1 点，舌头还没捋直'; }
   else if(b.k==='bitem'){ var __bok=giveBItem(p,b.v); desc=__bok?('战斗道具：'+BITEMNAME[b.v]+' 到手，火力+1'):'战斗道具栏满了，被驴叼走了'; }
@@ -2839,7 +2895,7 @@ async function checkBankrupt(p){
   if(G.solo&&!hasBidder){ gameOver(p,'单人挑战失败：破产了，地产全没了'); return; }
 }
 /* ================= 回合结束 / 胜负 ================= */
-function endTurn(){
+async function endTurn(){
   if(G.over)return;
   G.phase='end';
   G.turnSeq=(G.turnSeq||0)+1;
@@ -2854,7 +2910,7 @@ function endTurn(){
   if(alive.length===1&&!G.solo&&!G.team){ gameOver(alive[0],'对手全部破产'); return; }
   var n=G.players.length, i=G.turn;
   for(var k=0;k<n;k++){ i=(i+1)%n; if(!G.players[i].elim)break; }
-  if(i<=G.turn){ G.round++; if(G.round%10===0)G.pendingGift=true; }
+  if(i<=G.turn){ if(G.auditRounds&&G.auditRounds.indexOf(G.round)>=0){await donkeyAudit();if(G.over)return;} G.players.forEach(function(pl){pl.rItems=0;}); G.round++; if(G.round%10===0)G.pendingGift=true; }
   G.turn=i;
   if(G.round%5===1&&G.round>1)rollWeather();
   G.players.forEach(function(pl){

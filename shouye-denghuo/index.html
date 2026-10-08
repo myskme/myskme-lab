@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>守灯大亨 · 原型 v0.5 | MYSKME</title>
+<title>守灯大亨 v0.6 | MYSKME</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body{height:100dvh;overflow:hidden;overscroll-behavior:none}
@@ -70,11 +70,22 @@
            font-family:"STKaiti","KaiTi",serif; font-size:22px; color:#2a1f0d; }
   .verse4 { font-family:"STKaiti","KaiTi",serif; font-size:15px; color:#c9b98f; line-height:2.2; font-style:italic; }
   .merchant { font-family:"STKaiti","KaiTi",serif; color:#b48ad0; font-size:15px; font-style:italic; margin:8px 0; }
+  .series-badge { position:fixed; top:10px; right:14px; display:inline-flex; align-items:center; gap:5px;
+    background:#0b0b0e; color:#C9A86A; border:1px solid #C9A86A; border-radius:999px;
+    padding:4px 12px; font-size:11px; letter-spacing:2px; white-space:nowrap; z-index:50; }
+  .parrot-host { display:flex; align-items:center; gap:10px; justify-content:center; margin:8px 0; }
+  .parrot-host .who { color:#e8c26a; font-size:15px; letter-spacing:2px; }
+  .parrot-host .sp-note { font-size:10px; color:#6f6350; letter-spacing:1px; }
+  .echo { background:#101018; border:1px solid #4a4238; border-radius:8px; padding:10px 14px; margin:10px 0; text-align:left; }
+  .echo .et { color:#8a7a5c; font-size:12px; letter-spacing:2px; }
+  .echo .ev { font-family:"STKaiti","KaiTi",serif; font-size:14px; color:#c9b98f; font-style:italic; margin:6px 0; line-height:2; }
+  .snark { background:#14101e; border:1px dashed #b08d57; border-radius:8px; padding:10px 14px; margin:10px 0;
+    font-size:14px; color:#e8c26a; line-height:1.9; text-align:left; }
 </style>
 </head>
 <body>
-  <h1>守灯大亨</h1>
-  <div class="sub">MYSKME · 原型 v0.5 —— 夜行商人 · 子夜异变</div>
+  <h1>守灯大亨</h1><span class="series-badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="#C9A86A"><path d="M12 22 L5 15 L3 3 L9 8 L12 6 L15 8 L21 3 L19 15 Z"/></svg>狼先生系列</span>
+  <div class="sub">MYSKME · v0.6 —— 夜行商人 · 子夜异变</div>
   <div id="wrap">
     <canvas id="cv" width="960" height="600"></canvas>
     <div id="toast"></div>
@@ -197,6 +208,24 @@ const CANDIES = {
   blueberry: { name:'蓝莓 · 冷静', desc:'本更侵蚀增速 -30%', fx:g=>{ g.rateMul*=0.7; } },
   milk:      { name:'牛奶 · 安慰', desc:'灯油 +15', fx:g=>{ g.oil=Math.min(100,g.oil+15); } },
 };
+/* 世界编年史 II 正典占位（待定稿）：12 处地点 / 29 件信物。
+   清单待核定后填入，此处仅结构占位，不编造正典细节。 */
+const CANON_PLACES=['地点·待定稿01','地点·待定稿02','地点·待定稿03','地点·待定稿04','地点·待定稿05','地点·待定稿06','地点·待定稿07','地点·待定稿08','地点·待定稿09','地点·待定稿10','地点·待定稿11','地点·待定稿12'];
+const CANON_RELICS=['信物·待定稿01','信物·待定稿02','信物·待定稿03','信物·待定稿04','信物·待定稿05','信物·待定稿06','信物·待定稿07','信物·待定稿08','信物·待定稿09','信物·待定稿10','信物·待定稿11','信物·待定稿12','信物·待定稿13','信物·待定稿14','信物·待定稿15','信物·待定稿16','信物·待定稿17','信物·待定稿18','信物·待定稿19','信物·待定稿20','信物·待定稿21','信物·待定稿22','信物·待定稿23','信物·待定稿24','信物·待定稿25','信物·待定稿26','信物·待定稿27','信物·待定稿28','信物·待定稿29'];
+function canonPlace(){ return CANON_PLACES[Math.floor(Math.random()*CANON_PLACES.length)]; }
+function canonRelic(){ return CANON_RELICS[Math.floor(Math.random()*CANON_RELICS.length)]; }
+/* 鹦鹉教授毒舌解签（SP 口径：类人脸、无鸟喙；立绘待定稿，暂用字形徽章） */
+const PARROT_SNARK={
+  '上上签':'学舌完毕！上上签，「龙跃云津」——啧，运气好得我想打听你早餐吃的什么。拿了好处就好好守夜，别辜负这根签。',
+  '上签':'「月出东山雾渐薄」——复述完毕。上签，不错，比我的羽毛还顺。冻结六秒，够你喝口热茶了。',
+  '中签':'「守株有兔」——学舌完毕。中签的意思就是：别指望天上掉馅饼，自己添油去。灯油加二十五，拿好不谢。',
+  '中下签':'「雾里看花花不真」——我都替你看不清。这签一半好一半坏，跟我的记性一样不靠谱。祝你掷中好的那一半。',
+  '下签':'「夜半惊魂」——学舌完毕。下签！别慌，「否极泰来」四个字我背得比你熟。下更灯油回满，算签文给你赔不是了。'
+};
+/* 存档 v0.6：历史最佳（此前无存档） */
+const K_SD6='myskme_shoudeng_v06';
+function sdBest(){ try{ const v=localStorage.getItem(K_SD6); return v?JSON.parse(v):null; }catch(e){ return null; } }
+function sdSaveBest(o){ try{ localStorage.setItem(K_SD6, JSON.stringify(o)); }catch(e){} }
 /* 夜行商人：三更现身，以物易物 */
 const TRADES = [
   { name:'油换宝', desc:'灯油 -25，随机信物立即生效', can:g=>g.oil>=25,
@@ -249,6 +278,7 @@ function titleScreen(){
       <b>·</b> 熬过 <b>五更</b>（每更 20 秒），<b>点击灯盏</b>添油，天亮即胜利<br>
       <b>·</b> 传说：若五更结束时侵蚀极低，<b>子夜会有异变</b>
     </div>
+    ${(()=>{ const b=sdBest(); return b?`<p style="font-size:12px;color:#8a7a5c">历史最佳：守住 ${b.wins} 夜 · 最低侵蚀 ${b.bestEro}</p>`:`<p style="font-size:12px;color:#5c5340">尚无守夜记录，虚位以待</p>`; })()}
     <div class="btnrow"><button onclick="startGame()">开始守夜</button></div>`);
 }
 function startGame(){
@@ -270,7 +300,8 @@ function drawOmen(){
   const o=OMENS[id];
   return { id, html:`<div class="omen"><b>夜观异象 · ${o.name}</b>
     <div class="verse">「${o.verse}」</div>
-    <div class="meta">雾象：<em>${o.tell}</em> ｜ 判词示警：<em>${o.effect}</em></div></div>
+    <div class="meta">雾象：<em>${o.tell}</em> ｜ 判词示警：<em>${o.effect}</em></div>
+    <div class="meta">正典回响：<em>${canonPlace()}（待定稿）</em>——雾的源头，或许与那里有关。</div></div>
     <div class="solve">读判词 → 推变招 → 选克制。卡面「克制」即是解。</div>` };
 }
 function pickWatcher(){
@@ -292,6 +323,7 @@ function merchantScreen(){
   G.state='merchant';
   show(`<h2>三更 · 夜行商人</h2>
     <div class="merchant">「客官，雾里做生意，童叟无欺。<br>三更半夜还在守灯的，卖你个人情。」</div>
+    ${Math.random()<0.4?`<div class="meta" style="margin-top:6px">商人压低声音：「听说正典里那件${canonRelic()}（待定稿），有人出大价钱收……」</div>`:''}
     <div class="btnrow">${TRADES.map((t,i)=>
       `<button class="rolebtn" ${t.can(G)?'':''} onclick="doTrade(${i})" ${t.can(G)?'':'disabled'}>
         <b>${t.name}</b><small>${t.desc}</small></button>`).join('')}
@@ -375,19 +407,26 @@ function openFortune(){
   let r=Math.random()*total, f=FORTUNES[0];
   for(const c of FORTUNES){ r-=c.w; if(r<=0){ f=c; break; } }
   G.pendingFortune=f;
-  show(`<h2>求签</h2>
+  show(`<h2>求签 · 鹦鹉教授主持</h2>
+    <div class="parrot-host"><span class="badge">鹦</span><span><span class="who">鹦鹉教授</span><br><span class="sp-note">SP · 类人脸无鸟喙（立绘待定稿）</span></span></div>
+    <p style="font-size:13px;color:#a89878">「求签找我，解签也找我——复述加吐槽，一条龙。」</p>
     <div class="stick"></div>
     <div class="verse4">${f.verse.join('<br>')}</div>
-    <p style="font-size:12px;color:#6f6350">签文隐晦——解签方见吉凶。</p>
-    <div class="btnrow"><button onclick="breakFortune()">解签</button></div>`);
+    <div class="btnrow"><button onclick="breakFortune()">听教授解签</button></div>`);
 }
 function breakFortune(){
   const f=G.pendingFortune; G.fortuneUsed=true;
   document.getElementById('fortunebtn').classList.remove('show');
   f.fx(G); G.fortuneLog.push(`${f.grade} · ${f.name}`);
-  toast(`<b>${f.grade} · ${f.name}</b><br><span style="font-size:12px;color:#8a7a5c">${f.desc}</span>`, 2600);
-  G.state='play'; hide();
+  const snark=PARROT_SNARK[f.grade]||'教授表示：这签，我复述完了。';
+  show(`<h2>鹦鹉教授解签</h2>
+    <div class="parrot-host"><span class="badge">鹦</span><span><span class="who">鹦鹉教授</span><br><span class="sp-note">SP · 类人脸无鸟喙（立绘待定稿）</span></span></div>
+    <div class="echo"><div class="et">学舌复述 · ${f.grade} · ${f.name}</div><div class="ev">「${f.verse.join(' ')}」</div></div>
+    <div class="snark"><b>教授点评：</b>${snark}</div>
+    <p style="font-size:12px;color:#8a7a5c">签效：${f.desc}</p>
+    <div class="btnrow"><button onclick="closeFortune()">领了，继续守夜</button></div>`);
 }
+function closeFortune(){ G.state='play'; hide(); }
 function openCandy(){
   if(G.state!=='play'||G.watcher!=='xi'||G.candyUsed) return;
   G.state='candy';
@@ -405,6 +444,8 @@ function eatCandy(k){
 }
 function endGame(win){
   G.state='end'; G.win=win; hideBtns();
+  const prev=sdBest()||{wins:0,bestEro:100};
+  if(win){ prev.wins++; prev.bestEro=Math.min(prev.bestEro, Math.round(G.erosion)); sdSaveBest(prev); }
   const oil=Math.round(G.oil), ero=Math.round(G.erosion);
   const log=G.omenLog.map(l=>{
     const mark=(l.hitW||l.hitR)?' <span class="hit">✓克制命中</span>':'';

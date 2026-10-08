@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>捞星大亨 · 原型 v0.3 | MYSKME</title>
+<title>捞星大亨 v0.4 | MYSKME</title>
 <!--
   美术资产来源（取图规则：按提交日期最新；存疑先报备）：
   - relic-dustbag.webp / relic-goldleaf.webp / relic-lamp.webp / relic-dice.webp
@@ -63,11 +63,14 @@
   .end-yang .words { font-size:13px; color:#c9b98f; line-height:1.9; }
   .marvels { margin-top:10px; font-size:12.5px; color:#a89878; line-height:2; border-top:1px solid #3a2f1d; padding-top:10px; }
   .marvels b { color:#e8c26a; }
+  .series-badge { position:fixed; top:10px; right:14px; display:inline-flex; align-items:center; gap:5px;
+    background:#0b0b0e; color:#C9A86A; border:1px solid #C9A86A; border-radius:999px;
+    padding:4px 12px; font-size:11px; letter-spacing:2px; white-space:nowrap; z-index:50; }
 </style>
 </head>
 <body>
-  <h1>捞星大亨</h1>
-  <div class="sub">MYSKME · 原型 v0.3 —— 点一下，放钩</div>
+  <h1>捞星大亨</h1><span class="series-badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="#C9A86A"><path d="M12 22 L5 15 L3 3 L9 8 L12 6 L15 8 L21 3 L19 15 Z"/></svg>狼先生系列</span>
+  <div class="sub">MYSKME · v0.4 —— 点一下，放钩 · 答答的尾巴</div>
   <div id="wrap">
     <canvas id="cv" width="960" height="600"></canvas>
     <div id="cameo"><div class="bubble"><span class="who" id="cameoWho">洋</span><span id="cameoText"></span></div><img id="cameoImg" alt="洋"></div>
@@ -81,7 +84,7 @@
     <div class="meter"><div id="timefill" style="width:100%"></div></div>
     <span id="timelabel">60s</span>
   </div>
-  <div class="tip">连击不断分更高 · 洋的骰子会带来神速钩 · 泉底偶尔有闪光星尘和星尘袋</div>
+  <div class="tip">连击不断分更高 · 洋的骰子会带来神速钩 · 泉底偶尔有闪光星尘和星尘袋 · 雾团或藏灯猫</div>
   <div class="canon-note">信物与立绘取自正典资产（编年史信物图鉴 · 自鸣棋角色立绘）</div>
 
 <script>
@@ -114,8 +117,11 @@ const TYPES = {
   shiny:  { v:120, w:2.5, r:16, name:'闪光星尘', rare:true },
   dustbag:{ v:80,  w:2,   r:20, name:'星尘袋', img:'dustbag', rare:true },
 };
+const K_LX4='myskme_laoxing_v04';
+function lxBest(){ try{ const v=localStorage.getItem(K_LX4); return v?JSON.parse(v):null; }catch(e){ return null; } }
+function lxSaveBest(o){ try{ localStorage.setItem(K_LX4, JSON.stringify(o)); }catch(e){} }
 const G = { state:'title', score:0, time:TIME_LIMIT, ang:0, t:0,
-            rope:'swing', len:80, grab:null, stun:0, items:[], floats:[],
+            rope:'swing', len:80, grab:null, stun:0, items:[], floats:[], guideT:0,
             combo:0, lucky:0, grabs:0,
             stat:{ maxCombo:0, shiny:0, dustbag:0 } };
 
@@ -155,14 +161,16 @@ function titleScreen(){
     <p>星尘泉的夜晚，星屑沉在泉底。<br>摇钩，看准，点一下。</p>
     <div class="rule">
       <b>点一下</b> 就放钩，钩到东西自动收回来<br>
+      <b>尾巴钩</b>：钩子换成了答答的尾巴——「答案也许在尾巴上」，抓到东西尾巴会卷一下<br>
       小星尘 <b>+10</b> · 大星尘 <b>+25</b> · 灯猫的小灯 <b>+30</b> · 金叶徽章 <b>+50</b>（最沉）<br>
       <b>连击</b>：连续钩中不落空，4 连击起计分 <b>×2</b>，8 连击 <b>×3</b>！碰雾团或落空就断<br>
-      别碰<b>雾团</b>：扣 15 分，钩子还会被缠住 2 秒<br>
+      别碰<b>雾团</b>：扣 15 分，尾巴还会被缠住 2 秒——但 8% 的雾团里藏着<b>灯猫</b>，捞到反转加分<br>
       泉底偶尔有<b>闪光星尘</b>（+120）和<b>星尘袋</b>（+80，有惊喜）<br>
       洋的骰子会不定时带来<b>神速钩</b>：接下来三钩收绳飞快<br>
       <b>8 连击</b>璐会来喝彩 · 结算时<b>鹦鹉教授</b>会点评<br>
       <b>60 秒</b>内拿到 <b>500 分</b>，泉眼就认可你
     </div>
+    ${(()=>{ const b=lxBest(); return b?`<p style="font-size:12px;color:#8a7a5c">历史最佳：${b.best} 分</p>`:`<p style="font-size:12px;color:#5c5340">虚位以待，第一钩由你来</p>`; })()}
     <div class="btnrow"><button onclick="startGame()">下钩</button></div>`);
 }
 function spawnItem(){
@@ -175,7 +183,9 @@ function spawnItem(){
   else if(roll<0.70) type='leaf';
   else if(roll<0.82) type='lamp';
   else type='fog';
-  G.items.push({ x:60+Math.random()*(W-120), y:200+Math.random()*(H-260), type, ph:Math.random()*6.28 });
+  const it={ x:60+Math.random()*(W-120), y:200+Math.random()*(H-260), type, ph:Math.random()*6.28 };
+  if(type==='fog'&&Math.random()<0.08) it.cat=true;  /* 8% 雾团藏灯猫 */
+  G.items.push(it);
 }
 function startGame(){
   G.state='play'; G.score=0; G.time=TIME_LIMIT; G.items=[]; G.floats=[];
@@ -214,6 +224,8 @@ function endGame(win){
   if(s.cameo_yang>0) marvels.push(`洋现身 <b>${s.cameo_yang}</b> 次`);
   if(s.cameo_lu>0) marvels.push(`璐喝彩 <b>${s.cameo_lu}</b> 次`);
   if(s.cameo_parrot>0) marvels.push(`教授点评 <b>${s.cameo_parrot}</b> 次`);
+  if(s.cat>0) marvels.push(`灯猫引路 <b>${s.cat}</b> 次`);
+  const pb=lxBest()||{best:0}; if(G.score>pb.best){ pb.best=G.score; lxSaveBest(pb); }
   show(`<h2>${win?'泉眼认可了你':'差一点'}</h2>
     <p>${TIME_LIMIT} 秒，得分 <b style="color:#e8c26a">${G.score}</b> —— ${praise}</p>
     <div class="end-yang"><img src="${parrotImg}">
@@ -234,7 +246,7 @@ let last=performance.now();
 function loop(now){
   const dt=Math.min(0.05,(now-last)/1000); last=now;
   if(G.state==='play'){
-    G.t+=dt; G.time-=dt; G.stun=Math.max(0,G.stun-dt);
+    G.t+=dt; G.time-=dt; G.stun=Math.max(0,G.stun-dt); G.guideT=Math.max(0,G.guideT-dt);
     G.ang=Math.sin(G.t*1.4)*1.05;
     const dx=Math.sin(G.ang), dy=Math.cos(G.ang);
     if(G.rope==='extend'){
@@ -256,9 +268,19 @@ function loop(now){
         if(G.grab){
           const T=TYPES[G.grab.type], it=G.grab;
           if(it.type==='fog'){
-            G.score=Math.max(0,G.score+T.v); G.stun=2;
-            floatText(it.x,it.y,'雾团缠钩! -15','#8a5aa0');
-            breakCombo();
+            if(it.cat){
+              /* 灯猫引路：反转！ */
+              const pts=60; G.score+=pts; G.combo++;
+              G.stat.maxCombo=Math.max(G.stat.maxCombo,G.combo);
+              G.stat.cat=(G.stat.cat||0)+1;
+              floatText(it.x,it.y,'灯猫引路！+'+pts,'#ffe9a8',24);
+              G.guideT=2.6;
+              updateComboTag();
+            } else {
+              G.score=Math.max(0,G.score+T.v); G.stun=2;
+              floatText(it.x,it.y,'雾团缠钩! -15','#8a5aa0');
+              breakCombo();
+            }
           } else {
             const m=comboMult(), pts=T.v*m;
             G.score+=pts; G.combo++;
@@ -308,6 +330,15 @@ function drawItem(it){
     ctx.beginPath(); ctx.arc(-6,-5,T.r*0.55,0,6.29); ctx.fill();
     ctx.strokeStyle='#8a5aa0'; ctx.lineWidth=2;
     ctx.beginPath(); ctx.arc(0,0,T.r,0,6.29); ctx.stroke();
+    if(it.cat){
+      /* 灯猫：耳 + 灯 */
+      ctx.fillStyle='#14141c';
+      ctx.beginPath(); ctx.moveTo(-9,-4); ctx.lineTo(-14,-16); ctx.lineTo(-3,-9); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(9,-4); ctx.lineTo(14,-16); ctx.lineTo(3,-9); ctx.closePath(); ctx.fill();
+      const catg=ctx.createRadialGradient(0,3,1,0,3,15);
+      catg.addColorStop(0,'rgba(255,242,205,.95)'); catg.addColorStop(1,'rgba(255,220,130,0)');
+      ctx.fillStyle=catg; ctx.beginPath(); ctx.arc(0,3,15,0,6.29); ctx.fill();
+    }
     ctx.restore();
   } else if(it.type==='shiny'){
     // 闪光星尘：星芒 + 拖尾光点
@@ -346,6 +377,21 @@ function draw(){
     for(let x=0;x<=W;x+=24) ctx.lineTo(x, yy+Math.sin(x*0.03+G.t*1.5+i)*5);
     ctx.stroke(); }
   G.items.forEach(drawItem);
+  if(G.guideT>0){
+    /* 灯猫引路：光点巡游 */
+    const gx=W/2+Math.sin(G.t*2.4)*260, gy=150+Math.sin(G.t*4.2)*24;
+    const ga=Math.min(1,G.guideT/1.2);
+    ctx.save(); ctx.globalAlpha=ga;
+    const gg=ctx.createRadialGradient(gx,gy,2,gx,gy,46);
+    gg.addColorStop(0,'rgba(255,242,205,.9)'); gg.addColorStop(1,'rgba(255,220,130,0)');
+    ctx.fillStyle=gg; ctx.beginPath(); ctx.arc(gx,gy,46,0,6.29); ctx.fill();
+    ctx.fillStyle='#14141c';
+    ctx.beginPath(); ctx.moveTo(gx-11,gy-6); ctx.lineTo(gx-17,gy-22); ctx.lineTo(gx-4,gy-12); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(gx+11,gy-6); ctx.lineTo(gx+17,gy-22); ctx.lineTo(gx+4,gy-12); ctx.closePath(); ctx.fill();
+    ctx.fillStyle='rgba(255,242,205,.95)'; ctx.font='13px "PingFang SC",sans-serif'; ctx.textAlign='center';
+    ctx.fillText('灯猫引路',gx,gy+34);
+    ctx.restore();
+  }
   // 绞盘架
   ctx.fillStyle='#2a2110'; ctx.fillRect(PX-70,PY-24,140,22);
   ctx.fillStyle='#3a2f1d'; ctx.beginPath(); ctx.arc(PX,PY-13,16,0,6.29); ctx.fill();
@@ -357,8 +403,15 @@ function draw(){
   ctx.strokeStyle=G.lucky>0?'#7fd4ff':(G.stun>0?'#8a5aa0':'#c9b98f');
   ctx.lineWidth=3;
   ctx.beginPath(); ctx.moveTo(PX,PY); ctx.lineTo(hx,hy); ctx.stroke();
-  ctx.strokeStyle=G.lucky>0?'#7fd4ff':'#e8c26a'; ctx.lineWidth=4;
-  ctx.beginPath(); ctx.arc(hx,hy,10,0.3,2.8); ctx.stroke();
+  /* 答答的尾巴钩：卷曲猫尾，抓到东西会卷一下 */
+  const curl=0.3+(G.grab?0.7*Math.abs(Math.sin(G.t*11)):0.12*Math.sin(G.t*3));
+  const tx=hx+20, ty=hy+10+10*curl;
+  ctx.lineCap='round';
+  ctx.strokeStyle=G.lucky>0?'#7fd4ff':'#2a2118'; ctx.lineWidth=9;
+  ctx.beginPath(); ctx.moveTo(hx,hy); ctx.quadraticCurveTo(hx+22,hy+2,tx,ty); ctx.stroke();
+  ctx.strokeStyle=G.lucky>0?'#7fd4ff':'#a08c68'; ctx.lineWidth=5;
+  ctx.beginPath(); ctx.moveTo(hx,hy); ctx.quadraticCurveTo(hx+22,hy+2,tx,ty); ctx.stroke();
+  ctx.fillStyle='#f5e6c8'; ctx.beginPath(); ctx.arc(tx,ty,4,0,6.29); ctx.fill();
   if(G.grab){
     const T=TYPES[G.grab.type], gy=hy+14;
     const im=T.img?IMG[T.img]:null;
