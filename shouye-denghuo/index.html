@@ -208,10 +208,13 @@ const CANDIES = {
   blueberry: { name:'蓝莓 · 冷静', desc:'本更侵蚀增速 -30%', fx:g=>{ g.rateMul*=0.7; } },
   milk:      { name:'牛奶 · 安慰', desc:'灯油 +15', fx:g=>{ g.oil=Math.min(100,g.oil+15); } },
 };
-/* 世界编年史 II 正典占位（待定稿）：12 处地点 / 29 件信物。
-   清单待核定后填入，此处仅结构占位，不编造正典细节。 */
-const CANON_PLACES=['地点·待定稿01','地点·待定稿02','地点·待定稿03','地点·待定稿04','地点·待定稿05','地点·待定稿06','地点·待定稿07','地点·待定稿08','地点·待定稿09','地点·待定稿10','地点·待定稿11','地点·待定稿12'];
-const CANON_RELICS=['信物·待定稿01','信物·待定稿02','信物·待定稿03','信物·待定稿04','信物·待定稿05','信物·待定稿06','信物·待定稿07','信物·待定稿08','信物·待定稿09','信物·待定稿10','信物·待定稿11','信物·待定稿12','信物·待定稿13','信物·待定稿14','信物·待定稿15','信物·待定稿16','信物·待定稿17','信物·待定稿18','信物·待定稿19','信物·待定稿20','信物·待定稿21','信物·待定稿22','信物·待定稿23','信物·待定稿24','信物·待定稿25','信物·待定稿26','信物·待定稿27','信物·待定稿28','信物·待定稿29'];
+/* 世界编年史 II 正典名单（草稿）：12 处地点 / 29 件信物。
+   名单取自 2026-10-07 全景梳理（源：myskme.com 正典页公开内容），
+   正典底稿最终以用户与知微核定的版本为准。本地候选，尚未提交。 */
+const CANON_PLACES=['旧课堂','学域','星尘泉','紫蛇森林','心甘情愿的笼','灰塔','深井','点将台','无名之原','天之国','海域','边境沼泽 · 迷雾回廊'];
+/* 注意：'师尊的旧茶壶'为正典信物组'导师与学院'的茶具信物；
+   原名'茶壶'与猴先生系列角色咕咕（原名茶壶 A）重名，2026-10-10 改为现名以作区分。 */
+const CANON_RELICS=['狼先生的铜印','师尊的旧茶壶','诺的信','琳的剑穗','理性尺','欣的空耳机','断云星盘','战报羽笔','金叶徽章','星尘袋','塔顶旧铃','门神匾','断云箭袋','紫光面具','蛇王旧鳞','菀的旧日记','复读机','灯猫的小灯','白鹤名帖','麒的船锚','爆炸残片','断云珠','未拔的剑','向阳手链','三色棒棒糖','璐的小吉他','洋的骰子','云梭','薪火陶罐'];
 function canonPlace(){ return CANON_PLACES[Math.floor(Math.random()*CANON_PLACES.length)]; }
 function canonRelic(){ return CANON_RELICS[Math.floor(Math.random()*CANON_RELICS.length)]; }
 /* 鹦鹉教授毒舌解签（SP 口径：类人脸、无鸟喙；立绘待定稿，暂用字形徽章） */
@@ -301,7 +304,7 @@ function drawOmen(){
   return { id, html:`<div class="omen"><b>夜观异象 · ${o.name}</b>
     <div class="verse">「${o.verse}」</div>
     <div class="meta">雾象：<em>${o.tell}</em> ｜ 判词示警：<em>${o.effect}</em></div>
-    <div class="meta">正典回响：<em>${canonPlace()}（待定稿）</em>——雾的源头，或许与那里有关。</div></div>
+    <div class="meta">正典回响：<em>${canonPlace()}</em>——雾的源头，或许与那里有关。</div></div>
     <div class="solve">读判词 → 推变招 → 选克制。卡面「克制」即是解。</div>` };
 }
 function pickWatcher(){
@@ -323,7 +326,7 @@ function merchantScreen(){
   G.state='merchant';
   show(`<h2>三更 · 夜行商人</h2>
     <div class="merchant">「客官，雾里做生意，童叟无欺。<br>三更半夜还在守灯的，卖你个人情。」</div>
-    ${Math.random()<0.4?`<div class="meta" style="margin-top:6px">商人压低声音：「听说正典里那件${canonRelic()}（待定稿），有人出大价钱收……」</div>`:''}
+    ${Math.random()<0.4?`<div class="meta" style="margin-top:6px">商人压低声音：「听说正典里那件${canonRelic()}，有人出大价钱收……」</div>`:''}
     <div class="btnrow">${TRADES.map((t,i)=>
       `<button class="rolebtn" ${t.can(G)?'':''} onclick="doTrade(${i})" ${t.can(G)?'':'disabled'}>
         <b>${t.name}</b><small>${t.desc}</small></button>`).join('')}
