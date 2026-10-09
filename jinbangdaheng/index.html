@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>金榜大亨 v0.20 | MYSKME</title>
+<title>金榜大亨 v0.21 | MYSKME</title>
 <style>
 :root{
 --bg:#FAF7F0; --card:#FFFFFF; --ink:#4A4238; --ink2:#8A7F72;
@@ -465,7 +465,7 @@ body.bt17 .av{box-shadow:0 0 0 2px #FFD700,0 0 10px rgba(255,215,0,.7)}
 <div class="btnrow" style="margin-top:8px">
 <button class="btn ghost hidden" id="btnContinue">继续上局</button>
 </div>
-<div class="note">2～6 人本地轮流。52 地名大池混合：通用梗+大连瓦房店家乡梗，每局随机组合（点地块看简介）。棋子按顺序：猴先生、鱼小姐、蛋、驴、茶壶、蛇（猴先生系列），每人有被动技能。地产可升到 Lv5 金色宫殿；集齐同色系 5 块地，该系租金翻倍、升级费 8 折。破产即淘汰。</div>
+<div class="note">2～6 人本地轮流。52 地名大池混合：通用梗+大连瓦房店家乡梗，每局随机组合（点地块看简介）。棋子按顺序：猴先生、鱼小姐、蛋、驴、咕咕、蛇（猴先生系列），每人有被动技能。地产可升到 Lv5 金色宫殿；集齐同色系 5 块地，该系租金翻倍、升级费 8 折。破产即淘汰。</div>
 </div>
 </div>
 <!-- 游戏页 -->
@@ -528,7 +528,8 @@ v0.11 新增：奢华 5 图标夸张重绘（镶钻捞力士/镀金宝驴/
 地块（鱼子酱/钻石水/金马桶/飞机/太空酒店，土豪金系套色）、
 3 种新特殊格（红包/陷阱/驴车顺风车）、命运 15 张/盲盒
 16 种、街头小剧场（每回合 12% 随机旁白+小效果）。 v0.12 新增：地名包系统（开局二选一：通用版/大连风情版 32 家乡梗地名，每块配简介）、12 个大连主题 SVG 图标、地块点击弹窗、街头小剧场大连版 5 条、修图标不显示 bug（G.tiles 未拷贝 ic）。 v0.13 新增：12 张 AI 插画（256px WebP 内嵌），地块点击弹窗有插画的大图展示。\nv0.14 新增：手机端显示全面（棋盘自适应缩放完整显示）；4 套色系主题色（竹青/雾蓝/土豪金/海蓝渐变）+集齐系色光晕；5 级房子重绘（一级比一级大一级比一级壕，Lv5 金色宫殿+光效）；开局头像选择器（6 选 1 不可重复）+自定义名字；单人挑战模式（20 回合刷资产分，本地排行榜前 10）。
-v0.20 新增：星尘联动（跨游戏只读增益：检测到连星大亨/寻珍大亨游玩痕迹时，开局发放星尘联动礼包）；命运池 +6 张猴先生系列惊喜事件（茶壶斟茶/蛇盯蛋/鱼小姐嘴硬心软等）；成就 +3（星尘联动/命运弄人/茶话会常客）配 SVG 徽章。
+v0.20 新增：星尘联动（跨游戏只读增益：检测到连星大亨/寻珍大亨游玩痕迹时，开局发放星尘联动礼包）；命运池 +6 张猴先生系列惊喜事件（咕咕斟茶/蛇盯蛋/鱼小姐嘴硬心软等）；成就 +3（星尘联动/命运弄人/茶话会常客）配 SVG 徽章。
+v0.21 补丁：咕咕入籍——茶壶角色正式定名「咕咕」；23 处角色称谓同步更名（金茶壶为独立彩蛋道具，名称保留）；玩法、数值、存档键均不变，老存档直接沿用。
 ============================================================ */
 /* ---------- 角色棋子（猴先生系列） ---------- */
 var CHARAS=[
@@ -548,7 +549,7 @@ var CHARAS=[
  avatar:'data:image/webp;base64,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',
  skill:'倔驴讲价', skillDesc:'买地 9 折',
  intro:'倔，但讲价是专业的'},
-{id:'teapot', name:'茶壶', color:'#6FA287',
+{id:'teapot', name:'咕咕', color:'#6FA287',
  avatar:'data:image/webp;base64,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',
  skill:'壶里乾坤', skillDesc:'命运格必出正面事件',
  intro:'新角色，肚里有乾坤'},
@@ -960,7 +961,7 @@ var FATEPOOL=[
 {label:'破财消灾：-120 金币', f:'cash', v:-120},
 {label:'衣锦还乡：直达起点领工资', f:'tostart'},
 {label:'贵人相助：获得免租卡', f:'item', v:'free'},
-{label:'茶壶烫嘴：-150 金币', f:'cash', v:-150},
+{label:'咕咕烫嘴：-150 金币', f:'cash', v:-150},
 {label:'驴踢一脚：后退 3 步', f:'move', v:-3},
 {label:'绕口令挑战：念出"猴鲤鱼与绿鲤鱼与驴" +200', f:'tq', v:200},
 {label:'黑化肥来了：全场绕口令大赛', f:'tqall', v:150},
@@ -971,7 +972,7 @@ var FATEPOOL=[
 {label:'太空漫步：火箭故障，弹射回起点', f:'tostart'},
 {label:'猴先生发红包：尾巴一扫，+250 金币', f:'cash', v:250},
 {label:'鱼小姐嘴硬心软：嫌你走得慢，推你前进 2 步', f:'move', v:2},
-{label:'茶壶斟茶：开席！全场每人 +100', f:'teaparty'},
+{label:'咕咕斟茶：开席！全场每人 +100', f:'teaparty'},
 {label:'蛇盯上了蛋：蛋玩家得【保护伞】，其余玩家被蛇瞪得后退 1 步', f:'snakescare'},
 {label:'驴的顺风车：驴甩甩尾巴，载你前进 3 步', f:'move', v:3},
 {label:'蛋滚滚：蛋滚了一圈捡到 200 金币（蛋还是蛋，没孵化）', f:'cash', v:200}
@@ -1508,7 +1509,7 @@ var ACHI=[
  {id:'comeback',n:'绝境逢生',d:'资产跌破 500 后回升超过 2000'},
  {id:'linkup',n:'星尘联动',d:'领取过星尘联动礼包'},
  {id:'fateking',n:'命运弄人',d:'累计抽取 10 张命运卡'},
- {id:'teabreak',n:'茶话会常客',d:'触发过茶壶斟茶事件'}
+ {id:'teabreak',n:'茶话会常客',d:'触发过咕咕斟茶事件'}
 ];
 
 /* v0.16：15 成就徽章图标（金色徽章底 + 深青简笔，v0.20 追加 3 个） */
@@ -1667,7 +1668,7 @@ async function aiTurn(p){
   /* 答题 70% */
   var ok=Math.random()<0.7;
    if(typeof G.teaLeft!=='number')G.teaLeft=2;
-   if(G.teaLeft>0&&Math.random()<0.25){G.teaLeft--;addLog(p.name+' 请茶壶喝了杯茶，茶香里看清了！');ok=true;}
+   if(G.teaLeft>0&&Math.random()<0.25){G.teaLeft--;addLog(p.name+' 请咕咕喝了杯茶，茶香里看清了！');ok=true;}
   p.st.qTot++;
   if(p.quizPass){ ok=true; p.quizPass=false; addLog(p.name+' 听故事听入迷，超常发挥直接答对！'); }
   if(ok){
@@ -1756,7 +1757,7 @@ async function maybeSkit(p){
   var q=others[0], a=p.chara?p.chara.id:'', b=q.chara?q.chara.id:'';
   var pair=[a,b].sort().join('+');
   if(pair==='donkey+teapot'){
-    addLog('小剧场：驴帮茶壶搬家！两人哼哧哼哧各前进 1 格（茶壶：轻点，我的盖子！）');
+    addLog('小剧场：驴帮咕咕搬家！两人哼哧哼哧各前进 1 格（咕咕：轻点，我的盖子！）');
     p.pos=(p.pos+TILES.length)%TILES.length; p.pos=(p.pos+1)%TILES.length;
     q.pos=(q.pos+1)%TILES.length; sStep();
   }else if(pair==='monkey+snake'){
@@ -1828,7 +1829,7 @@ function warReport(rk,reason,solo){
     var lands=G.tiles.filter(function(t){return t.owner===p.id;}).length;
     L.push((medals[i]||('第'+(i+1)+'名'))+' '+p.name+'：资产 '+assets(p)+'，地产 '+lands+' 块，答题 '+st.qOk+'/'+st.qTot+'，最高连击 '+st.mx);
   });
-  var jokes=['驴说：这局地的价格，值！','茶壶：喝杯茶，复盘一下','蛋：我还没熟，但我尽力了','蛇：下次我先滑为敬','猴先生：主角光环偶尔也断电','鱼小姐：如鱼得水，下次还来'];
+  var jokes=['驴说：这局地的价格，值！','咕咕：喝杯茶，复盘一下','蛋：我还没熟，但我尽力了','蛇：下次我先滑为敬','猴先生：主角光环偶尔也断电','鱼小姐：如鱼得水，下次还来'];
   L.push('神点评：'+jokes[(Math.random()*jokes.length)|0]);
   L.push('—— 金榜大亨 MYSKME');
   return L.join('\n');
@@ -1953,7 +1954,7 @@ var EGG_GOLDTEAPOT_SVG='<svg viewBox="0 0 24 24"><path d="M8 10h9v6.5A2.5 2.5 0 
 function charaById(cid){ for(var i=0;i<CHARAS.length;i++)if(CHARAS[i].id===cid)return CHARAS[i]; return null; }
 var EGGS=[{id:'ingot',w:30},{id:'donkey',w:25},{id:'egg',w:17},{id:'qbox',w:10},{id:'goldmonkey',w:5},{id:'redpack',w:15},{id:'donkeystrike',w:10},{id:'goldteapot',w:5}];
 if(SEASON.on){EGGS.push({id:'schoolbag',w:8,season:'s1'},{id:'pencil',w:8,season:'s1'});}
-var EGG_MISS=['金元宝跑掉了，驴都替你可惜','彩蛋溜了，它说明天还来','手慢了！蛋表示很欣慰（没被接住就不用滚了）','问号盒一溜烟没了，只留下一句：你猜','红包雨下完了，一个没抢到，茶壶说你手速不行','驴罢工路过，头也不回——它说加钱才停','金茶壶飘走了，茶香还留在屏幕上'];
+var EGG_MISS=['金元宝跑掉了，驴都替你可惜','彩蛋溜了，它说明天还来','手慢了！蛋表示很欣慰（没被接住就不用滚了）','问号盒一溜烟没了，只留下一句：你猜','红包雨下完了，一个没抢到，咕咕说你手速不行','驴罢工路过，头也不回——它说加钱才停','金茶壶飘走了，茶香还留在屏幕上'];
 function eggOn(){ return G&&G.cfg&&G.cfg.egg!==false; }
 function spawnEgg(){
   if(!eggOn()||!anim()||G.over)return;
@@ -2047,7 +2048,7 @@ function eggCatch(t,d){
   }else if(t.id==='goldteapot'){
     var al2=alivePlayers(), each=eggCash(100);
     al2.forEach(function(q){ q.cash+=each; });
-    addLog('金茶壶飘过！茶壶请大家喝茶：每人 +'+each+' 金币');
+    addLog('金茶壶飘过！咕咕请大家喝茶：每人 +'+each+' 金币');
     floatBig('请大家喝茶 +'+each); sWin();
     if(anim())confetti({particleCount:40,spread:70,colors:['#C9A86A','#F6DEA8','#2F4F4F']});
   }else if(t.id==='goldmonkey'){
@@ -2095,7 +2096,7 @@ async function doTurn(){
   if(G.snapSeq!==G.turnSeq){ try{SNAP=JSON.parse(JSON.stringify(G));}catch(e){SNAP=null;} G.snapSeq=G.turnSeq; }
   /* v0.7：罚站（路障 / 请喝茶） */
   if(p.stuck){ p.stuck=false; addLog(p.name+' 被路障绊住，罚站 1 回合'); sNo(); save(); renderAll(); endTurn(); return; }
-  if(p.skipTurn){ p.skipTurn=false; addLog(p.name+' 被茶壶留下喝茶，罚站 1 回合'); sNo(); save(); renderAll(); endTurn(); return; }
+  if(p.skipTurn){ p.skipTurn=false; addLog(p.name+' 被咕咕留下喝茶，罚站 1 回合'); sNo(); save(); renderAll(); endTurn(); return; }
   if(p.skillCd>0)p.skillCd--;
   G.phase='start';
   renderAll();
@@ -2273,7 +2274,7 @@ function eggCash(v){ return Math.round(v*1.5);}
 var THEATERS=[
 {t:'驴在路边卖艺，观众打赏', f:function(p){ alivePlayers().forEach(function(x){x.cash+=50;}); return '每人 +50'; }},
 {t:'猴先生街头耍宝，路人扔香蕉', f:function(p){ p.cash+=80; return p.name+' +80'; }},
-{t:'茶壶街头泡茶，香飘半条街', f:function(p){ alivePlayers().forEach(function(x){x.cash+=30;}); return '每人 +30'; }},
+{t:'咕咕街头泡茶，香飘半条街', f:function(p){ alivePlayers().forEach(function(x){x.cash+=30;}); return '每人 +30'; }},
 {t:'蛋在路边滚，被好心人扶起', f:function(p){ p.cash+=60; return p.name+' +60'; }},
 {t:'鱼小姐街头唱歌，掌声雷动', f:function(p){ p.cash+=100; return p.name+' +100'; }},
 {t:'蛇在墙角晒太阳，路人给小费', f:function(p){ p.cash+=40; return p.name+' +40'; }},
@@ -2418,17 +2419,17 @@ async function quizPhase(p){
     var opts=q.opts.map(function(o,i){
       return '<button class="qopt" data-v="'+i+'">'+'ABCD'[i]+'. '+o+'</button>';
     }).join('');
-    showM('<h2>'+p.name+' 请答题</h2><div class="q">'+q.q+'</div>'+opts+'<div class="c">答对才能掷骰子</div><div class="c"><button class="tbtn" id="teaBtn">请茶壶喝杯茶（剩'+G.teaLeft+'次）</button></div>');
+    showM('<h2>'+p.name+' 请答题</h2><div class="q">'+q.q+'</div>'+opts+'<div class="c">答对才能掷骰子</div><div class="c"><button class="tbtn" id="teaBtn">请咕咕喝杯茶（剩'+G.teaLeft+'次）</button></div>');
     (function(){
       var tb=$('teaBtn'); if(!tb)return;
-      if(G.teaLeft<=0){tb.disabled=true;tb.textContent='茶壶下班了';return;}
+      if(G.teaLeft<=0){tb.disabled=true;tb.textContent='咕咕下班了';return;}
       tb.onclick=function(){
         if(G.teaLeft<=0||tb.disabled)return;
         G.teaLeft--; tb.disabled=true;
         var btns=document.querySelectorAll('.qopt'),wr=[],bi;
         for(bi=0;bi<btns.length;bi++){if(bi!==q.a&&!btns[bi].disabled)wr.push(btns[bi]);}
         if(wr.length){var w=wr[(Math.random()*wr.length)|0];w.classList.add('teaout');w.disabled=true;}
-        addLog('茶壶过来斟了杯茶：'+p.name+' 茶香里看清了！划掉一个错误选项');
+        addLog('咕咕过来斟了杯茶：'+p.name+' 茶香里看清了！划掉一个错误选项');
         try{sOk();}catch(e){}
         tb.textContent='茶香里看清了！（剩'+G.teaLeft+'次）';
       };
@@ -2632,7 +2633,7 @@ async function settle(p){
       addLog(p.name+' 踩中陷阱：被驴绊倒，罚站 1 回合！驴：不是我，是腿自己伸的');
     }else{
       p.cash-=50; sNo();
-      addLog(p.name+' 踩中陷阱：茶壶烫嘴，医药费 -50（爽服减半）');
+      addLog(p.name+' 踩中陷阱：咕咕烫嘴，医药费 -50（爽服减半）');
     }
     renderAll(); await checkBankrupt(p); return;
   }
@@ -2838,7 +2839,7 @@ async function fateFlipAnim(label,p){
 }
 async function fateDraw(p){
   var pool=FATEPOOL;
-  /* 茶壶【壶里乾坤】：必出正面事件（含绕口令新卡） */
+  /* 咕咕【壶里乾坤】：必出正面事件（含绕口令新卡） */
   if(p.chara&&p.chara.id==='teapot'){
     pool=FATEPOOL.filter(function(f){
       return (f.f==='move'&&f.v>0)||(f.f==='cash'&&f.v>0)||f.f==='tostart'||f.f==='item'
@@ -2881,7 +2882,7 @@ async function fateDraw(p){
   }
   else if(f.f==='teaparty'){
     G.players.forEach(function(q){ if(!q.elim)q.cash+=100; });
-    sCoin(); addLog(p.name+' 抽到命运：茶壶斟茶——开席！全场每人 +100 金币');
+    sCoin(); addLog(p.name+' 抽到命运：咕咕斟茶——开席！全场每人 +100 金币');
     unlockAchi('teabreak');
   }
   else if(f.f==='snakescare'){
@@ -3086,11 +3087,11 @@ function showRule(){
     '<p><b>3. 套色加成</b>：地产分竹青 / 雾蓝 / 暖金三系，每系 5 块。集齐一系 5 块，该系所有地产租金翻倍（金色光晕标记），升级费 8 折。</p>'+
     '<p><b>4. 盲盒格</b>：16 种开奖，有金币、道具、额外步数，也有整蛊（倒退、罚款、舌头打结）；连续 3 次没开出好东西必保底。</p>'+
     '<p><b>5. 命运格</b>：15 张命运卡，前进后退、奖惩金币、直达起点、送免租卡，外加绕口令挑战（念出\"猴鲤鱼与绿鲤鱼与驴\"）和黑化肥大赛。</p>'+
-    '<p><b>5b. 新特殊格</b>：红包格（踩中抢 100~300）、陷阱格（被驴绊倒罚站或茶壶烫嘴 -100）、驴车顺风车（随机传送到任意格并结算）；街头小剧场每回合 12% 触发随机旁白小事件。</p>'+
+    '<p><b>5b. 新特殊格</b>：红包格（踩中抢 100~300）、陷阱格（被驴绊倒罚站或咕咕烫嘴 -100）、驴车顺风车（随机传送到任意格并结算）；街头小剧场每回合 12% 触发随机旁白小事件。</p>'+
     '<p><b>6. 道具</b>：遥控骰子（自选点数）、免租卡、路障（前方设卡罚站）、换位卡、保护伞（免税/罚款），每人最多 3 个；经过起点、开盲盒、3 连击可获得。</p>'+
     '<p><b>7. 胜负</b>：金币归零即破产，地产释放；回合走完后资产（金币+地产）最高者胜。经过起点领 '+SALARY+' 工资。顶栏"结算"按钮可随时提前结算。</p>'+
-    '<p><b>8. 角色被动</b>：猴先生【主角光环】盲盒好东西概率+15%；鱼小姐【如鱼得水】过起点多领 100；蛋【蛋壳护体】首次破产保 500 金币不丢地；驴【倔驴讲价】买地 9 折；茶壶【壶里乾坤】命运必出正面；蛇【见好就收】有免租卡自动提示用，无卡租金 9 折。</p>'+
-    '<p><b>9. 主动技能</b>：每人 1 个，冷却制——猴先生【顺手牵羊】随机偷 200；鱼小姐【锦鲤附体】下次必出 6；蛋【滚】前进 3 格；驴【脚踏实地】下次买地 5 折；茶壶【请喝茶】指定对手罚站；蛇【滑】瞬移到最近己方地产。点玩家面板上的技能按钮释放。</p>'+
+    '<p><b>8. 角色被动</b>：猴先生【主角光环】盲盒好东西概率+15%；鱼小姐【如鱼得水】过起点多领 100；蛋【蛋壳护体】首次破产保 500 金币不丢地；驴【倔驴讲价】买地 9 折；咕咕【壶里乾坤】命运必出正面；蛇【见好就收】有免租卡自动提示用，无卡租金 9 折。</p>'+
+    '<p><b>9. 主动技能</b>：每人 1 个，冷却制——猴先生【顺手牵羊】随机偷 200；鱼小姐【锦鲤附体】下次必出 6；蛋【滚】前进 3 格；驴【脚踏实地】下次买地 5 折；咕咕【请喝茶】指定对手罚站；蛇【滑】瞬移到最近己方地产。点玩家面板上的技能按钮释放。</p>'+
     '<p><b>10. 彩蛋惊喜</b>：每回合有 25% 概率刷出小惊喜横穿屏幕——金元宝（+金币）、驴（掉道具）、蛋（下次掷骰+1）、问号盒（三选一）、稀有金猴（+500）。点中得奖，4 秒后跑掉。开局设置页可开关。</p><p><b>11. v0.18 新系统</b>：错题本（答错自动收录，可重练）·我的题库（老师自己录题，开局可选）·组队 2v2（红蓝对抗，队友 3 格内技能冷却更快）·一键预设（课堂速局/土豪爽局/马拉松）·段位（青铜到王者，胜场算分）·开学季（限定地块+彩蛋）。</p></div>'+
     '<div class="btnrow"><button class="btn" data-v="ok">知道了</button></div>');
   waitBtn('.btn').then(hideM);
