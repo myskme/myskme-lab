@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>金榜大亨 v1.0 | MYSKME</title>
+<title>金榜大亨 v1.0.1 | MYSKME</title>
 <style>
 :root{
 --bg:#FAF7F0; --card:#FFFFFF; --ink:#4A4238; --ink2:#8A7F72;
@@ -425,7 +425,7 @@ body.bt17 .av{box-shadow:0 0 0 2px #FFD700,0 0 10px rgba(255,215,0,.7)}
 <div class="tSub">课堂大富翁</div>
 <div class="tChars" id="tChars"></div>
 <div class="tDesc">掷骰圈地，答题赚钱<br>和猴先生一家做生意，做到金榜题名</div>
-<div class="tVer">v1.0 · 正式版</div>
+<div class="tVer">v1.0.1</div>
 <button class="btnEnter" id="btnEnter">进入游戏</button>
 </div>
 </div>
@@ -442,7 +442,7 @@ body.bt17 .av{box-shadow:0 0 0 2px #FFD700,0 0 10px rgba(255,215,0,.7)}
 <div style="font-size:13px;color:var(--ink2);margin:8px 0">1 人挑战 20 回合，刷最高资产分上榜！道具技能彩蛋全开，没有对手，税所陷阱照常。</div>
 <div class="seglab">小伙伴</div><div style="font-size:12px;color:var(--ink2);margin:4px 0">没选的伙伴来陪你玩</div>
 <div class="seg" id="segAI">
-<button data-v="0" class="sel">纯刷分</button><button data-v="1">+1 位</button><button data-v="2">+2 位</button><button data-v="3">+3 位</button>
+<button data-v="0">纯刷分</button><button data-v="1">+1 位</button><button data-v="2" class="sel">+2 位</button><button data-v="3">+3 位</button>
 </div>
 <div id="soloRank"></div>
 <div class="btnrow" style="margin-top:6px"><button class="btn ghost" id="btnClearRank" style="font-size:12px">清空榜单</button></div>
@@ -564,6 +564,7 @@ v0.11 新增：奢华 5 图标夸张重绘（镶钻捞力士/镀金宝驴/
 16 种、街头小剧场（每回合 12% 随机旁白+小效果）。 v0.12 新增：地名包系统（开局二选一：通用版/大连风情版 32 家乡梗地名，每块配简介）、12 个大连主题 SVG 图标、地块点击弹窗、街头小剧场大连版 5 条、修图标不显示 bug（G.tiles 未拷贝 ic）。 v0.13 新增：12 张 AI 插画（256px WebP 内嵌），地块点击弹窗有插画的大图展示。\nv0.14 新增：手机端显示全面（棋盘自适应缩放完整显示）；4 套色系主题色（竹青/雾蓝/土豪金/海蓝渐变）+集齐系色光晕；5 级房子重绘（一级比一级大一级比一级壕，Lv5 金色宫殿+光效）；开局头像选择器（6 选 1 不可重复）+自定义名字；单人挑战模式（20 回合刷资产分，本地排行榜前 10）。
 v0.20 新增：星尘联动（跨游戏只读增益：检测到连星大亨/寻珍大亨游玩痕迹时，开局发放星尘联动礼包）；命运池 +6 张猴先生系列惊喜事件（咕咕斟茶/蛇盯蛋/鱼小姐嘴硬心软等）；成就 +3（星尘联动/命运弄人/茶话会常客）配 SVG 徽章。
 v0.21 补丁：咕咕入籍——茶壶角色正式定名「咕咕」；23 处角色称谓同步更名（金茶壶为独立彩蛋道具，名称保留）；玩法、数值、存档键均不变，老存档直接沿用。
+v1.0.1：单人挑战默认带 2 位 NPC（1+2=3 人局）。
 v1.0 正式版：新增标题屏（深黑+暖金主视觉槽位，猴先生系列徽章）；新增 ART_MANIFEST 美术槽位注册表（主视觉/6角色立绘/12地名插画对接 Codex 生图）；玩法、数值、存档键均不变，老存档直接沿用。
 ============================================================ */
 /* ---------- 角色棋子（猴先生系列） ---------- */
@@ -1406,7 +1407,7 @@ function setCenter(html){ $('center').innerHTML=html; }
 /* ================= 开局 ================= */
 var PCOUNT=4, SEL_ROUNDS=20, SEL_CASH=1500, SEL_QMODE='bank', SEL_ANIM=1, SEL_EGG=1, SEL_ITEMS=1, SEL_SKILL=1, SEL_PACK='mixed', SEL_MODE='multi';
 var SEL_CHARAS=[0,1,2,3,4,5], SEL_NAMES=['','','','','',''];
-var SEL_AI=0;
+var SEL_AI=2; /* v1.0.1：单人默认带 2 位 NPC（1+2=3 人局，最佳区间） */
 var RANK_KEY='myskme_dfw_rank';
 function esc(t){return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function itemsOn(){ return G&&G.cfg&&G.cfg.items!==false; }
