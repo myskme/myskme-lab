@@ -132,7 +132,10 @@ body.pack-focus .pack-scene{transform:scale(1.08)}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:100}
 .actions{text-align:center;padding:12px 0 24px;display:none;position:relative;z-index:30}
 .actions.show{display:block}
-.btn{background:linear-gradient(180deg,#f0d98c 0%,#d4af37 50%,#a67c00 100%);color:#fff;border:none;padding:14px 42px;border-radius:28px;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:2px;box-shadow:0 6px 20px rgba(212,175,55,.4),inset 0 1px 0 rgba(255,255,255,.5);text-shadow:0 1px 1px rgba(0,0,0,.2);transition:transform .1s,box-shadow .1s}
+.actions{display:none;gap:12px;justify-content:center;padding:14px 0 26px;flex-wrap:wrap}
+.actions.show{display:flex}
+.btn{background:linear-gradient(180deg,#f0d98c 0%,#d4af37 50%,#a67c00 100%);color:#fff;border:none;padding:14px 42px;border-radius:28px;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:2px;box-shadow:0 6px 20px rgba(212,175,55,.4),inset 0 1px 0 rgba(255,255,255,.5);text-shadow:0 1px 1px rgba(0,0,0,.2);transition:transform .1s,box-shadow .1s;animation:btnGlow 2s infinite}
+@keyframes btnGlow{0%,100%{box-shadow:0 6px 20px rgba(212,175,55,.4),inset 0 1px 0 rgba(255,255,255,.5),0 0 0 0 rgba(212,175,55,.3)}50%{box-shadow:0 6px 24px rgba(212,175,55,.55),inset 0 1px 0 rgba(255,255,255,.5),0 0 0 8px rgba(212,175,55,0)}}
 .btn:active{transform:scale(.97);box-shadow:0 3px 10px rgba(212,175,55,.3)}
 .btn2{background:rgba(255,255,255,.7);color:#8a7d60;border:1px solid #c9b98a;padding:9px 20px;border-radius:18px;font-size:13px;cursor:pointer;margin-left:10px}
 .skip-bar{text-align:center;padding:6px 0 16px;display:none;position:relative;z-index:30}
