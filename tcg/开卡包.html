@@ -821,15 +821,17 @@ function revealCards(){
     slot.addEventListener("pointermove",e=>{if(slot.classList.contains("flipped"))tiltCard(slot,e);});
     slot.addEventListener("pointerleave",()=>resetTilt(slot));
     stack.appendChild(slot);
-    // 从包里滑出：从中心飞出 + 旋转
+    // 从包里飞出：扇形 + 回弹 + 每张角度不同
     setTimeout(()=>{
+      const angle = (i - 2) * 3; // 中间卡 0°，两侧 ±6°
       slot.animate([
-        {transform:"translateY(80px) scale(.6) rotate(-8deg)",opacity:0},
-        {transform:"translateY(0) scale(1) rotate(0deg)",opacity:1}
-      ],{duration:500,easing:"cubic-bezier(.2,.8,.3,1.2)"});
+        {transform:"translateY(100px) scale(.5) rotate(0deg)",opacity:0},
+        {transform:`translateY(-12px) scale(1.06) rotate(${angle}deg)`,opacity:1,offset:.6},
+        {transform:`translateY(0) scale(1) rotate(${angle*0.3}deg)`,opacity:1}
+      ],{duration:600,easing:"cubic-bezier(.2,.8,.3,1.2)"});
       slot.style.opacity=1;
       playWhoosh();
-    },i*130);
+    },i*150);
   });
   document.getElementById("skipBar").classList.add("show");
   document.getElementById("actions").classList.add("show");
