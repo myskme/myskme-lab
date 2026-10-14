@@ -186,5 +186,12 @@ if(modalBox && modalImg){
   modalBox.addEventListener("pointerleave",()=>{ modalImg.style.transform=""; });
 }
 </script>
+
+<script>
+// Service Worker：离线缓存 + 增量更新
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
 </body>
 </html>

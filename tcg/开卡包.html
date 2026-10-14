@@ -1145,5 +1145,12 @@ function initDust(){
 }
 initDust();
 </script>
+
+<script>
+// Service Worker：离线缓存 + 增量更新
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
 </body>
 </html>
