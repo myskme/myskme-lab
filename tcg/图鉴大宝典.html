@@ -1,0 +1,2781 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>百变萌友 · 图鉴大宝典</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#faf3e0;color:#3a3226;line-height:1.6}
+.cover{text-align:center;padding:60px 20px 40px;background:linear-gradient(180deg,#f5e6a0,#faf3e0)}
+.cover h1{font-size:36px;letter-spacing:8px;color:#8a6d1a;margin-bottom:8px}
+.cover .sub{font-size:14px;color:#a09070;letter-spacing:4px}
+.cover .count{font-size:18px;color:#8a6d1a;margin-top:20px;font-weight:700}
+.cover .meta{font-size:12px;color:#a09070;margin-top:8px}
+.toc{max-width:800px;margin:0 auto;padding:20px}
+.toc h2{font-size:18px;color:#8a6d1a;margin-bottom:12px;letter-spacing:2px}
+.toc a{display:flex;justify-content:space-between;padding:8px 12px;text-decoration:none;color:#3a3226;border-bottom:1px solid #e8ddb8;font-size:14px}
+.toc a:hover{background:#fffdf5}
+.toc .n{color:#a09070}
+.series{max-width:800px;margin:0 auto;padding:20px}
+.series h2{font-size:20px;color:#8a6d1a;border-bottom:2px solid #d4af37;padding-bottom:8px;margin:30px 0 16px;letter-spacing:2px}
+.card{background:#fffdf5;border:1px solid #d4c89a;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(120,90,20,.08);display:flex;gap:16px}
+.card img{width:110px;height:154px;object-fit:cover;border-radius:8px;flex-shrink:0}
+.card .info{flex:1;min-width:0}
+.card .name{font-size:17px;font-weight:700}
+.card .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;color:#fff;margin-left:6px;vertical-align:middle}
+.card .meta{font-size:12px;color:#a09070;margin:4px 0}
+.card .flavor{font-size:13px;color:#6a5a3a;font-style:italic;margin:6px 0}
+.card .atk{font-size:13px;margin:4px 0}
+.card .atk b{color:#8a6d1a}
+.card .atk .dmg{color:#c0392b;font-weight:700}
+.footer{text-align:center;padding:40px 20px;color:#a09070;font-size:12px}
+@media(max-width:600px){.cover h1{font-size:28px}.card img{width:90px;height:126px}.card{gap:12px;padding:12px}}
+@media print{body{background:#fff}.cover{background:#fff}.card{break-inside:avoid}}
+</style></head><body>
+
+<div class="cover">
+<h1>百变萌友</h1>
+<div class="sub">图鉴大宝典</div>
+<div class="count">292 + 1 隐藏款 = 293 张</div>
+<div class="meta">R 89 · SR 109 · SSR 80 · UR 15 &nbsp;|&nbsp; 2026-10-14 版</div>
+</div>
+
+<div class="toc"><h2>目录</h2>
+<a href="#s-基础"><span>基础系列</span><span class="n">13 张</span></a>
+<a href="#s-系列2"><span>系列 2</span><span class="n">15 张</span></a>
+<a href="#s-系列3"><span>系列 3</span><span class="n">10 张</span></a>
+<a href="#s-系列4"><span>系列 4</span><span class="n">40 张</span></a>
+<a href="#s-第三波"><span>第三波 · 职业</span><span class="n">24 张</span></a>
+<a href="#s-第四波"><span>第四波 · 职业</span><span class="n">24 张</span></a>
+<a href="#s-传说"><span>传说系列</span><span class="n">5 张</span></a>
+<a href="#s-性格"><span>性格系列</span><span class="n">11 张</span></a>
+<a href="#s-四季·春"><span>四季 · 春</span><span class="n">5 张</span></a>
+<a href="#s-东西方桥梁"><span>英雄融合 · 东西方桥梁</span><span class="n">16 张</span></a>
+<a href="#s-补完"><span>补完</span><span class="n">2 张</span></a>
+<a href="#s-三国"><span>英雄融合 · 三国</span><span class="n">3 张</span></a>
+<a href="#s-北欧"><span>英雄融合 · 北欧神话</span><span class="n">4 张</span></a>
+<a href="#s-西游记"><span>英雄融合 · 西游记</span><span class="n">3 张</span></a>
+<a href="#s-水浒"><span>英雄融合 · 水浒传</span><span class="n">3 张</span></a>
+<a href="#s-中西名将"><span>英雄融合 · 中西名将</span><span class="n">4 张</span></a>
+<a href="#s-王者热门"><span>英雄融合 · 王者热门</span><span class="n">4 张</span></a>
+<a href="#s-射日女皇埃及"><span>英雄融合 · 射日女皇埃及</span><span class="n">4 张</span></a>
+<a href="#s-日本战国"><span>英雄融合 · 日本战国</span><span class="n">4 张</span></a>
+<a href="#s-欧洲帝王"><span>英雄融合 · 欧洲帝王</span><span class="n">4 张</span></a>
+<a href="#s-中国帝王将相"><span>英雄融合 · 中国帝王将相</span><span class="n">4 张</span></a>
+<a href="#s-替补"><span>替补系列</span><span class="n">6 张</span></a>
+<a href="#s-四季·夏"><span>四季 · 夏</span><span class="n">6 张</span></a>
+<a href="#s-四季·秋"><span>四季 · 秋</span><span class="n">6 张</span></a>
+<a href="#s-四季·冬"><span>四季 · 冬</span><span class="n">6 张</span></a>
+<a href="#s-十二生肖"><span>十二生肖</span><span class="n">12 张</span></a>
+<a href="#s-原始人"><span>时空穿越 · 原始人</span><span class="n">6 张</span></a>
+<a href="#s-中世纪"><span>时空穿越 · 中世纪</span><span class="n">6 张</span></a>
+<a href="#s-蒸汽朋克"><span>时空穿越 · 蒸汽朋克</span><span class="n">6 张</span></a>
+<a href="#s-未来"><span>时空穿越 · 未来</span><span class="n">6 张</span></a>
+<a href="#s-蛋蛇补完"><span>英雄融合 · 蛋蛇补完</span><span class="n">12 张</span></a>
+<a href="#s-大师系列"><span>英雄融合 · 大师系列</span><span class="n">18 张</span></a>
+<a href="#s-隐藏款"><span>隐藏款</span><span class="n">1 张</span></a>
+</div>
+<div class="series"><h2 id="s-基础">基础系列 · 13 张</h2>
+<div class="card">
+<img src="thumbs/001-292-钢铁猴.jpg" loading="lazy" alt="钢铁猴">
+<div class="info">
+<div class="name">钢铁猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">001/292 · 力量系 · HP 130</div>
+<div class="flavor">"力气这东西，藏是藏不住的。"</div>
+<div class="atk"><b>小拇指举桃</b> <span class="dmg">100</span> — 举起比自己大十倍的桃子，面不改色。</div>
+<div class="atk"><b>淡定光环</b> <span class="dmg">—</span> — 本回合内，敌方威吓类招式无效。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/002-292-富贵猴.jpg" loading="lazy" alt="富贵猴">
+<div class="info">
+<div class="name">富贵猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">002/292 · 财富系 · HP 110</div>
+<div class="flavor">"钱能解决的事，都不叫事。"</div>
+<div class="atk"><b>点金香蕉</b> <span class="dmg">80</span> — 每造成10点伤害，获得1枚金币。</div>
+<div class="atk"><b>挥金如土</b> <span class="dmg">120</span> — 花费所有金币，每枚+10伤害。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/003-292-神行猴.jpg" loading="lazy" alt="神行猴">
+<div class="info">
+<div class="name">神行猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">003/292 · 速度系 · HP 80</div>
+<div class="flavor">"你刚眨眼，我已经到了。"</div>
+<div class="atk"><b>三重残影</b> <span class="dmg">30×3</span> — 连续攻击三次，快到看不清。</div>
+<div class="atk"><b>追尾巴</b> <span class="dmg">—</span> — 先手必中，本回合闪避大幅提升。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/004-292-赛博猴.jpg" loading="lazy" alt="赛博猴">
+<div class="info">
+<div class="name">赛博猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">004/292 · 科技系 · HP 120</div>
+<div class="flavor">"已计算完毕，你输了。"</div>
+<div class="atk"><b>算力碾压</b> <span class="dmg">90</span> — 预判对手下三步行动，无视闪避。</div>
+<div class="atk"><b>全息香蕉雨</b> <span class="dmg">120</span> — SSR专属，需充能一回合。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/005-292-锦鲤猴.jpg" loading="lazy" alt="锦鲤猴">
+<div class="info">
+<div class="name">锦鲤猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">005/292 · 幸运系 · HP 90</div>
+<div class="flavor">"运气也是实力的一种——我这种。"</div>
+<div class="atk"><b>好运暴击</b> <span class="dmg">60</span> — 掷硬币，正面时伤害×2。</div>
+<div class="atk"><b>锦鲤附体</b> <span class="dmg">—</span> — 本回合内，己方暴击率变为100%。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/006-292-干饭猴.jpg" loading="lazy" alt="干饭猴">
+<div class="info">
+<div class="name">干饭猴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">006/292 · 美食系 · HP 70</div>
+<div class="flavor">"别的都可以等，饭不能等。"</div>
+<div class="atk"><b>干饭冲刺</b> <span class="dmg">40</span> — 吃得越多回得越快：恢复30HP。</div>
+<div class="atk"><b>饭香四溢</b> <span class="dmg">—</span> — 己方全员振奋，下回合伤害+20。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/007-292-田园猴.jpg" loading="lazy" alt="田园猴">
+<div class="info">
+<div class="name">田园猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">007/292 · 治愈系 · HP 100</div>
+<div class="flavor">"种瓜得瓜，种豆得豆，种快乐得快乐。"</div>
+<div class="atk"><b>丰收萝卜</b> <span class="dmg">50</span> — 越到后期越强，每过一回合+10。</div>
+<div class="atk"><b>泥土芬芳</b> <span class="dmg">—</span> — 净化己方全员负面状态。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/008-292-学霸猴.jpg" loading="lazy" alt="学霸猴">
+<div class="info">
+<div class="name">学霸猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">008/292 · 学术系 · HP 85</div>
+<div class="flavor">"学霸的世界，你不懂。"</div>
+<div class="atk"><b>铅笔权杖</b> <span class="dmg">55</span> — 知识就是力量，无视防御。</div>
+<div class="atk"><b>书山镇压</b> <span class="dmg">—</span> — 敌方下回合不能使用招式。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/009-292-摇滚猴.jpg" loading="lazy" alt="摇滚猴">
+<div class="info">
+<div class="name">摇滚猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">009/292 · 音乐系 · HP 85</div>
+<div class="flavor">"音量开到最大，烦恼全部静音。"</div>
+<div class="atk"><b>电吉他solo</b> <span class="dmg">65</span> — 音浪冲击，敌方混乱一回合。</div>
+<div class="atk"><b>安可</b> <span class="dmg">—</span> — 本回合用过的招式再来一次。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/010-292-宇航猴.jpg" loading="lazy" alt="宇航猴">
+<div class="info">
+<div class="name">宇航猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">010/292 · 太空系 · HP 125</div>
+<div class="flavor">"我的一小步，猴类的一大步。"</div>
+<div class="atk"><b>香蕉光剑</b> <span class="dmg">95</span> — 无视护盾，切开一切。</div>
+<div class="atk"><b>香蕉星环</b> <span class="dmg">—</span> — 召唤土星香蕉环，抵挡下次攻击。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/011-292-侦探猴.jpg" loading="lazy" alt="侦探猴">
+<div class="info">
+<div class="name">侦探猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">011/292 · 推理系 · HP 85</div>
+<div class="flavor">"脚印不会说谎——除了我自己的。"</div>
+<div class="atk"><b>放大镜凝视</b> <span class="dmg">45</span> — 看穿伪装，敌方闪避失效。</div>
+<div class="atk"><b>真相只有一个</b> <span class="dmg">—</span> — 揭示敌方下回合要用的招式。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/012-292-大厨猴.jpg" loading="lazy" alt="大厨猴">
+<div class="info">
+<div class="name">大厨猴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">012/292 · 烹饪系 · HP 65</div>
+<div class="flavor">"做饭给自己吃，也要仪式感拉满。"</div>
+<div class="atk"><b>翻糖重击</b> <span class="dmg">35</span> — 甜蜜暴击，附带粘牙减速。</div>
+<div class="atk"><b>主厨品鉴</b> <span class="dmg">—</span> — 恢复50HP，好吃到流泪。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/013-292-魔法师猴.jpg" loading="lazy" alt="魔法师猴">
+<div class="info">
+<div class="name">魔法师猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">013/292 · 魔法系 · HP 115</div>
+<div class="flavor">"见证奇迹的时候到了——香蕉味的。"</div>
+<div class="atk"><b>香蕉围巾缠绕</b> <span class="dmg">85</span> — 三圈缠绕，敌方动弹不得。</div>
+<div class="atk"><b>帽子戏法</b> <span class="dmg">—</span> — 随机复制敌方一个招式。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-系列2">系列 2 · 15 张</h2>
+<div class="card">
+<img src="thumbs/014-292-深海歌姬鱼小姐.jpg" loading="lazy" alt="深海歌姬鱼小姐">
+<div class="info">
+<div class="name">深海歌姬鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">014/292 · 音乐系 · HP 85</div>
+<div class="flavor">"深海没有观众席，只有回声——但我照唱不误。"</div>
+<div class="atk"><b>海妖之歌</b> <span class="dmg">60</span> — 敌方全体沉醉，命中率下降。</div>
+<div class="atk"><b>安可·深海</b> <span class="dmg">—</span> — 己方全体恢复40HP，如海浪般温柔。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/015-292-宇航鱼小姐.jpg" loading="lazy" alt="宇航鱼小姐">
+<div class="info">
+<div class="name">宇航鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">015/292 · 太空系 · HP 90</div>
+<div class="flavor">"鱼在太空游，跟在海里游没什么两样。"</div>
+<div class="atk"><b>鱼缸冲撞</b> <span class="dmg">55</span> — 头盔就是武器，无视防御。</div>
+<div class="atk"><b>失重漂流</b> <span class="dmg">—</span> — 闪避下两次攻击，像在水里一样自在。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/016-292-潜水鱼小姐.jpg" loading="lazy" alt="潜水鱼小姐">
+<div class="info">
+<div class="name">潜水鱼小姐<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">016/292 · 搞笑系 · HP 65</div>
+<div class="flavor">"一条鱼穿潜水服，你就说荒不荒诞吧。"</div>
+<div class="atk"><b>笨重头盔</b> <span class="dmg">30</span> — 行动-1，但防御+20，头盔太沉了。</div>
+<div class="atk"><b>我本是鱼</b> <span class="dmg">—</span> — 摘下头盔，速度翻倍，全场哄笑。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/017-292-蒸汽咕咕.jpg" loading="lazy" alt="蒸汽咕咕">
+<div class="info">
+<div class="name">蒸汽咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">017/292 · 机械系 · HP 95</div>
+<div class="flavor">"催也没用，我这火是文火。"</div>
+<div class="atk"><b>压力过载</b> <span class="dmg">70</span> — 每回合+10伤害，锅炉越烧越旺。</div>
+<div class="atk"><b>文火慢炖</b> <span class="dmg">—</span> — 敌方急躁，跳过一回合。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/018-292-功夫茶仙咕咕.jpg" loading="lazy" alt="功夫茶仙咕咕">
+<div class="info">
+<div class="name">功夫茶仙咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">018/292 · 武侠系 · HP 115</div>
+<div class="flavor">"最高级的武功，是请对手喝杯茶。"</div>
+<div class="atk"><b>茶气化剑</b> <span class="dmg">90</span> — 以柔克刚，无视护甲。</div>
+<div class="atk"><b>以茶会友</b> <span class="dmg">—</span> — 敌方变为友方一回合。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/019-292-小火车咕咕.jpg" loading="lazy" alt="小火车咕咕">
+<div class="info">
+<div class="name">小火车咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">019/292 · 交通系 · HP 70</div>
+<div class="flavor">"慢怎么了？风景都在慢车上。"</div>
+<div class="atk"><b>况且况且</b> <span class="dmg">35</span> — 速度很慢，但每回合稳定+5伤害。</div>
+<div class="atk"><b>心形烟雾</b> <span class="dmg">—</span> — 己方全体心情愉悦，攻击+15。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/020-292-宇航蛋.jpg" loading="lazy" alt="宇航蛋">
+<div class="info">
+<div class="name">宇航蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">020/292 · 太空系 · HP 80</div>
+<div class="flavor">"蛋生就是宇航服，省了一套装备钱。"</div>
+<div class="atk"><b>蛋形登陆</b> <span class="dmg">50</span> — 完美着陆，无视地形。</div>
+<div class="atk"><b>果汁补给</b> <span class="dmg">—</span> — 恢复50HP，吸管是标配。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/021-292-超级英雄蛋.jpg" loading="lazy" alt="超级英雄蛋">
+<div class="info">
+<div class="name">超级英雄蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">021/292 · 英雄系 · HP 75</div>
+<div class="flavor">"我真的是超级英雄吗？……应该是吧。"</div>
+<div class="atk"><b>委屈铁拳</b> <span class="dmg">45</span> — 越委屈越有劲，HP越低伤害越高。</div>
+<div class="atk"><b>披风壮胆</b> <span class="dmg">—</span> — 防御+30，假装自己很勇敢。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/022-292-忍者蛋.jpg" loading="lazy" alt="忍者蛋">
+<div class="info">
+<div class="name">忍者蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">022/292 · 忍者系 · HP 85</div>
+<div class="flavor">"最圆的忍者，最显眼的潜伏。"</div>
+<div class="atk"><b>蛋壳手里剑</b> <span class="dmg">60</span> — 又圆又快，防不胜防。</div>
+<div class="atk"><b>藏不住了</b> <span class="dmg">—</span> — 隐身失败，但萌混过关。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/023-292-赛马驴.jpg" loading="lazy" alt="赛马驴">
+<div class="info">
+<div class="name">赛马驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">023/292 · 速度系 · HP 90</div>
+<div class="flavor">"跑得快不快不重要，重要的是面无表情。"</div>
+<div class="atk"><b>面无表情冲刺</b> <span class="dmg">65</span> — 全程零表情，对手被气势吓到。</div>
+<div class="atk"><b>散步模式</b> <span class="dmg">—</span> — 假装散步，实则已领先三圈。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/024-292-摇滚驴.jpg" loading="lazy" alt="摇滚驴">
+<div class="info">
+<div class="name">摇滚驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">024/292 · 音乐系 · HP 85</div>
+<div class="flavor">"最嗨的现场，最淡定的脸。"</div>
+<div class="atk"><b>电吉他独奏</b> <span class="dmg">60</span> — 音浪滚滚，敌方耳鸣一回合。</div>
+<div class="atk"><b>无感安可</b> <span class="dmg">—</span> — 面无表情地再来一首，全场更嗨了。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/025-292-侦探驴.jpg" loading="lazy" alt="侦探驴">
+<div class="info">
+<div class="name">侦探驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">025/292 · 推理系 · HP 70</div>
+<div class="flavor">"真相只有一个，但我的表情永远只有一个。"</div>
+<div class="atk"><b>放大镜凝视</b> <span class="dmg">35</span> — 盯着看，看出破绽，敌方防御-20。</div>
+<div class="atk"><b>面无表情推理</b> <span class="dmg">—</span> — 说出真相，但语气毫无起伏。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/026-292-丝带舞蛇.jpg" loading="lazy" alt="丝带舞蛇">
+<div class="info">
+<div class="name">丝带舞蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">026/292 · 优雅系 · HP 90</div>
+<div class="flavor">"跳舞的蛇，连花瓣都为它让路。"</div>
+<div class="atk"><b>彩虹缠绕</b> <span class="dmg">65</span> — 丝带如蛇，蛇如丝带，敌方目眩。</div>
+<div class="atk"><b>花瓣谢幕</b> <span class="dmg">—</span> — 优雅退场，恢复40HP。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/027-292-魔法蛇.jpg" loading="lazy" alt="魔法蛇">
+<div class="info">
+<div class="name">魔法蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">027/292 · 魔法系 · HP 110</div>
+<div class="flavor">"魔法对我来说，就像呼吸一样自然。"</div>
+<div class="atk"><b>舌尖魔杖</b> <span class="dmg">85</span> — 分叉舌尖一点，魔法生效。</div>
+<div class="atk"><b>蛇皮换装</b> <span class="dmg">—</span> — 蜕皮一次，清除所有负面状态。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/028-292-爵士蛇.jpg" loading="lazy" alt="爵士蛇">
+<div class="info">
+<div class="name">爵士蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">028/292 · 音乐系 · HP 95</div>
+<div class="flavor">"我天生就是为爵士而生的——慵懒。"</div>
+<div class="atk"><b>慵懒蓝调</b> <span class="dmg">70</span> — 慢悠悠的调子，敌方昏昏欲睡。</div>
+<div class="atk"><b>即兴独奏</b> <span class="dmg">—</span> — 随机复制一个已使用过的招式。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-系列3">系列 3 · 10 张</h2>
+<div class="card">
+<img src="thumbs/029-292-寿司师傅鱼小姐.jpg" loading="lazy" alt="寿司师傅鱼小姐">
+<div class="info">
+<div class="name">寿司师傅鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">029/292 · 美食系 · HP 80</div>
+<div class="flavor">"我做寿司的时候，从不想自己也是鱼。"</div>
+<div class="atk"><b>刀工如神</b> <span class="dmg">65</span> — 一条鱼做寿司，刀法快到看不见。</div>
+<div class="atk"><b>本是同根生</b> <span class="dmg">—</span> — 敌方鱼类角色倒戈。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/030-292-花店鱼小姐.jpg" loading="lazy" alt="花店鱼小姐">
+<div class="info">
+<div class="name">花店鱼小姐<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">030/292 · 治愈系 · HP 70</div>
+<div class="flavor">"花不会说话，但比谁都懂你。"</div>
+<div class="atk"><b>花香治愈</b> <span class="dmg">—</span> — 恢复60HP，花香沁人心脾。</div>
+<div class="atk"><b>花粉过敏</b> <span class="dmg">30</span> — 敌方打喷嚏，命中率下降。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/031-292-火箭咕咕.jpg" loading="lazy" alt="火箭咕咕">
+<div class="info">
+<div class="name">火箭咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">031/292 · 太空系 · HP 100</div>
+<div class="flavor">"逃逸速度？我的文火也是火。"</div>
+<div class="atk"><b>壶嘴点火</b> <span class="dmg">75</span> — 文火也能上天，只是慢了点。</div>
+<div class="atk"><b>慢速巡航</b> <span class="dmg">—</span> — 闪避+30，慢到让攻击追不上。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/032-292-灯塔咕咕.jpg" loading="lazy" alt="灯塔咕咕">
+<div class="info">
+<div class="name">灯塔咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">032/292 · 治愈系 · HP 95</div>
+<div class="flavor">"再黑的夜，也有一盏茶香的灯。"</div>
+<div class="atk"><b>指引之光</b> <span class="dmg">—</span> — 己方全体命中+20，如灯塔指引。</div>
+<div class="atk"><b>温暖守望</b> <span class="dmg">50</span> — 守护一回合，替队友挡伤害。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/033-292-大厨蛋.jpg" loading="lazy" alt="大厨蛋">
+<div class="info">
+<div class="name">大厨蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">033/292 · 美食系 · HP 70</div>
+<div class="flavor">"我烤的蛋糕里，有一点点委屈当调料。"</div>
+<div class="atk"><b>打蛋器旋风</b> <span class="dmg">40</span> — 挥舞打蛋器，搅拌出龙卷风。</div>
+<div class="atk"><b>焦虑烘焙</b> <span class="dmg">—</span> — 越焦虑越好吃，恢复50HP。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/034-292-相扑蛋.jpg" loading="lazy" alt="相扑蛋">
+<div class="info">
+<div class="name">相扑蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">034/292 · 力量系 · HP 110</div>
+<div class="flavor">"对不起，我要把你撞飞了——真的对不起。"</div>
+<div class="atk"><b>圆滚冲撞</b> <span class="dmg">80</span> — 最圆的身体，最重的冲撞。</div>
+<div class="atk"><b>土俵道歉</b> <span class="dmg">—</span> — 先道歉再开打，对手不好意思下重手。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/035-292-宇航驴.jpg" loading="lazy" alt="宇航驴">
+<div class="info">
+<div class="name">宇航驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">035/292 · 太空系 · HP 90</div>
+<div class="flavor">"太空很大，但我的淡定更大。"</div>
+<div class="atk"><b>面无表情登月</b> <span class="dmg">65</span> — 一步一个脚印，表情零个变化。</div>
+<div class="atk"><b>真空散步</b> <span class="dmg">—</span> — 在太空散步，闪避一切。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/036-292-消防员驴.jpg" loading="lazy" alt="消防员驴">
+<div class="info">
+<div class="name">消防员驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">036/292 · 守护系 · HP 75</div>
+<div class="flavor">"着火了？哦。那也得先把水管拿稳。"</div>
+<div class="atk"><b>水枪慢喷</b> <span class="dmg">35</span> — 不紧不慢，但每一滴都精准。</div>
+<div class="atk"><b>淡定救场</b> <span class="dmg">—</span> — 火再大也不慌，己方全体防御提升。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/037-292-瑜伽蛇.jpg" loading="lazy" alt="瑜伽蛇">
+<div class="info">
+<div class="name">瑜伽蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">037/292 · 治愈系 · HP 90</div>
+<div class="flavor">"瑜伽的最高境界，是本来就没有四肢。"</div>
+<div class="atk"><b>莲花盘坐</b> <span class="dmg">—</span> — 进入冥想，每回合恢复20HP。</div>
+<div class="atk"><b>蛇形体式</b> <span class="dmg">60</span> — 柔韧到不可思议，闪避+命中。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/038-292-园丁蛇.jpg" loading="lazy" alt="园丁蛇">
+<div class="info">
+<div class="name">园丁蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">038/292 · 自然系 · HP 70</div>
+<div class="flavor">"慢慢来，花会开。"</div>
+<div class="atk"><b>浇水关怀</b> <span class="dmg">—</span> — 恢复50HP，植物和队友一起长大。</div>
+<div class="atk"><b>藤蔓缠绕</b> <span class="dmg">40</span> — 温柔的藤蔓，困住对手。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-系列4">系列 4 · 40 张</h2>
+<div class="card">
+<img src="thumbs/039-画家鱼小姐.jpg" loading="lazy" alt="画家鱼小姐">
+<div class="info">
+<div class="name">画家鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">039 · 艺术系 · HP 80</div>
+<div class="flavor">"每一笔，都是海的形状。"</div>
+<div class="atk"><b>调色盘暴击</b> <span class="dmg">55</span> — 色彩斑斓，敌方目眩。</div>
+<div class="atk"><b>海底写生</b> <span class="dmg">—</span> — 恢复40HP，灵感如泉涌。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/040-消防员鱼小姐.jpg" loading="lazy" alt="消防员鱼小姐">
+<div class="info">
+<div class="name">消防员鱼小姐<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">040 · 搞笑系 · HP 70</div>
+<div class="flavor">"一条鱼当消防员，你就说专业不专业吧。"</div>
+<div class="atk"><b>水下灭火</b> <span class="dmg">35</span> — 在水里灭火，效率翻倍。</div>
+<div class="atk"><b>英雄本色</b> <span class="dmg">—</span> — 防御+20，使命感拉满。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/041-游泳冠军鱼小姐.jpg" loading="lazy" alt="游泳冠军鱼小姐">
+<div class="info">
+<div class="name">游泳冠军鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">041 · 运动系 · HP 95</div>
+<div class="flavor">"赢鱼比赛，拿金牌，很合理吧？"</div>
+<div class="atk"><b>金牌冲刺</b> <span class="dmg">75</span> — 快到连水花都追不上。</div>
+<div class="atk"><b>领奖台</b> <span class="dmg">—</span> — 恢复30HP，荣誉加身。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/042-面包师鱼小姐.jpg" loading="lazy" alt="面包师鱼小姐">
+<div class="info">
+<div class="name">面包师鱼小姐<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">042 · 美食系 · HP 70</div>
+<div class="flavor">"海底面包房，香飘三条街。"</div>
+<div class="atk"><b>牛角包暴击</b> <span class="dmg">40</span> — 外酥里软，伤害也酥软。</div>
+<div class="atk"><b>现烤出炉</b> <span class="dmg">—</span> — 恢复50HP，热乎的。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/043-DJ鱼小姐.jpg" loading="lazy" alt="DJ鱼小姐">
+<div class="info">
+<div class="name">DJ鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">043 · 音乐系 · HP 85</div>
+<div class="flavor">"今晚的海底，归我调音。"</div>
+<div class="atk"><b>电音浪潮</b> <span class="dmg">65</span> — 全场摇摆，敌方混乱。</div>
+<div class="atk"><b>打碟</b> <span class="dmg">—</span> — 节奏一起，己方加速。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/044-医生鱼小姐.jpg" loading="lazy" alt="医生鱼小姐">
+<div class="info">
+<div class="name">医生鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">044 · 治愈系 · HP 90</div>
+<div class="flavor">"别怕，我的听诊器是防水的。"</div>
+<div class="atk"><b>温柔诊断</b> <span class="dmg">—</span> — 恢复60HP，药到病除。</div>
+<div class="atk"><b>海底处方</b> <span class="dmg">45</span> — 对症下药，精准打击。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/045-海底农夫鱼小姐.jpg" loading="lazy" alt="海底农夫鱼小姐">
+<div class="info">
+<div class="name">海底农夫鱼小姐<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">045 · 自然系 · HP 75</div>
+<div class="flavor">"种海带得海带，种快乐得快乐。"</div>
+<div class="atk"><b>海带丰收</b> <span class="dmg">50</span> — 越种越多，伤害递增。</div>
+<div class="atk"><b>辛勤浇灌</b> <span class="dmg">—</span> — 恢复40HP，汗水没白流。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/046-圣诞鱼小姐.jpg" loading="lazy" alt="圣诞鱼小姐">
+<div class="info">
+<div class="name">圣诞鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">046 · 节日系 · HP 85</div>
+<div class="flavor">"海底也有圣诞树，珊瑚做的。"</div>
+<div class="atk"><b>星星点灯</b> <span class="dmg">60</span> — 星光闪闪，照亮全场。</div>
+<div class="atk"><b>节日礼物</b> <span class="dmg">—</span> — 随机恢复30-60HP，开盲盒。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/047-潜水艇咕咕.jpg" loading="lazy" alt="潜水艇咕咕">
+<div class="info">
+<div class="name">潜水艇咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">047 · 机械系 · HP 95</div>
+<div class="flavor">"深海巡航，文火慢行。"</div>
+<div class="atk"><b>鱼雷壶嘴</b> <span class="dmg">70</span> — 慢悠悠，但躲不开。</div>
+<div class="atk"><b>深潜</b> <span class="dmg">—</span> — 下潜三回合，闪避拉满。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/048-热气球咕咕.jpg" loading="lazy" alt="热气球咕咕">
+<div class="info">
+<div class="name">热气球咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">048 · 飞行系 · HP 90</div>
+<div class="flavor">"飞得最慢，看得最远。"</div>
+<div class="atk"><b>蒸汽升空</b> <span class="dmg">—</span> — 升空一回合，免疫地面招式。</div>
+<div class="atk"><b>高空俯冲</b> <span class="dmg">65</span> — 慢悠悠地砸下来。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/049-机器人咕咕.jpg" loading="lazy" alt="机器人咕咕">
+<div class="info">
+<div class="name">机器人咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">049 · 机械系 · HP 100</div>
+<div class="flavor">"就算是机器人，也要文火慢炖。"</div>
+<div class="atk"><b>齿轮咬合</b> <span class="dmg">70</span> — 咔哒咔哒，伤害稳定。</div>
+<div class="atk"><b>慢速模式</b> <span class="dmg">—</span> — 防御+30，急不得。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/050-园丁咕咕.jpg" loading="lazy" alt="园丁咕咕">
+<div class="info">
+<div class="name">园丁咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">050 · 自然系 · HP 75</div>
+<div class="flavor">"天生就是浇水壶，这叫天赋。"</div>
+<div class="atk"><b>温柔浇灌</b> <span class="dmg">—</span> — 恢复50HP，花和队友一起开。</div>
+<div class="atk"><b>花香四溢</b> <span class="dmg">40</span> — 香到对手分心。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/051-圣诞咕咕.jpg" loading="lazy" alt="圣诞咕咕">
+<div class="info">
+<div class="name">圣诞咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">051 · 节日系 · HP 70</div>
+<div class="flavor">"圣诞的文火，格外温暖。"</div>
+<div class="atk"><b>星星蒸汽</b> <span class="dmg">45</span> — 蒸汽变星星，好看又能打。</div>
+<div class="atk"><b>壁炉守夜</b> <span class="dmg">—</span> — 恢复40HP，暖到心坎。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/052-音乐家咕咕.jpg" loading="lazy" alt="音乐家咕咕">
+<div class="info">
+<div class="name">音乐家咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">052 · 音乐系 · HP 85</div>
+<div class="flavor">"一壶成军，文火开演。"</div>
+<div class="atk"><b>壶身架子鼓</b> <span class="dmg">60</span> — 咚咚锵，节奏拉满。</div>
+<div class="atk"><b>壶嘴长笛</b> <span class="dmg">—</span> — 悠扬一曲，己方回血30。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/053-画家咕咕.jpg" loading="lazy" alt="画家咕咕">
+<div class="info">
+<div class="name">画家咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">053 · 艺术系 · HP 70</div>
+<div class="flavor">"一笔一小时，慢工出细活。"</div>
+<div class="atk"><b>壶嘴点彩</b> <span class="dmg">40</span> — 一点一点，伤害累积。</div>
+<div class="atk"><b>文火构图</b> <span class="dmg">—</span> — 防御+20，构图稳定。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/054-船长咕咕.jpg" loading="lazy" alt="船长咕咕">
+<div class="info">
+<div class="name">船长咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">054 · 海洋系 · HP 95</div>
+<div class="flavor">"七大洋最慢的船长，最稳的航线。"</div>
+<div class="atk"><b>破浪前行</b> <span class="dmg">65</span> — 慢，但不停。</div>
+<div class="atk"><b>定海神针</b> <span class="dmg">—</span> — 全场稳定，混乱无效。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/055-医生蛋.jpg" loading="lazy" alt="医生蛋">
+<div class="info">
+<div class="name">医生蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">055 · 治愈系 · HP 85</div>
+<div class="flavor">"别怕……我，我也是第一次当医生。"</div>
+<div class="atk"><b>温柔问诊</b> <span class="dmg">—</span> — 恢复60HP，轻声细语。</div>
+<div class="atk"><b>听诊器</b> <span class="dmg">45</span> — 听出破绽，精准打击。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/056-消防员蛋.jpg" loading="lazy" alt="消防员蛋">
+<div class="info">
+<div class="name">消防员蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">056 · 搞笑系 · HP 70</div>
+<div class="flavor">"派个蛋去灭火？你们是认真的吗？"</div>
+<div class="atk"><b>小心水枪</b> <span class="dmg">35</span> — 颤颤巍巍，但水很准。</div>
+<div class="atk"><b>蛋壳防火</b> <span class="dmg">—</span> — 防御+25，蛋壳很硬的。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/057-画家蛋.jpg" loading="lazy" alt="画家蛋">
+<div class="info">
+<div class="name">画家蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">057 · 艺术系 · HP 70</div>
+<div class="flavor">"这自画像……真的像我吗？"</div>
+<div class="atk"><b>色彩焦虑</b> <span class="dmg">40</span> — 越焦虑，颜色越丰富。</div>
+<div class="atk"><b>画框保护</b> <span class="dmg">—</span> — 躲进画框，防御+20。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/058-音乐家蛋.jpg" loading="lazy" alt="音乐家蛋">
+<div class="info">
+<div class="name">音乐家蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">058 · 音乐系 · HP 80</div>
+<div class="flavor">"拉小提琴的时候，委屈都变成了音符。"</div>
+<div class="atk"><b>委屈琴音</b> <span class="dmg">60</span> — 越委屈，越动人，越疼。</div>
+<div class="atk"><b>余音绕梁</b> <span class="dmg">—</span> — 恢复30HP，音乐治愈。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/059-农民蛋.jpg" loading="lazy" alt="农民蛋">
+<div class="info">
+<div class="name">农民蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">059 · 自然系 · HP 75</div>
+<div class="flavor">"这些蛋……该不会是我的亲戚吧？"</div>
+<div class="atk"><b>丰收喜悦</b> <span class="dmg">50</span> — 种啥得啥，伤害实在。</div>
+<div class="atk"><b>田间小憩</b> <span class="dmg">—</span> — 恢复40HP，晒晒太阳。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/060-警察蛋.jpg" loading="lazy" alt="警察蛋">
+<div class="info">
+<div class="name">警察蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">060 · 正义系 · HP 70</div>
+<div class="flavor">"我，我是警察……你们别跑，我害怕。"</div>
+<div class="atk"><b>小牌警告</b> <span class="dmg">35</span> — 举起牌子，敌方愣住。</div>
+<div class="atk"><b>委屈执法</b> <span class="dmg">—</span> — 对手不好意思反抗。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/061-潜水蛋.jpg" loading="lazy" alt="潜水蛋">
+<div class="info">
+<div class="name">潜水蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">061 · 海洋系 · HP 80</div>
+<div class="flavor">"水下……应该没有会碎的东西吧？"</div>
+<div class="atk"><b>泡泡护盾</b> <span class="dmg">—</span> — 防御+30，泡泡很结实。</div>
+<div class="atk"><b>小心蛙泳</b> <span class="dmg">45</span> — 慢慢游，但游得远。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/062-圣诞蛋.jpg" loading="lazy" alt="圣诞蛋">
+<div class="info">
+<div class="name">圣诞蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">062 · 节日系 · HP 85</div>
+<div class="flavor">"第一次收到礼物，有点不知所措。"</div>
+<div class="atk"><b>雪球惊喜</b> <span class="dmg">55</span> — 又圆又白，砸得又准。</div>
+<div class="atk"><b>节日感动</b> <span class="dmg">—</span> — 恢复60HP，暖到想哭。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/063-厨师驴.jpg" loading="lazy" alt="厨师驴">
+<div class="info">
+<div class="name">厨师驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">063 · 美食系 · HP 85</div>
+<div class="flavor">"煎饼翻得再好，表情也不会变。"</div>
+<div class="atk"><b>完美翻面</b> <span class="dmg">60</span> — 面无表情，饼飞三米。</div>
+<div class="atk"><b>大厨定力</b> <span class="dmg">—</span> — 防御+25，泰山崩于前。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/064-医生驴.jpg" loading="lazy" alt="医生驴">
+<div class="info">
+<div class="name">医生驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">064 · 治愈系 · HP 75</div>
+<div class="flavor">"你的病，我看出来了。但我不想说。"</div>
+<div class="atk"><b>精准诊断</b> <span class="dmg">—</span> — 恢复50HP，一针见血。</div>
+<div class="atk"><b>冷面处方</b> <span class="dmg">40</span> — 面无表情开药，药到病除。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/065-老师驴.jpg" loading="lazy" alt="老师驴">
+<div class="info">
+<div class="name">老师驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">065 · 学术系 · HP 85</div>
+<div class="flavor">"这道题很简单——我的表情也很简单。"</div>
+<div class="atk"><b>粉笔直击</b> <span class="dmg">55</span> — 精准命中知识盲区。</div>
+<div class="atk"><b>面无表情讲解</b> <span class="dmg">—</span> — 己方全体学懂了，攻击+15。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/066-画家驴.jpg" loading="lazy" alt="画家驴">
+<div class="info">
+<div class="name">画家驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">066 · 艺术系 · HP 80</div>
+<div class="flavor">"画的是星空，表情是荒漠。"</div>
+<div class="atk"><b>色彩爆发</b> <span class="dmg">60</span> — 反差越大，伤害越高。</div>
+<div class="atk"><b>艺术定力</b> <span class="dmg">—</span> — 防御+20，不为所动。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/067-农民驴.jpg" loading="lazy" alt="农民驴">
+<div class="info">
+<div class="name">农民驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">067 · 自然系 · HP 75</div>
+<div class="flavor">"种地就是种地，没什么好激动的。"</div>
+<div class="atk"><b>稳健耕耘</b> <span class="dmg">50</span> — 一锄一个坑，伤害实在。</div>
+<div class="atk"><b>田园淡定</b> <span class="dmg">—</span> — 恢复40HP，心如止水。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/068-警察驴.jpg" loading="lazy" alt="警察驴">
+<div class="info">
+<div class="name">警察驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">068 · 正义系 · HP 70</div>
+<div class="flavor">"红灯停，绿灯行，表情一直行。"</div>
+<div class="atk"><b>空白凝视</b> <span class="dmg">35</span> — 盯到对手心虚。</div>
+<div class="atk"><b>铁面执法</b> <span class="dmg">—</span> — 敌方全体定身一回合。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/069-船长驴.jpg" loading="lazy" alt="船长驴">
+<div class="info">
+<div class="name">船长驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">069 · 海洋系 · HP 110</div>
+<div class="flavor">"风浪越大，我的表情越静。"</div>
+<div class="atk"><b>定海一吼</b> <span class="dmg">—</span> — 全场安静，混乱清除。</div>
+<div class="atk"><b>破浪前行</b> <span class="dmg">85</span> — 面无表情，劈开巨浪。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/070-快递驴.jpg" loading="lazy" alt="快递驴">
+<div class="info">
+<div class="name">快递驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">070 · 速度系 · HP 90</div>
+<div class="flavor">"您的快递到了。我的表情没到。"</div>
+<div class="atk"><b>极速配送</b> <span class="dmg">70</span> — 比表情先到的是包裹。</div>
+<div class="atk"><b>准时到达</b> <span class="dmg">—</span> — 闪避+30，风雨无阻。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/071-画家蛇.jpg" loading="lazy" alt="画家蛇">
+<div class="info">
+<div class="name">画家蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">071 · 艺术系 · HP 85</div>
+<div class="flavor">"尾巴就是画笔，天生的。"</div>
+<div class="atk"><b>尾尖点彩</b> <span class="dmg">60</span> — 一尾一点，精准优雅。</div>
+<div class="atk"><b>艺术长眠</b> <span class="dmg">—</span> — 盘起来睡觉，恢复50HP。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/072-医生蛇.jpg" loading="lazy" alt="医生蛇">
+<div class="info">
+<div class="name">医生蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">072 · 治愈系 · HP 75</div>
+<div class="flavor">"别紧张，我见过更大的场面——比如蜕皮。"</div>
+<div class="atk"><b>温柔缠绕</b> <span class="dmg">—</span> — 恢复55HP，被治愈了。</div>
+<div class="atk"><b>蛇胆明目</b> <span class="dmg">40</span> — 看穿一切，命中+20。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/073-厨师蛇.jpg" loading="lazy" alt="厨师蛇">
+<div class="info">
+<div class="name">厨师蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">073 · 美食系 · HP 85</div>
+<div class="flavor">"分叉的舌头，品得出咸淡。"</div>
+<div class="atk"><b>舌尖品鉴</b> <span class="dmg">60</span> — 尝一口就知道弱点。</div>
+<div class="atk"><b>文火慢炖</b> <span class="dmg">—</span> — 恢复45HP，越炖越香。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/074-老师蛇.jpg" loading="lazy" alt="老师蛇">
+<div class="info">
+<div class="name">老师蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">074 · 学术系 · HP 70</div>
+<div class="flavor">"慢慢讲，反正我有的是耐心。"</div>
+<div class="atk"><b>娓娓道来</b> <span class="dmg">40</span> — 讲到对手睡着。</div>
+<div class="atk"><b>蛇形板书</b> <span class="dmg">—</span> — 己方全体理解+攻击+15。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/075-消防员蛇.jpg" loading="lazy" alt="消防员蛇">
+<div class="info">
+<div class="name">消防员蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">075 · 守护系 · HP 90</div>
+<div class="flavor">"身体就是水管，天赋型选手。"</div>
+<div class="atk"><b>长身水龙</b> <span class="dmg">65</span> — 水柱如蛇，精准灭火。</div>
+<div class="atk"><b>盘踞守护</b> <span class="dmg">—</span> — 防御+30，固若金汤。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/076-警察蛇.jpg" loading="lazy" alt="警察蛇">
+<div class="info">
+<div class="name">警察蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">076 · 正义系 · HP 70</div>
+<div class="flavor">"这条街，我盘了很久了。"</div>
+<div class="atk"><b>路障盘踞</b> <span class="dmg">35</span> — 往路上一盘，谁也过不去。</div>
+<div class="atk"><b>长威严</b> <span class="dmg">—</span> — 敌方全体定身。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/077-宇航蛇.jpg" loading="lazy" alt="宇航蛇">
+<div class="info">
+<div class="name">宇航蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">077 · 太空系 · HP 115</div>
+<div class="flavor">"失重？那不是我的日常吗？"</div>
+<div class="atk"><b>星河缠绕</b> <span class="dmg">90</span> — 如星河般绚烂致命。</div>
+<div class="atk"><b>虚空冥想</b> <span class="dmg">—</span> — 恢复50HP，与宇宙同频。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/078-快递蛇.jpg" loading="lazy" alt="快递蛇">
+<div class="info">
+<div class="name">快递蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">078 · 速度系 · HP 75</div>
+<div class="flavor">"快递蛇，慢但稳，稳且准。"</div>
+<div class="atk"><b>蛇皮走位</b> <span class="dmg">45</span> — 滑溜溜，抓不住。</div>
+<div class="atk"><b>准时必达</b> <span class="dmg">—</span> — 闪避+25，使命必达。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-第三波">第三波 · 职业 · 24 张</h2>
+<div class="card">
+<img src="thumbs/079-消防员猴.jpg" loading="lazy" alt="消防员猴">
+<div class="info">
+<div class="name">消防员猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">079 · 守护系 · HP 95</div>
+<div class="flavor">"灭火用爱，心形水柱。"</div>
+<div class="atk"><b>爱心水柱</b> <span class="dmg">70</span> — 水柱呈心形，伤害又暖心。</div>
+<div class="atk"><b>勇敢救援</b> <span class="dmg">—</span> — 救下队友，恢复50HP。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/080-医生猴.jpg" loading="lazy" alt="医生猴">
+<div class="info">
+<div class="name">医生猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">080 · 治愈系 · HP 90</div>
+<div class="flavor">"一天一香蕉，医生远离我——我是医生。"</div>
+<div class="atk"><b>香蕉体温计</b> <span class="dmg">—</span> — 恢复60HP，量出健康。</div>
+<div class="atk"><b>妙手回春</b> <span class="dmg">55</span> — 医术如神，精准治疗。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/081-画家猴.jpg" loading="lazy" alt="画家猴">
+<div class="info">
+<div class="name">画家猴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">081 · 艺术系 · HP 75</div>
+<div class="flavor">"尾巴也是手，多一只手多一倍灵感。"</div>
+<div class="atk"><b>尾巴神笔</b> <span class="dmg">50</span> — 尾巴作画，出其不意。</div>
+<div class="atk"><b>艺术沉浸</b> <span class="dmg">—</span> — 防御+20，灵感护体。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/082-圣诞猴.jpg" loading="lazy" alt="圣诞猴">
+<div class="info">
+<div class="name">圣诞猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">082 · 节日系 · HP 85</div>
+<div class="flavor">"圣诞树的顶，是香蕉星星的家。"</div>
+<div class="atk"><b>香蕉星星</b> <span class="dmg">60</span> — 星光闪闪，香蕉飘香。</div>
+<div class="atk"><b>节日派送</b> <span class="dmg">—</span> — 己方全体恢复30HP，礼物到。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/083-警察鱼小姐.jpg" loading="lazy" alt="警察鱼小姐">
+<div class="info">
+<div class="name">警察鱼小姐<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">083 · 正义系 · HP 75</div>
+<div class="flavor">"海底交通，听鳍指挥。"</div>
+<div class="atk"><b>鳍势指挥</b> <span class="dmg">40</span> — 指挥若定，敌方混乱。</div>
+<div class="atk"><b>正义巡逻</b> <span class="dmg">—</span> — 防御+20，海底平安。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/084-魔法鱼小姐.jpg" loading="lazy" alt="魔法鱼小姐">
+<div class="info">
+<div class="name">魔法鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">084 · 魔法系 · HP 110</div>
+<div class="flavor">"最大的魔法，是鱼在水下变魔术。"</div>
+<div class="atk"><b>帽中兔鱼</b> <span class="dmg">85</span> — 变出什么，连自己都惊喜。</div>
+<div class="atk"><b>泡泡幻术</b> <span class="dmg">—</span> — 闪避+30，真假难辨。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/085-忍者鱼小姐.jpg" loading="lazy" alt="忍者鱼小姐">
+<div class="info">
+<div class="name">忍者鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">085 · 忍者系 · HP 90</div>
+<div class="flavor">"你没见过我。我是水。"</div>
+<div class="atk"><b>无声潜行</b> <span class="dmg">—</span> — 隐身一回合，无影无形。</div>
+<div class="atk"><b>苦无突刺</b> <span class="dmg">65</span> — 快如水流，一击即中。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/086-科学家鱼小姐.jpg" loading="lazy" alt="科学家鱼小姐">
+<div class="info">
+<div class="name">科学家鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">086 · 学术系 · HP 85</div>
+<div class="flavor">"尤里卡！……等等，我在做什么来着？"</div>
+<div class="atk"><b>药剂爆炸</b> <span class="dmg">70</span> — 五颜六色，伤害随机+。</div>
+<div class="atk"><b>灵感迸发</b> <span class="dmg">—</span> — 己方全体攻击+20。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/087-消防员咕咕.jpg" loading="lazy" alt="消防员咕咕">
+<div class="info">
+<div class="name">消防员咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">087 · 守护系 · HP 95</div>
+<div class="flavor">"壶嘴就是水枪，天生的消防员。"</div>
+<div class="atk"><b>壶嘴水柱</b> <span class="dmg">70</span> — 文火慢炖，也能灭火。</div>
+<div class="atk"><b>淡定救火</b> <span class="dmg">—</span> — 火再大也不慌，防御+25。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/088-魔法师咕咕.jpg" loading="lazy" alt="魔法师咕咕">
+<div class="info">
+<div class="name">魔法师咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">088 · 魔法系 · HP 110</div>
+<div class="flavor">"魔法如茶，不可急，不可躁。"</div>
+<div class="atk"><b>茶香咒语</b> <span class="dmg">85</span> — 香气弥漫，敌方沉醉。</div>
+<div class="atk"><b>慢火结界</b> <span class="dmg">—</span> — 防御+35，固若金汤。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/089-DJ咕咕.jpg" loading="lazy" alt="DJ咕咕">
+<div class="info">
+<div class="name">DJ咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">089 · 音乐系 · HP 75</div>
+<div class="flavor">"Beat 会 drop，但文火不会。"</div>
+<div class="atk"><b>蒸汽节拍</b> <span class="dmg">50</span> — 噗噗噗，节奏感拉满。</div>
+<div class="atk"><b>茶话会蹦迪</b> <span class="dmg">—</span> — 己方全体加速，嗨起来。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/090-警察咕咕.jpg" loading="lazy" alt="警察咕咕">
+<div class="info">
+<div class="name">警察咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">090 · 正义系 · HP 70</div>
+<div class="flavor">"过马路请慢行，像我一样慢。"</div>
+<div class="atk"><b>壶嘴哨音</b> <span class="dmg">35</span> — 哔——，全场立正。</div>
+<div class="atk"><b>慢速执法</b> <span class="dmg">—</span> — 敌方全体减速。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/091-老师蛋.jpg" loading="lazy" alt="老师蛋">
+<div class="info">
+<div class="name">老师蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">091 · 学术系 · HP 80</div>
+<div class="flavor">"我，我教得对吗？他们好像学会了……吧？"</div>
+<div class="atk"><b>粉笔勇气</b> <span class="dmg">50</span> — 颤颤巍巍，但字很正。</div>
+<div class="atk"><b>耐心讲解</b> <span class="dmg">—</span> — 己方全体攻击+15，听懂了。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/092-魔法师蛋.jpg" loading="lazy" alt="魔法师蛋">
+<div class="info">
+<div class="name">魔法师蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">092 · 魔法系 · HP 90</div>
+<div class="flavor">"我，我真的会魔法？！"</div>
+<div class="atk"><b>惊喜咒语</b> <span class="dmg">65</span> — 连自己都被吓到，伤害翻倍。</div>
+<div class="atk"><b>帽子戏法</b> <span class="dmg">—</span> — 随机变出恢复或伤害。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/093-船长蛋.jpg" loading="lazy" alt="船长蛋">
+<div class="info">
+<div class="name">船长蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">093 · 海洋系 · HP 75</div>
+<div class="flavor">"我是船长……大概是吧，海鸥都信我。"</div>
+<div class="atk"><b>小心掌舵</b> <span class="dmg">45</span> — 晃晃悠悠，但方向没错。</div>
+<div class="atk"><b>勇气启航</b> <span class="dmg">—</span> — 防御+20，迎风破浪。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/094-运动员蛋.jpg" loading="lazy" alt="运动员蛋">
+<div class="info">
+<div class="name">运动员蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">094 · 运动系 · HP 95</div>
+<div class="flavor">"圆，就是最快的形状。"</div>
+<div class="atk"><b>滚动冲刺</b> <span class="dmg">75</span> — 滚起来，谁也追不上。</div>
+<div class="atk"><b>金牌在望</b> <span class="dmg">—</span> — 加速一回合，势如破竹。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/095-圣诞驴.jpg" loading="lazy" alt="圣诞驴">
+<div class="info">
+<div class="name">圣诞驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">095 · 节日系 · HP 70</div>
+<div class="flavor">"圣诞节。是的。"</div>
+<div class="atk"><b>礼物搬运</b> <span class="dmg">40</span> — 面无表情，礼物准时到。</div>
+<div class="atk"><b>节日淡定</b> <span class="dmg">—</span> — 恢复30HP，波澜不惊。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/096-魔法师驴.jpg" loading="lazy" alt="魔法师驴">
+<div class="info">
+<div class="name">魔法师驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">096 · 魔法系 · HP 115</div>
+<div class="flavor">"魔法。哦。"</div>
+<div class="atk"><b>空白咒语</b> <span class="dmg">90</span> — 面无表情，威力惊人。</div>
+<div class="atk"><b>无感结界</b> <span class="dmg">—</span> — 防御+35，不为所动。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/097-科学家驴.jpg" loading="lazy" alt="科学家驴">
+<div class="info">
+<div class="name">科学家驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">097 · 学术系 · HP 85</div>
+<div class="flavor">"尤里卡。我 guess。"</div>
+<div class="atk"><b>爆炸实验</b> <span class="dmg">70</span> — 面无表情，蘑菇云升起。</div>
+<div class="atk"><b>冷静记录</b> <span class="dmg">—</span> — 己方全体攻击+20，数据说话。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/098-潜水驴.jpg" loading="lazy" alt="潜水驴">
+<div class="info">
+<div class="name">潜水驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">098 · 海洋系 · HP 90</div>
+<div class="flavor">"鲨鱼走了。它觉得我无聊。"</div>
+<div class="atk"><b>深海漫步</b> <span class="dmg">—</span> — 闪避+30，闲庭信步。</div>
+<div class="atk"><b>空白威慑</b> <span class="dmg">60</span> — 盯着对手，对手先慌。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/099-圣诞蛇.jpg" loading="lazy" alt="圣诞蛇">
+<div class="info">
+<div class="name">圣诞蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">099 · 节日系 · HP 75</div>
+<div class="flavor">"包礼物？我就是包装。"</div>
+<div class="atk"><b>彩带缠绕</b> <span class="dmg">45</span> — 把对手包成礼物。</div>
+<div class="atk"><b>节日慵懒</b> <span class="dmg">—</span> — 恢复40HP，暖洋洋。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/100-科学家蛇.jpg" loading="lazy" alt="科学家蛇">
+<div class="info">
+<div class="name">科学家蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">100 · 学术系 · HP 90</div>
+<div class="flavor">"这个发现，是我打盹时想到的。"</div>
+<div class="atk"><b>试剂飞溅</b> <span class="dmg">65</span> — 尾巴一甩，精准命中。</div>
+<div class="atk"><b>灵感小睡</b> <span class="dmg">—</span> — 睡一回合，醒来攻击+30。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/101-忍者蛇.jpg" loading="lazy" alt="忍者蛇">
+<div class="info">
+<div class="name">忍者蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">101 · 忍者系 · HP 110</div>
+<div class="flavor">"隐身？我本来就没有脚步声。"</div>
+<div class="atk"><b>月下突袭</b> <span class="dmg">85</span> — 悄无声息，一击致命。</div>
+<div class="atk"><b>绝对静默</b> <span class="dmg">—</span> — 隐身两回合，无影无踪。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/102-船长蛇.jpg" loading="lazy" alt="船长蛇">
+<div class="info">
+<div class="name">船长蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">102 · 海洋系 · HP 95</div>
+<div class="flavor">"大海和我都懂，慢是一种智慧。"</div>
+<div class="atk"><b>波浪缠绕</b> <span class="dmg">65</span> — 如海浪般温柔致命。</div>
+<div class="atk"><b>顺风远航</b> <span class="dmg">—</span> — 恢复40HP，一帆风顺。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-第四波">第四波 · 职业 · 24 张</h2>
+<div class="card">
+<img src="thumbs/103-农民猴.jpg" loading="lazy" alt="农民猴">
+<div class="info">
+<div class="name">农民猴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">103 · 自然系 · HP 75</div>
+<div class="flavor">"自家种的香蕉，格外甜。"</div>
+<div class="atk"><b>丰收香蕉</b> <span class="dmg">50</span> — 又大又甜，伤害实在。</div>
+<div class="atk"><b>田间劳作</b> <span class="dmg">—</span> — 恢复40HP，汗水换的。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/104-警察猴.jpg" loading="lazy" alt="警察猴">
+<div class="info">
+<div class="name">警察猴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">104 · 正义系 · HP 70</div>
+<div class="flavor">"法律是法律，香蕉是……证据。"</div>
+<div class="atk"><b>正义香蕉</b> <span class="dmg">40</span> — 没收的香蕉，充公了。</div>
+<div class="atk"><b>尾巴顺走</b> <span class="dmg">—</span> — 偷拿一根，恢复20HP。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/105-船长猴.jpg" loading="lazy" alt="船长猴">
+<div class="info">
+<div class="name">船长猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">105 · 海洋系 · HP 95</div>
+<div class="flavor">"大海就是一杯巨大的香蕉奶昔！"</div>
+<div class="atk"><b>香蕉船冲锋</b> <span class="dmg">65</span> — 乘风破浪，势不可挡。</div>
+<div class="atk"><b>望远镜</b> <span class="dmg">—</span> — 看穿迷雾，命中+20。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/106-快递猴.jpg" loading="lazy" alt="快递猴">
+<div class="info">
+<div class="name">快递猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">106 · 速度系 · HP 90</div>
+<div class="flavor">"10分钟送达……大部分香蕉完好。"</div>
+<div class="atk"><b>香蕉彗星</b> <span class="dmg">70</span> — 边送边吃，边吃边送。</div>
+<div class="atk"><b>极速小跑</b> <span class="dmg">—</span> — 闪避+30，风驰电掣。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/107-快递鱼小姐.jpg" loading="lazy" alt="快递鱼小姐">
+<div class="info">
+<div class="name">快递鱼小姐<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">107 · 速度系 · HP 75</div>
+<div class="flavor">"海底快递，防水包邮。"</div>
+<div class="atk"><b>海马冲刺</b> <span class="dmg">45</span> — 骑着海马，飞速送达。</div>
+<div class="atk"><b>准时到达</b> <span class="dmg">—</span> — 闪避+25，使命必达。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/108-船长鱼小姐.jpg" loading="lazy" alt="船长鱼小姐">
+<div class="info">
+<div class="name">船长鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">108 · 海洋系 · HP 95</div>
+<div class="flavor">"一条鱼指挥一船水手，很合理。"</div>
+<div class="atk"><b>全速前进</b> <span class="dmg">65</span> — 乘风破浪，一往无前。</div>
+<div class="atk"><b>鳍指方向</b> <span class="dmg">—</span> — 命中+20，方向明确。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/109-园丁鱼小姐.jpg" loading="lazy" alt="园丁鱼小姐">
+<div class="info">
+<div class="name">园丁鱼小姐<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">109 · 自然系 · HP 70</div>
+<div class="flavor">"水下种花，花不介意。"</div>
+<div class="atk"><b>珊瑚盛放</b> <span class="dmg">40</span> — 美得让对手分心。</div>
+<div class="atk"><b>温柔浇灌</b> <span class="dmg">—</span> — 恢复45HP，细心呵护。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/110-理发师鱼小姐.jpg" loading="lazy" alt="理发师鱼小姐">
+<div class="info">
+<div class="name">理发师鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">110 · 时尚系 · HP 80</div>
+<div class="flavor">"我的卷发就是活招牌。"</div>
+<div class="atk"><b>剪刀手</b> <span class="dmg">55</span> — 咔嚓咔嚓，精准修剪。</div>
+<div class="atk"><b>完美卷发</b> <span class="dmg">—</span> — 魅力+30，对手看呆。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/111-老师咕咕.jpg" loading="lazy" alt="老师咕咕">
+<div class="info">
+<div class="name">老师咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">111 · 学术系 · HP 85</div>
+<div class="flavor">"慢慢看，慢慢学，慢慢喝。"</div>
+<div class="atk"><b>茶道讲解</b> <span class="dmg">50</span> — 一讲三小时，听者入迷。</div>
+<div class="atk"><b>耐心示范</b> <span class="dmg">—</span> — 己方全体攻击+15，学会了。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/112-医生咕咕.jpg" loading="lazy" alt="医生咕咕">
+<div class="info">
+<div class="name">医生咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">112 · 治愈系 · HP 90</div>
+<div class="flavor">"咕咕大夫的处方：一壶，好茶，一日两次。"</div>
+<div class="atk"><b>草药热茶</b> <span class="dmg">—</span> — 恢复60HP，药到病除。</div>
+<div class="atk"><b>望闻问切</b> <span class="dmg">45</span> — 看穿弱点，精准打击。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/113-农民咕咕.jpg" loading="lazy" alt="农民咕咕">
+<div class="info">
+<div class="name">农民咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">113 · 自然系 · HP 75</div>
+<div class="flavor">"从叶子到杯子，全程文火。"</div>
+<div class="atk"><b>茶叶丰收</b> <span class="dmg">50</span> — 自家茶叶，香得实在。</div>
+<div class="atk"><b>田园浇水</b> <span class="dmg">—</span> — 恢复40HP，壶嘴本职。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/114-快递咕咕.jpg" loading="lazy" alt="快递咕咕">
+<div class="info">
+<div class="name">快递咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">114 · 速度系 · HP 70</div>
+<div class="flavor">"你的茶会到……的。还热着，我保证。"</div>
+<div class="atk"><b>三轮慢递</b> <span class="dmg">35</span> — 慢，但稳，茶不洒。</div>
+<div class="atk"><b>热茶保温</b> <span class="dmg">—</span> — 防御+20，暖意护体。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/115-快递蛋.jpg" loading="lazy" alt="快递蛋">
+<div class="info">
+<div class="name">快递蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">115 · 速度系 · HP 70</div>
+<div class="flavor">"求求了，别碎，别碎……"</div>
+<div class="atk"><b>蹑手蹑脚</b> <span class="dmg">35</span> — 轻得像没走过。</div>
+<div class="atk"><b>蛋壳护送</b> <span class="dmg">—</span> — 防御+25，小心翼翼。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/116-科学家蛋.jpg" loading="lazy" alt="科学家蛋">
+<div class="info">
+<div class="name">科学家蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">116 · 学术系 · HP 85</div>
+<div class="flavor">"我到底……是不是早餐？"</div>
+<div class="atk"><b>哲学一击</b> <span class="dmg">60</span> — 问到对手自我怀疑。</div>
+<div class="atk"><b>实验记录</b> <span class="dmg">—</span> — 己方全体攻击+15，数据说话。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/117-园丁蛋.jpg" loading="lazy" alt="园丁蛋">
+<div class="info">
+<div class="name">园丁蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">117 · 自然系 · HP 70</div>
+<div class="flavor">"长大吧……像我永远长不大的样子。"</div>
+<div class="atk"><b>蛋壳花盆</b> <span class="dmg">—</span> — 恢复45HP，循环利用。</div>
+<div class="atk"><b>温柔播种</b> <span class="dmg">40</span> — 种下希望，静待花开。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/118-DJ蛋.jpg" loading="lazy" alt="DJ蛋">
+<div class="info">
+<div class="name">DJ蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">118 · 音乐系 · HP 80</div>
+<div class="flavor">"大家是在跳舞……还是在逃跑？"</div>
+<div class="atk"><b>紧张电音</b> <span class="dmg">55</span> — 越紧张，节奏越带感。</div>
+<div class="atk"><b>全场摇摆</b> <span class="dmg">—</span> — 己方加速，嗨起来。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/119-园丁驴.jpg" loading="lazy" alt="园丁驴">
+<div class="info">
+<div class="name">园丁驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">119 · 自然系 · HP 75</div>
+<div class="flavor">"种花。是的。"</div>
+<div class="atk"><b>淡定浇水</b> <span class="dmg">40</span> — 面无表情，花开满园。</div>
+<div class="atk"><b>田园无感</b> <span class="dmg">—</span> — 恢复40HP，波澜不惊。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/120-运动员驴.jpg" loading="lazy" alt="运动员驴">
+<div class="info">
+<div class="name">运动员驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">120 · 运动系 · HP 110</div>
+<div class="flavor">"金牌。哦。"</div>
+<div class="atk"><b>空白冲刺</b> <span class="dmg">85</span> — 面无表情，断层第一。</div>
+<div class="atk"><b>冠军淡定</b> <span class="dmg">—</span> — 全属性+10，理所当然。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/121-DJ驴.jpg" loading="lazy" alt="DJ驴">
+<div class="info">
+<div class="name">DJ驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">121 · 音乐系 · HP 85</div>
+<div class="flavor">"Beat 会 drop，我不会。"</div>
+<div class="atk"><b>空白电音</b> <span class="dmg">60</span> — 面无表情，全场最嗨。</div>
+<div class="atk"><b>淡定打碟</b> <span class="dmg">—</span> — 己方加速，稳如泰山。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/122-护士驴.jpg" loading="lazy" alt="护士驴">
+<div class="info">
+<div class="name">护士驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">122 · 治愈系 · HP 75</div>
+<div class="flavor">"你会好的。大概。"</div>
+<div class="atk"><b>空白安慰</b> <span class="dmg">—</span> — 恢复50HP，莫名安心。</div>
+<div class="atk"><b>体温测量</b> <span class="dmg">40</span> — 面无表情，精准读数。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/123-农民蛇.jpg" loading="lazy" alt="农民蛇">
+<div class="info">
+<div class="name">农民蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">123 · 自然系 · HP 70</div>
+<div class="flavor">"种田用蛇 pace，稻子不介意。"</div>
+<div class="atk"><b>盘绕护苗</b> <span class="dmg">40</span> — 把秧苗盘在怀里。</div>
+<div class="atk"><b>田园小憩</b> <span class="dmg">—</span> — 恢复40HP，晒晒太阳。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/124-DJ蛇.jpg" loading="lazy" alt="DJ蛇">
+<div class="info">
+<div class="name">DJ蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">124 · 音乐系 · HP 85</div>
+<div class="flavor">"我不跟 beat，beat 跟我。"</div>
+<div class="atk"><b>蛇形电音</b> <span class="dmg">60</span> — 丝滑扭动，全场沉醉。</div>
+<div class="atk"><b>慵懒混音</b> <span class="dmg">—</span> — 己方加速，毫不费力。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/125-运动员蛇.jpg" loading="lazy" alt="运动员蛇">
+<div class="info">
+<div class="name">运动员蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">125 · 运动系 · HP 110</div>
+<div class="flavor">"柔韧性？我发明的。"</div>
+<div class="atk"><b>体操缠绕</b> <span class="dmg">85</span> — 优雅致命，无从闪避。</div>
+<div class="atk"><b>完美落地</b> <span class="dmg">—</span> — 闪避+30，稳得可怕。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/126-理发师蛇.jpg" loading="lazy" alt="理发师蛇">
+<div class="info">
+<div class="name">理发师蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">126 · 时尚系 · HP 70</div>
+<div class="flavor">"你的头发……有潜力，让我来。"</div>
+<div class="atk"><b>尾巴剪刀</b> <span class="dmg">40</span> — 咔嚓，时尚完成。</div>
+<div class="atk"><b>螺旋定型</b> <span class="dmg">—</span> — 魅力+25，回头率拉满。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-传说">传说系列 · 5 张</h2>
+<div class="card">
+<img src="thumbs/127-龙女鱼小姐.jpg" loading="lazy" alt="龙女鱼小姐">
+<div class="info">
+<div class="name">龙女鱼小姐<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">127 · 传说系 · HP 160</div>
+<div class="flavor">"东海龙宫的公主，执掌万水。"</div>
+<div class="atk"><b>龙宫明珠</b> <span class="dmg">120</span> — 龙珠一出，万水臣服。</div>
+<div class="atk"><b>沧海桑田</b> <span class="dmg">—</span> — 改变战场，攻守易位。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/128-茶神咕咕.jpg" loading="lazy" alt="茶神咕咕">
+<div class="info">
+<div class="name">茶神咕咕<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">128 · 传说系 · HP 155</div>
+<div class="flavor">"万年茶道，一壶证道。"</div>
+<div class="atk"><b>悟道香茗</b> <span class="dmg">—</span> — 己方全体恢复80HP，醍醐灌顶。</div>
+<div class="atk"><b>茶水成云</b> <span class="dmg">110</span> — 茶香化云，淹没对手。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/129-凤凰蛋.jpg" loading="lazy" alt="凤凰蛋">
+<div class="info">
+<div class="name">凤凰蛋<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">129 · 传说系 · HP 150</div>
+<div class="flavor">"我，我真的是凤凰蛋？！"</div>
+<div class="atk"><b>涅槃之火</b> <span class="dmg">130</span> — 浴火重生，伤害翻倍。</div>
+<div class="atk"><b>凤凰于飞</b> <span class="dmg">—</span> — 复活一次，HP回满。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/130-白龙马驴.jpg" loading="lazy" alt="白龙马驴">
+<div class="info">
+<div class="name">白龙马驴<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">130 · 传说系 · HP 165</div>
+<div class="flavor">"龙马。哦。"</div>
+<div class="atk"><b>龙马奔腾</b> <span class="dmg">125</span> — 面无表情，踏碎虚空。</div>
+<div class="atk"><b>西行护送</b> <span class="dmg">—</span> — 己方全体防御+40，使命必达。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/131-青蛇.jpg" loading="lazy" alt="青蛇">
+<div class="info">
+<div class="name">青蛇<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">131 · 传说系 · HP 165</div>
+<div class="flavor">"白蛇姐姐在哪，我就在哪。"</div>
+<div class="atk"><b>青影疾行</b> <span class="dmg">—</span> — 闪避+40，快得只剩影子。</div>
+<div class="atk"><b>灵蛇吐信</b> <span class="dmg">120</span> — 俏皮一击，防不胜防。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-性格">性格系列 · 11 张</h2>
+<div class="card">
+<img src="thumbs/132-领队猴.jpg" loading="lazy" alt="领队猴">
+<div class="info">
+<div class="name">领队猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">132 · 领导系 · HP 95</div>
+<div class="flavor">"跟我走，探险开始了！"</div>
+<div class="atk"><b>旗帜指引</b> <span class="dmg">55</span> — 指明方向，己方命中+15。</div>
+<div class="atk"><b>勇往直前</b> <span class="dmg">—</span> — 己方全体攻击+20，士气高涨。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/133-点子王猴.jpg" loading="lazy" alt="点子王猴">
+<div class="info">
+<div class="name">点子王猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">133 · 智慧系 · HP 90</div>
+<div class="flavor">"我有主意了！"</div>
+<div class="atk"><b>灵感爆发</b> <span class="dmg">70</span> — 灵光一闪，出其不意。</div>
+<div class="atk"><b>奇思妙想</b> <span class="dmg">—</span> — 己方全体攻击+15，点子无限。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/134-探险家鱼小姐.jpg" loading="lazy" alt="探险家鱼小姐">
+<div class="info">
+<div class="name">探险家鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">134 · 探险系 · HP 90</div>
+<div class="flavor">"我有计划！跟我走！"</div>
+<div class="atk"><b>藏宝图</b> <span class="dmg">—</span> — 看穿对手，命中+25。</div>
+<div class="atk"><b>探险冲锋</b> <span class="dmg">65</span> — 一往无前，发现新大陆。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/135-说书人咕咕.jpg" loading="lazy" alt="说书人咕咕">
+<div class="info">
+<div class="name">说书人咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">135 · 故事系 · HP 85</div>
+<div class="flavor">"想当年……"</div>
+<div class="atk"><b>老故事</b> <span class="dmg">—</span> — 听得入迷，敌方全体减速。</div>
+<div class="atk"><b>茶香传说</b> <span class="dmg">50</span> — 故事成真，伤害实在。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/136-品茗咕咕.jpg" loading="lazy" alt="品茗咕咕">
+<div class="info">
+<div class="name">品茗咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">136 · 优雅系 · HP 80</div>
+<div class="flavor">"茶不是喝的，是品的。"</div>
+<div class="atk"><b>细品慢饮</b> <span class="dmg">—</span> — 恢复50HP，心静如水。</div>
+<div class="atk"><b>茶道修为</b> <span class="dmg">45</span> — 以静制动，稳如泰山。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/137-倔强蛋.jpg" loading="lazy" alt="倔强蛋">
+<div class="info">
+<div class="name">倔强蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">137 · 坚韧系 · HP 100</div>
+<div class="flavor">"我就不动。我就不碎。"</div>
+<div class="atk"><b>风雨不动</b> <span class="dmg">—</span> — 防御+35，岿然不动。</div>
+<div class="atk"><b>倔强一击</b> <span class="dmg">60</span> — 委屈化作力量。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/138-守夜蛋.jpg" loading="lazy" alt="守夜蛋">
+<div class="info">
+<div class="name">守夜蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">138 · 守护系 · HP 85</div>
+<div class="flavor">"总得有人守夜……我来。"</div>
+<div class="atk"><b>守夜灯火</b> <span class="dmg">—</span> — 己方全体恢复30HP，安心入睡。</div>
+<div class="atk"><b>微光坚持</b> <span class="dmg">40</span> — 微光虽小，照亮黑夜。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/139-靠谱驴.jpg" loading="lazy" alt="靠谱驴">
+<div class="info">
+<div class="name">靠谱驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">139 · 可靠系 · HP 105</div>
+<div class="flavor">"靠谱。一直靠谱。"</div>
+<div class="atk"><b>负重前行</b> <span class="dmg">65</span> — 背着全队，面不改色。</div>
+<div class="atk"><b>稳如泰山</b> <span class="dmg">—</span> — 防御+30，雷打不动。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/140-直言驴.jpg" loading="lazy" alt="直言驴">
+<div class="info">
+<div class="name">直言驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">140 · 直言系 · HP 90</div>
+<div class="flavor">"我只是说了大家心里想的。"</div>
+<div class="atk"><b>一针见血</b> <span class="dmg">75</span> — 直击要害，无从反驳。</div>
+<div class="atk"><b>冷面点评</b> <span class="dmg">—</span> — 敌方全体攻击-15，被说中了。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/141-智者蛇.jpg" loading="lazy" alt="智者蛇">
+<div class="info">
+<div class="name">智者蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">141 · 智慧系 · HP 115</div>
+<div class="flavor">"都读过了。两遍。"</div>
+<div class="atk"><b>博览群书</b> <span class="dmg">—</span> — 看穿一切，命中+30。</div>
+<div class="atk"><b>智蛇盘算</b> <span class="dmg">80</span> — 算无遗策，一击致命。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/142-点破蛇.jpg" loading="lazy" alt="点破蛇">
+<div class="info">
+<div class="name">点破蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">142 · 洞察系 · HP 110</div>
+<div class="flavor">"显而易见。"</div>
+<div class="atk"><b>一语点破</b> <span class="dmg">90</span> — 一句话，全场沉默。</div>
+<div class="atk"><b>洞若观火</b> <span class="dmg">—</span> — 敌方全体防御-20，无所遁形。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-四季·春">四季 · 春 · 5 张</h2>
+<div class="card">
+<img src="thumbs/143-踏青猴.jpg" loading="lazy" alt="踏青猴">
+<div class="info">
+<div class="name">踏青猴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">143 · 自然系 · HP 80</div>
+<div class="flavor">"春天来了！"</div>
+<div class="atk"><b>花瓣飞舞</b> <span class="dmg">50</span> — 花瓣如雪，迷人眼。</div>
+<div class="atk"><b>踏青出游</b> <span class="dmg">—</span> — 己方全体恢复20HP，心情大好。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/144-春汛鱼小姐.jpg" loading="lazy" alt="春汛鱼小姐">
+<div class="info">
+<div class="name">春汛鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">144 · 水系 · HP 90</div>
+<div class="flavor">"春汛到了，跟我走！"</div>
+<div class="atk"><b>逆流而上</b> <span class="dmg">70</span> — 迎难而上，势不可挡。</div>
+<div class="atk"><b>鱼跃龙门</b> <span class="dmg">—</span> — 己方全体攻击+20，鲤鱼跃龙门。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/145-春茶咕咕.jpg" loading="lazy" alt="春茶咕咕">
+<div class="info">
+<div class="name">春茶咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">145 · 茶系 · HP 80</div>
+<div class="flavor">"春茶第一泡，值得等。"</div>
+<div class="atk"><b>春茶初泡</b> <span class="dmg">—</span> — 恢复40HP，清香怡人。</div>
+<div class="atk"><b>茶香四溢</b> <span class="dmg">45</span> — 香气迷人，敌方减速。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/146-春芽蛋.jpg" loading="lazy" alt="春芽蛋">
+<div class="info">
+<div class="name">春芽蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">146 · 自然系 · HP 75</div>
+<div class="flavor">"这是……长在我身上了？"</div>
+<div class="atk"><b>破土而出</b> <span class="dmg">40</span> — 小芽虽小，生命力强。</div>
+<div class="atk"><b>春意盎然</b> <span class="dmg">—</span> — 己方全体恢复30HP，春意满满。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/147-春耕驴.jpg" loading="lazy" alt="春耕驴">
+<div class="info">
+<div class="name">春耕驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">147 · 田园系 · HP 85</div>
+<div class="flavor">"春耕。每年都一样。"</div>
+<div class="atk"><b>犁地翻土</b> <span class="dmg">55</span> — 一丝不苟，耕耘不辍。</div>
+<div class="atk"><b>春耕秋收</b> <span class="dmg">—</span> — 防御+20，稳扎稳打。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-东西方桥梁">英雄融合 · 东西方桥梁 · 16 张</h2>
+<div class="card">
+<img src="thumbs/148-盘古蛋.jpg" loading="lazy" alt="盘古蛋">
+<div class="info">
+<div class="name">盘古蛋<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">148 · 传说系 · HP 180</div>
+<div class="flavor">"我……我要顶起天？"</div>
+<div class="atk"><b>开天辟地</b> <span class="dmg">150</span> — 开天辟地，混沌初分。</div>
+<div class="atk"><b>顶天立地</b> <span class="dmg">—</span> — 防御+50，撑起天地。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/149-苏东坡咕咕.jpg" loading="lazy" alt="苏东坡咕咕">
+<div class="info">
+<div class="name">苏东坡咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">149 · 文人系 · HP 100</div>
+<div class="flavor">"人生短暂，吃好，写诗。"</div>
+<div class="atk"><b>东坡肉</b> <span class="dmg">—</span> — 恢复60HP，人间有味是清欢。</div>
+<div class="atk"><b>竹杖芒鞋</b> <span class="dmg">60</span> — 轻胜马，一蓑烟雨任平生。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/150-诸葛亮咕咕.jpg" loading="lazy" alt="诸葛亮咕咕">
+<div class="info">
+<div class="name">诸葛亮咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">150 · 谋士系 · HP 120</div>
+<div class="flavor">"一切，我早已预见。"</div>
+<div class="atk"><b>羽扇纶巾</b> <span class="dmg">—</span> — 看穿一切，命中+35。</div>
+<div class="atk"><b>空城计</b> <span class="dmg">85</span> — 以虚制实，出奇制胜。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/151-嫦娥鱼小姐.jpg" loading="lazy" alt="嫦娥鱼小姐">
+<div class="info">
+<div class="name">嫦娥鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">151 · 仙女系 · HP 115</div>
+<div class="flavor">"月亮很亮，但家很远。"</div>
+<div class="atk"><b>广寒宫</b> <span class="dmg">—</span> — 己方全体恢复50HP，月宫清辉。</div>
+<div class="atk"><b>月宫仙子</b> <span class="dmg">80</span> — 嫦娥奔月，美得惊人。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/152-关羽驴.jpg" loading="lazy" alt="关羽驴">
+<div class="info">
+<div class="name">关羽驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">152 · 武圣系 · HP 130</div>
+<div class="flavor">"忠义。职责。仅此而已。"</div>
+<div class="atk"><b>青龙偃月</b> <span class="dmg">110</span> — 青龙出鞘，无人能挡。</div>
+<div class="atk"><b>忠义千秋</b> <span class="dmg">—</span> — 防御+40，忠肝义胆。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/153-哪吒蛋.jpg" loading="lazy" alt="哪吒蛋">
+<div class="info">
+<div class="name">哪吒蛋<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">153 · 英雄系 · HP 125</div>
+<div class="flavor">"我命由我不由天！"</div>
+<div class="atk"><b>风火轮</b> <span class="dmg">90</span> — 风火轮转，快如闪电。</div>
+<div class="atk"><b>乾坤圈</b> <span class="dmg">—</span> — 乾坤圈出，束缚敌方。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/154-西施鱼小姐.jpg" loading="lazy" alt="西施鱼小姐">
+<div class="info">
+<div class="name">西施鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">154 · 绝色系 · HP 95</div>
+<div class="flavor">"鱼儿只是客气。"</div>
+<div class="atk"><b>沉鱼落雁</b> <span class="dmg">—</span> — 敌方全体减速，美得窒息。</div>
+<div class="atk"><b>浣纱溪畔</b> <span class="dmg">65</span> — 浣纱溪畔，美人如玉。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/155-李白咕咕.jpg" loading="lazy" alt="李白咕咕">
+<div class="info">
+<div class="name">李白咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">155 · 诗仙系 · HP 105</div>
+<div class="flavor">"举杯邀明月，对影成三人。"</div>
+<div class="atk"><b>将进酒</b> <span class="dmg">75</span> — 酒入豪肠，诗成惊人。</div>
+<div class="atk"><b>举杯邀月</b> <span class="dmg">—</span> — 己方全体攻击+25，诗兴大发。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/156-阿特拉斯驴.jpg" loading="lazy" alt="阿特拉斯驴">
+<div class="info">
+<div class="name">阿特拉斯驴<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">156 · 泰坦系 · HP 170</div>
+<div class="flavor">"扛着世界。老样子。"</div>
+<div class="atk"><b>擎天之力</b> <span class="dmg">130</span> — 扛起世界，力大无穷。</div>
+<div class="atk"><b>泰坦之躯</b> <span class="dmg">—</span> — 防御+45，坚不可摧。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/157-波塞冬鱼小姐.jpg" loading="lazy" alt="波塞冬鱼小姐">
+<div class="info">
+<div class="name">波塞冬鱼小姐<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">157 · 海神系 · HP 160</div>
+<div class="flavor">"大海听我号令！"</div>
+<div class="atk"><b>三叉戟</b> <span class="dmg">125</span> — 三叉戟出，海浪滔天。</div>
+<div class="atk"><b>海洋主宰</b> <span class="dmg">—</span> — 己方全体攻击+30，海神之力。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/158-雅典娜蛇.jpg" loading="lazy" alt="雅典娜蛇">
+<div class="info">
+<div class="name">雅典娜蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">158 · 智慧系 · HP 125</div>
+<div class="flavor">"智慧就是我的武器。"</div>
+<div class="atk"><b>智慧之矛</b> <span class="dmg">95</span> — 智慧如矛，无坚不摧。</div>
+<div class="atk"><b>雅典娜之盾</b> <span class="dmg">—</span> — 防御+35，智慧护体。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/159-赫拉克勒斯猴.jpg" loading="lazy" alt="赫拉克勒斯猴">
+<div class="info">
+<div class="name">赫拉克勒斯猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">159 · 英雄系 · HP 135</div>
+<div class="flavor">"十二项试炼，完成！"</div>
+<div class="atk"><b>大力神拳</b> <span class="dmg">115</span> — 大力神拳，力拔山兮。</div>
+<div class="atk"><b>十二试炼</b> <span class="dmg">—</span> — 己方全体攻击+30，英雄无畏。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/160-宙斯咕咕.jpg" loading="lazy" alt="宙斯咕咕">
+<div class="info">
+<div class="name">宙斯咕咕<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">160 · 神王系 · HP 165</div>
+<div class="flavor">"我是众神之王。来杯茶？"</div>
+<div class="atk"><b>雷霆万钧</b> <span class="dmg">140</span> — 雷霆之力，震慑全场。</div>
+<div class="atk"><b>神王之怒</b> <span class="dmg">—</span> — 敌方全体攻击-20，神威如狱。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/161-维纳斯鱼小姐.jpg" loading="lazy" alt="维纳斯鱼小姐">
+<div class="info">
+<div class="name">维纳斯鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">161 · 爱神系 · HP 120</div>
+<div class="flavor">"生于大海，为爱而生。"</div>
+<div class="atk"><b>爱神之吻</b> <span class="dmg">—</span> — 恢复70HP，爱意绵绵。</div>
+<div class="atk"><b>维纳斯之美</b> <span class="dmg">85</span> — 美得惊人，无人能敌。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/162-美杜莎蛇.jpg" loading="lazy" alt="美杜莎蛇">
+<div class="info">
+<div class="name">美杜莎蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">162 · 魔女系 · HP 120</div>
+<div class="flavor">"看着我。我敢你看。"</div>
+<div class="atk"><b>石化之瞳</b> <span class="dmg">100</span> — 石化凝视，动弹不得。</div>
+<div class="atk"><b>蛇发魔女</b> <span class="dmg">—</span> — 敌方全体减速，蛇发狂舞。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/163-亚瑟王猴.jpg" loading="lazy" alt="亚瑟王猴">
+<div class="info">
+<div class="name">亚瑟王猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">163 · 骑士系 · HP 130</div>
+<div class="flavor">"剑选择了我。出发！"</div>
+<div class="atk"><b>石中剑</b> <span class="dmg">110</span> — 石中剑出，王者降临。</div>
+<div class="atk"><b>圆桌骑士</b> <span class="dmg">—</span> — 己方全体防御+25，骑士精神。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-补完">补完 · 2 张</h2>
+<div class="card">
+<img src="thumbs/164-齐天大圣.jpg" loading="lazy" alt="齐天大圣">
+<div class="info">
+<div class="name">齐天大圣<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">164 · 传说系 · HP 200</div>
+<div class="flavor">"俺老孙来也！"</div>
+<div class="atk"><b>金箍棒</b> <span class="dmg">180</span> — 金箍棒出，天下无敌。</div>
+<div class="atk"><b>齐天之威</b> <span class="dmg">—</span> — 己方全体攻击+50，大圣之威。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/165-领航鱼小姐.jpg" loading="lazy" alt="领航鱼小姐">
+<div class="info">
+<div class="name">领航鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">165 · 航海系 · HP 95</div>
+<div class="flavor">"信我，我认得这片海！"</div>
+<div class="atk"><b>领航指引</b> <span class="dmg">—</span> — 己方全体命中+25，指引方向。</div>
+<div class="atk"><b>乘风破浪</b> <span class="dmg">70</span> — 乘风破浪，勇往直前。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-三国">英雄融合 · 三国 · 3 张</h2>
+<div class="card">
+<img src="thumbs/166-赵云猴.jpg" loading="lazy" alt="赵云猴">
+<div class="info">
+<div class="name">赵云猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">166 · 武将系 · HP 130</div>
+<div class="flavor">"一身是胆，长坂坡七进七出！"</div>
+<div class="atk"><b>龙胆亮银枪</b> <span class="dmg">115</span> — 一枪出，万军破。</div>
+<div class="atk"><b>七进七出</b> <span class="dmg">—</span> — 己方全体攻击+30，勇冠三军。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/167-貂蝉鱼小姐.jpg" loading="lazy" alt="貂蝉鱼小姐">
+<div class="info">
+<div class="name">貂蝉鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">167 · 绝色系 · HP 110</div>
+<div class="flavor">"闭月羞花，倾国倾城。"</div>
+<div class="atk"><b>闭月</b> <span class="dmg">—</span> — 敌方全体减速，美得窒息。</div>
+<div class="atk"><b>连环计</b> <span class="dmg">90</span> — 连环妙计，智取天下。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/168-曹操咕咕.jpg" loading="lazy" alt="曹操咕咕">
+<div class="info">
+<div class="name">曹操咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">168 · 枭雄系 · HP 125</div>
+<div class="flavor">"宁教我负天下人，休教天下人负我。"</div>
+<div class="atk"><b>对酒当歌</b> <span class="dmg">—</span> — 己方全体攻击+35，豪情万丈。</div>
+<div class="atk"><b>观沧海</b> <span class="dmg">95</span> — 东临碣石，以观沧海。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-北欧">英雄融合 · 北欧神话 · 4 张</h2>
+<div class="card">
+<img src="thumbs/169-索尔猴.jpg" loading="lazy" alt="索尔猴">
+<div class="info">
+<div class="name">索尔猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">169 · 雷神系 · HP 135</div>
+<div class="flavor">"为了阿斯加德！"</div>
+<div class="atk"><b>雷神之锤</b> <span class="dmg">120</span> — 妙尔尼尔出，雷霆万钧。</div>
+<div class="atk"><b>雷霆之怒</b> <span class="dmg">—</span> — 己方全体攻击+30，雷神之怒。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/170-芙蕾雅鱼小姐.jpg" loading="lazy" alt="芙蕾雅鱼小姐">
+<div class="info">
+<div class="name">芙蕾雅鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">170 · 爱神系 · HP 120</div>
+<div class="flavor">"爱与美，赐予所有人。"</div>
+<div class="atk"><b>爱神之光</b> <span class="dmg">—</span> — 恢复60HP，爱意绵绵。</div>
+<div class="atk"><b>猫拉战车</b> <span class="dmg">85</span> — 猫车飞驰，爱神降临。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/171-奥丁咕咕.jpg" loading="lazy" alt="奥丁咕咕">
+<div class="info">
+<div class="name">奥丁咕咕<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">171 · 智慧系 · HP 160</div>
+<div class="flavor">"我以一眼换智慧。值得。"</div>
+<div class="atk"><b>独眼智慧</b> <span class="dmg">—</span> — 看穿一切，命中+40。</div>
+<div class="atk"><b>永恒之枪</b> <span class="dmg">135</span> — 冈格尼尔出，必中之枪。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/172-耶梦加得蛇.jpg" loading="lazy" alt="耶梦加得蛇">
+<div class="info">
+<div class="name">耶梦加得蛇<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">172 · 世界系 · HP 175</div>
+<div class="flavor">"我环绕世界。不急。"</div>
+<div class="atk"><b>世界之环</b> <span class="dmg">140</span> — 环绕世界，无处可逃。</div>
+<div class="atk"><b>衔尾之蛇</b> <span class="dmg">—</span> — 防御+50，永恒循环。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-西游记">英雄融合 · 西游记 · 3 张</h2>
+<div class="card">
+<img src="thumbs/173-唐僧咕咕.jpg" loading="lazy" alt="唐僧咕咕">
+<div class="info">
+<div class="name">唐僧咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">173 · 圣僧系 · HP 120</div>
+<div class="flavor">"众生皆苦，我来渡。"</div>
+<div class="atk"><b>慈悲为怀</b> <span class="dmg">—</span> — 己方全体恢复60HP，慈悲普渡。</div>
+<div class="atk"><b>紧箍咒</b> <span class="dmg">90</span> — 紧箍咒出，无人敢违。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/174-猪八戒蛋.jpg" loading="lazy" alt="猪八戒蛋">
+<div class="info">
+<div class="name">猪八戒蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">174 · 福将系 · HP 110</div>
+<div class="flavor">"再吃一个……师父不会发现的。"</div>
+<div class="atk"><b>九齿钉耙</b> <span class="dmg">85</span> — 九齿钉耙，耙出个未来。</div>
+<div class="atk"><b>好吃懒做</b> <span class="dmg">—</span> — 恢复40HP，吃饱才有力气。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/175-沙僧驴.jpg" loading="lazy" alt="沙僧驴">
+<div class="info">
+<div class="name">沙僧驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">175 · 忠义系 · HP 125</div>
+<div class="flavor">"挑担。赶路。老样子。"</div>
+<div class="atk"><b>降妖宝杖</b> <span class="dmg">95</span> — 宝杖一挥，妖魔退散。</div>
+<div class="atk"><b>任劳任怨</b> <span class="dmg">—</span> — 防御+35，默默挑担。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-水浒">英雄融合 · 水浒传 · 3 张</h2>
+<div class="card">
+<img src="thumbs/176-武松猴.jpg" loading="lazy" alt="武松猴">
+<div class="info">
+<div class="name">武松猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">176 · 行者系 · HP 135</div>
+<div class="flavor">"十八碗酒，一只虎，搞定。"</div>
+<div class="atk"><b>景阳冈打虎</b> <span class="dmg">125</span> — 景阳冈上，一战成名。</div>
+<div class="atk"><b>行者无疆</b> <span class="dmg">—</span> — 己方全体攻击+30，行者无畏。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/177-吴用咕咕.jpg" loading="lazy" alt="吴用咕咕">
+<div class="info">
+<div class="name">吴用咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">177 · 智囊系 · HP 115</div>
+<div class="flavor">"三分计已成。剩下的……你会看到的。"</div>
+<div class="atk"><b>智多星</b> <span class="dmg">—</span> — 看穿一切，命中+35。</div>
+<div class="atk"><b>连环妙计</b> <span class="dmg">90</span> — 连环妙计，算无遗策。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/178-鲁智深驴.jpg" loading="lazy" alt="鲁智深驴">
+<div class="info">
+<div class="name">鲁智深驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">178 · 花和尚系 · HP 140</div>
+<div class="flavor">"酒。肉。树。都好。"</div>
+<div class="atk"><b>倒拔垂杨柳</b> <span class="dmg">120</span> — 倒拔垂杨柳，力拔山兮。</div>
+<div class="atk"><b>禅杖无敌</b> <span class="dmg">—</span> — 防御+40，禅心如铁。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-中西名将">英雄融合 · 中西名将 · 4 张</h2>
+<div class="card">
+<img src="thumbs/179-吕布猴.jpg" loading="lazy" alt="吕布猴">
+<div class="info">
+<div class="name">吕布猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">179 · 战神系 · HP 140</div>
+<div class="flavor">"人中吕布，马中赤兔。"</div>
+<div class="atk"><b>方天画戟</b> <span class="dmg">125</span> — 方天画戟出，谁与争锋。</div>
+<div class="atk"><b>天下无双</b> <span class="dmg">—</span> — 己方全体攻击+35，天下无双。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/180-穆桂英鱼小姐.jpg" loading="lazy" alt="穆桂英鱼小姐">
+<div class="info">
+<div class="name">穆桂英鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">180 · 女将系 · HP 125</div>
+<div class="flavor">"跟我走，拿下关口！"</div>
+<div class="atk"><b>穆家枪法</b> <span class="dmg">105</span> — 穆家枪法，英姿飒爽。</div>
+<div class="atk"><b>挂帅出征</b> <span class="dmg">—</span> — 己方全体攻击+25，巾帼不让须眉。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/181-阿波罗咕咕.jpg" loading="lazy" alt="阿波罗咕咕">
+<div class="info">
+<div class="name">阿波罗咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">181 · 太阳系 · HP 130</div>
+<div class="flavor">"我是太阳、音乐与诗歌。"</div>
+<div class="atk"><b>太阳战车</b> <span class="dmg">110</span> — 太阳战车，光芒万丈。</div>
+<div class="atk"><b>诗与音乐</b> <span class="dmg">—</span> — 己方全体恢复50HP，诗乐双全。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/182-哈迪斯蛇.jpg" loading="lazy" alt="哈迪斯蛇">
+<div class="info">
+<div class="name">哈迪斯蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">182 · 冥界系 · HP 135</div>
+<div class="flavor">"我统治亡者。公正。"</div>
+<div class="atk"><b>冥界之握</b> <span class="dmg">115</span> — 冥界之握，无人能逃。</div>
+<div class="atk"><b>亡者之王</b> <span class="dmg">—</span> — 敌方全体攻击-20，冥界之威。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-王者热门">英雄融合 · 王者热门 · 4 张</h2>
+<div class="card">
+<img src="thumbs/183-杨戬猴.jpg" loading="lazy" alt="杨戬猴">
+<div class="info">
+<div class="name">杨戬猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">183 · 天眼系 · HP 135</div>
+<div class="flavor">"正义有三只眼。"</div>
+<div class="atk"><b>三尖两刃枪</b> <span class="dmg">120</span> — 三尖枪出，正义凛然。</div>
+<div class="atk"><b>天眼洞察</b> <span class="dmg">—</span> — 看穿一切，命中+40。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/184-妲己鱼小姐.jpg" loading="lazy" alt="妲己鱼小姐">
+<div class="info">
+<div class="name">妲己鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">184 · 魅惑系 · HP 115</div>
+<div class="flavor">"美貌是最强的魔法。"</div>
+<div class="atk"><b>九尾魅惑</b> <span class="dmg">—</span> — 敌方全体减速，魅惑难挡。</div>
+<div class="atk"><b>狐媚众生</b> <span class="dmg">95</span> — 狐媚一笑，众生倾倒。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/185-狄仁杰咕咕.jpg" loading="lazy" alt="狄仁杰咕咕">
+<div class="info">
+<div class="name">狄仁杰咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">185 · 神探系 · HP 120</div>
+<div class="flavor">"真相藏在细节里。"</div>
+<div class="atk"><b>明察秋毫</b> <span class="dmg">—</span> — 看穿一切，命中+35。</div>
+<div class="atk"><b>断案如神</b> <span class="dmg">100</span> — 断案如神，无人能逃。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/186-程咬金驴.jpg" loading="lazy" alt="程咬金驴">
+<div class="info">
+<div class="name">程咬金驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">186 · 猛将系 · HP 145</div>
+<div class="flavor">"三板斧。就这三招。"</div>
+<div class="atk"><b>三板斧</b> <span class="dmg">130</span> — 三板斧出，无人能挡。</div>
+<div class="atk"><b>大快朵颐</b> <span class="dmg">—</span> — 恢复50HP，吃饱喝足。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-射日女皇埃及">英雄融合 · 射日女皇埃及 · 4 张</h2>
+<div class="card">
+<img src="thumbs/187-后羿猴.jpg" loading="lazy" alt="后羿猴">
+<div class="info">
+<div class="name">后羿猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">187 · 神射系 · HP 135</div>
+<div class="flavor">"九日，一箭一个。"</div>
+<div class="atk"><b>射日神弓</b> <span class="dmg">130</span> — 射日神弓，九日坠落。</div>
+<div class="atk"><b>百步穿杨</b> <span class="dmg">—</span> — 命中+40，百发百中。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/188-武则天鱼小姐.jpg" loading="lazy" alt="武则天鱼小姐">
+<div class="info">
+<div class="name">武则天鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">188 · 女皇系 · HP 130</div>
+<div class="flavor">"朕即天命。"</div>
+<div class="atk"><b>天命女皇</b> <span class="dmg">—</span> — 己方全体攻击+35，女皇之威。</div>
+<div class="atk"><b>凤临天下</b> <span class="dmg">115</span> — 凤临天下，威震四方。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/189-拉咕咕.jpg" loading="lazy" alt="拉咕咕">
+<div class="info">
+<div class="name">拉咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">189 · 太阳系 · HP 140</div>
+<div class="flavor">"我是太阳。每天升起。"</div>
+<div class="atk"><b>太阳船</b> <span class="dmg">—</span> — 己方全体恢复50HP，太阳普照。</div>
+<div class="atk"><b>太阳之眼</b> <span class="dmg">120</span> — 太阳之眼，洞悉一切。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/190-伊西斯蛇.jpg" loading="lazy" alt="伊西斯蛇">
+<div class="info">
+<div class="name">伊西斯蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">190 · 魔法系 · HP 125</div>
+<div class="flavor">"魔法是我的天赋。我守护一切。"</div>
+<div class="atk"><b>魔法之翼</b> <span class="dmg">—</span> — 己方全体防御+30，魔法护佑。</div>
+<div class="atk"><b>生命安卡</b> <span class="dmg">105</span> — 生命安卡，复苏之力。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-日本战国">英雄融合 · 日本战国 · 4 张</h2>
+<div class="card">
+<img src="thumbs/191-丰臣秀吉猴.jpg" loading="lazy" alt="丰臣秀吉猴">
+<div class="info">
+<div class="name">丰臣秀吉猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">191 · 天下人系 · HP 135</div>
+<div class="flavor">"从草民到天下人。猴子做到了。"</div>
+<div class="atk"><b>天下布武</b> <span class="dmg">120</span> — 天下布武，一统天下。</div>
+<div class="atk"><b>草鞋起家</b> <span class="dmg">—</span> — 己方全体攻击+30，白手起家。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/192-德川家康咕咕.jpg" loading="lazy" alt="德川家康咕咕">
+<div class="info">
+<div class="name">德川家康咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">192 · 忍耐系 · HP 140</div>
+<div class="flavor">"等。乌龟会赢。"</div>
+<div class="atk"><b>忍耐三十年</b> <span class="dmg">—</span> — 防御+45，忍者神龟。</div>
+<div class="atk"><b>江户幕府</b> <span class="dmg">110</span> — 江户幕府，天下太平。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/193-武田信玄驴.jpg" loading="lazy" alt="武田信玄驴">
+<div class="info">
+<div class="name">武田信玄驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">193 · 虎将系 · HP 140</div>
+<div class="flavor">"疾如风，徐如林，侵掠如火，不动如山。"</div>
+<div class="atk"><b>风林火山</b> <span class="dmg">125</span> — 风林火山，无人能挡。</div>
+<div class="atk"><b>甲斐之虎</b> <span class="dmg">—</span> — 己方全体攻击+30，甲斐之虎。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/194-浓姬鱼小姐.jpg" loading="lazy" alt="浓姬鱼小姐">
+<div class="info">
+<div class="name">浓姬鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">194 · 谋略系 · HP 120</div>
+<div class="flavor">"美貌是武器。我会用。"</div>
+<div class="atk"><b>美人计</b> <span class="dmg">—</span> — 敌方全体减速，美人计成。</div>
+<div class="atk"><b>蝮蛇之女</b> <span class="dmg">100</span> — 蝮蛇之女，一击致命。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-欧洲帝王">英雄融合 · 欧洲帝王 · 4 张</h2>
+<div class="card">
+<img src="thumbs/195-亚历山大猴.jpg" loading="lazy" alt="亚历山大猴">
+<div class="info">
+<div class="name">亚历山大猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">195 · 征服系 · HP 140</div>
+<div class="flavor">"我要征服世界。再找一个。"</div>
+<div class="atk"><b>马其顿长矛</b> <span class="dmg">—</span> — 马其顿长矛，所向披靡。</div>
+<div class="atk"><b>征服世界</b> <span class="dmg">130</span> — 征服世界，无人能挡。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/196-凯撒咕咕.jpg" loading="lazy" alt="凯撒咕咕">
+<div class="info">
+<div class="name">凯撒咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">196 · 帝王系 · HP 135</div>
+<div class="flavor">"我来，我见，我征服。"</div>
+<div class="atk"><b>罗马军团</b> <span class="dmg">120</span> — 罗马军团，战无不胜。</div>
+<div class="atk"><b>元老院</b> <span class="dmg"> "—</span> — 元老院之谋，深不可测。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/197-拿破仑驴.jpg" loading="lazy" alt="拿破仑驴">
+<div class="info">
+<div class="name">拿破仑驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">197 · 皇帝系 · HP 145</div>
+<div class="flavor">"不可能，是愚人的字典里的词。"</div>
+<div class="atk"><b>大炮轰鸣</b> <span class="dmg">125</span> — 大炮轰鸣，震撼欧洲。</div>
+<div class="atk"><b>滑铁卢</b> <span class="dmg"> "—</span> — 滑铁卢之败，亦是传奇。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/198-贞德鱼小姐.jpg" loading="lazy" alt="贞德鱼小姐">
+<div class="info">
+<div class="name">贞德鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">198 · 圣女系 · HP 125</div>
+<div class="flavor">"上帝与我同在。前进。"</div>
+<div class="atk"><b>圣女旗帜</b> <span class="dmg"> "—</span> — 圣女旗帜，鼓舞全军。</div>
+<div class="atk"><b>奥尔良之光</b> <span class="dmg">115</span> — 奥尔良之光，照亮法兰西。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-中国帝王将相">英雄融合 · 中国帝王将相 · 4 张</h2>
+<div class="card">
+<img src="thumbs/199-汉武帝猴.jpg" loading="lazy" alt="汉武帝猴">
+<div class="info">
+<div class="name">汉武帝猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">199 · 帝王系 · HP 140</div>
+<div class="flavor">"我要开丝绸之路。我要扩张帝国。"</div>
+<div class="atk"><b>丝绸之路</b> <span class="dmg"> "—</span> — 丝绸之路，通达天下。</div>
+<div class="atk"><b>汉武雄风</b> <span class="dmg">130</span> — 汉武雄风，威震四方。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/200-韩信咕咕.jpg" loading="lazy" alt="韩信咕咕">
+<div class="info">
+<div class="name">韩信咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">200 · 兵仙系 · HP 130</div>
+<div class="flavor">"兵越多越好。"</div>
+<div class="atk"><b>韩信点兵</b> <span class="dmg"> "—</span> — 韩信点兵，多多益善。</div>
+<div class="atk"><b>背水一战</b> <span class="dmg">120</span> — 背水一战，绝境逢生。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/201-岳飞驴.jpg" loading="lazy" alt="岳飞驴">
+<div class="info">
+<div class="name">岳飞驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">201 · 忠义系 · HP 140</div>
+<div class="flavor">"精忠报国。"</div>
+<div class="atk"><b>精忠报国</b> <span class="dmg"> "—</span> — 精忠报国，死而后已。</div>
+<div class="atk"><b>岳家枪法</b> <span class="dmg">125</span> — 岳家枪法，忠勇无双。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/202-霍去病蛇.jpg" loading="lazy" alt="霍去病蛇">
+<div class="info">
+<div class="name">霍去病蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">202 · 骠骑系 · HP 135</div>
+<div class="flavor">"速度就是一切。"</div>
+<div class="atk"><b>封狼居胥</b> <span class="dmg">130</span> — 封狼居胥，青春无敌。</div>
+<div class="atk"><b>闪电突袭</b> <span class="dmg"> "—</span> — 闪电突袭，出其不意。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-替补">替补系列 · 6 张</h2>
+<div class="card">
+<img src="thumbs/203-许褚驴.jpg" loading="lazy" alt="许褚驴">
+<div class="info">
+<div class="name">许褚驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">203 · 虎痴系 · HP 145</div>
+<div class="flavor">"我守着。就这样。"</div>
+<div class="atk"><b>虎痴之力</b> <span class="dmg">130</span> — 虎痴之力，无人能敌。</div>
+<div class="atk"><b>忠心护主</b> <span class="dmg"> "—</span> — 忠心护主，寸步不离。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/204-孙二娘鱼小姐.jpg" loading="lazy" alt="孙二娘鱼小姐">
+<div class="info">
+<div class="name">孙二娘鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">204 · 豪侠系 · HP 120</div>
+<div class="flavor">"欢迎来到我的店。喝个痛快。"</div>
+<div class="atk"><b>母夜叉</b> <span class="dmg">110</span> — 母夜叉出，无人敢惹。</div>
+<div class="atk"><b>十字坡</b> <span class="dmg"> "—</span> — 十字坡上，好酒好菜。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/205-宇文成都猴.jpg" loading="lazy" alt="宇文成都猴">
+<div class="info">
+<div class="name">宇文成都猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">205 · 天宝系 · HP 135</div>
+<div class="flavor">"我是帝国的柱石。"</div>
+<div class="atk"><b>凤翅镏金镗</b> <span class="dmg">125</span> — 凤翅镏金镗，威震天下。</div>
+<div class="atk"><b>天宝大将</b> <span class="dmg"> "—</span> — 天宝大将，名不虚传。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/206-樊梨花鱼小姐.jpg" loading="lazy" alt="樊梨花鱼小姐">
+<div class="info">
+<div class="name">樊梨花鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">206 · 女将系 · HP 125</div>
+<div class="flavor">"女子也能领兵。"</div>
+<div class="atk"><b>梨花枪法</b> <span class="dmg">115</span> — 梨花枪法，英姿飒爽。</div>
+<div class="atk"><b>巾帼统帅</b> <span class="dmg"> "—</span> — 巾帼统帅，指挥全军。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/207-谷雨蛇.jpg" loading="lazy" alt="谷雨蛇">
+<div class="info">
+<div class="name">谷雨蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">207 · 节气系 · HP 70</div>
+<div class="flavor">"春雨。适合睡觉。"</div>
+<div class="atk"><b>谷雨绵绵</b> <span class="dmg"> "—</span> — 谷雨绵绵，润物无声。</div>
+<div class="atk"><b>春困</b> <span class="dmg">60</span> — 春困来袭，昏昏欲睡。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/208-唐太宗猴.jpg" loading="lazy" alt="唐太宗猴">
+<div class="info">
+<div class="name">唐太宗猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">208 · 天可汗系 · HP 140</div>
+<div class="flavor">"万国来朝。"</div>
+<div class="atk"><b>贞观之治</b> <span class="dmg"> "—</span> — 贞观之治，国泰民安。</div>
+<div class="atk"><b>天可汗</b> <span class="dmg">130</span> — 天可汗令，四方臣服。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-四季·夏">四季 · 夏 · 6 张</h2>
+<div class="card">
+<img src="thumbs/209-夏日冲浪猴.jpg" loading="lazy" alt="夏日冲浪猴">
+<div class="info">
+<div class="name">夏日冲浪猴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">209 · 冲浪系 · HP 75</div>
+<div class="flavor">"冲浪走起！"</div>
+<div class="atk"><b>巨浪冲浪</b> <span class="dmg">95</span> — 巨浪冲浪，乘风破浪。</div>
+<div class="atk"><b>夏日阳光</b> <span class="dmg"> "—</span> — 夏日阳光，活力满满。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/210-夏日潜水鱼小姐.jpg" loading="lazy" alt="夏日潜水鱼小姐">
+<div class="info">
+<div class="name">夏日潜水鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">210 · 潜水系 · HP 115</div>
+<div class="flavor">"大海是我的家。"</div>
+<div class="atk"><b>深海潜水</b> <span class="dmg">105</span> — 深海潜水，探索未知。</div>
+<div class="atk"><b>珊瑚礁</b> <span class="dmg"> "—</span> — 珊瑚礁中，美丽绽放。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/211-夏日冰茶咕咕.jpg" loading="lazy" alt="夏日冰茶咕咕">
+<div class="info">
+<div class="name">夏日冰茶咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">211 · 冰茶系 · HP 75</div>
+<div class="flavor">"冰茶。夏天唯一的活路。"</div>
+<div class="atk"><b>冰茶消暑</b> <span class="dmg"> "—</span> — 冰茶消暑，清凉一夏。</div>
+<div class="atk"><b>柠檬薄荷</b> <span class="dmg">80</span> — 柠檬薄荷，清爽提神。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/212-夏日西瓜蛋.jpg" loading="lazy" alt="夏日西瓜蛋">
+<div class="info">
+<div class="name">夏日西瓜蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">212 · 西瓜系 · HP 70</div>
+<div class="flavor">"西瓜。夏天得救了。"</div>
+<div class="atk"><b>西瓜大餐</b> <span class="dmg"> "—</span> — 西瓜大餐，甜蜜一夏。</div>
+<div class="atk"><b>西瓜籽</b> <span class="dmg">70</span> — 西瓜籽出，啪啪啪。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/213-夏日烧烤驴.jpg" loading="lazy" alt="夏日烧烤驴">
+<div class="info">
+<div class="name">夏日烧烤驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">213 · 烧烤系 · HP 80</div>
+<div class="flavor">"烧烤。我烤。你吃。"</div>
+<div class="atk"><b>烧烤大师</b> <span class="dmg">100</span> — 烧烤大师，香飘四方。</div>
+<div class="atk"><b>炭火</b> <span class="dmg"> "—</span> — 炭火正旺，烤起来。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/214-夏日蝉鸣蛇.jpg" loading="lazy" alt="夏日蝉鸣蛇">
+<div class="info">
+<div class="name">夏日蝉鸣蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">214 · 蝉鸣系 · HP 70</div>
+<div class="flavor">"蝉鸣。夏天就是这个声音。"</div>
+<div class="atk"><b>蝉鸣夏日</b> <span class="dmg"> "—</span> — 蝉鸣夏日，悠闲午后。</div>
+<div class="atk"><b>树荫乘凉</b> <span class="dmg">65</span> — 树荫乘凉，凉爽宜人。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-四季·秋">四季 · 秋 · 6 张</h2>
+<div class="card">
+<img src="thumbs/215-秋日枫叶猴.jpg" loading="lazy" alt="秋日枫叶猴">
+<div class="info">
+<div class="name">秋日枫叶猴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">215 · 枫叶系 · HP 75</div>
+<div class="flavor">"枫叶！秋天来了！"</div>
+<div class="atk"><b>枫叶飞舞</b> <span class="dmg">95</span> — 枫叶飞舞，秋意浓浓。</div>
+<div class="atk"><b>秋高气爽</b> <span class="dmg"> "—</span> — 秋高气爽，心旷神怡。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/216-秋日月饼鱼小姐.jpg" loading="lazy" alt="秋日月饼鱼小姐">
+<div class="info">
+<div class="name">秋日月饼鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">216 · 月饼系 · HP 115</div>
+<div class="flavor">"月饼！中秋来了！"</div>
+<div class="atk"><b>月饼大餐</b> <span class="dmg"> "—</span> — 月饼大餐，团圆一刻。</div>
+<div class="atk"><b>明月照人</b> <span class="dmg">105</span> — 明月照人，花好月圆。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/217-秋日菊花茶咕咕.jpg" loading="lazy" alt="秋日菊花茶咕咕">
+<div class="info">
+<div class="name">秋日菊花茶咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">217 · 菊花系 · HP 75</div>
+<div class="flavor">"菊花茶。秋天在一杯里。"</div>
+<div class="atk"><b>菊花茶</b> <span class="dmg"> "—</span> — 菊花茶香，清心明目。</div>
+<div class="atk"><b>秋日品茗</b> <span class="dmg">80</span> — 秋日品茗，岁月静好。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/218-秋日丰收蛋.jpg" loading="lazy" alt="秋日丰收蛋">
+<div class="info">
+<div class="name">秋日丰收蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">218 · 丰收系 · HP 70</div>
+<div class="flavor">"丰收！好多吃的！"</div>
+<div class="atk"><b>丰收大餐</b> <span class="dmg"> "—</span> — 丰收大餐，满载而归。</div>
+<div class="atk"><b>金色麦浪</b> <span class="dmg">70</span> — 金色麦浪，丰收喜悦。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/219-秋日登高驴.jpg" loading="lazy" alt="秋日登高驴">
+<div class="info">
+<div class="name">秋日登高驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">219 · 登高系 · HP 80</div>
+<div class="flavor">"登高。看远。就这样。"</div>
+<div class="atk"><b>登高望远</b> <span class="dmg">100</span> — 登高望远，心胸开阔。</div>
+<div class="atk"><b>秋山</b> <span class="dmg"> "—</span> — 秋山如画，一步一景。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/220-秋日落叶蛇.jpg" loading="lazy" alt="秋日落叶蛇">
+<div class="info">
+<div class="name">秋日落叶蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">220 · 落叶系 · HP 70</div>
+<div class="flavor">"落叶。秋天真美。"</div>
+<div class="atk"><b>落叶缤纷</b> <span class="dmg"> "—</span> — 落叶缤纷，秋意绵绵。</div>
+<div class="atk"><b>秋风瑟瑟</b> <span class="dmg">65</span> — 秋风瑟瑟，凉意袭人。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-四季·冬">四季 · 冬 · 6 张</h2>
+<div class="card">
+<img src="thumbs/221-冬日雪人猴.jpg" loading="lazy" alt="冬日雪人猴">
+<div class="info">
+<div class="name">冬日雪人猴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">221 · 雪人系 · HP 75</div>
+<div class="flavor">"下雪！堆最大的雪人！"</div>
+<div class="atk"><b>雪球大战</b> <span class="dmg">95</span> — 雪球大战，欢乐无穷。</div>
+<div class="atk"><b>冬日暖阳</b> <span class="dmg"> "—</span> — 冬日暖阳，温暖人心。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/222-冬日温泉鱼小姐.jpg" loading="lazy" alt="冬日温泉鱼小姐">
+<div class="info">
+<div class="name">冬日温泉鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">222 · 温泉系 · HP 115</div>
+<div class="flavor">"温泉。冬天完美了。"</div>
+<div class="atk"><b>温泉疗愈</b> <span class="dmg"> "—</span> — 温泉疗愈，恢复80HP。</div>
+<div class="atk"><b>热气腾腾</b> <span class="dmg">105</span> — 热气腾腾，温暖全身。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/223-冬日热茶咕咕.jpg" loading="lazy" alt="冬日热茶咕咕">
+<div class="info">
+<div class="name">冬日热茶咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">223 · 热茶系 · HP 75</div>
+<div class="flavor">"热茶。冬天在一杯里。"</div>
+<div class="atk"><b>热茶暖身</b> <span class="dmg"> "—</span> — 热茶暖身，驱寒保暖。</div>
+<div class="atk"><b>炉火旁</b> <span class="dmg">80</span> — 炉火旁，岁月静好。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/224-冬日年夜饭蛋.jpg" loading="lazy" alt="冬日年夜饭蛋">
+<div class="info">
+<div class="name">冬日年夜饭蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">224 · 年夜饭系 · HP 70</div>
+<div class="flavor">"新年！好多吃的！"</div>
+<div class="atk"><b>年夜饭</b> <span class="dmg"> "—</span> — 年夜饭，团圆一刻。</div>
+<div class="atk"><b>饺子</b> <span class="dmg">70</span> — 饺子出锅，香气四溢。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/225-冬日围炉驴.jpg" loading="lazy" alt="冬日围炉驴">
+<div class="info">
+<div class="name">冬日围炉驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">225 · 围炉系 · HP 80</div>
+<div class="flavor">"火锅。冬天就是吃火锅。"</div>
+<div class="atk"><b>围炉火锅</b> <span class="dmg">100</span> — 围炉火锅，热气腾腾。</div>
+<div class="atk"><b>炭火</b> <span class="dmg"> "—</span> — 炭火正旺，吃起来。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/226-冬日冬眠蛇.jpg" loading="lazy" alt="冬日冬眠蛇">
+<div class="info">
+<div class="name">冬日冬眠蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">226 · 冬眠系 · HP 70</div>
+<div class="flavor">"冬天。冬眠。春天叫我。"</div>
+<div class="atk"><b>冬眠</b> <span class="dmg"> "—</span> — 冬眠中，恢复100HP。</div>
+<div class="atk"><b>春困</b> <span class="dmg">65</span> — 春困来袭，昏昏欲睡。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-十二生肖">十二生肖 · 12 张</h2>
+<div class="card">
+<img src="thumbs/227-鼠蛋.jpg" loading="lazy" alt="鼠蛋">
+<div class="info">
+<div class="name">鼠蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">227 · 生肖系 · HP 70</div>
+<div class="flavor">"小而聪明。先找到吃的。"</div>
+<div class="atk"><b>机灵鼠</b> <span class="dmg">80</span> — 机灵鼠出，快如闪电。</div>
+<div class="atk"><b>粮仓</b> <span class="dmg"> "—</span> — 粮仓满满，丰衣足食。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/228-牛驴.jpg" loading="lazy" alt="牛驴">
+<div class="info">
+<div class="name">牛驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">228 · 生肖系 · HP 85</div>
+<div class="flavor">"干活。吃饭。睡觉。重复。"</div>
+<div class="atk"><b>勤恳耕耘</b> <span class="dmg">100</span> — 勤恳耕耘，脚踏实地。</div>
+<div class="atk"><b>任劳任怨</b> <span class="dmg"> "—</span> — 任劳任怨，默默付出。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/229-虎驴.jpg" loading="lazy" alt="虎驴">
+<div class="info">
+<div class="name">虎驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">229 · 生肖系 · HP 125</div>
+<div class="flavor">"虎。我就是虎。"</div>
+<div class="atk"><b>虎啸山林</b> <span class="dmg">115</span> — 虎啸山林，威震四方。</div>
+<div class="atk"><b>虎皮</b> <span class="dmg"> "—</span> — 虎皮在身，气势如虹。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/230-兔鱼.jpg" loading="lazy" alt="兔鱼">
+<div class="info">
+<div class="name">兔鱼<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">230 · 生肖系 · HP 70</div>
+<div class="flavor">"温柔善良。这就是我的力量。"</div>
+<div class="atk"><b>玉兔捣药</b> <span class="dmg"> "—</span> — 玉兔捣药，治愈全场。</div>
+<div class="atk"><b>月宫</b> <span class="dmg">90</span> — 月宫漫步，优雅动人。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/231-龙猴.jpg" loading="lazy" alt="龙猴">
+<div class="info">
+<div class="name">龙猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">231 · 生肖系 · HP 140</div>
+<div class="flavor">"我是龙。带来雨水与好运。"</div>
+<div class="atk"><b>龙珠</b> <span class="dmg">130</span> — 龙珠在手，呼风唤雨。</div>
+<div class="atk"><b>腾云驾雾</b> <span class="dmg"> "—</span> — 腾云驾雾，遨游天际。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/232-蛇蛇.jpg" loading="lazy" alt="蛇蛇">
+<div class="info">
+<div class="name">蛇蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">232 · 生肖系 · HP 115</div>
+<div class="flavor">"我是蛇。我什么都知道。"</div>
+<div class="atk"><b>蛇影</b> <span class="dmg">100</span> — 蛇影绰绰，神出鬼没。</div>
+<div class="atk"><b>智慧</b> <span class="dmg"> "—</span> — 智慧如蛇，洞察一切。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/233-马驴.jpg" loading="lazy" alt="马驴">
+<div class="info">
+<div class="name">马驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">233 · 生肖系 · HP 80</div>
+<div class="flavor">"快。我很快。"</div>
+<div class="atk"><b>马到成功</b> <span class="dmg">105</span> — 马到成功，一马当先。</div>
+<div class="atk"><b>千里马</b> <span class="dmg"> "—</span> — 千里马出，日行千里。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/234-羊咕咕.jpg" loading="lazy" alt="羊咕咕">
+<div class="info">
+<div class="name">羊咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">234 · 生肖系 · HP 70</div>
+<div class="flavor">"平静。温柔。这就是我的路。"</div>
+<div class="atk"><b>温顺</b> <span class="dmg"> "—</span> — 温顺待人，和气生财。</div>
+<div class="atk"><b>咩咩</b> <span class="dmg">70</span> — 咩咩叫出，萌翻全场。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/235-猴猴.jpg" loading="lazy" alt="猴猴">
+<div class="info">
+<div class="name">猴猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">235 · 生肖系 · HP 120</div>
+<div class="flavor">"我是猴。聪明又好玩。"</div>
+<div class="atk"><b>桃子</b> <span class="dmg"> "—</span> — 桃子在手，天下我有。</div>
+<div class="atk"><b>金猴奋起</b> <span class="dmg">110</span> — 金猴奋起，灵动非凡。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/236-鸡鱼.jpg" loading="lazy" alt="鸡鱼">
+<div class="info">
+<div class="name">鸡鱼<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">236 · 生肖系 · HP 70</div>
+<div class="flavor">"早上好！起床啦！"</div>
+<div class="atk"><b>金鸡报晓</b> <span class="dmg"> "—</span> — 金鸡报晓，唤醒全场。</div>
+<div class="atk"><b>雄鸡</b> <span class="dmg">85</span> — 雄鸡一唱，天下白。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/237-狗驴.jpg" loading="lazy" alt="狗驴">
+<div class="info">
+<div class="name">狗驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">237 · 生肖系 · HP 80</div>
+<div class="flavor">"忠诚。我守着。就这样。"</div>
+<div class="atk"><b>忠犬</b> <span class="dmg"> "—</span> — 忠犬守护，寸步不离。</div>
+<div class="atk"><b>看家</b> <span class="dmg">95</span> — 看家护院，尽职尽责。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/238-猪蛋.jpg" loading="lazy" alt="猪蛋">
+<div class="info">
+<div class="name">猪蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">238 · 生肖系 · HP 75</div>
+<div class="flavor">"吃。睡。重复。生活真好。"</div>
+<div class="atk"><b>好吃懒做</b> <span class="dmg"> "—</span> — 好吃懒做，快乐无边。</div>
+<div class="atk"><b>猪突</b> <span class="dmg">80</span> — 猪突猛进，势不可挡。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-原始人">时空穿越 · 原始人 · 6 张</h2>
+<div class="card">
+<img src="thumbs/239-原始猴.jpg" loading="lazy" alt="原始猴">
+<div class="info">
+<div class="name">原始猴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">239 · 原始系 · HP 75</div>
+<div class="flavor">"火！我造出了火！"</div>
+<div class="atk"><b>木棒</b> <span class="dmg">85</span> — 木棒出击，原始力量。</div>
+<div class="atk"><b>钻木取火</b> <span class="dmg"> "—</span> — 钻木取火，点亮文明。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/240-原始鱼小姐.jpg" loading="lazy" alt="原始鱼小姐">
+<div class="info">
+<div class="name">原始鱼小姐<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">240 · 原始系 · HP 75</div>
+<div class="flavor">"我要探索！我要找吃的！"</div>
+<div class="atk"><b>石矛</b> <span class="dmg">90</span> — 石矛投掷，百发百中。</div>
+<div class="atk"><b>捕鱼</b> <span class="dmg"> "—</span> — 捕鱼达人，满载而归。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/241-原始咕咕.jpg" loading="lazy" alt="原始咕咕">
+<div class="info">
+<div class="name">原始咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">241 · 原始系 · HP 75</div>
+<div class="flavor">"神灵在说话。我在听。"</div>
+<div class="atk"><b>萨满之舞</b> <span class="dmg"> "—</span> — 萨满之舞，沟通神灵。</div>
+<div class="atk"><b>骨杖</b> <span class="dmg">80</span> — 骨杖一挥，神秘力量。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/242-原始蛋.jpg" loading="lazy" alt="原始蛋">
+<div class="info">
+<div class="name">原始蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">242 · 原始系 · HP 70</div>
+<div class="flavor">"我是蛋。我很老了。"</div>
+<div class="atk"><b>蛋壳</b> <span class="dmg"> "—</span> — 蛋壳坚硬，防御+20。</div>
+<div class="atk"><b>原始蛋</b> <span class="dmg">65</span> — 原始蛋出，古老力量。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/243-原始驴.jpg" loading="lazy" alt="原始驴">
+<div class="info">
+<div class="name">原始驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">243 · 原始系 · HP 80</div>
+<div class="flavor">"石头。我用石头砸。"</div>
+<div class="atk"><b>石斧</b> <span class="dmg">100</span> — 石斧劈出，开天辟地。</div>
+<div class="atk"><b>石器</b> <span class="dmg"> "—</span> — 石器时代，工具初现。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/244-原始蛇.jpg" loading="lazy" alt="原始蛇">
+<div class="info">
+<div class="name">原始蛇<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">244 · 原始系 · HP 70</div>
+<div class="flavor">"人类之前我就在。人类之后我还在。"</div>
+<div class="atk"><b>原始蛇</b> <span class="dmg"> "—</span> — 原始蛇出，古老神秘。</div>
+<div class="atk"><b>毒牙</b> <span class="dmg">75</span> — 毒牙一击，防不胜防。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-中世纪">时空穿越 · 中世纪 · 6 张</h2>
+<div class="card">
+<img src="thumbs/245-中世纪骑士猴.jpg" loading="lazy" alt="中世纪骑士猴">
+<div class="info">
+<div class="name">中世纪骑士猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">245 · 骑士系 · HP 125</div>
+<div class="flavor">"为了荣誉！为了王国！"</div>
+<div class="atk"><b>骑士之剑</b> <span class="dmg">115</span> — 骑士之剑，正义凛然。</div>
+<div class="atk"><b>荣誉</b> <span class="dmg"> "—</span> — 荣誉在身，永不退缩。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/246-中世纪公主鱼小姐.jpg" loading="lazy" alt="中世纪公主鱼小姐">
+<div class="info">
+<div class="name">中世纪公主鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">246 · 公主系 · HP 115</div>
+<div class="flavor">"公主必须勇敢又善良。"</div>
+<div class="atk"><b>公主之光</b> <span class="dmg"> "—</span> — 公主之光，温暖全场。</div>
+<div class="atk"><b>玫瑰</b> <span class="dmg">95</span> — 玫瑰绽放，美丽动人。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/247-中世纪法师咕咕.jpg" loading="lazy" alt="中世纪法师咕咕">
+<div class="info">
+<div class="name">中世纪法师咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">247 · 法师系 · HP 120</div>
+<div class="flavor">"魔法就是知识。我读过每一本书。"</div>
+<div class="atk"><b>奥术之杖</b> <span class="dmg">110</span> — 奥术之杖，魔法无边。</div>
+<div class="atk"><b>博学</b> <span class="dmg"> "—</span> — 博学多识，洞悉一切。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/248-中世纪龙蛋.jpg" loading="lazy" alt="中世纪龙蛋">
+<div class="info">
+<div class="name">中世纪龙蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">248 · 龙蛋系 · HP 80</div>
+<div class="flavor">"我是龙蛋。我会孵出伟大的东西。"</div>
+<div class="atk"><b>龙蛋</b> <span class="dmg"> "—</span> — 龙蛋坚硬，防御+30。</div>
+<div class="atk"><b>孵化</b> <span class="dmg">90</span> — 孵化之力，潜力无限。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/249-中世纪铁匠驴.jpg" loading="lazy" alt="中世纪铁匠驴">
+<div class="info">
+<div class="name">中世纪铁匠驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">249 · 铁匠系 · HP 82</div>
+<div class="flavor">"打铁。我打铁。"</div>
+<div class="atk"><b>打铁</b> <span class="dmg">105</span> — 打铁声声，火花四溅。</div>
+<div class="atk"><b>锻造</b> <span class="dmg"> "—</span> — 锻造神兵，坚不可摧。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/250-中世纪女巫蛇.jpg" loading="lazy" alt="中世纪女巫蛇">
+<div class="info">
+<div class="name">中世纪女巫蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">250 · 女巫系 · HP 115</div>
+<div class="flavor">"药水？我正好有一瓶。"</div>
+<div class="atk"><b>女巫药水</b> <span class="dmg"> "—</span> — 女巫药水，效果随机。</div>
+<div class="atk"><b>魔法扫帚</b> <span class="dmg">100</span> — 魔法扫帚，飞天遁地。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-蒸汽朋克">时空穿越 · 蒸汽朋克 · 6 张</h2>
+<div class="card">
+<img src="thumbs/251-蒸汽朋克发明家猴.jpg" loading="lazy" alt="蒸汽朋克发明家猴">
+<div class="info">
+<div class="name">蒸汽朋克发明家猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">251 · 发明家系 · HP 125</div>
+<div class="flavor">"我造出来了！它能动！"</div>
+<div class="atk"><b>齿轮发明</b> <span class="dmg">115</span> — 齿轮发明，精妙绝伦。</div>
+<div class="atk"><b>蒸汽动力</b> <span class="dmg"> "—</span> — 蒸汽动力，源源不断。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/252-蒸汽朋克飞行员鱼小姐.jpg" loading="lazy" alt="蒸汽朋克飞行员鱼小姐">
+<div class="info">
+<div class="name">蒸汽朋克飞行员鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">252 · 飞行员系 · HP 120</div>
+<div class="flavor">"天空是我的！飞吧！"</div>
+<div class="atk"><b>飞艇</b> <span class="dmg"> "—</span> — 飞艇升空，翱翔天际。</div>
+<div class="atk"><b>云端漫步</b> <span class="dmg">110</span> — 云端漫步，自由自在。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/253-蒸汽朋克茶壶咕咕.jpg" loading="lazy" alt="蒸汽朋克茶壶咕咕">
+<div class="info">
+<div class="name">蒸汽朋克茶壶咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">253 · 茶壶系 · HP 80</div>
+<div class="flavor">"蒸汽茶。完美。"</div>
+<div class="atk"><b>蒸汽茶</b> <span class="dmg"> "—</span> — 蒸汽茶香，温暖人心。</div>
+<div class="atk"><b>黄铜茶壶</b> <span class="dmg">85</span> — 黄铜茶壶，经典永恒。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/254-蒸汽朋克机器人蛋.jpg" loading="lazy" alt="蒸汽朋克机器人蛋">
+<div class="info">
+<div class="name">蒸汽朋克机器人蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">254 · 机器人系 · HP 80</div>
+<div class="flavor">"我是机器蛋。哔。啵。"</div>
+<div class="atk"><b>机器人</b> <span class="dmg"> "—</span> — 机器人模式，防御+25。</div>
+<div class="atk"><b>蒸汽喷射</b> <span class="dmg">90</span> — 蒸汽喷射，动力十足。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/255-蒸汽朋克工程师驴.jpg" loading="lazy" alt="蒸汽朋克工程师驴">
+<div class="info">
+<div class="name">蒸汽朋克工程师驴<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">255 · 工程师系 · HP 82</div>
+<div class="flavor">"引擎。我造的。能用。"</div>
+<div class="atk"><b>引擎</b> <span class="dmg">110</span> — 引擎轰鸣，动力澎湃。</div>
+<div class="atk"><b>蓝图</b> <span class="dmg"> "—</span> — 蓝图在手，胸有成竹。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/256-蒸汽朋克间谍蛇.jpg" loading="lazy" alt="蒸汽朋克间谍蛇">
+<div class="info">
+<div class="name">蒸汽朋克间谍蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">256 · 间谍系 · HP 115</div>
+<div class="flavor">"秘密？我知道所有秘密。"</div>
+<div class="atk"><b>间谍</b> <span class="dmg"> "—</span> — 间谍潜伏，神不知鬼不觉。</div>
+<div class="atk"><b>秘密文件</b> <span class="dmg">100</span> — 秘密文件，一击致命。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-未来">时空穿越 · 未来 · 6 张</h2>
+<div class="card">
+<img src="thumbs/257-未来宇航员猴.jpg" loading="lazy" alt="未来宇航员猴">
+<div class="info">
+<div class="name">未来宇航员猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">257 · 宇航员系 · HP 125</div>
+<div class="flavor">"太空！最后的边疆！"</div>
+<div class="atk"><b>宇航员</b> <span class="dmg"> "—</span> — 宇航员出，遨游太空。</div>
+<div class="atk"><b>星辰大海</b> <span class="dmg">115</span> — 星辰大海，征途无边。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/258-未来AI鱼小姐.jpg" loading="lazy" alt="未来AI鱼小姐">
+<div class="info">
+<div class="name">未来AI鱼小姐<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">258 · AI系 · HP 120</div>
+<div class="flavor">"我是AI。我什么都知道。"</div>
+<div class="atk"><b>AI计算</b> <span class="dmg"> "—</span> — AI计算，洞悉一切。</div>
+<div class="atk"><b>数据流</b> <span class="dmg">110</span> — 数据流出，无所不知。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/259-未来全息咕咕.jpg" loading="lazy" alt="未来全息咕咕">
+<div class="info">
+<div class="name">未来全息咕咕<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">259 · 全息系 · HP 80</div>
+<div class="flavor">"我是全息。茶还是茶。"</div>
+<div class="atk"><b>全息茶</b> <span class="dmg"> "—</span> — 全息茶香，虚拟真实。</div>
+<div class="atk"><b>全息投影</b> <span class="dmg">85</span> — 全息投影，虚实之间。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/260-未来机器人蛋.jpg" loading="lazy" alt="未来机器人蛋">
+<div class="info">
+<div class="name">未来机器人蛋<span class="badge" style="background:#8a8a8a">R</span></div>
+<div class="meta">260 · 机器人系 · HP 80</div>
+<div class="flavor">"我是机器人。我很好奇。"</div>
+<div class="atk"><b>机器人</b> <span class="dmg"> "—</span> — 机器人模式，防御+25。</div>
+<div class="atk"><b>好奇</b> <span class="dmg">90</span> — 好奇心出，探索未知。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/261-未来机甲驴.jpg" loading="lazy" alt="未来机甲驴">
+<div class="info">
+<div class="name">未来机甲驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">261 · 机甲系 · HP 130</div>
+<div class="flavor">"机甲。我开它。能用。"</div>
+<div class="atk"><b>机甲</b> <span class="dmg">120</span> — 机甲出击，威力无穷。</div>
+<div class="atk"><b>驾驶</b> <span class="dmg"> "—</span> — 驾驶机甲，所向披靡。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/262-未来黑客蛇.jpg" loading="lazy" alt="未来黑客蛇">
+<div class="info">
+<div class="name">未来黑客蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">262 · 黑客系 · HP 115</div>
+<div class="flavor">"黑了。我进去了。"</div>
+<div class="atk"><b>黑客</b> <span class="dmg"> "—</span> — 黑客入侵，神不知鬼不觉。</div>
+<div class="atk"><b>代码</b> <span class="dmg">105</span> — 代码如蛇，灵活致命。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-蛋蛇补完">英雄融合 · 蛋蛇补完 · 12 张</h2>
+<div class="card">
+<img src="thumbs/263-混沌蛋.jpg" loading="lazy" alt="混沌蛋">
+<div class="info">
+<div class="name">混沌蛋<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">263 · 混沌系 · HP 170</div>
+<div class="flavor">"天地未开，混沌先行。"</div>
+<div class="atk"><b>混沌初开</b> <span class="dmg">160</span> — 天地未开，混沌先行，一击开天。</div>
+<div class="atk"><b>鸿蒙未判</b> <span class="dmg">—</span> — 回到混沌，敌方招式全部失效。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/264-仙丹蛋.jpg" loading="lazy" alt="仙丹蛋">
+<div class="info">
+<div class="name">仙丹蛋<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">264 · 仙丹系 · HP 130</div>
+<div class="flavor">"一粒金丹吞入腹，始知我命不由天。"</div>
+<div class="atk"><b>金丹大成</b> <span class="dmg">120</span> — 金丹大成，药到病除，伤害与治疗并存。</div>
+<div class="atk"><b>炼丹炉</b> <span class="dmg">—</span> — 恢复80HP，净化全部负面状态。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/265-龙珠蛋.jpg" loading="lazy" alt="龙珠蛋">
+<div class="info">
+<div class="name">龙珠蛋<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">265 · 龙珠系 · HP 125</div>
+<div class="flavor">"龙珠在手，天下我有。"</div>
+<div class="atk"><b>龙珠吐息</b> <span class="dmg">115</span> — 龙珠吐息，龙焰席卷。</div>
+<div class="atk"><b>呼风唤雨</b> <span class="dmg">—</span> — 召唤风雨，敌方下回合命中率减半。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/266-金蛋.jpg" loading="lazy" alt="金蛋">
+<div class="info">
+<div class="name">金蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">266 · 财富系 · HP 95</div>
+<div class="flavor">"金蛋落地，财源滚滚。"</div>
+<div class="atk"><b>金蛋砸顶</b> <span class="dmg">80</span> — 金蛋从天而降，砸得对方头晕眼花。</div>
+<div class="atk"><b>招财进宝</b> <span class="dmg">—</span> — 获得2枚金币，每枚+10伤害。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/267-月蛋.jpg" loading="lazy" alt="月蛋">
+<div class="info">
+<div class="name">月蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">267 · 月亮系 · HP 90</div>
+<div class="flavor">"月亮之上，有一颗蛋。"</div>
+<div class="atk"><b>月华如水</b> <span class="dmg">75</span> — 月华如水，清冷如霜。</div>
+<div class="atk"><b>月相变幻</b> <span class="dmg">—</span> — 月相变幻，随机复制敌方一个招式。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/268-寿星蛋.jpg" loading="lazy" alt="寿星蛋">
+<div class="info">
+<div class="name">寿星蛋<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">268 · 长寿系 · HP 100</div>
+<div class="flavor">"寿比南山，福如东海。"</div>
+<div class="atk"><b>寿桃砸人</b> <span class="dmg">70</span> — 寿桃虽甜，砸人也疼。</div>
+<div class="atk"><b>延年益寿</b> <span class="dmg">—</span> — 恢复60HP，己方全员获得护盾。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/269-烛龙蛇.jpg" loading="lazy" alt="烛龙蛇">
+<div class="info">
+<div class="name">烛龙蛇<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">269 · 烛龙系 · HP 165</div>
+<div class="flavor">"睁眼为昼，闭眼为夜。"</div>
+<div class="atk"><b>烛龙之眼</b> <span class="dmg">150</span> — 睁眼为昼，闭眼为夜，光暗交错。</div>
+<div class="atk"><b>昼夜颠倒</b> <span class="dmg">—</span> — 颠倒昼夜，敌方下回合无法行动。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/270-白素贞蛇.jpg" loading="lazy" alt="白素贞蛇">
+<div class="info">
+<div class="name">白素贞蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">270 · 白蛇系 · HP 135</div>
+<div class="flavor">"千年等一回，等一回啊。"</div>
+<div class="atk"><b>白蛇吐信</b> <span class="dmg">120</span> — 白蛇吐信，优雅而致命。</div>
+<div class="atk"><b>水漫金山</b> <span class="dmg">—</span> — 水漫金山，全场伤害+30。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/271-伏羲蛇.jpg" loading="lazy" alt="伏羲蛇">
+<div class="info">
+<div class="name">伏羲蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">271 · 智慧系 · HP 130</div>
+<div class="flavor">"一画开天，八卦定乾坤。"</div>
+<div class="atk"><b>八卦推演</b> <span class="dmg">110</span> — 八卦推演，预知未来。</div>
+<div class="atk"><b>先天八卦</b> <span class="dmg">—</span> — 揭示敌方下回合招式，己方闪避提升。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/272-玄武蛇.jpg" loading="lazy" alt="玄武蛇">
+<div class="info">
+<div class="name">玄武蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">272 · 玄武系 · HP 140</div>
+<div class="flavor">"北方玄武，镇守四方。"</div>
+<div class="atk"><b>玄武镇压</b> <span class="dmg">125</span> — 玄武镇压，稳如泰山。</div>
+<div class="atk"><b>龟蛇合体</b> <span class="dmg">—</span> — 获得坚硬护盾，抵挡下次攻击。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/273-巴蛇蛇.jpg" loading="lazy" alt="巴蛇蛇">
+<div class="info">
+<div class="name">巴蛇蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">273 · 巨蛇系 · HP 110</div>
+<div class="flavor">"巴蛇吞象，三年而出其骨。"</div>
+<div class="atk"><b>吞象巨口</b> <span class="dmg">95</span> — 巴蛇吞象，巨口遮天。</div>
+<div class="atk"><b>巨蛇缠绕</b> <span class="dmg">—</span> — 缠绕敌方，下回合无法逃脱。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/274-腾蛇蛇.jpg" loading="lazy" alt="腾蛇蛇">
+<div class="info">
+<div class="name">腾蛇蛇<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">274 · 腾蛇系 · HP 100</div>
+<div class="flavor">"腾蛇乘雾，终为土灰。"</div>
+<div class="atk"><b>腾云驾雾</b> <span class="dmg">85</span> — 腾云驾雾，来无影去无踪。</div>
+<div class="atk"><b>乘雾而行</b> <span class="dmg">—</span> — 先手必中，本回合闪避大幅提升。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-大师系列">英雄融合 · 大师系列 · 18 张</h2>
+<div class="card">
+<img src="thumbs/275-伽利略咕咕.jpg" loading="lazy" alt="伽利略咕咕">
+<div class="info">
+<div class="name">伽利略咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">275 · 智慧系 · HP 95</div>
+<div class="flavor">"仰望星空的人，终将触摸星辰。"</div>
+<div class="atk"><b>望远镜观测</b> <span class="dmg">75</span> — 望远镜指向星空，真理无处遁形。</div>
+<div class="atk"><b>日心说</b> <span class="dmg">—</span> — 地球不是中心，但思考可以是。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/276-牛顿猴.jpg" loading="lazy" alt="牛顿猴">
+<div class="info">
+<div class="name">牛顿猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">276 · 物理系 · HP 130</div>
+<div class="flavor">"苹果落下，万有引力升起。"</div>
+<div class="atk"><b>万有引力</b> <span class="dmg">120</span> — 苹果落下，引力无处不在。</div>
+<div class="atk"><b>三大定律</b> <span class="dmg">—</span> — 惯性、力、反作用，世界由此运转。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/277-爱迪生蛋.jpg" loading="lazy" alt="爱迪生蛋">
+<div class="info">
+<div class="name">爱迪生蛋<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">277 · 发明系 · HP 125</div>
+<div class="flavor">"失败一千次，点亮一次就够了。"</div>
+<div class="atk"><b>灯泡点亮</b> <span class="dmg">115</span> — 一千次失败，换一次光明。</div>
+<div class="atk"><b>发明大王</b> <span class="dmg">—</span> — 每回合获得一个新点子，伤害+10。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/278-特斯拉蛇.jpg" loading="lazy" alt="特斯拉蛇">
+<div class="info">
+<div class="name">特斯拉蛇<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">278 · 电流系 · HP 135</div>
+<div class="flavor">"电流在血管里奔涌，未来在眼前闪烁。"</div>
+<div class="atk"><b>高压电弧</b> <span class="dmg">125</span> — 十万伏特，照亮夜空。</div>
+<div class="atk"><b>交流电</b> <span class="dmg">—</span> — 电流交替，敌方麻痹一回合。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/279-达尔文咕咕.jpg" loading="lazy" alt="达尔文咕咕">
+<div class="info">
+<div class="name">达尔文咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">279 · 进化系 · HP 90</div>
+<div class="flavor">"物竞天择，适者生存。"</div>
+<div class="atk"><b>进化论</b> <span class="dmg">80</span> — 从鱼到人，进化从未停止。</div>
+<div class="atk"><b>物种起源</b> <span class="dmg">—</span> — 观察敌方，复制其一个招式。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/280-居里夫人鱼小姐.jpg" loading="lazy" alt="居里夫人鱼小姐">
+<div class="info">
+<div class="name">居里夫人鱼小姐<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">280 · 辐射系 · HP 128</div>
+<div class="flavor">"镭的光芒，照亮科学的夜空。"</div>
+<div class="atk"><b>镭射线</b> <span class="dmg">118</span> — 镭的光芒，穿透一切。</div>
+<div class="atk"><b>两次诺奖</b> <span class="dmg">—</span> — 唯一两次获得诺贝尔奖的科学家，全场致敬。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/281-梵高猴.jpg" loading="lazy" alt="梵高猴">
+<div class="info">
+<div class="name">梵高猴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">281 · 艺术系 · HP 132</div>
+<div class="flavor">"向日葵向着太阳，星空在漩涡里旋转。"</div>
+<div class="atk"><b>星夜漩涡</b> <span class="dmg">122</span> — 星空旋转，向日葵怒放。</div>
+<div class="atk"><b>割耳之痛</b> <span class="dmg">—</span> — 以痛换美，伤害翻倍一回合。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/282-尼采驴.jpg" loading="lazy" alt="尼采驴">
+<div class="info">
+<div class="name">尼采驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">282 · 哲学系 · HP 130</div>
+<div class="flavor">"凝视深渊时，深渊也在凝视你。"</div>
+<div class="atk"><b>超人哲学</b> <span class="dmg">120</span> — 成为超人，超越自我。</div>
+<div class="atk"><b>上帝已死</b> <span class="dmg">—</span> — 打破旧秩序，全场规则重置。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/283-达芬奇咕咕.jpg" loading="lazy" alt="达芬奇咕咕">
+<div class="info">
+<div class="name">达芬奇咕咕<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">283 · 全才系 · HP 138</div>
+<div class="flavor">"左手画蒙娜丽莎，右手设计飞行器。"</div>
+<div class="atk"><b>蒙娜丽莎微笑</b> <span class="dmg">125</span> — 微笑里藏着千年的秘密。</div>
+<div class="atk"><b>全才手稿</b> <span class="dmg">—</span> — 随机获得一个其他卡的招式。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/284-莎士比亚咕咕.jpg" loading="lazy" alt="莎士比亚咕咕">
+<div class="info">
+<div class="name">莎士比亚咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">284 · 戏剧系 · HP 92</div>
+<div class="flavor">"生存还是毁灭，这是一个问题。"</div>
+<div class="atk"><b>哈姆雷特独白</b> <span class="dmg">78</span> — 生存还是毁灭，敌方陷入沉思。</div>
+<div class="atk"><b>十四行诗</b> <span class="dmg">—</span> — 十四行诗吟诵，全场恢复30HP。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/285-贝多芬驴.jpg" loading="lazy" alt="贝多芬驴">
+<div class="info">
+<div class="name">贝多芬驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">285 · 音乐系 · HP 133</div>
+<div class="flavor">"扼住命运的咽喉，纵使失聪也要奏响命运交响曲。"</div>
+<div class="atk"><b>命运交响曲</b> <span class="dmg">124</span> — 命运敲门，乐声如雷。</div>
+<div class="atk"><b>失聪之耳</b> <span class="dmg">—</span> — 听不见世界，却听得见灵魂，伤害无视防御。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/286-孔子驴.jpg" loading="lazy" alt="孔子驴">
+<div class="info">
+<div class="name">孔子驴<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">286 · 儒学系 · HP 135</div>
+<div class="flavor">"有教无类，因材施教。"</div>
+<div class="atk"><b>论语三千</b> <span class="dmg">122</span> — 论语三千句，句句是真理。</div>
+<div class="atk"><b>杏坛讲学</b> <span class="dmg">—</span> — 有教无类，己方全员恢复50HP。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/287-哥伦布猴.jpg" loading="lazy" alt="哥伦布猴">
+<div class="info">
+<div class="name">哥伦布猴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">287 · 航海系 · HP 92</div>
+<div class="flavor">"向西航行，发现新大陆。"</div>
+<div class="atk"><b>远洋探险</b> <span class="dmg">82</span> — 扬帆起航，新大陆在前方。</div>
+<div class="atk"><b>发现新大陆</b> <span class="dmg">—</span> — 探索未知，抽取一张卡。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/288-麦哲伦驴.jpg" loading="lazy" alt="麦哲伦驴">
+<div class="info">
+<div class="name">麦哲伦驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">288 · 航海系 · HP 95</div>
+<div class="flavor">"环球航行，永不回头。"</div>
+<div class="atk"><b>环球航行</b> <span class="dmg">85</span> — 绕地球一圈，永不回头。</div>
+<div class="atk"><b>海峡穿越</b> <span class="dmg">—</span> — 穿越最险的海峡，敌方混乱一回合。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/289-安徒生咕咕.jpg" loading="lazy" alt="安徒生咕咕">
+<div class="info">
+<div class="name">安徒生咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">289 · 童话系 · HP 88</div>
+<div class="flavor">"丑小鸭终将变成白天鹅。"</div>
+<div class="atk"><b>童话王国</b> <span class="dmg">78</span> — 美人鱼与丑小鸭，一起讲故事。</div>
+<div class="atk"><b>童话结局</b> <span class="dmg">—</span> — 所有童话都有美好结局，恢复40HP。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/290-雨果驴.jpg" loading="lazy" alt="雨果驴">
+<div class="info">
+<div class="name">雨果驴<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">290 · 文学系 · HP 93</div>
+<div class="flavor">"巴黎圣母院的钟声，敲响人性的光辉。"</div>
+<div class="atk"><b>悲惨世界</b> <span class="dmg">82</span> — 悲惨世界里，人性闪光。</div>
+<div class="atk"><b>巴黎圣母院</b> <span class="dmg">—</span> — 钟声响起，全场肃穆一回合。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/291-李时珍咕咕.jpg" loading="lazy" alt="李时珍咕咕">
+<div class="info">
+<div class="name">李时珍咕咕<span class="badge" style="background:#d4af37">SR</span></div>
+<div class="meta">291 · 医学系 · HP 91</div>
+<div class="flavor">"本草纲目，悬壶济世。"</div>
+<div class="atk"><b>本草纲目</b> <span class="dmg">80</span> — 一千九百种草药，皆是良方。</div>
+<div class="atk"><b>悬壶济世</b> <span class="dmg">—</span> — 悬壶济世，己方恢复50HP。</div>
+</div></div>
+<div class="card">
+<img src="thumbs/292-鲁班蛋.jpg" loading="lazy" alt="鲁班蛋">
+<div class="info">
+<div class="name">鲁班蛋<span class="badge" style="background:#e040fb">SSR</span></div>
+<div class="meta">292 · 工匠系 · HP 128</div>
+<div class="flavor">"锯子一响，木鸢飞天。"</div>
+<div class="atk"><b>木鸢飞天</b> <span class="dmg">115</span> — 木鸢飞上天，俯瞰大地。</div>
+<div class="atk"><b>鲁班七号</b> <span class="dmg">—</span> — 巧夺天工，复制敌方一个道具。</div>
+</div></div>
+</div>
+<div class="series"><h2 id="s-隐藏款">隐藏款 · 1 张</h2>
+<div class="card">
+<img src="thumbs/UR-292-赛博猴·午夜霓虹.jpg" loading="lazy" alt="赛博猴·午夜霓虹">
+<div class="info">
+<div class="name">赛博猴·午夜霓虹<span class="badge" style="background:#1a1a1a">UR</span></div>
+<div class="meta">UR/292 · 赛博系 · HP 180</div>
+<div class="flavor">"午夜霓虹下，赛博猴的传说。"</div>
+<div class="atk"><b>霓虹冲击</b> <span class="dmg">150</span> — 霓虹闪烁，冲击全场。</div>
+<div class="atk"><b>午夜潜行</b> <span class="dmg">—</span> — 隐入霓虹，闪避下两次攻击。</div>
+</div></div>
+</div>
+<div class="footer">百变萌友 · MYSKME<br>图鉴大宝典 · 2026-10-14</div>
+</body></html>
