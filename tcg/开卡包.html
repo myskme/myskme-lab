@@ -786,8 +786,12 @@ function preDraw(){
   drawnCards.sort((a,b)=>RARITY_ORDER[a[2]]-RARITY_ORDER[b[2]]);
   bestRarity=drawnCards[drawnCards.length-1][2];
 }
+@keyframes shakeScreen{0%,100%{transform:translate(0,0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,-1px)}80%{transform:translate(1px,1px)}}
+body.shake .wrap{animation:shakeScreen .3s}
 function completeOpen(){
   opened=true;
+  document.body.classList.add("shake");
+  setTimeout(()=>document.body.classList.remove("shake"),350);
   playTear(); playWhoosh(); vibrate([40,60,40]);
   hint.textContent="开了！";
   tearFill.style.width="100%";
