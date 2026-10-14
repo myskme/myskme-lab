@@ -82,13 +82,29 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .face.front{transform:rotateY(180deg)}
 .face.front img{width:100%;height:100%;object-fit:cover}
 .slot:hover{transform:translateY(-4px)}
-.slot.flipped:hover{transform:translateY(-4px)}
+.slot.flipped{cursor:pointer}
+.slot.flipped:hover{transform:translateY(-4px) scale(1.02)}
+/* 卡片详情弹窗 */
+.card-detail{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;padding:16px;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+.card-detail.show{display:flex;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.card-detail-inner{max-width:420px;width:100%;text-align:center;animation:zoomIn .3s cubic-bezier(.2,.8,.3,1.2)}
+@keyframes zoomIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.card-detail img{width:100%;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.15)}
+.card-detail-name{color:#fff;font-size:20px;font-weight:800;margin-top:14px;letter-spacing:2px}
+.card-detail-meta{color:rgba(255,255,255,.7);font-size:13px;margin-top:4px}
+.card-detail-close{position:absolute;top:calc(16px + env(safe-area-inset-top,0));right:16px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:24px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.card-detail-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:22px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.card-detail-prev{left:10px}
+.card-detail-next{right:10px}
 .holo{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .4s;z-index:2;overflow:hidden;border-radius:12px}
 .slot.flipped.r-ssr .holo,.slot.flipped.r-ur .holo{opacity:1}
 .holo .rainbow{position:absolute;inset:-60%;background:conic-gradient(from var(--ang,0deg) at var(--hx,50%) var(--hy,50%),#ff0080,#ff8c00,#ffee00,#00e676,#00b0ff,#8a2be2,#ff0080);mix-blend-mode:color-dodge;opacity:.55;filter:blur(1px)}
 .holo .sparkle{position:absolute;inset:0;background-image:radial-gradient(circle at 20% 30%,rgba(255,255,255,.9) 0 1px,transparent 2px),radial-gradient(circle at 70% 60%,rgba(255,255,255,.8) 0 1px,transparent 2px),radial-gradient(circle at 40% 80%,rgba(255,255,255,.7) 0 1px,transparent 2px),radial-gradient(circle at 85% 20%,rgba(255,255,255,.8) 0 1px,transparent 2px);mix-blend-mode:overlay}
 .holo .shine{position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.5) 48%,transparent 65%);transform:translateX(calc(var(--hx,50%) - 50%));mix-blend-mode:overlay}
-.r-ur .holo .rainbow{background:conic-gradient(from var(--ang,0deg) at var(--hx,50%) var(--hy,50%),#ffd700,#fff,#ff8c00,#ffd700,#fff,#ff8c00,#ffd700);opacity:.7}
+.r-ur .holo .rainbow{background:conic-gradient(from var(--ang,0deg) at var(--hx,50%) var(--hy,50%),#ffd700,#fff,#ff8c00,#ffd700,#fff,#ff8c00,#ffd700);opacity:.45}
+.slot.flipped.r-ur .holo{opacity:.7}
+.slot.flipped.r-ssr .holo{opacity:.85}
 .slot.r-ssr .face.front{box-shadow:0 0 24px 4px rgba(255,0,255,.45),0 0 60px 10px rgba(0,200,255,.3)}
 .slot.r-ur .face.front{box-shadow:0 0 36px 8px rgba(255,215,0,.85),0 0 80px 16px rgba(255,140,0,.45)}
 .slot.flipped.r-ssr::before,.slot.flipped.r-ur::before{content:"";position:absolute;inset:-20px;background:radial-gradient(circle,rgba(255,215,0,.35) 0%,transparent 65%);border-radius:50%;z-index:-1;animation:spotPulse 2s infinite}
@@ -441,6 +457,17 @@ document.addEventListener("DOMContentLoaded",()=>{
 <div class="skip-bar" id="skipBar"><button class="btn2" id="skipBtn" style="font-size:15px;padding:10px 28px;">跳过动画，全部翻开</button></div>
 <div class="actions" id="actions"><button class="btn" id="againBtn">再来一包</button><button class="btn2" id="resetBtn">重置</button><a href="图鉴.html" style="display:inline-block;margin-left:12px;color:#8a6d1a;font-size:14px;">去图鉴 →</a></div>
 </div>
+<!-- 卡片详情弹窗 -->
+<div class="card-detail" id="cardDetail">
+<button class="card-detail-close" id="detailClose">×</button>
+<button class="card-detail-nav card-detail-prev" id="detailPrev">‹</button>
+<button class="card-detail-nav card-detail-next" id="detailNext">›</button>
+<div class="card-detail-inner">
+<img id="detailImg" src="" alt="">
+<div class="card-detail-name" id="detailName"></div>
+<div class="card-detail-meta" id="detailMeta"></div>
+</div>
+</div>
 <div class="rare-overlay" id="rareOverlay"><div class="rays"></div><div class="vignette"></div><div class="flash"></div></div>
 <canvas id="fx"></canvas>
 <script>
@@ -778,7 +805,10 @@ function revealCards(){
     slot.className="slot"+(c[2]==="SSR"?" r-ssr":"")+(c[2]==="UR"?" r-ur":"");
     slot.innerHTML=`<div class="slot-inner"><div class="face back"><img src="${BACK}"></div><div class="face front"><img src="${c[3]}"><div class="holo"><div class="rainbow"></div><div class="sparkle"></div><div class="shine"></div></div></div></div>${(c[2]==="SSR"||c[2]==="UR")?`<span class="r-badge">${c[2]}</span>`:""}`;
     if(c[2]==="SSR"||c[2]==="UR") slot.classList.add("shaking");
-    slot.addEventListener("click",()=>flipCard(slot,c));
+    slot.addEventListener("click",()=>{
+      if(slot.classList.contains("flipped")){ openCardDetail(drawnCards.indexOf(c)); return; }
+      flipCard(slot,c);
+    });
     slot.addEventListener("pointermove",e=>{if(slot.classList.contains("flipped"))tiltCard(slot,e);});
     slot.addEventListener("pointerleave",()=>resetTilt(slot));
     stack.appendChild(slot);
@@ -1005,6 +1035,28 @@ function addRecent(cards){
   renderRecent();
 }
 renderRecent();
+// ---- 卡片详情 ----
+let detailIndex=0;
+function openCardDetail(idx){
+  detailIndex=idx;
+  const c=drawnCards[idx];
+  if(!c) return;
+  document.getElementById("detailImg").src=c[3];
+  document.getElementById("detailName").textContent=c[1];
+  document.getElementById("detailMeta").textContent=`${c[0]}/274 · ${c[2]}`;
+  document.getElementById("cardDetail").classList.add("show");
+}
+function closeCardDetail(){ document.getElementById("cardDetail").classList.remove("show"); }
+document.getElementById("detailClose").onclick=closeCardDetail;
+document.getElementById("cardDetail").addEventListener("click",e=>{ if(e.target.id==="cardDetail") closeCardDetail(); });
+document.getElementById("detailPrev").onclick=e=>{ e.stopPropagation(); openCardDetail((detailIndex-1+drawnCards.length)%drawnCards.length); };
+document.getElementById("detailNext").onclick=e=>{ e.stopPropagation(); openCardDetail((detailIndex+1)%drawnCards.length); };
+document.addEventListener("keydown",e=>{
+  if(!document.getElementById("cardDetail").classList.contains("show")) return;
+  if(e.key==="Escape") closeCardDetail();
+  if(e.key==="ArrowLeft") openCardDetail((detailIndex-1+drawnCards.length)%drawnCards.length);
+  if(e.key==="ArrowRight") openCardDetail((detailIndex+1)%drawnCards.length);
+});
 // 角色区折叠
 document.getElementById("charToggle").onclick=()=>{
   document.getElementById("charShowcase").classList.toggle("collapsed");
