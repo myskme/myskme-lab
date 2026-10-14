@@ -28,9 +28,14 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .stats{display:flex;justify-content:center;gap:10px;margin:10px 0;flex-wrap:wrap;padding:0 16px}
 .stats span{background:rgba(255,255,255,.85);border:1px solid #d4c89a;border-radius:20px;padding:6px 14px;font-size:12px;color:#8a7d60;box-shadow:0 2px 8px rgba(120,90,20,.08);display:flex;align-items:center;gap:4px}
 .stats b{color:#8a6d1a;font-size:14px;font-weight:800}
+/* 开包沉浸模式：打开卡包时背景暗化，聚焦卡包 */
+body.pack-focus .bg{filter:brightness(.6) blur(2px);transition:filter .5s}
+body.pack-focus .navbar,body.pack-focus .top,body.pack-focus .stats,body.pack-focus .mode-nav,body.pack-focus .modes,body.pack-focus .char-showcase,body.pack-focus .recent{opacity:.25;pointer-events:none;transition:opacity .5s}
+body.pack-focus .stage{position:relative;z-index:5}
 .stage{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 10px 6px;perspective:1400px;position:relative;min-height:420px}
 /* 卡包 3D */
 .pack-scene{position:relative;width:260px;height:364px;transform-style:preserve-3d;transition:transform .1s;touch-action:none;cursor:grab}
+body.pack-focus .pack-scene{transform:scale(1.08)}
 .pack-scene:active{cursor:grabbing}
 .pack{position:absolute;inset:0;border-radius:6px;overflow:hidden;box-shadow:0 30px 60px rgba(120,90,20,.35),0 8px 20px rgba(0,0,0,.15);transform-style:preserve-3d;background:#c9a227}
 /* 锡箔质感层 */
@@ -774,6 +779,8 @@ function endTear(success){
 packScene.addEventListener("pointerup",()=>endTear(tearProgress()>=0.55));
 packScene.addEventListener("pointercancel",()=>endTear(false));
 function preDraw(){
+  // 进入沉浸模式：背景暗化，聚焦卡包
+  document.body.classList.add("pack-focus");
   drawnCards=[];
   for(let i=0;i<5;i++) drawnCards.push(drawCard(i===4));
   drawnCards.sort((a,b)=>RARITY_ORDER[a[2]]-RARITY_ORDER[b[2]]);
@@ -789,6 +796,8 @@ function completeOpen(){
   setTimeout(revealCards,500);
 }
 function revealCards(){
+  // 退出沉浸模式（卡片揭示时恢复正常亮度）
+  document.body.classList.remove("pack-focus");
   packCount++;
   points+=5; // 每开一包得 5 萌友点
   let newCount=0;
