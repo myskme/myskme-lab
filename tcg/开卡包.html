@@ -64,9 +64,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .tear-progress .fill{height:100%;background:linear-gradient(90deg,#d4af37,#f0d98c);width:0%;transition:width .1s}
 .hint{margin-top:12px;font-size:14px;color:#6a5d40;letter-spacing:1px;text-align:center;line-height:1.6}
 .hint b{color:#8a6d1a}
-.finger-hint{position:absolute;left:50%;top:32%;width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#f0d98c);border:2px solid #c9a227;box-shadow:0 6px 18px rgba(200,160,40,.5),0 0 0 8px rgba(240,217,140,.2);transform:translate(-50%,-50%);z-index:10;animation:fingerMove 2.2s infinite;pointer-events:none}
-.finger-hint::after{content:"";position:absolute;left:50%;top:55%;width:3px;height:20px;background:#8a6d1a;transform:translateX(-50%);border-radius:2px}
-@keyframes fingerMove{0%,100%{transform:translate(-50%,-50%) translateX(-60px)}50%{transform:translate(-50%,-50%) translateX(60px)}}
 /* 出卡区 */
 .cards-zone{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:20;flex-direction:column}
 .cards-zone.show{display:flex}
@@ -435,7 +432,6 @@ document.addEventListener("DOMContentLoaded",()=>{
 <div class="edge"></div>
 </div>
 </div>
-<div class="finger-hint" id="fingerHint"></div>
 <div class="tear-progress"><div class="fill" id="tearFill"></div></div>
 <div class="hint" id="hint">按住卡包，<b>沿任意方向拖动</b><br>撕开锡箔</div>
 </div>
@@ -623,7 +619,7 @@ function drawCard(isLast){let r=Math.random();if(isLast){if(r<0.10)return pick(P
 // ---- 卡包 Canvas 撕纸 ----
 const packScene=document.getElementById("packScene"), pack=document.getElementById("pack"),
   canvas=document.getElementById("packCanvas"), pctx=canvas.getContext("2d"),
-  sheen=document.getElementById("sheen"), fingerHint=document.getElementById("fingerHint"),
+  sheen=document.getElementById("sheen"),
   tearFill=document.getElementById("tearFill"), hint=document.getElementById("hint");
 let packImg=new Image(), packReady=false, tearing=false, tearPath=[], tornPixels=0, totalPixels=0, opened=false, lastTearSound=0;
 packImg.onload=()=>{ packReady=true; drawPack(); };
@@ -720,7 +716,6 @@ packScene.addEventListener("pointerdown",e=>{
   lastX=(e.clientX-r.left)/r.width*canvas.width;
   lastY=(e.clientY-r.top)/r.height*canvas.height;
   packScene.setPointerCapture(e.pointerId);
-  fingerHint.style.display="none";
   if(drawnCards.length===0) preDraw();
 });
 packScene.addEventListener("pointermove",e=>{
@@ -764,7 +759,6 @@ function completeOpen(){
   tearFill.style.width="100%";
   // 包淡出 + 卡片从包里滑出
   pack.style.transition="all .5s ease"; pack.style.transform="scale(.85)"; pack.style.opacity="0";
-  fingerHint.style.display="none";
   setTimeout(revealCards,500);
 }
 function revealCards(){
@@ -850,7 +844,6 @@ document.getElementById("againBtn").onclick=()=>{
   opened=false; drawnCards=[]; tearPath=[]; tornPixels=0;
   pack.style.transition="none"; pack.style.transform=""; pack.style.opacity="1";
   tearFill.style.width="0%";
-  fingerHint.style.display="block";
   hint.innerHTML="按住卡包，<b>沿任意方向拖动</b><br>撕开锡箔";
   packScene.style.transform="";
   if(packReady) drawPack();
