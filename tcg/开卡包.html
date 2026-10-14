@@ -922,13 +922,27 @@ document.getElementById("shareBtn").onclick=()=>{
       ctx.fillText(c[2],x+w/2,y+h+44);
       loaded++;
       if(loaded===drawnCards.length){
-        ctx.fillStyle="#a09070"; ctx.font="14px sans-serif";
-        ctx.fillText("扫码一起来开包",450,470);
-        ctx.fillText("https://myskme.github.io/myskme-lab/tcg/开卡包.html",450,495);
-        const a=document.createElement("a");
-        a.download="百变萌友-开包战报.png";
-        a.href=canvas.toDataURL("image/png");
-        a.click();
+        // 二维码：用 api.qrserver 生成，嵌到分享图
+        const qrImg=new Image();
+        qrImg.crossOrigin="anonymous";
+        qrImg.onload=()=>{
+          ctx.drawImage(qrImg,400,430,80,80);
+          ctx.fillStyle="#a09070"; ctx.font="14px sans-serif";
+          ctx.fillText("扫码一起来开包",450,520-14);
+          const a=document.createElement("a");
+          a.download="百变萌友-开包战报.png";
+          a.href=canvas.toDataURL("image/png");
+          a.click();
+        };
+        qrImg.onerror=()=>{
+          ctx.fillStyle="#a09070"; ctx.font="14px sans-serif";
+          ctx.fillText("https://myskme.github.io/myskme-lab/tcg/开卡包.html",450,495);
+          const a=document.createElement("a");
+          a.download="百变萌友-开包战报.png";
+          a.href=canvas.toDataURL("image/png");
+          a.click();
+        };
+        qrImg.src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data="+encodeURIComponent("https://myskme.github.io/myskme-lab/tcg/开卡包.html");
       }
     };
     img.onerror=()=>{ loaded++; if(loaded===drawnCards.length){ alert("图片加载失败，请重试"); } };
