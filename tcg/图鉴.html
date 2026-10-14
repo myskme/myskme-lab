@@ -33,7 +33,11 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .series-head .pct{font-size:12px;color:#8a7d60;white-space:nowrap}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
 .card{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;background:#fffdf5;border:1px solid #d4c89a;box-shadow:0 3px 12px rgba(120,90,20,.12),inset 0 0 0 1px rgba(255,255,255,.6);transition:transform .15s,box-shadow .15s}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.5) 45%,transparent 60%);transform:translateX(-100%);pointer-events:none;z-index:2}
+.card:hover::after{transform:translateX(100%);transition:transform .7s}
 .card:hover{transform:translateY(-4px) scale(1.01);box-shadow:0 12px 28px rgba(120,90,20,.22),inset 0 0 0 1px rgba(255,255,255,.6)}
+.card.not-collected::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,220,100,.15) 50%,transparent 60%);z-index:1;pointer-events:none;animation:shimmer 3s infinite}
+@keyframes shimmer{0%,100%{opacity:0}50%{opacity:1}}
 .card img{width:100%;display:block;border-bottom:1px solid #e8ddb8}
 .card .name{padding:7px 8px 8px;font-size:12px;text-align:center;font-weight:600}
 .card .meta{font-size:10px;color:#999;text-align:center;padding-bottom:7px}
