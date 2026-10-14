@@ -2,12 +2,16 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>百变萌友 · 图鉴</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#e8dcc0;background-image:radial-gradient(ellipse at 20% 10%,rgba(255,255,255,.4) 0%,transparent 50%),repeating-linear-gradient(0deg,transparent 0 28px,rgba(120,90,20,.03) 28px 29px);color:#3a3226;font-family:"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
-.top{text-align:center;padding:24px 16px 8px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+html{-webkit-text-size-adjust:100%;touch-action:manipulation}
+body{background:#e8dcc0;background-image:radial-gradient(ellipse at 20% 10%,rgba(255,255,255,.4) 0%,transparent 50%),repeating-linear-gradient(0deg,transparent 0 28px,rgba(120,90,20,.03) 28px 29px);color:#3a3226;font-family:"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;padding-bottom:env(safe-area-inset-bottom,0);overscroll-behavior-y:contain}
+input,textarea{-webkit-user-select:text;user-select:text}
+.top{text-align:center;padding:calc(20px + env(safe-area-inset-top,0)) 16px 8px}
 .top h1{font-size:30px;color:#8a6d1a;letter-spacing:8px;font-weight:800;text-shadow:0 1px 0 #fff,0 2px 8px rgba(200,160,40,.2)}
 .top p{font-size:11px;color:#a09070;margin-top:4px;letter-spacing:3px}
 .bar{max-width:1100px;margin:12px auto;padding:0 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
@@ -54,6 +58,26 @@ body{background:#e8dcc0;background-image:radial-gradient(ellipse at 20% 10%,rgba
 .modal .m-status.no{color:#b04040}
 .modal .close{position:absolute;top:16px;right:20px;color:#fff;font-size:32px;cursor:pointer}
 @media(max-width:520px){.grid{grid-template-columns:repeat(3,1fr);gap:8px}.top h1{font-size:22px}}
+/* iPhone 优先响应式 */
+@media(max-width:430px){
+  .top h1{font-size:24px;letter-spacing:5px}
+  .bar{padding:0 10px;gap:8px}
+  .bar input{padding:10px 14px;font-size:13px;min-height:44px}
+  .bar select{padding:10px 10px;font-size:13px;min-height:44px}
+  .grid{grid-template-columns:repeat(3,1fr);gap:10px}
+  .card .name{font-size:11px;padding:5px 4px 6px}
+  .series-head{padding:8px 10px;margin:14px 0 8px}
+  .series-head h2{font-size:14px}
+}
+@media(max-width:375px){
+  .top h1{font-size:21px;letter-spacing:4px}
+  .grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .card .name{font-size:10px}
+}
+@media(min-width:768px){
+  .series-group{max-width:900px}
+  .grid{grid-template-columns:repeat(5,1fr)}
+}
 </style>
 </head>
 <body>
