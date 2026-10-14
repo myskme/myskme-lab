@@ -201,6 +201,21 @@ document.addEventListener("DOMContentLoaded",()=>{
   for(const k in ch){ const el=document.getElementById(ch[k]); if(el) el.src=EMBEDDED_TOKENS[k]; }
 });
 </script>
+
+<script>
+// WebP 检测：支持则用 .webp，否则用 .jpg
+window.USE_WEBP = false;
+(function(){
+  try{
+    const c = document.createElement('canvas');
+    window.USE_WEBP = c.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+  }catch(e){ window.USE_WEBP = false; }
+})();
+function webpUrl(url){
+  if(!window.USE_WEBP) return url;
+  return url.replace(/\.jpg$/i, '.webp').replace(/\.png$/i, '.webp');
+}
+</script>
 </head>
 <body>
 <div class="bg"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div><div class="vignette"></div><div id="dustContainer"></div></div>
@@ -820,7 +835,7 @@ function revealCards(){
   drawnCards.forEach((c,i)=>{
     const slot=document.createElement("div");
     slot.className="slot"+(c[2]==="SSR"?" r-ssr":"")+(c[2]==="UR"?" r-ur":"");
-    slot.innerHTML=`<div class="slot-inner"><div class="face back"><img src="${BACK}"></div><div class="face front"><img src="${c[3]}"><div class="holo"><div class="rainbow"></div><div class="sparkle"></div><div class="shine"></div></div></div></div>${(c[2]==="SSR"||c[2]==="UR")?`<span class="r-badge">${c[2]}</span>`:""}`;
+    slot.innerHTML=`<div class="slot-inner"><div class="face back"><img src="${BACK}"></div><div class="face front"><img src="${webpUrl(c[3])}"><div class="holo"><div class="rainbow"></div><div class="sparkle"></div><div class="shine"></div></div></div></div>${(c[2]==="SSR"||c[2]==="UR")?`<span class="r-badge">${c[2]}</span>`:""}`;
     if(c[2]==="SSR"||c[2]==="UR") slot.classList.add("shaking");
     slot.addEventListener("click",()=>{
       if(slot.classList.contains("flipped")){ openCardDetail(drawnCards.indexOf(c)); return; }
@@ -946,7 +961,7 @@ document.getElementById("shareBtn").onclick=()=>{
       }
     };
     img.onerror=()=>{ loaded++; if(loaded===drawnCards.length){ alert("图片加载失败，请重试"); } };
-    img.src=c[3];
+    img.src=webpUrl(c[3]);
   });
 };
 updateStats();
@@ -1012,7 +1027,7 @@ function renderWonder(){
     div.onclick=()=>{
       if(div.classList.contains("flipped")) return;
       div.classList.add("flipped","picked");
-      div.innerHTML=`<img src="${c[3]}">`;
+      div.innerHTML=`<img src="${webpUrl(c[3])}">`;
       playFlip();
       const key=c[0]+"-"+c[1];
       const isNew=!collected.has(key);
@@ -1047,7 +1062,7 @@ function renderShop(){
   });
   grid.innerHTML=filtered.slice(0,60).map(c=>{
     const owned=collected.has(c[0]+"-"+c[1]);
-    return `<div class="shop-item ${owned?"owned":""}" data-num="${c[0]}"><img src="${c[3]}" loading="lazy"><div class="s-name">${c[1]}</div><div class="s-cost">${owned?"已拥有":SHOP_COST[c[2]]+" 点"}</div></div>`;
+    return `<div class="shop-item ${owned?"owned":""}" data-num="${c[0]}"><img src="${webpUrl(c[3])}" loading="lazy"><div class="s-name">${c[1]}</div><div class="s-cost">${owned?"已拥有":SHOP_COST[c[2]]+" 点"}</div></div>`;
   }).join("");
   grid.querySelectorAll(".shop-item").forEach(el=>{
     el.onclick=()=>{
@@ -1096,7 +1111,7 @@ function renderRecent(){
   if(!recentPulls.length){ wrap.style.display="none"; return; }
   wrap.style.display="block";
   const grid=document.getElementById("recentGrid");
-  grid.innerHTML=recentPulls.slice(-8).reverse().map(c=>`<div class="recent-card"><img src="${c[3]}" loading="lazy"><div class="rc-name">${c[1]}</div><div class="rc-rarity">${c[2]}</div></div>`).join("");
+  grid.innerHTML=recentPulls.slice(-8).reverse().map(c=>`<div class="recent-card"><img src="${webpUrl(c[3])}" loading="lazy"><div class="rc-name">${c[1]}</div><div class="rc-rarity">${c[2]}</div></div>`).join("");
 }
 function addRecent(cards){
   recentPulls.push(...cards);

@@ -84,6 +84,21 @@ input,textarea{-webkit-user-select:text;user-select:text}
   .grid{grid-template-columns:repeat(5,1fr)}
 }
 </style>
+
+<script>
+// WebP 检测：支持则用 .webp，否则用 .jpg
+window.USE_WEBP = false;
+(function(){
+  try{
+    const c = document.createElement('canvas');
+    window.USE_WEBP = c.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+  }catch(e){ window.USE_WEBP = false; }
+})();
+function webpUrl(url){
+  if(!window.USE_WEBP) return url;
+  return url.replace(/\.jpg$/i, '.webp').replace(/\.png$/i, '.webp');
+}
+</script>
 </head>
 <body>
 <div class="top"><h1>百变萌友 · 图鉴</h1><p>MYSKME · THOUSAND FACES · 286 张 · <a href="开卡包.html" style="color:#8a6d1a;">去开包 →</a></p></div>
@@ -130,7 +145,7 @@ function cardEl(c){
   const has=collected.has(c[0]+"-"+c[1]);
   const d=document.createElement("div");
   d.className="card"+(c[2]==="SSR"?" r-ssr":"")+(c[2]==="UR"?" r-ur":"")+(c[2]==="SR"?" r-sr":"")+(!has?" not-have":"");
-  d.innerHTML=`<img src="${has?('thumbs/'+c[3].replace('.png','.jpg')):('thumbs/卡背-百变萌友-正式.jpg')}" loading="lazy"><div class="name">${has?c[1]:"???"}</div><div class="meta">${c[0]}/292 · ${c[4]}</div>${(c[2]==="SSR"||c[2]==="UR"||c[2]==="SR")?`<span class="badge">${c[2]}</span>`:""}`;
+  d.innerHTML=`<img src="${has?('thumbs/'+webpUrl(c[3]).replace('.png','.jpg')):('thumbs/卡背-百变萌友-正式.jpg')}" loading="lazy"><div class="name">${has?c[1]:"???"}</div><div class="meta">${c[0]}/292 · ${c[4]}</div>${(c[2]==="SSR"||c[2]==="UR"||c[2]==="SR")?`<span class="badge">${c[2]}</span>`:""}`;
   d.onclick=()=>{
     const modalImg=document.getElementById("modalImg");
     if(has){ modalImg.src=c[3].replace(".png",".jpg"); }
