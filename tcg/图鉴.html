@@ -50,7 +50,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
 .modal.show{display:flex}
 .modal .box{background:#faf3e0;border-radius:16px;padding:20px;max-width:340px;text-align:center}
-.modal img{width:100%;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.modal img{width:100%;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.3);transition:transform .15s;transform-style:preserve-3d;cursor:pointer}
+.modal .box{perspective:1000px}
 .modal .m-name{font-size:18px;font-weight:700;color:#8a6d1a;margin:12px 0 4px}
 .modal .m-meta{font-size:13px;color:#8a7d60}
 .modal .m-status{margin-top:8px;font-size:13px;font-weight:600}
@@ -169,6 +170,17 @@ function render(){
 ["search","rarity","series","have","sort","groupBy"].forEach(id=>document.getElementById(id).addEventListener("input",render));
 document.getElementById("modal").onclick=e=>{if(e.target.id==="modal")e.target.classList.remove("show");};
 render();
+// 图鉴详情 3D 倾斜
+const modalImg=document.getElementById("modalImg");
+const modalBox=document.querySelector(".modal .box");
+if(modalBox && modalImg){
+  modalBox.addEventListener("pointermove",e=>{
+    const r=modalImg.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+    modalImg.style.transform=`rotateY(${x*16}deg) rotateX(${-y*16}deg) scale(1.02)`;
+  });
+  modalBox.addEventListener("pointerleave",()=>{ modalImg.style.transform=""; });
+}
 </script>
 </body>
 </html>
