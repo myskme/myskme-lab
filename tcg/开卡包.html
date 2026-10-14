@@ -7,13 +7,16 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:#f5ead0;color:#3a3226;font-family:"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;overflow:hidden}
-/* 背景：柔和渐变 + 光斑 */
+/* 背景：柔和渐变 + 光斑 + 漂浮金尘 + 暗角 */
 .bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 30% 20%,#fff6d8 0%,#f5ead0 40%,#e8d9ae 100%);overflow:hidden}
 .bg .orb{position:absolute;border-radius:50%;filter:blur(40px);opacity:.5}
 .bg .orb1{width:300px;height:300px;background:#ffeaa7;top:-50px;left:-50px;animation:drift 12s infinite alternate}
 .bg .orb2{width:250px;height:250px;background:#ffd6a5;bottom:-30px;right:-30px;animation:drift 15s infinite alternate-reverse}
 .bg .orb3{width:180px;height:180px;background:#fff;top:40%;left:60%;animation:drift 18s infinite alternate}
 @keyframes drift{from{transform:translate(0,0)}to{transform:translate(30px,20px)}}
+.bg .vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(120,90,20,.12) 100%);pointer-events:none}
+.bg .dust{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,220,100,.8) 0%,rgba(255,220,100,0) 70%);pointer-events:none;animation:floatDust linear infinite}
+@keyframes floatDust{0%{transform:translateY(0) translateX(0);opacity:0}10%{opacity:.8}90%{opacity:.6}100%{transform:translateY(-100vh) translateX(20px);opacity:0}}
 .wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
 .top{text-align:center;padding:18px 16px 2px}
 .top h1{font-size:26px;color:#8a6d1a;letter-spacing:6px;font-weight:800;text-shadow:0 1px 0 #fff}
@@ -133,7 +136,7 @@ document.addEventListener("DOMContentLoaded",()=>{
 </script>
 </head>
 <body>
-<div class="bg"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
+<div class="bg"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div><div class="vignette"></div><div id="dustContainer"></div></div>
 <div class="wrap">
 <!-- 顶部导航 -->
 <div class="navbar">
@@ -960,6 +963,23 @@ function addRecent(cards){
   renderRecent();
 }
 renderRecent();
+// 背景金尘粒子
+function initDust(){
+  const container=document.getElementById("dustContainer");
+  if(!container) return;
+  for(let i=0;i<18;i++){
+    const d=document.createElement("div");
+    d.className="dust";
+    const size=3+Math.random()*6;
+    d.style.width=size+"px"; d.style.height=size+"px";
+    d.style.left=Math.random()*100+"%";
+    d.style.top=(60+Math.random()*40)+"%";
+    d.style.animationDuration=(12+Math.random()*18)+"s";
+    d.style.animationDelay=(Math.random()*10)+"s";
+    container.appendChild(d);
+  }
+}
+initDust();
 </script>
 </body>
 </html>
