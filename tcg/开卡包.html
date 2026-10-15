@@ -290,8 +290,7 @@ function webpUrl(url){
   const preferred=url.replace(/\.png$/i,'.jpg');
   return window.USE_WEBP?preferred.replace(/\.jpg$/i,'.webp'):preferred;
 }
-const TCG_RAW_UR_FILES=new Set(["127-682-龙女鱼小姐.png","128-682-茶神咕咕.png","129-682-凤凰蛋.png","130-682-白龙马驴.png","131-682-青蛇.png","148-682-盘古蛋.png","156-682-阿特拉斯驴.png","157-682-波塞冬鱼小姐.png","160-682-宙斯咕咕.png","164-682-齐天大圣.png","171-682-奥丁咕咕.png","172-682-耶梦加得蛇.png","263-682-混沌蛋.png","269-682-烛龙蛇.png","537-682-老子咕咕·太上老君.png","539-682-奥丁咕咕·独眼神王.png","546-682-齐天大圣·斗战胜佛.png","CR-682-赛博猴·午夜霓虹.png"]);
-function fullCardUrl(url){return TCG_RAW_UR_FILES.has(url)?url:url.replace(/\.png$/i,".jpg");}
+function fullCardUrl(url){return url.replace(/\.png$/i,".jpg");}
 </script>
 <style id="tcg-fx-style">
 /* TCG visual candidate v1.0. Existing raster card content stays untouched. */

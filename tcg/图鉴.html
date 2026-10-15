@@ -158,7 +158,7 @@ function cardEl(c){
   d.addEventListener("pointerleave",()=>{ d.style.transform=""; });
   d.onclick=()=>{
     const modalImg=document.getElementById("modalImg");
-    if(has){ modalImg.src=c[3]; }
+    if(has){ modalImg.src=c[3].replace(/\.png$/i,'.jpg'); }
     else{ modalImg.src="卡背-百变萌友-正式.png"; }
     document.getElementById("modalName").textContent=has?c[1]:"???";
     document.getElementById("modalMeta").textContent=`${c[0]==="CR"?"CR · 隐藏款":c[0]+"/682"} · ${seriesOf(c)} · ${c[2]}`;
