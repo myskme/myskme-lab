@@ -1,10 +1,10 @@
-/* 百变萌友 TCG · Service Worker v3.0
+/* 百变萌友 TCG · Service Worker v4.0 (682)
  * 策略：
  * - 图片：缓存优先（Cache-first），首次加载后存本地，之后秒开
  * - HTML：网络优先（Network-first），保证拿到最新版，离线时回退缓存
  * - 增量更新：版本号变化时旧缓存自动清理
  */
-const CACHE_NAME = 'tcg-v3.0';
+const CACHE_NAME = 'tcg-v4.0';
 const CORE_FILES = [
   './开卡包.html',
   './图鉴.html',
