@@ -23,6 +23,18 @@
   .card .go{margin-top:4px;font-size:11px;color:#d4a94e;letter-spacing:2px}
   footer{text-align:center;flex:none;margin-top:8px;font-size:11px;color:#6b5f45;letter-spacing:1px;line-height:1.7}
 </style>
+
+<style>
+/* ===== Duo 展开态（≥768px）本地候选 v1 · 只增不改：<768px 原样 ==== */
+@media (min-width:768px){
+  .wrap{max-width:1080px;}
+  .cards{
+    display:grid;grid-template-columns:1fr 1fr;
+    gap:14px 96px;align-content:start;overflow-y:auto;
+  }
+  .card{flex:none;}
+}
+</style>
 </head>
 <body>
 <div class="wrap">

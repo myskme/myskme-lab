@@ -411,6 +411,33 @@ body.bt17 .av{box-shadow:0 0 0 2px #FFD700,0 0 10px rgba(255,215,0,.7)}
 .tiercell svg{width:36px;height:36px}
 .tiercell.cur{border-color:var(--gold);background:#FFFDF6}
 </style>
+
+<style>
+/* ===== Duo 展开态（≥768px）本地候选 v1 · 只增不改：<768px 原样 ====
+   说明：折叠态（<768px，含 640px 锁宽与 420px 断点）零改动 */
+@media (min-width:768px){
+  #app{max-width:1080px;}
+  /* 游戏主屏：左棋盘 + 右信息列 */
+  #sGame{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 300px;
+    grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-areas:"top top" "board plist" "board log";
+    column-gap:20px;align-content:start;
+  }
+  #sGame>#topbar{grid-area:top;}
+  #sGame>#boardWrap{grid-area:board;min-height:0;min-width:0;overflow:auto;}
+  #sGame>#plist{grid-area:plist;margin-top:0;max-height:none;overflow-y:auto;
+    grid-template-columns:1fr;align-content:start;}
+  #sGame>#log{grid-area:log;margin-top:0;}
+  /* 标题 / 设置屏：内容收窄居中，避免展开态过散 */
+  #sTitle .tInner{max-width:560px;margin:0 auto;width:100%;}
+  #sSetup>#setbox{max-width:640px;margin:0 auto;width:100%;}
+  /* 弹窗类（答题 modal / 教程）：居中会被折痕切分，改左对齐避开中线 ±40px */
+  #modal{justify-content:flex-start;}
+  #tut{justify-content:flex-start;}
+}
+</style>
 </head>
 <body>
 <div id="app">
