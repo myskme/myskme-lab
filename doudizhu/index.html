@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>猴先生斗地主 · 原型 v0.8</title>
+<title>猴先生斗地主 · 原型 v0.8.1</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -355,6 +355,9 @@
     box-shadow:0 3px 8px rgba(0,0,0,.5); border:1px solid rgba(201,162,77,.45);}
   .openfan img+img{margin-left:-20px;}
   .openfan img.wild{box-shadow:0 0 0 2.5px var(--gold-l), 0 3px 8px rgba(0,0,0,.5);}
+  /* v0.8.1: 复盘亮牌时把张数徽标提到亮牌行之上——亮牌行 z-index 5、徽标常态 z-index 3,
+     向内展开的一侧会整段压住徽标只剩一瓣边; 仅 reviewing 作用域提层, 普通对局界面不动 */
+  body.reviewing .backfan .countbadge{z-index:6;}
   .review-note.open-note{font-size:12.5px; color:#a9bcb0;}
   body.elder .review-note.open-note{font-size:16px;}
   @media (max-width:640px){
@@ -419,7 +422,7 @@
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">猴先生斗地主 <small>原型 v0.8 · 茶肆夜话桌</small></div>
+    <div class="title">猴先生斗地主 <small>原型 v0.8.1 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1272,7 +1275,9 @@ function renderStats(){ $('uiStats').textContent = stats.win+' 胜 / '+stats.tot
    计分公式: 胜 delta = 本局得分 + 4(基础胜分); 负 delta = -(本局得分 + 2)(基础负分);
    保级: 实扣不跌穿本局开局时所在大段的最低分(大段底 = 大段序号 × 300, 大师 1500)。
    赛季: 自然月一季; 跨月首次读取时结算上赛季(最终段位写入 history, 最多留 6 条),
-   新赛季段位分软重置到「上赛季最终大段 - 1 档」的起点(青铜保底 0)。 */
+   新赛季段位分软重置到「上赛季最终大段 - 1 档」的起点(青铜保底 0)。
+   注(v0.8.1): 段位名函数叫 tierName(points); 牌面点数标签是 rankName(v)(引擎后 UI 段),
+   两者绝不可重名——v0.8 首版曾同名冲突, 后声明覆盖先声明, 解说/点评里的点数全被段位名顶掉。 */
 const RANK_MAJORS = ['青铜','白银','黄金','铂金','钻石','大师'];
 const RANK_STEP = 100;        // 每小段分差
 const RANK_WIN_BASE = 4;      // 基础胜分
@@ -1280,7 +1285,7 @@ const RANK_LOSE_BASE = 2;     // 基础负分
 function rankIndex(points){ return Math.min(15, Math.floor(Math.max(0, points) / RANK_STEP)); }   // 0..14 小段, 15 大师
 function rankMajorIndex(points){ const i = rankIndex(points); return i>=15 ? 5 : Math.floor(i/3); }
 function rankMajorFloor(points){ return rankMajorIndex(points) * 300; }
-function rankName(points){
+function tierName(points){
   const i = rankIndex(points);
   if(i>=15) return '大师';
   return RANK_MAJORS[Math.floor(i/3)] + ' ' + ['III','II','I'][i%3];
@@ -1301,7 +1306,7 @@ function rankData(){
     if(!Array.isArray(rankStore.history)) rankStore.history = [];
   }
   if(rankStore.season !== currentSeason()){
-    rankStore.history.unshift({season: rankStore.season, points: rankStore.points, rank: rankName(rankStore.points)});
+    rankStore.history.unshift({season: rankStore.season, points: rankStore.points, rank: tierName(rankStore.points)});
     rankStore.history = rankStore.history.slice(0, 6);
     rankStore.points = Math.max(0, rankMajorIndex(rankStore.points) - 1) * 300;
     rankStore.season = currentSeason();
@@ -1319,14 +1324,14 @@ function applyRankResult(myWin, score){
   if(afterPts < floor) afterPts = floor;
   rk.points = afterPts;
   saveRank();
-  return {delta: afterPts - beforePts, beforePts, afterPts, promoted: rankIndex(afterPts) > beforeIdx, name: rankName(afterPts)};
+  return {delta: afterPts - beforePts, beforePts, afterPts, promoted: rankIndex(afterPts) > beforeIdx, name: tierName(afterPts)};
 }
 function rankBarHTML(){
   const rk = rankData();
   const nxt = rankNextThreshold(rk.points);
-  const nextTxt = nxt===null ? '已是最高段位' : '距 '+rankName(nxt)+' 还差 '+(nxt-rk.points)+' 分';
+  const nextTxt = nxt===null ? '已是最高段位' : '距 '+tierName(nxt)+' 还差 '+(nxt-rk.points)+' 分';
   const last = rk.history.length ? '<br>上赛季（'+seasonLabel(rk.history[0].season)+'）定格 '+rk.history[0].rank+' · '+rk.history[0].points+' 分' : '';
-  return '<div class="rankbar"><span class="rank-badge">'+rankName(rk.points)+'</span>' +
+  return '<div class="rankbar"><span class="rank-badge">'+tierName(rk.points)+'</span>' +
     '<span class="rank-info">'+seasonLabel(rk.season)+'赛季 · 段位分 <b>'+rk.points+'</b><br>'+nextTxt+last+'</span></div>';
 }
 
@@ -1509,7 +1514,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.8</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.8.1</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
