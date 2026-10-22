@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.1</title>
+<title>萌友斗地主 · 原型 v1.2</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -193,6 +193,24 @@
   #modeNote.show{display:block;}
   #counterBar .cell.wildcell{border-color:var(--gold-l); background:rgba(201,162,77,.25);}
   #counterBar .cell.wildcell span{color:var(--gold-l);}
+
+  /* ---------- v1.2: 台词气泡 / 生涯页 ---------- */
+  #meInfo{position:relative;}
+  #bubP{bottom:calc(100% + 8px); top:auto; left:50%; transform:translate(-50%,4px); width:max-content;}
+  #bubP.show{transform:translate(-50%,0);}
+  #bubP::after{left:50%; margin-left:-7px;}
+  #btnPhrase{padding:3px 12px; font-size:12.5px; border-radius:999px; letter-spacing:1px;}
+  #phrasePanel{
+    display:none; flex-wrap:wrap; gap:7px; justify-content:center; padding:7px 10px; margin-bottom:4px;
+    background:rgba(7,24,21,.82); border:1px solid rgba(201,162,77,.4); border-radius:12px;
+  }
+  #phrasePanel.open{display:flex;}
+  #phrasePanel .phrasebtn{
+    padding:6px 13px; font-size:13.5px; border-radius:999px; letter-spacing:.5px;
+    background:rgba(247,239,220,.1); border-color:rgba(201,162,77,.55);
+  }
+  body.elder #phrasePanel .phrasebtn{font-size:17px; padding:10px 18px;}
+  .panel .career-note{font-size:12px; color:#a9bcb0; margin-top:10px; line-height:1.55;}
   .hwrap{position:relative; flex:none;}
   #hand img.hcard.wild{box-shadow:0 0 0 3px var(--gold-l), 0 4px 14px rgba(231,200,119,.6);}
   .wildtag{
@@ -297,7 +315,10 @@
   body.elder .chip b{font-size:20px;}
   body.elder button{min-height:60px; padding:12px 22px; font-size:19px; border-radius:12px;}
   body.elder .elder-hide{display:none !important;}
-  body.elder #counterBar{display:none !important;}
+  body.elder #counterBar .cell{min-width:40px; padding:5px 5px;}
+  body.elder #counterBar .cell b{font-size:19px;}
+  body.elder #counterBar .cell span{font-size:13.5px;}
+  body.elder #counterBar .lab{font-size:16px;}
   body.elder #modeNote{display:none !important;}
   body.elder .avatar{width:60px; height:60px;}
   body.elder #meInfo .avatar{width:68px; height:68px;}
@@ -468,7 +489,7 @@
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small>原型 v1.1 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small>原型 v1.2 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -508,10 +529,13 @@
 
   <div id="playerArea">
     <div id="actionBar"></div>
+    <div id="phrasePanel"></div>
     <div id="meRow">
       <div id="meInfo">
         <img class="avatar" src="assets/头像-monkey.webp" alt="">
         <div class="nm">你</div><div class="role" id="roleP">农民</div>
+        <button class="ghost" id="btnPhrase" style="display:none">台词</button>
+        <div class="bubble" id="bubP"></div>
       </div>
       <div id="hand"></div>
     </div>
@@ -1309,6 +1333,61 @@ const $=id=>document.getElementById(id);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const pickOne=a=>a[Math.floor(Math.random()*a.length)];
 
+/* ---------- v1.2: 快捷台词(纯文字气泡, 无语音) ----------
+   每位角色 9 条正典口吻短句(催促/得意/求饶/调侃/招呼混排)。
+   单机: 玩家角色固定猴先生; 点一条 -> 自己头像冒泡, AI 对手有概率以其角色台词回一句。
+   联机: 只发 phraseId, 服务端仅转发(后端 v1.0.1 起支持); 前端按 state.caps.phrase
+   判断能力, 线上后端未升级时入口自动隐藏, 不留假按钮。 */
+const PHRASES = {
+  monkey:['都别磨蹭，看我的。','这把我先走一步。','桃子在手，心里不慌。','哎，手别抖啊。','求带飞？没门，自己打。','哈哈，手气正旺。','稳住，我们能赢。','大王说不定在我这儿呢。','不急，好戏在后头。'],
+  fish:['跟上跟上！','我先冲啦，你们掩护。','别怕，有我呢。','哎呀，让我想想。','这把稳稳的。','输了也没关系，再来一局。','看我的小连招。','茶都泡好了，慢慢打。','赢了我请大家喝茶。'],
+  teapot:['催也没用，我这火是文火。','慢慢来，先润润喉。','茶要慢泡，牌要慢打。','火候未到，急不得。','这把，我看行。','输赢都是茶，喝完再来。','年轻人，沉住气。','我这壶，还没开呢。','不急，先晾着。'],
+  egg:['啊……到我了？','我，我可以的。','别看我这样，我壳硬着呢。','呜，让我想想嘛。','这把，我不想输。','你们打慢一点点。','我会努力跟上的。','过……等一下，我再看看。','我居然有点紧张。'],
+  donkey:['出。','过。','就这。','随便。','哼，看牌。','别废话，出牌。','意料之中。','我没意见。','快。'],
+  snake:['你手里剩什么，我都清楚。','慢慢玩，不着急。','让给你。','哦？有点意思。','算到了。','别装了，出吧。','这把，我看穿了。','急什么，好戏在后头。','输赢，我都记着。'],
+};
+function myPhraseCharKey(){
+  if(G && G.online && ON.state && ON.state.seats && ON.state.seats[ON.seat]) return ON.state.seats[ON.seat].charKey || 'monkey';
+  return 'monkey';
+}
+function phraseCapable(){
+  if(!G || typeof review!=='undefined' && review) return false;
+  if(G.online) return !!(ON.inGame && ON.state && ON.state.caps && ON.state.caps.phrase);
+  return true;
+}
+function refreshPhraseUI(){
+  const b = $('btnPhrase'); if(!b) return;
+  const okk = phraseCapable();
+  b.style.display = okk ? '' : 'none';
+  if(!okk){ const pp = $('phrasePanel'); if(pp) pp.classList.remove('open'); }
+}
+function togglePhrasePanel(){
+  const pp = $('phrasePanel'); if(!pp || !phraseCapable()) return;
+  if(pp.classList.contains('open')){ pp.classList.remove('open'); return; }
+  const list = PHRASES[myPhraseCharKey()] || PHRASES.monkey;
+  pp.innerHTML = list.map((t,i)=>'<button type="button" class="phrasebtn" onclick="sendPhrase('+i+')">'+t+'</button>').join('');
+  pp.classList.add('open');
+}
+function sendPhrase(idx){
+  const list = PHRASES[myPhraseCharKey()] || PHRASES.monkey;
+  const text = list[idx]; if(!text) return;
+  const pp = $('phrasePanel'); if(pp) pp.classList.remove('open');
+  say(0, text);
+  Snd.play('tap', .5);
+  if(G && G.online){
+    if(ON.ws) ON.ws.send(JSON.stringify({ type:'phrase', phraseId: idx }));
+    return;
+  }
+  /* 单机: AI 对手有概率以其角色的台词回一句 */
+  if(Math.random() < .55){
+    const seats = [1,2].filter(s=>G.aiChar[s] && PHRASES[G.aiChar[s]]);
+    if(seats.length){
+      const s = pickOne(seats);
+      setTimeout(()=>{ if(G && !G.online && G.aiChar[s]) say(s, pickOne(PHRASES[G.aiChar[s]])); }, paceDelay(900));
+    }
+  }
+}
+
 
 /* ---------- v1.1: 音效与特效 ----------
    音效选型: CC0 采样优先(见同目录 素材清单-v1.1.md), 旋律类与升调用 Web Audio 合成补位;
@@ -1628,6 +1707,65 @@ function rankBarHTML(){
     '<span class="rank-info">'+seasonLabel(rk.season)+'赛季 · 段位分 <b>'+rk.points+'</b><br>'+nextTxt+last+'</span></div>';
 }
 
+/* ---------- v1.2: 战绩生涯 ----------
+   聚合口径: 总场次/总胜率/累计积分取既有 myskme_ddz_stats(自始累计, 只含三场次普通对局);
+   当前段位/历史最高段位取 myskme_ddz_rank(历史最高 = 当前分与历季定格分取大再换算段位名);
+   残局总星取 myskme_ddz_challenge; 每日连续天数取 myskme_ddz_daily。
+   既有存档没有的分项(地主/农民分项胜率、连胜、本人炸弹、春天局数)才新增键
+   myskme_ddz_career 自本版起累计, 只在三场次普通对局结算(finishGame)时更新;
+   残局/每日/联机一律不计。无数据时页面显示「—」并注明起点, 不编造回填。 */
+let careerStore = null;
+function careerData(){
+  if(!careerStore){
+    try{ careerStore = JSON.parse(localStorage.getItem('myskme_ddz_career')||'null'); }catch(e){ careerStore = null; }
+    if(!careerStore || typeof careerStore!=='object')
+      careerStore = {since:'v1.2', lg:0, lw:0, fg:0, fw:0, streak:0, best:0, bombs:0, springs:0};
+    for(const k of ['lg','lw','fg','fw','streak','best','bombs','springs'])
+      if(typeof careerStore[k]!=='number') careerStore[k]=0;
+  }
+  return careerStore;
+}
+function saveCareer(){ localStorage.setItem('myskme_ddz_career', JSON.stringify(careerData())); }
+function recordCareerResult(myWin, spring){
+  const c = careerData();
+  if(G.landlord===0){ c.lg++; if(myWin) c.lw++; } else { c.fg++; if(myWin) c.fw++; }
+  if(myWin){ c.streak++; if(c.streak>c.best) c.best=c.streak; } else c.streak=0;
+  c.bombs += (G.ownBombs||0);
+  if(spring) c.springs++;
+  saveCareer();
+}
+function showCareer(){
+  elderContext = 'menu';
+  setPanelClass();
+  const rk = rankData();
+  const histBestPts = Math.max(rk.points, ...rk.history.map(h=>h.points||0));
+  const c = careerData();
+  const careerGames = c.lg + c.fg;
+  const pct = (w, t) => t>0 ? (Math.round(w/t*1000)/10)+'%' : '—';
+  const rows = [
+    ['总场次', stats.total+' 局'],
+    ['总胜率', stats.total>0 ? pct(stats.win, stats.total)+'（'+stats.win+' 胜）' : '—'],
+    ['累计积分', stats.points+''],
+    ['当前段位', tierName(rk.points)+' · '+rk.points+' 分'],
+    ['历史最高段位', tierName(histBestPts)+' · '+histBestPts+' 分'],
+    ['地主胜率', careerGames? pct(c.lw, c.lg)+'（'+c.lw+' 胜 / '+c.lg+' 局）' : '—'],
+    ['农民胜率', careerGames? pct(c.fw, c.fg)+'（'+c.fw+' 胜 / '+c.fg+' 局）' : '—'],
+    ['最高连胜', careerGames? c.best+' 连胜（当前 '+c.streak+' 连胜）' : '—'],
+    ['打出炸弹', careerGames? c.bombs+' 个' : '—'],
+    ['春天局数', careerGames? c.springs+' 局' : '—'],
+    ['残局总星', totalStars()+' / 60'],
+    ['每日一局', '已连续完成 '+(dailyData().streak||0)+' 天'],
+  ];
+  $('panel').innerHTML =
+    '<h2>战绩生涯</h2><div class="who-win">茶肆夜话桌 · 你的牌桌履历</div>' +
+    '<div class="rankbar"><span class="rank-badge">'+tierName(rk.points)+'</span>' +
+    '<span class="rank-info">'+seasonLabel(rk.season)+'赛季 · 段位分 <b>'+rk.points+'</b><br>历史最高 '+tierName(histBestPts)+'</span></div>' +
+    '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>' +
+    '<button class="primary" onclick="showModeSelect()">返回</button>' +
+    '<div class="career-note">总场次、总胜率、累计积分与段位为全部历史累计；地主/农民胜率、连胜、炸弹与春天自 v1.2 起累计（此前对局无分项记录，不回填）。生涯只统计经典/癞子/不洗牌三场次，残局、每日一局与联机不计入。</div>';
+  $('overlay').classList.add('show');
+}
+
 /* ---------- v0.4: 长辈模式状态 ----------
    elderMode 是用户偏好(选择面板开关, localStorage 记忆); elderContext 区分三场次与残局:
    残局不强制套用长辈模式, 进入选关/关卡时上下文切为 challenge, elderActive() 返回 false。 */
@@ -1934,6 +2072,14 @@ function onWsEvent(m){
   }
   if (!ON.inGame || !G) return;
   const disp = s => (s - ON.seat + 3) % 3;
+  if (m.event === 'phrase'){
+    /* v1.2: 联机台词(后端 v1.0.1 转发 phraseId, 文案在本地按对方角色取) */
+    if (m.seat === ON.seat) return;
+    const srvSeat = ON.state && ON.state.seats ? ON.state.seats[m.seat] : null;
+    const list = srvSeat && PHRASES[srvSeat.charKey];
+    if (list && list[m.phraseId]) say(disp(m.seat), list[m.phraseId]);
+    return;
+  }
   if (m.event === 'play' && m.info && isBombLike(m.info)){
     fxText(m.info.type === 'rocket' ? '王 炸' : (m.info.soft ? '软 炸' : '炸 弹'));
     /* v1.1: 联机炸弹/王炸同样给音效与特效(仅表现层, 不动协议) */
@@ -2197,7 +2343,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.1</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.2</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
@@ -2208,6 +2354,7 @@ function showModeSelect(){
     dailyEntryHTML() +
     '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>二十关固定残局，按最优防守设计：大牌控场、顺子先行、炸弹收尾、送队友先走……通关赢星解锁下一关，三星看你用几手打完。当前总星 '+totalStars()+' / 60。</span></button>' +
     '<button class="modebtn" onclick="showStoryCodex(\'menu\')"><b>故事图鉴</b><span>六位角色各 3 篇小故事，已解锁 '+unlockedStoryCount()+' / 18 篇。赢下对局击败角色，再攒够残局星数，逐篇打开。</span></button>' +
+    '<button class="modebtn" onclick="showCareer()"><b>战绩生涯</b><span>总场次、总胜率、地主与农民分项、连胜、炸弹与春天，外加段位履历，一页看全。</span></button>' +
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
   $('overlay').classList.add('show');
   const uiLv = $('uiLevel'); if(uiLv) uiLv.textContent = LEVEL_NAMES[aiLevel];
@@ -2465,11 +2612,14 @@ function startLevel(idx){
     selected:new Set(), over:false,
   };
   // 记牌器口径: 未出场的牌视为已离场, 只统计三家手里还剩的牌
+  G.trackSeed = {}; G.trackBase = {};
   for(let v=3; v<=17; v++){
     const total = v>=16 ? 1 : 4;
     let inHands = 0;
     for(const h of lv.hands) for(const x of h) if(x===v) inHands++;
     G.playedCount[v] = total - inHands;
+    G.trackSeed[v] = total - inHands;   // v1.2: 种子部分不是真出牌, 记牌器推导时要减掉
+    G.trackBase[v] = inHands;           // v1.2: 本关在局总数
   }
   $('avR').src = CHARS[lv.chars[0]].av; $('nmR').textContent = CHARS[lv.chars[0]].name;
   $('avL').src = CHARS[lv.chars[1]].av; $('nmL').textContent = CHARS[lv.chars[1]].name;
@@ -2711,7 +2861,7 @@ function doPlay(seat, cards, knownInfo){
   for(const c of cards) G.playedCount[c.v]++;
   G.lastPlay = {cards, info}; G.lastOwner = seat; G.passStreak = 0;
   G.playsBySide[roleOf(seat)]++;
-  if(isBombLike(info)){ G.bombs++; G.mult *= 2; fxText(info.type==='rocket'?'王 炸':(info.soft?'软 炸':'炸 弹')); }
+  if(isBombLike(info)){ G.bombs++; if(seat===0) G.ownBombs = (G.ownBombs||0)+1; G.mult *= 2; fxText(info.type==='rocket'?'王 炸':(info.soft?'软 炸':'炸 弹')); }
   // 台词
   if(seat!==0){
     if(isBombLike(info)) say(seat, pickOne(CHARS[G.aiChar[seat]].lines.bomb));
@@ -3124,6 +3274,7 @@ function finishGame(winnerSeat){
   recordStoryDefeats(myWin);
   renderAll();
   const rankInfo = applyRankResult(myWin, score);   // v0.8: 三场次计入赛季段位(残局已在上方分流, 不会走到这里)
+  recordCareerResult(myWin, spring);   // v1.2: 生涯分项累计(与段位同口径, 仅三场次)
   G.result = {winnerSeat, landlordWin, spring, myWin, score, rankInfo};
   G.coachNotes = coachAnalyze();
   renderSettlement();
@@ -3181,22 +3332,25 @@ function centerMsg(t, sub){
 function fxText(t){ const el=$('fxPop'); el.textContent=t; el.classList.remove('boom'); void el.offsetWidth; el.classList.add('boom'); }
 let bubbleTimers={};
 function say(seat, text){
-  const el = seat===1 ? $('bubR') : $('bubL');
+  const el = seat===0 ? $('bubP') : (seat===1 ? $('bubR') : $('bubL'));
+  if(!el) return;
   el.textContent = text; el.classList.add('show');
   clearTimeout(bubbleTimers[seat]);
   bubbleTimers[seat] = setTimeout(()=>el.classList.remove('show'), paceDelay(2000));   // 2 秒自动淡出, 新气泡重置计时
 }
 function hideBubbles(){
-  for(const seat of [1,2]){
+  for(const seat of [0,1,2]){
     clearTimeout(bubbleTimers[seat]);
-    (seat===1 ? $('bubR') : $('bubL')).classList.remove('show');
+    const el = seat===0 ? $('bubP') : (seat===1 ? $('bubR') : $('bubL'));
+    if(el) el.classList.remove('show');
   }
+  const pp = $('phrasePanel'); if(pp) pp.classList.remove('open');
 }
 function renderDipai(reveal){
   $('dipaiCards').innerHTML = G.dipai.map(c=>'<img'+(reveal&&isWildCard(c)?' class="wild"':'')+' src="'+(reveal?cardFile(c):'assets/牌背.webp')+'" alt="">').join('');
 }
 function renderAll(){
-  renderHand(); renderFans(); renderZones(); renderRoles(); renderTurn(); renderCounter();
+  renderHand(); renderFans(); renderZones(); renderRoles(); renderTurn(); renderCounter(); refreshPhraseUI();
   $('uiMult').textContent = '×'+G.mult;
 }
 function renderRoles(){
@@ -3267,16 +3421,46 @@ function renderHand(){
     handEl.appendChild(wrap);
   });
 }
+/* ---------- v1.2: 记牌器(未露面计数) ----------
+   口径(严格只用合法公开信息): 剩余未露面 = 在局总数 − 自己手牌 − 已打出的牌 − 已公开底牌。
+   - 在局总数: 普通场次/联机 = 整副 54 张; 残局/每日局沿用既有口径"未出场的牌视为已离场",
+     只统计关卡三家手里的牌(G.trackBase), 对手手牌虽半公开仍计入未露面(与单机普通场同一公式)。
+   - 已公开底牌: 定地主后底牌公开; 若地主是 AI, 底牌在其手里也要扣; 若自己是地主,
+     底牌已并入自己手牌, 不重复扣。
+   - 联机: 数据只来自服务端已下发的 state(you.hand / game.playedCount / game.dipai),
+     playedCount 是服务端统计的全部已出牌, 不含任何隐藏信息推断。
+   开关存 myskme_ddz_cardtracker(默认开); 长辈模式格子字号自动加大(见 CSS)。 */
+let trackerOn = localStorage.getItem('myskme_ddz_cardtracker') !== '0';
+function setTrackerOn(on){
+  trackerOn = !!on;
+  localStorage.setItem('myskme_ddz_cardtracker', trackerOn ? '1' : '0');
+  renderCounter();
+}
+function trackerRemaining(){
+  const own = countMap(valsOf((G && G.hands && G.hands[0]) || []));
+  const res = {};
+  for(let v=3; v<=17; v++){
+    const total = v>=16 ? 1 : 4;
+    const base = G.trackBase ? (G.trackBase[v]||0) : total;
+    const played = ((G.playedCount && G.playedCount[v])||0) - (G.trackSeed ? (G.trackSeed[v]||0) : 0);
+    let dip = 0;
+    if(G.landlord>=0 && G.landlord!==0 && G.dipai) for(const c of G.dipai) if(c && c.v===v) dip++;
+    res[v] = Math.max(0, base - (own[v]||0) - played - dip);
+  }
+  return res;
+}
 function renderCounter(){
   const bar = $('counterBar');
+  if(!bar) return;
+  if(!trackerOn || !G || !G.hands){ bar.classList.remove('open'); bar.innerHTML=''; return; }
+  const left = trackerRemaining();
   const order=[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
   const nm={11:'J',12:'Q',13:'K',14:'A',15:'2',16:'小王',17:'大王'};
-  bar.innerHTML = '<span class="lab">剩余</span>' + order.map(v=>{
-    const total = v>=16 ? 1 : 4;
-    const left = total - G.playedCount[v];
+  bar.innerHTML = '<span class="lab">未露面</span>' + order.map(v=>{
     const isLz = G.mode==='laizi' && v===G.laiziVal;
-    return '<div class="cell'+(left===0?' out':'')+(v>=16?' red':'')+(isLz?' wildcell':'')+'"><b>'+left+'</b><span>'+(nm[v]||v)+(isLz?'·癞':'')+'</span></div>';
+    return '<div class="cell'+(left[v]===0?' out':'')+(v>=16?' red':'')+(isLz?' wildcell':'')+'"><b>'+left[v]+'</b><span>'+(nm[v]||v)+(isLz?'·癞':'')+'</span></div>';
   }).join('');
+  bar.classList.add('open');
 }
 
 /* 出牌/过牌时同步 lastShown, 并在执行前记录本手(v0.7 复盘用) */
@@ -3297,7 +3481,8 @@ doPlay = function(seat, cards, info){
 };
 doPass = function(seat){ recordStep(seat, 'pass', null, null); lastShown[seat]={pass:true}; _doPass(seat); };
 
-$('btnCounter').onclick = ()=> $('counterBar').classList.toggle('open');
+$('btnCounter').onclick = ()=> setTrackerOn(!trackerOn);
+$('btnPhrase').onclick = ()=> togglePhrasePanel();
 $('btnStory').onclick = ()=> showStoryCodex('game');
 $('btnNew').onclick = ()=> showModeSelect();
 /* v1.1: 音效开关与首次手势初始化(浏览器自动播放策略) */
