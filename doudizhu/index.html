@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.3.2</title>
+<title>萌友斗地主 · 原型 v1.3.3</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -28,7 +28,7 @@
 
   /* ---------- 顶栏 ---------- */
   #topbar{
-    display:flex; align-items:center; gap:10px; padding:8px 12px;
+    display:flex; align-items:center; gap:10px; padding:calc(8px + env(safe-area-inset-top, 0px)) 12px 8px;
     background:linear-gradient(180deg, rgba(7,24,21,.92), rgba(7,24,21,.72));
     border-bottom:1px solid rgba(201,162,77,.45); flex-wrap:wrap;
   }
@@ -148,7 +148,10 @@
     position:relative; padding:2px 10px calc(10px + env(safe-area-inset-bottom));
     background:linear-gradient(0deg, rgba(7,24,21,.94) 62%, rgba(7,24,21,0));
   }
-  #actionBar{display:flex; justify-content:center; align-items:center; gap:10px; min-height:44px; margin-bottom:2px; flex-wrap:wrap;}
+  #actionBar{display:flex; justify-content:center; align-items:center; gap:12px; min-height:44px; margin-bottom:2px; flex-wrap:wrap;}
+  #actionBar button{min-height:44px;}
+  #topbar button{min-height:38px;}
+  .levelswitch .levelbtn{min-height:44px;}
   #actionBar .turntip{font-size:14px; color:var(--gold-l); letter-spacing:1px;}
   #meRow{display:flex; align-items:flex-end; gap:10px;}
   #meInfo{display:flex; flex-direction:column; align-items:center; gap:3px; flex:none; padding-bottom:4px;}
@@ -199,7 +202,7 @@
   #bubP{bottom:calc(100% + 8px); top:auto; left:50%; transform:translate(-50%,4px); width:max-content;}
   #bubP.show{transform:translate(-50%,0);}
   #bubP::after{left:50%; margin-left:-7px;}
-  #btnPhrase{padding:3px 12px; font-size:12.5px; border-radius:999px; letter-spacing:1px;}
+  #btnPhrase{padding:3px 12px; font-size:12.5px; border-radius:999px; letter-spacing:1px; min-height:32px;}
   #phrasePanel{
     display:none; flex-wrap:wrap; gap:7px; justify-content:center; padding:7px 10px; margin-bottom:4px;
     background:rgba(7,24,21,.82); border:1px solid rgba(201,162,77,.4); border-radius:12px;
@@ -401,10 +404,10 @@
   }
   @media (max-width:640px){
     :root{ --cw:64px; --pw:48px; --dw:40px; }
-    #topbar{gap:6px; padding:6px 8px;}
+    #topbar{gap:6px; padding:calc(6px + env(safe-area-inset-top, 0px)) 8px 6px;}
     #topbar .title{font-size:14.5px;}
     #topbar .title small{display:none;}
-    .chip{font-size:11.5px; padding:2px 8px;}
+    .chip{font-size:12.5px; padding:2px 8px;}
     button{padding:6px 12px; font-size:13.5px;}
     .seat{width:132px;}
     .avatar{width:38px; height:38px;}
@@ -510,6 +513,21 @@
      (--cw 56→64 / --pw 40→48 / --dw 34→40, 长辈小屏按 ×1.35 同步); 出牌区加
      max-width 与可收缩保险防长牌串溢出; 手牌扇形步进下限 16→12 加大重叠保牌宽;
      对手剩余张数角标小屏补偿放大。本节全部为呈现层, 不改引擎、玩法与存档。 */
+
+  /* ---------- v1.3.3: 体验打磨 ----------
+     顺子/连对/飞机的出牌区流光扫过(纯呈现); 动效精简档(body.motion-lite)关粒子
+     关联动画; 设置行复选框样式。本节全部为呈现层, 不改引擎、玩法与存档。 */
+  .playzone.flowfx::after{
+    content:''; position:absolute; inset:-8px -12px; border-radius:12px; pointer-events:none; z-index:6;
+    background:linear-gradient(105deg, rgba(231,200,119,0) 25%, rgba(231,200,119,.38) 50%, rgba(231,200,119,0) 75%);
+    background-size:280% 100%; animation:flowSweep .85s ease-out both;
+  }
+  @keyframes flowSweep{from{background-position:130% 0;} to{background-position:-130% 0;}}
+  body.motion-lite .panel, body.motion-lite #hand img.hcard,
+  body.motion-lite .playzone img.pcard, body.motion-lite .fx-pop{animation:none !important;}
+  body.motion-lite .playzone.flowfx::after{display:none;}
+  .levelswitch .setchk{display:inline-flex; align-items:center; gap:7px; font-size:14.5px; color:var(--cream); cursor:pointer; padding:6px 4px;}
+  .levelswitch .setchk input{width:22px; height:22px; accent-color:var(--gold);}
 
   /* ---------- v1.3.1: 美术与呈现打磨 ----------
      借鉴口径: 只取品类第一梯队的通用设计语言——桌面中心光池聚焦行动区、金属徽记式
@@ -651,7 +669,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small>原型 v1.3.2 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small>原型 v1.3.3 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1570,7 +1588,21 @@ function setSoundOn(on){
   soundOn = !!on;
   localStorage.setItem('myskme_ddz_sound', soundOn ? '1' : '0');
   renderSoundBtn();
+  const sc = $('setSound'); if(sc) sc.checked = soundOn;
   if(soundOn) Snd.play('tap', .8);
+}
+/* v1.3.3: 动效档位(会话级设置, 不新增存档键): full 流畅 / std 标准 / lite 精简。
+   默认: 系统减动效偏好 -> lite, 其余 std。lite 关粒子特效、辉光闪与震屏、面板/牌动画。 */
+let motionTier = REDUCED_MOTION ? 'lite' : 'std';
+try{ if(motionTier === 'lite' && document.body) document.body.classList.add('motion-lite'); }catch(e){}
+function syncMotionBtns(){
+  document.querySelectorAll('[data-motion]').forEach(b => b.classList.toggle('on', b.getAttribute('data-motion') === motionTier));
+}
+function setMotionTier(t){
+  if(t !== 'full' && t !== 'std' && t !== 'lite') return;
+  motionTier = t;
+  document.body.classList.toggle('motion-lite', t === 'lite');
+  syncMotionBtns();
 }
 const Snd = {
   ctx:null, buffers:{}, master:null,
@@ -1627,6 +1659,13 @@ const Snd = {
     }catch(e){}
   },
   win(){ [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.tone(f, i * .09, .34, 'triangle', .30)); this.tone(1318.5, .38, .5, 'sine', .22); },
+  ding(vol){ this.tone(1046.5, 0, .16, 'sine', vol || .14); this.tone(1318.5, .09, .22, 'sine', (vol || .14) * .8); },
+  warn(){ this.tone(659.25, 0, .18, 'triangle', .22); this.tone(659.25, .26, .24, 'triangle', .22); },
+  combo(kind){
+    if(kind === 'straight'){ [523.25, 587.33, 659.25, 783.99, 880].forEach((f, i) => this.tone(f, i * .055, .16, 'triangle', .16)); }
+    else if(kind === 'pairs'){ [659.25, 783.99, 659.25, 783.99, 880, 1046.5].forEach((f, i) => this.tone(f, i * .06, .15, 'triangle', .15)); }
+    else if(kind === 'plane'){ this.tone(392, 0, .5, 'sawtooth', .10, 1046.5); this.tone(1318.5, .42, .3, 'triangle', .16); }
+  },
   lose(){ [392, 329.63, 261.63].forEach((f, i) => this.tone(f, i * .16, .3, 'sine', .28)); },
   spring(){ [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1318.5].forEach((f, i) => this.tone(f, i * .05, .22, 'triangle', .24)); },
   rocketLaunch(){
@@ -1701,9 +1740,10 @@ const Fx = {
     this.raf = requestAnimationFrame(step);
   },
   spawn(n, gen){
-    if(REDUCED_MOTION) return;
+    if(REDUCED_MOTION || motionTier === 'lite') return;
     this.init();
     if(!this.cx) return;
+    if(motionTier === 'full') n = Math.round(n * 1.3);
     if(elderActive()) n = Math.max(4, Math.round(n * .5));
     const now = performance.now();
     for(let i = 0; i < n; i++) this.parts.push(gen(i, now));
@@ -1739,7 +1779,7 @@ const Fx = {
   },
 };
 function flashFx(kind){
-  if(REDUCED_MOTION || typeof requestAnimationFrame !== 'function') return;
+  if(REDUCED_MOTION || motionTier === 'lite' || typeof requestAnimationFrame !== 'function') return;
   const el = $('flashFx');
   if(!el) return;
   el.className = kind || '';
@@ -1751,7 +1791,7 @@ function flashFx(kind){
   }));
 }
 function shakeScreen(){
-  if(REDUCED_MOTION || elderActive()) return;
+  if(REDUCED_MOTION || motionTier === 'lite' || elderActive()) return;
   document.body.classList.remove('shake');
   void document.body.offsetWidth;
   document.body.classList.add('shake');
@@ -1772,6 +1812,16 @@ function seatZoneCenter(seat){
     if(r.width || r.height) return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   }
   return { x: (window.innerWidth || 360) / 2, y: (window.innerHeight || 640) * .38 };
+}
+/* v1.3.3: 顺子/连对/飞机的流光扫过(出牌区金色光带, 纯呈现) */
+function zoneFlow(dseat){
+  if(REDUCED_MOTION || motionTier === 'lite') return;
+  const el = $(dseat === 0 ? 'zoneP' : dseat === 1 ? 'zoneR' : 'zoneL');
+  if(!el) return;
+  el.classList.remove('flowfx');
+  void el.offsetWidth;
+  el.classList.add('flowfx');
+  setTimeout(() => el.classList.remove('flowfx'), 900);
 }
 function animateDeal(count){
   if(REDUCED_MOTION) return;
@@ -1940,7 +1990,7 @@ function showCareer(){
     '<span class="rank-info">'+seasonLabel(rk.season)+'赛季 · 段位分 <b>'+rk.points+'</b><br>历史最高 '+tierName(histBestPts)+'</span></div>' +
     emptyBlock +
     '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>' +
-    '<button class="primary" onclick="showModeSelect()">返回</button>' +
+    '<button class="primary" onclick="showModeSelect()">返回场次选择</button>' +
     '<div class="career-note">总场次、总胜率、累计积分与段位为全部历史累计；地主/农民胜率、连胜、炸弹与春天自 v1.2 起累计（此前对局无分项记录，不回填）。生涯只统计经典/癞子/不洗牌三场次，残局、每日一局与联机不计入。</div>';
   $('overlay').classList.add('show');
 }
@@ -2256,7 +2306,7 @@ function onWsEvent(m){
     if (m.seat === ON.seat) return;
     const srvSeat = ON.state && ON.state.seats ? ON.state.seats[m.seat] : null;
     const list = srvSeat && PHRASES[srvSeat.charKey];
-    if (list && list[m.phraseId]) say(disp(m.seat), list[m.phraseId]);
+    if (list && list[m.phraseId]){ say(disp(m.seat), list[m.phraseId]); Snd.ding(.09); }
     return;
   }
   if (m.event === 'play' && m.info && isBombLike(m.info)){
@@ -2265,6 +2315,16 @@ function onWsEvent(m){
     const c = seatZoneCenter(disp(m.seat));
     if (m.info.type === 'rocket'){ Snd.rocketLaunch(); setTimeout(()=>Fx.burst(c.x, c.y, true), 380); }
     else { Snd.play('bomb'); Fx.burst(c.x, c.y, false); }
+  }
+  else if (m.event === 'play' && m.info){
+    /* v1.3.3: 联机普通出牌补音效(此前仅炸弹有声); 顺子/连对/飞机给专属音型+流光 */
+    if (m.info.type === 'straight' || m.info.type === 'pairs' || m.info.type === 'plane'){
+      Snd.combo(m.info.type);
+      zoneFlow(disp(m.seat));
+      if (m.info.type === 'plane') fxText('飞 机');
+    } else {
+      Snd.play('place', .65, 0.96 + Math.random() * 0.08);
+    }
   }
   else if (m.event === 'bid'){
     const ds = disp(m.seat);
@@ -2385,11 +2445,13 @@ function renderOnlineBid(st){
   const b = st.bidding;
   if (!b) return;
   if (b.turn !== ON.seat){
+    ON._bidCue = false;
     const who = st.seats[b.turn];
     bar.innerHTML = '<span class="turntip">叫分中：等 ' + onEsc(who.nickname) + ' 叫分（当前最高 ' + (b.highest || 0) + ' 分）</span>' +
       (who.trustee ? '<span class="turntip">（对方已断线，托管中）</span>' : '');
     return;
   }
+  if (!ON._bidCue){ ON._bidCue = true; Snd.play('hint', .6); }
   const tip = document.createElement('span');
   tip.className = 'turntip'; tip.textContent = '轮到你叫分';
   bar.appendChild(tip);
@@ -2411,10 +2473,17 @@ function renderOnlinePlayBar(st){
   const g = st.game;
   hintIdx = 0;
   if (g.turn !== ON.seat){
+    ON._playCue = false;
+    if (ON._warnT){ clearTimeout(ON._warnT); ON._warnT = 0; }
     const who = st.seats[g.turn];
     bar.innerHTML = '<span class="turntip">等 ' + onEsc(who.nickname) + ' 出牌…</span>' +
       (who.trustee ? '<span class="turntip">（对方已断线，托管中）</span>' : '');
     return;
+  }
+  /* v1.3.3: 轮到我提示音(仅转换时响一次) + 45 秒无操作警告音(联机软超时 60 秒前) */
+  if (!ON._playCue){ ON._playCue = true; Snd.ding(); }
+  if (!ON._warnT){
+    ON._warnT = setTimeout(() => { ON._warnT = 0; if (ON.inGame && G && !G.over) Snd.warn(); }, 45000);
   }
   const last = (G.lastOwner === 0 || G.lastOwner < 0) ? null : G.lastPlay;
   const tip = document.createElement('span');
@@ -2522,12 +2591,16 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.3.2</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.3.3</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
     ['easy','normal','expert'].map(lv=>'<button type="button" class="levelbtn'+(aiLevel===lv?' on':'')+'" data-level="'+lv+'" onclick="setAiLevel(\''+lv+'\')">'+LEVEL_NAMES[lv]+'</button>').join('') +
     '<small>简单：随性出牌、很少用炸弹。普通：默认打法。高手：会记牌、护住整牌型、卡着时机才炸。残局闯关不受难度影响。</small></div>' +
+    '<div class="levelswitch"><span class="lvlab">设置</span>' +
+    '<label class="setchk"><input type="checkbox" id="setSound" onchange="setSoundOn(this.checked)"> 音效</label>' +
+    [['full','动效·流畅'],['std','动效·标准'],['lite','动效·精简']].map(t=>'<button type="button" class="levelbtn" data-motion="'+t[0]+'" onclick="setMotionTier(\''+t[0]+'\')">'+t[1]+'</button>').join('') +
+    '<small>动效：流畅＝特效全开；标准＝默认；精简＝关粒子特效与辉光（当次生效，低档机推荐）。音效开关与顶栏「音效」按钮同步；长辈模式在上方开关。</small></div>' +
     modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
     '<button class="modebtn" onclick="startTutorial()"><b>新手教学局</b><span>'+(tutorialData().done ? '已完成，可重温。' : '第一次打？先来这一局。')+'跟着提示打完一局：叫分定地主、出牌成型、管上规则、农民配合，一边打一边学；不计战绩与段位。</span></button>' +
     '<button class="modebtn" onclick="showOnlinePanel()"><b>联机茶局房</b><span>和家人异地开一桌：建房后把房码或邀请链接发到家庭群，长辈点开输房码就能进；空位有 AI 补位，掉线能自动重连回座。</span></button>' +
@@ -2539,6 +2612,8 @@ function showModeSelect(){
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
   $('overlay').classList.add('show');
   const uiLv = $('uiLevel'); if(uiLv) uiLv.textContent = LEVEL_NAMES[aiLevel];
+  const ss = $('setSound'); if(ss) ss.checked = soundOn;
+  syncMotionBtns();
   applyElderMode();
 }
 
@@ -3746,7 +3821,7 @@ function showTasks(){
     '<h2>每日任务</h2><div class="who-win">'+shanghaiToday()+' · 今日完成 '+tasksDoneCount()+' / 3</div>' +
     rowsHtml +
     '<div class="rankbar"><span class="rank-badge">茶点 '+t.treats+' 枚</span><span class="rank-info">每日任务的纪念计数，与段位分互不相干<br>只记在战绩生涯里，不可兑换任何东西</span></div>' +
-    '<button class="primary" onclick="showModeSelect()">返回</button>' +
+    '<button class="primary" onclick="showModeSelect()">返回场次选择</button>' +
     '<div class="career-note">任务按 Asia/Shanghai 日期刷新，跨日自动重置；茶点只增不减。这是本地单机记录，不做防改时间处理。</div>';
   $('overlay').classList.add('show');
 }
@@ -4274,6 +4349,11 @@ doPlay = function(seat, cards, info){
     if(inf.type === 'rocket'){ Snd.rocketLaunch(); setTimeout(()=>Fx.burst(c.x, c.y, true), 380); }
     else { Snd.play('bomb'); Fx.burst(c.x, c.y, false); }
     for(const s of [0,1,2]) if(s !== seat) setTimeout(()=>bounceAvatar(s), 60);
+  } else if(inf && (inf.type === 'straight' || inf.type === 'pairs' || inf.type === 'plane')){
+    /* v1.3.3: 顺子/连对/飞机专属音型 + 流光(明显区别于普通出牌, 低于炸弹层级) */
+    Snd.combo(inf.type);
+    zoneFlow(seat);
+    if(inf.type === 'plane') fxText('飞 机');
   } else {
     Snd.play('place', .9, 0.96 + Math.random() * 0.08);
   }
