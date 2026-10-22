@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>猴先生斗地主 · 原型 v0.3</title>
+<title>猴先生斗地主 · 原型 v0.4</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -11,6 +11,7 @@
     --red:#b03a2e; --ink:#22312c;
     --cw:76px;          /* 手牌宽 */
     --pw:52px;          /* 已出牌宽 */
+    --dw:44px;          /* 底牌宽 */
     --radius:10px;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -121,7 +122,7 @@
   }
   #dipai .lab{font-size:11.5px; color:var(--gold-l); letter-spacing:3px; text-shadow:0 1px 4px #000;}
   #dipai .cards{display:flex; gap:5px;}
-  #dipai img{width:44px; height:62px; border-radius:5px; box-shadow:0 3px 8px rgba(0,0,0,.55); border:1px solid rgba(201,162,77,.55);}
+  #dipai img{width:var(--dw); height:calc(var(--dw)*1.4); border-radius:5px; box-shadow:0 3px 8px rgba(0,0,0,.55); border:1px solid rgba(201,162,77,.55);}
 
   #centerMsg{
     position:absolute; left:50%; top:34%; transform:translate(-50%,-50%); z-index:5;
@@ -215,17 +216,75 @@
   .levelcell .lvstars.dim{color:#8a9a8e; font-size:10.5px;}
   .lvstars.big{font-size:30px; color:var(--gold-l); letter-spacing:6px; margin:2px 0 6px; text-align:center;}
 
+
+  /* ---------- v0.4: 长辈模式 ---------- */
+  .elder-toggle{
+    display:flex; align-items:center; gap:13px; width:100%; margin:12px 0 2px; padding:13px 14px;
+    background:rgba(247,239,220,.08); border:1.5px solid rgba(201,162,77,.65); border-radius:12px;
+    color:var(--cream); cursor:pointer; text-align:left;
+  }
+  .elder-toggle input{width:28px; height:28px; flex:none; accent-color:var(--gold);}
+  .elder-toggle b{display:block; font-size:16.5px; color:var(--gold-l); letter-spacing:1px;}
+  .elder-toggle small{display:block; font-size:12px; line-height:1.5; color:#cfe0d2; margin-top:2px;}
+  .elder-result{font-size:27px; line-height:1.45; color:var(--cream); font-weight:800; margin:8px 0 16px;}
+  .elder-result span{font-size:20px; color:var(--gold-l);}
+  .elder-detail-btn{display:block; margin:12px auto 0;}
+  .elder-detail[hidden]{display:none;}
+  .elder-detail{margin-top:12px;}
+  html.elder{--cw:104px; --pw:72px; --dw:60px;}
+  body.elder #topbar{gap:12px; padding:12px;}
+  body.elder #topbar .title{font-size:23px;}
+  body.elder #topbar .title small{display:none;}
+  body.elder .chip{font-size:17px; padding:7px 14px;}
+  body.elder .chip b{font-size:20px;}
+  body.elder button{min-height:60px; padding:12px 22px; font-size:19px; border-radius:12px;}
+  body.elder .elder-hide{display:none !important;}
+  body.elder #counterBar{display:none !important;}
+  body.elder #modeNote{display:none !important;}
+  body.elder .avatar{width:60px; height:60px;}
+  body.elder #meInfo .avatar{width:68px; height:68px;}
+  body.elder .who .nm{font-size:18px;}
+  body.elder .who .role, body.elder #meInfo .role{font-size:14px;}
+  body.elder #meInfo .nm{font-size:17px;}
+  body.elder .countbadge{font-size:15px; min-width:27px; height:27px; line-height:27px;}
+  body.elder .bubble{max-width:260px; font-size:17px; line-height:1.5; padding:10px 14px;}
+  body.elder .playzone img.pcard{animation-duration:.56s;}
+  body.elder #hand img.hcard{animation-duration:.6s;}
+  body.elder #hand img.hcard.rec{box-shadow:0 0 0 5px var(--gold-l), 0 0 26px rgba(231,200,119,.95), 0 8px 18px rgba(0,0,0,.6);}
+  body.elder #hand img.hcard.sel{transform:translateY(-22px);}
+  body.elder .wildtag{width:30px; height:30px; line-height:30px; font-size:17px;}
+  body.elder #centerMsg{width:min(92vw,760px); font-size:30px; line-height:1.35; letter-spacing:1px; white-space:normal;}
+  body.elder #centerMsg .sub{font-size:19px; line-height:1.45;}
+  body.elder .fx-pop.boom{animation-duration:2.3s;}
+  body.elder #actionBar{gap:14px; min-height:68px;}
+  body.elder #actionBar .turntip{font-size:19px; font-weight:700;}
+  body.elder #actionBar .elder-auto{min-height:68px; padding:14px 28px; font-size:22px; border-width:2.5px;}
+  body.elder .panel{width:min(94vw,560px); padding:30px 28px 24px;}
+  body.elder .panel h2{font-size:34px;}
+  body.elder .panel .who-win{font-size:19px; line-height:1.5;}
+  body.elder .panel table{font-size:18px;}
+  body.elder .panel td{padding:8px 5px;}
+  body.elder .panel .stats{font-size:16px;}
+  body.elder .panel .modebtn{padding:16px 18px;}
+  body.elder .panel .modebtn b{font-size:21px;}
+  body.elder .panel .modebtn span{font-size:16px; line-height:1.6;}
+  body.elder .elder-toggle{padding:17px;}
+  body.elder .elder-toggle b{font-size:21px;}
+  body.elder .elder-toggle small{font-size:16px;}
+  body.elder .levelcell .lvno{font-size:13px;}
+  body.elder .levelcell .lvname{font-size:16px;}
+  body.elder .levelcell .lvstars{font-size:14px;}
+
   /* ---------- 双断点 ---------- */
   @media (min-width:900px){
-    :root{ --cw:88px; --pw:60px; }
+    :root{ --cw:88px; --pw:60px; --dw:52px; }
     .seat{width:230px;}
     .avatar{width:56px; height:56px;}
     #meInfo .avatar{width:62px; height:62px;}
     #centerMsg{font-size:25px;}
-    #dipai img{width:52px; height:73px;}
   }
   @media (max-width:640px){
-    :root{ --cw:56px; --pw:40px; }
+    :root{ --cw:56px; --pw:40px; --dw:34px; }
     #topbar{gap:6px; padding:6px 8px;}
     #topbar .title{font-size:14.5px;}
     #topbar .title small{display:none;}
@@ -239,12 +298,32 @@
     #zoneL{left:2%; top:29%;} #zoneR{right:2%; top:29%;}
     #zoneP{bottom:27%;}
     #dipai{top:64px;}
-    #dipai img{width:34px; height:48px;}
     #centerMsg{font-size:16.5px; top:31%;}
     .fx-pop{font-size:36px;}
     .bubble{max-width:132px; font-size:12px;}
     #meInfo .avatar{width:42px; height:42px;}
     #meInfo .nm{font-size:12px;}
+  }
+
+  @media (min-width:900px){
+    html.elder{--cw:119px; --pw:81px; --dw:70px;}
+  }
+  @media (max-width:640px){
+    html.elder{--cw:76px; --pw:54px; --dw:46px;}
+    body.elder #topbar{gap:7px; padding:8px;}
+    body.elder #topbar .title{font-size:19px;}
+    body.elder .chip{font-size:15px; padding:6px 10px;}
+    body.elder .chip b{font-size:17px;}
+    body.elder button{min-height:56px; padding:10px 14px; font-size:17px;}
+    body.elder .seat{width:150px;}
+    body.elder .avatar{width:48px; height:48px;}
+    body.elder #meInfo .avatar{width:54px; height:54px;}
+    body.elder .bubble{max-width:185px; font-size:16px;}
+    body.elder #centerMsg{font-size:23px;}
+    body.elder #centerMsg .sub{font-size:17px;}
+    body.elder .fx-pop{font-size:44px;}
+    body.elder #actionBar .elder-auto{min-height:62px; padding:12px 18px; font-size:20px;}
+    body.elder #actionBar .turntip{font-size:17px;}
   }
 </style>
 </head>
@@ -252,13 +331,13 @@
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">猴先生斗地主 <small>原型 v0.3 · 茶肆夜话桌</small></div>
+    <div class="title">猴先生斗地主 <small>原型 v0.4 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
-    <div class="chip">战绩 <b id="uiStats">0 胜 / 0 局</b></div>
+    <div class="chip elder-hide">战绩 <b id="uiStats">0 胜 / 0 局</b></div>
     <div class="spacer"></div>
-    <button class="ghost" id="btnCounter">记牌器</button>
+    <button class="ghost elder-hide" id="btnCounter">记牌器</button>
     <button class="ghost" id="btnNew">新对局</button>
   </div>
   <div id="counterBar"></div>
@@ -942,9 +1021,45 @@ let stats=JSON.parse(localStorage.getItem('myskme_ddz_stats')||'{"win":0,"total"
 function saveStats(){ localStorage.setItem('myskme_ddz_stats', JSON.stringify(stats)); }
 function renderStats(){ $('uiStats').textContent = stats.win+' 胜 / '+stats.total+' 局'; }
 
+/* ---------- v0.4: 长辈模式状态 ----------
+   elderMode 是用户偏好(选择面板开关, localStorage 记忆); elderContext 区分三场次与残局:
+   残局不强制套用长辈模式, 进入选关/关卡时上下文切为 challenge, elderActive() 返回 false。 */
+let elderMode = localStorage.getItem('myskme_ddz_elder')==='1';
+let elderContext = 'menu';
+let elderRecPlay = null;
+let elderRecCards = new Set();
+function elderActive(){ return elderMode && elderContext!=='challenge'; }
+function applyElderMode(){
+  const on = elderActive();
+  document.documentElement.classList.toggle('elder', on);
+  document.body.classList.toggle('elder', on);
+  const t = $('elderToggle'); if(t) t.checked = elderMode;
+}
+function setElderMode(on){
+  elderMode = !!on;
+  localStorage.setItem('myskme_ddz_elder', elderMode?'1':'0');
+  if(!elderMode){ elderRecPlay = null; elderRecCards.clear(); }
+  applyElderMode();
+  if(G) renderAll();
+}
+function paceDelay(ms){ return elderActive() ? Math.round(ms*2) : ms; }
+function setElderRecommendation(play){
+  elderRecPlay = play || null;
+  elderRecCards = new Set(play ? play.cards : []);
+}
+function toggleElderCalc(){
+  const d = $('elderCalc'), b = $('btnElderCalc');
+  if(!d || !b) return;
+  const show = d.hidden;
+  d.hidden = !show;
+  b.setAttribute('aria-expanded', String(show));
+  b.textContent = show ? '收起怎么算的' : '看看怎么算的';
+}
+
 /* ---------- 开局 ---------- */
 function startMode(m){ newGame(m); }
 function showModeSelect(){
+  elderContext = 'menu';
   hideBubbles();
   window._gid = (window._gid||0)+1;
   if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
@@ -953,11 +1068,13 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.3</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.4</div>' +
     modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
     '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>十关固定残局，按最优防守设计：大牌控场、顺子先行、炸弹收尾、送队友先走……通关赢星解锁下一关，三星看你用几手打完。当前总星 '+totalStars()+' / 30。</span></button>' +
+    '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
   $('overlay').classList.add('show');
+  applyElderMode();
 }
 
 /* ---------- v0.3: 残局闯关 ----------
@@ -1002,6 +1119,8 @@ function totalStars(){ return challenge.stars.reduce((a,b)=>a+(b||0),0); }
 function levelUnlocked(i){ return i===0 || (challenge.stars[i-1]||0)>=1; }
 function starStr(n){ return '★★★'.slice(0,n) + '☆☆☆'.slice(0,3-n); }
 function showLevelSelect(){
+  elderContext = 'challenge';
+  applyElderMode();
   hideBubbles();
   window._gid = (window._gid||0)+1;
   if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
@@ -1025,6 +1144,9 @@ function fabricateHands(handsVals){   // 按全局出现序号分配花色, 保�
   }));
 }
 function startLevel(idx){
+  elderContext = 'challenge';
+  applyElderMode();
+  setElderRecommendation(null);
   const lv = LEVELS[idx];
   $('overlay').classList.remove('show');
   hideBubbles();
@@ -1100,6 +1222,9 @@ function finishChallenge(winnerSeat){
 
 function newGame(mode){
   mode = mode || (G && G.mode) || 'classic';
+  elderContext = mode;
+  applyElderMode();
+  setElderRecommendation(null);
   $('overlay').classList.remove('show');
   $('dipai').style.display = '';
   hideBubbles();
@@ -1163,7 +1288,7 @@ async function startBidding(){
       if(!G || G.gid!==gid) return;
       if(bid>highest){ highest=bid; highestSeat=0; showBid(0, bid); } else showBid(0, 0);
     } else {
-      await sleep(650);
+      await sleep(paceDelay(650));
       if(!G || G.gid!==gid) return;
       let bid = aiBid(G.hands[cur], PERSONA[G.aiChar[cur]]);
       if(bid<=highest) bid = 0;
@@ -1173,7 +1298,7 @@ async function startBidding(){
     acted++; cur = (cur+1)%3;
     if(highest===3) break;
   }
-  if(highestSeat<0){ centerMsg('无人叫分', '重新发牌…'); await sleep(900); newGame(); return; }
+  if(highestSeat<0){ centerMsg('无人叫分', '重新发牌…'); await sleep(paceDelay(900)); newGame(); return; }
   G.landlord = highestSeat; G.base = highest; G.mult = 1;
   $('uiBase').textContent = highest+' 分';
   G.hands[highestSeat] = sortCards([...G.hands[highestSeat], ...G.dipai]);
@@ -1181,7 +1306,7 @@ async function startBidding(){
   centerMsg(CHARS[G.aiChar[highestSeat]] ? CHARS[G.aiChar[highestSeat]].name+' 是地主' : '你是地主', '底分 '+highest+' 分 · 倍数 ×1');
   G.phase='playing'; G.turn = highestSeat; G.lastPlay=null; G.lastOwner=-1; G.passStreak=0;
   renderAll();
-  await sleep(900);
+  await sleep(paceDelay(900));
   centerMsg('', '');
   runTurn();
 }
@@ -1213,7 +1338,7 @@ async function runTurn(){
   const seat = G.turn;
   if(G.hands[seat].length===0) return;
   if(seat===0){ enablePlayerActions(); return; }
-  await sleep(720 + Math.random()*480);
+  await sleep(paceDelay(720 + Math.random()*480));
   if(!G || G.gid!==gid || G.over || G.turn!==seat) return;
   const last = (G.lastOwner===seat || G.lastOwner<0) ? null : G.lastPlay;
   // 关系判定
@@ -1253,7 +1378,7 @@ function doPlay(seat, cards, knownInfo){
     if(isBombLike(info)) say(seat, pickOne(CHARS[G.aiChar[seat]].lines.bomb));
     else if(Math.random()<.3) say(seat, pickOne(CHARS[G.aiChar[seat]].lines.lead));
   } else if(isBombLike(info)){
-    for(const s of [1,2]) if(Math.random()<.55) setTimeout(()=>say(s, pickOne(CHARS[G.aiChar[s]].lines.hurt)), 350);
+    for(const s of [1,2]) if(Math.random()<.55) setTimeout(()=>say(s, pickOne(CHARS[G.aiChar[s]].lines.hurt)), paceDelay(350));
   }
   renderAll();
   if(G.hands[seat].length===0){ finishGame(seat); return; }
@@ -1270,8 +1395,26 @@ function doPass(seat){
 }
 
 /* ---------- 玩家操作 ---------- */
+/* 玩家提示候选: 与提示按钮、长辈模式自动推荐共用同一条已复核管线。
+   每个候选先经 analyzeCards 重判成立, 跟牌时再经 canBeat 校验; 癞子候选的 info
+   已由生成器按统一优先序 resolvePlayInfo 裁定, 与手动提交同口径。 */
+function getPlayerHintCandidates(last){
+  let cand = genPlays(G.hands[0], last).filter(p=>{
+    if(!analyzeCards(p.cards)) return false;
+    return !last || canBeat(p.info, last.info);
+  });
+  if(!cand.length && !last && G.hands[0].length){
+    // 首出兜底: 最低单张必合法, 保证手牌非空时提示必有结果
+    const low = G.hands[0].slice().sort((a,b)=>a.v-b.v)[0];
+    cand = [{cards:[low], info: analyzeCards([low])}];
+  }
+  if(last) cand.sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || a.info.main-b.info.main || b.info.count-a.info.count);
+  else cand.sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || b.info.count-a.info.count || a.info.main-b.info.main);
+  return cand;
+}
 function enablePlayerActions(){
   centerMsg('', '');
+  setElderRecommendation(null);
   const bar = $('actionBar');
   const last = (G.lastOwner===0 || G.lastOwner<0) ? null : G.lastPlay;
   bar.innerHTML = '';
@@ -1279,39 +1422,69 @@ function enablePlayerActions(){
   tip.textContent = last ? '轮到你出牌' : '由你首出，点选手牌后出牌';
   bar.appendChild(tip);
   const bHint = document.createElement('button'); bHint.className='ghost'; bHint.textContent='提示';
-  const bPlay = document.createElement('button'); bPlay.className='primary'; bPlay.textContent='出牌'; bPlay.id='btnPlay'; bPlay.disabled = G.selected.size===0;
+  const bPlay = document.createElement('button'); bPlay.className='primary'; bPlay.textContent = elderActive() ? '出选中的牌' : '出牌'; bPlay.id='btnPlay'; bPlay.disabled = G.selected.size===0;
   const bPass = document.createElement('button'); bPass.textContent='不出'; bPass.disabled = !last;
+  let bAuto = null;
+  if(elderActive()){
+    bAuto = document.createElement('button');
+    bAuto.className = 'primary elder-auto'; bAuto.id = 'btnElderAuto'; bAuto.textContent = '按提示出牌'; bAuto.disabled = true;
+    bAuto.onclick = ()=>{
+      if(!elderRecPlay) return;
+      const cards = elderRecPlay.cards.slice();
+      const info = resolvePlayInfo(cards, last ? last.info : null);
+      if(!info || (last && !canBeat(info, last.info))){
+        centerMsg('这组现在出不了', '再点一次「提示」，看看发亮的牌');
+        return;
+      }
+      G.selected = new Set(cards.map(c=>G.hands[0].indexOf(c)));
+      bar.innerHTML=''; hintIdx=0; G.selected.clear(); setElderRecommendation(null);
+      doPlay(0, cards, info);
+    };
+  }
   bHint.onclick = ()=>{
-    // 独立复核: 每个候选须经 analyzeCards 重判成立, 跟牌时还须 canBeat 目标牌, 通过后才呈给玩家
-    let cand = genPlays(G.hands[0], last).filter(p=>{
-      if(!analyzeCards(p.cards)) return false;
-      return !last || canBeat(p.info, last.info);
-    });
-    if(!cand.length && !last && G.hands[0].length){
-      // 首出兜底: 最低单张必合法, 保证手牌非空时提示必有结果
-      const low = G.hands[0].slice().sort((a,b)=>a.v-b.v)[0];
-      cand = [{cards:[low], info: analyzeCards([low])}];
-    }
+    const cand = getPlayerHintCandidates(last);
     if(!cand.length){ centerMsg('没有能管上的牌', '点「不出」过掉这一手'); return; }
-    if(last) cand.sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || a.info.main-b.info.main || b.info.count-a.info.count);
-    else cand.sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || b.info.count-a.info.count || a.info.main-b.info.main);
     const p = cand[hintIdx % cand.length]; hintIdx++;
     G.selected = new Set(p.cards.map(c=>G.hands[0].indexOf(c)));
+    if(elderActive()){ setElderRecommendation(p); if(bAuto) bAuto.disabled = false; }
     renderHand();
     bPlay.disabled = G.selected.size===0;   // 关键修复: 提示选牌后同步「出牌」按钮状态(此前一直禁用, 造成死锁)
   };
   bPlay.onclick = ()=>{
     const cards = [...G.selected].sort((a,b)=>a-b).map(i=>G.hands[0][i]);
     const info = resolvePlayInfo(cards, last ? last.info : null);
-    if(!info){ centerMsg('所选牌型不成立', '换一手试试'); return; }
-    if(last && !canBeat(info, last.info)){ centerMsg('管不上', '换大一点的牌，或点不出'); return; }
-    bar.innerHTML=''; hintIdx=0; G.selected.clear();
+    if(!info){
+      if(elderActive()) centerMsg('这几张凑不成一组', '试试发亮的那组');
+      else centerMsg('所选牌型不成立', '换一手试试');
+      return;
+    }
+    if(last && !canBeat(info, last.info)){
+      if(elderActive()) centerMsg('这组压不住刚才那一组', elderRecPlay ? '试试发亮的那组' : '点「不出」就行');
+      else centerMsg('管不上', '换大一点的牌，或点不出');
+      return;
+    }
+    bar.innerHTML=''; hintIdx=0; G.selected.clear(); setElderRecommendation(null);
     doPlay(0, cards, info);
   };
-  bPass.onclick = ()=>{ bar.innerHTML=''; hintIdx=0; G.selected.clear(); doPass(0); };
+  bPass.onclick = ()=>{ bar.innerHTML=''; hintIdx=0; G.selected.clear(); setElderRecommendation(null); doPass(0); };
+  if(elderActive()){
+    const cand = getPlayerHintCandidates(last);
+    if(cand.length){
+      const rec = cand[0];
+      setElderRecommendation(rec);
+      G.selected = new Set(rec.cards.map(c=>G.hands[0].indexOf(c)));
+      hintIdx = 1;
+      if(bAuto) bAuto.disabled = false;
+      tip.textContent = last ? '轮到你了，跟着发亮的牌出就行' : '轮到你了，发亮的这一组可以直接出';
+      renderHand();
+      bPlay.disabled = G.selected.size===0;
+    } else {
+      tip.textContent = '这手不用出，点「不出」就行';
+    }
+  }
+  if(bAuto) bar.append(bAuto);
   bar.append(bHint, bPlay, bPass);
 }
-
 /* ---------- 结算 ---------- */
 function finishGame(winnerSeat){
   G.over = true; G.phase='over';
@@ -1336,12 +1509,24 @@ function finishGame(winnerSeat){
     ['本局得分', (myWin?'+':'−')+score],
     ['累计积分', stats.points+''],
   ];
-  $('panel').innerHTML =
-    '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
-    '<div class="who-win">'+(landlordWin?'地主获胜':'农民获胜')+' · '+(winnerSeat===0?'你率先出完':CHARS[G.aiChar[winnerSeat]].name+' 率先出完')+'</div>'+
-    '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>'+
-    '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+
-    '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局</div>';
+  const detailTable = '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>';
+  if(elderActive()){
+    // 长辈模式默认只给结论和分数变化; 身份/底分/炸弹/春天/倍数明细收进折叠区
+    $('panel').innerHTML =
+      '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
+      '<div class="who-win">'+(winnerSeat===0?'你先把牌出完了':CHARS[G.aiChar[winnerSeat]].name+' 先把牌出完了')+'</div>'+
+      '<div class="elder-result">本局 '+(myWin?'+':'−')+score+' 分<br><span>累计 '+stats.points+' 分</span></div>'+
+      '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+
+      '<button class="ghost elder-detail-btn" id="btnElderCalc" aria-expanded="false" onclick="toggleElderCalc()">看看怎么算的</button>'+
+      '<div class="elder-detail" id="elderCalc" hidden>'+detailTable+'</div>';
+  } else {
+    $('panel').innerHTML =
+      '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
+      '<div class="who-win">'+(landlordWin?'地主获胜':'农民获胜')+' · '+(winnerSeat===0?'你率先出完':CHARS[G.aiChar[winnerSeat]].name+' 率先出完')+'</div>'+
+      detailTable+
+      '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+
+      '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局</div>';
+  }
   $('overlay').classList.add('show');
   for(const s of [1,2]){
     const won = roleOf(s)===roleOf(winnerSeat);
@@ -1354,7 +1539,7 @@ let centerTimer = 0;
 function centerMsg(t, sub){
   $('centerMsg').innerHTML = t + (sub?'<span class="sub">'+sub+'</span>':'');
   clearTimeout(centerTimer);
-  if(t) centerTimer = setTimeout(()=>{ $('centerMsg').innerHTML=''; }, 3000);   // 兜底: 任何横幅 3 秒自动消失
+  if(t) centerTimer = setTimeout(()=>{ $('centerMsg').innerHTML=''; }, paceDelay(3000));   // 兜底: 任何横幅 3 秒自动消失
 }
 function fxText(t){ const el=$('fxPop'); el.textContent=t; el.classList.remove('boom'); void el.offsetWidth; el.classList.add('boom'); }
 let bubbleTimers={};
@@ -1362,7 +1547,7 @@ function say(seat, text){
   const el = seat===1 ? $('bubR') : $('bubL');
   el.textContent = text; el.classList.add('show');
   clearTimeout(bubbleTimers[seat]);
-  bubbleTimers[seat] = setTimeout(()=>el.classList.remove('show'), 2000);   // 2 秒自动淡出, 新气泡重置计时
+  bubbleTimers[seat] = setTimeout(()=>el.classList.remove('show'), paceDelay(2000));   // 2 秒自动淡出, 新气泡重置计时
 }
 function hideBubbles(){
   for(const seat of [1,2]){
@@ -1418,14 +1603,14 @@ function renderHand(){
   const n = hand.length;
   const cw = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cw')) || 76;
   const avail = handEl.clientWidth || window.innerWidth - 90;
-  const step = n>1 ? Math.min(cw*0.44, Math.max(16,(avail-cw)/(n-1))) : 0;
+  const step = n>1 ? Math.min(cw*0.44, Math.max(elderActive()?7:16,(avail-cw)/(n-1))) : 0;
   hand.forEach((c,i)=>{
     const wrap = document.createElement('span');
     wrap.className = 'hwrap';
     wrap.style.marginLeft = i===0 ? '0' : (-(cw-step))+'px';
     wrap.style.zIndex = i;
     const im = document.createElement('img');
-    im.src = cardFile(c); im.className='hcard'+(G.selected.has(i)?' sel':'')+(isWildCard(c)?' wild':''); im.alt='';
+    im.src = cardFile(c); im.className='hcard'+(G.selected.has(i)?' sel':'')+(isWildCard(c)?' wild':'')+((elderActive() && elderRecCards.has(c))?' rec':''); im.alt='';
     im.style.animationDelay = (i*0.018)+'s';
     wrap.appendChild(im);
     if(isWildCard(c)){
@@ -1471,7 +1656,7 @@ function preloadCards(){
   urls.push(cardFile({v:16, s:'王'}), cardFile({v:17, s:'王'}));
   for(const u of urls){ const im = new Image(); im.src = u; }
 }
-window.addEventListener('load', ()=>{ renderStats(); preloadCards(); showModeSelect(); });
+window.addEventListener('load', ()=>{ elderContext='menu'; applyElderMode(); renderStats(); preloadCards(); showModeSelect(); });
 </script>
 </body>
 </html>
