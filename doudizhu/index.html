@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.3.1</title>
+<title>萌友斗地主 · 原型 v1.3.2</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -85,8 +85,8 @@
   .backfan{position:relative; height:44px; width:86px;}
   .backfan img{position:absolute; top:0; width:32px; height:45px; border-radius:4px; box-shadow:0 2px 5px rgba(0,0,0,.45);}
   .countbadge{
-    position:absolute; right:-4px; bottom:-4px; background:var(--red); color:#fff; font-size:11.5px;
-    min-width:20px; height:20px; line-height:20px; text-align:center; border-radius:10px; padding:0 5px;
+    position:absolute; right:-4px; bottom:-4px; background:var(--red); color:#fff; font-size:12.5px;
+    min-width:22px; height:22px; line-height:22px; text-align:center; border-radius:11px; padding:0 5px;
     border:1.5px solid #f3d9d2; font-weight:700; z-index:3;
   }
   .countbadge.low{background:#d9822b;}
@@ -103,11 +103,11 @@
   #seatR .bubble{right:0;}
   #seatL .bubble{left:0;}
 
-  .playzone{position:absolute; display:flex; gap:3px; justify-content:center; align-items:flex-start; min-height:74px; z-index:4;}
+  .playzone{position:absolute; display:flex; gap:3px; justify-content:center; align-items:flex-start; min-height:74px; z-index:4; max-width:96vw;}
   #zoneL{left:4%; top:31%; }
   #zoneR{right:4%; top:31%;}
   #zoneP{left:50%; transform:translateX(-50%); bottom:24.5%; }
-  .playzone img.pcard{width:var(--pw); height:calc(var(--pw)*1.4); border-radius:6px; box-shadow:0 3px 8px rgba(0,0,0,.5); animation:playIn .28s ease both;}
+  .playzone img.pcard{width:var(--pw); height:auto; aspect-ratio:5/7; flex-shrink:1; min-width:0; border-radius:6px; box-shadow:0 3px 8px rgba(0,0,0,.5); animation:playIn .28s ease both;}
   .playzone .passchip{
     background:rgba(11,32,28,.88); border:1.5px solid rgba(201,162,77,.7); color:var(--gold-l);
     padding:5px 16px; border-radius:999px; font-size:15px; letter-spacing:3px; animation:playIn .2s ease both;
@@ -400,7 +400,7 @@
     #centerMsg{font-size:25px;}
   }
   @media (max-width:640px){
-    :root{ --cw:56px; --pw:40px; --dw:34px; }
+    :root{ --cw:64px; --pw:48px; --dw:40px; }
     #topbar{gap:6px; padding:6px 8px;}
     #topbar .title{font-size:14.5px;}
     #topbar .title small{display:none;}
@@ -410,6 +410,7 @@
     .avatar{width:38px; height:38px;}
     .who .nm{font-size:12.5px;}
     .backfan{transform:scale(.8); transform-origin:top center;}
+    .countbadge{font-size:15px; min-width:26px; height:26px; line-height:26px; border-radius:13px;}
     #seatL{left:1%; top:4%;} #seatR{right:1%; top:4%;}
     #zoneL{left:2%; top:29%;} #zoneR{right:2%; top:29%;}
     #zoneP{bottom:27%;}
@@ -425,7 +426,7 @@
     html.elder{--cw:119px; --pw:81px; --dw:70px;}
   }
   @media (max-width:640px){
-    html.elder{--cw:76px; --pw:54px; --dw:46px;}
+    html.elder{--cw:86px; --pw:65px; --dw:54px;}
     body.elder #topbar{gap:7px; padding:8px;}
     body.elder #topbar .title{font-size:19px;}
     body.elder .chip{font-size:15px; padding:6px 10px;}
@@ -503,6 +504,12 @@
   body.elder .task-info b{font-size:20px;}
   body.elder .task-info span{font-size:16px; line-height:1.6;}
   body.elder .task-state{font-size:16px;}
+
+  /* ---------- v1.3.2: 卡牌可读性 ----------
+     牌面角标牌等比放大重渲(148×238→180×290, 资产层); 小屏显示尺寸上调
+     (--cw 56→64 / --pw 40→48 / --dw 34→40, 长辈小屏按 ×1.35 同步); 出牌区加
+     max-width 与可收缩保险防长牌串溢出; 手牌扇形步进下限 16→12 加大重叠保牌宽;
+     对手剩余张数角标小屏补偿放大。本节全部为呈现层, 不改引擎、玩法与存档。 */
 
   /* ---------- v1.3.1: 美术与呈现打磨 ----------
      借鉴口径: 只取品类第一梯队的通用设计语言——桌面中心光池聚焦行动区、金属徽记式
@@ -644,7 +651,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small>原型 v1.3.1 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small>原型 v1.3.2 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -2515,7 +2522,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.3.1</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.3.2</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
@@ -3337,7 +3344,7 @@ function renderReviewHand(cards, currentCards){
   const n = cards.length;
   const cw = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cw')) || 76;
   const avail = handEl.clientWidth || window.innerWidth - 90;
-  const step = n>1 ? Math.min(cw*0.44, Math.max(elderActive()?7:16,(avail-cw)/(n-1))) : 0;
+  const step = n>1 ? Math.min(cw*0.44, Math.max(elderActive()?7:12,(avail-cw)/(n-1))) : 0;
   cards.forEach((c,i)=>{
     const wrap = document.createElement('span');
     wrap.className = 'hwrap';
@@ -3593,7 +3600,7 @@ function renderHand(){
   const n = hand.length;
   const cw = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cw')) || 76;
   const avail = handEl.clientWidth || window.innerWidth - 90;
-  const step = n>1 ? Math.min(cw*0.44, Math.max(elderActive()?7:16,(avail-cw)/(n-1))) : 0;
+  const step = n>1 ? Math.min(cw*0.44, Math.max(elderActive()?7:12,(avail-cw)/(n-1))) : 0;
   hand.forEach((c,i)=>{
     const wrap = document.createElement('span');
     wrap.className = 'hwrap';
