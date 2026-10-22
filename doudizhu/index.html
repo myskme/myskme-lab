@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v0.9</title>
+<title>萌友斗地主 · 原型 v1.0</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -111,6 +111,10 @@
   .playzone .passchip{
     background:rgba(11,32,28,.88); border:1.5px solid rgba(201,162,77,.7); color:var(--gold-l);
     padding:5px 16px; border-radius:999px; font-size:15px; letter-spacing:3px; animation:playIn .2s ease both;
+  }
+  .playzone .trusteechip{
+    background:rgba(64,42,10,.9); border:1.5px solid rgba(231,200,119,.85); color:#f3d98b;
+    padding:4px 12px; border-radius:999px; font-size:13px; letter-spacing:2px; align-self:center; animation:playIn .2s ease both;
   }
   @keyframes playIn{from{opacity:0; transform:translateY(14px) scale(.92);} to{opacity:1; transform:none;}}
   @keyframes dealIn{from{opacity:0; transform:translateY(-16px);} to{opacity:1; transform:none;}}
@@ -431,13 +435,14 @@
   .onl-mwho span{font-size:12px; opacity:.75;}
   .onl-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0;}
   .onl-status{font-size:13px; opacity:.85; min-height:18px; margin:6px 0; text-align:left;}
+  .onl-flavor{font-size:15px; color:var(--gold-l); line-height:1.6; margin:4px 0 10px;}
 </style>
 </head>
 <body>
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small>原型 v0.9 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small>原型 v1.0 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1512,17 +1517,23 @@ function closeStoryCodex(){
   }
 }
 
-/* ================= v0.9: 联机茶局房(客户端) =================
+/* ================= v0.9/v1.0: 联机茶局房(客户端) =================
    后端见 ../后端/: Cloudflare Workers + Durable Objects, 服务端权威判定。
    联机时本页只是客户端: 对局状态完全由服务端 state 消息驱动, 映射进 G 镜像后
    复用单机的桌面渲染(renderAll/renderHand/renderZones 等)与选牌交互;
    本地引擎只用来给「提示」算候选(自己的手牌已知, 口径与单机相同),
    出牌是否合法一律以服务端回执为准。
+   v1.0: state.seats[].trustee 表示真人座位正被断线托管(名字旁/等待提示/出牌区都有标识),
+   resumed.wasTrustee 让回座者看到「你回来了,已解除托管」; 房主对局中断线由服务端转移,
+   state.hostSeat 即时更新, 结算的房主按钮跟着走; 普通房 60 秒软超时的托管手在出牌区
+   带「托管打出」标; 服务端房间状态已持久化, 回座被拒的既有兜底(回联机面板)保留。
    【长辈模式 与 联机"长辈友好" 的关系】
    - 本地 elderMode(长辈模式) 是个人显示偏好: 大字、大牌、慢节奏, 只影响自己这台
-     设备, 单机与联机都生效(elderContext 在联机对局时置为 'online', 不会被残局逻辑关掉)。
+     设备, 单机与联机都生效(elderContext 在联机对局时置为 'online', 不会被残局逻辑关掉);
+     联机结算在 elderMode 下走简版: 只显输赢与我的得分, 与单机长辈结算同口径。
    - 联机房的 elderFriendly 是房主建房时定的房间规则: 服务端放慢 AI 出牌节奏、
-     本玩法本来就没有出牌倒计时, 对全房三人生效。两者互相独立, 可以叠加。 */
+     不启用 60 秒软超时, 对全房三人生效; 大厅与对局顶部都有「长辈友好房」标识。
+     两者互相独立, 可以叠加。 */
 const ONLINE_WS_BASE = 'wss://myskme-ddz.kaput-becklespinax-369.workers.dev';   // ← 部署后只改这一处, 如 'wss://myskme-ddz.<账号>.workers.dev'
 const ON = {
   active: false,       // 是否在联机流程中(面板/大厅/对局)
@@ -1618,7 +1629,7 @@ function onWsMessage(m){
   }
   if (m.type === 'resumed'){
     ON.code = m.code; ON.seat = m.seat; ON.active = true; ON.expectResume = false;
-    centerMsg('已回到牌局', '');
+    centerMsg(m.wasTrustee ? '你回来了，已解除托管' : '已回到牌局', '');
     return;
   }
   if (m.type === 'error'){
@@ -1639,6 +1650,15 @@ function onWsMessage(m){
   if (m.type === 'state'){ ON.state = m; onApplyState(m); }
 }
 function onWsEvent(m){
+  if (m.event === 'trustee'){
+    // 某座位本手由托管打出(断线托管或 60 秒软超时): 给全桌一个明确提示
+    if (ON.inGame && ON.state) centerMsg('这一手由托管打出', m.seat === ON.seat ? '轮到你时太久没操作' : '');
+    return;
+  }
+  if (m.event === 'host'){
+    if (ON.active && ON.state && m.seat !== ON.seat) centerMsg('房主已转移', '现在由 ' + (ON.state.seats[m.seat] ? ON.state.seats[m.seat].nickname : '新房主') + ' 当房主');
+    return;
+  }
   if (!ON.inGame || !G) return;
   const disp = s => (s - ON.seat + 3) % 3;
   if (m.event === 'play' && m.info && isBombLike(m.info))
@@ -1662,16 +1682,17 @@ function renderOnlineLobby(st){
   const me = st.seats[ON.seat];
   const rows = st.seats.map(s => {
     const who = s.kind === 'empty' ? '空位（开局后 AI 补位）' : (s.kind === 'ai' ? onEsc(s.nickname) + '（AI）' : onEsc(s.nickname));
-    const tags = [s.host ? '房主' : '', s.seat === ON.seat ? '你' : '', s.kind === 'human' ? (s.connected ? '在线' : '已断线') : '', s.kind === 'human' && s.ready ? '已准备' : ''].filter(Boolean).join(' · ');
+    const tags = [s.host ? '房主' : '', s.seat === ON.seat ? '你' : '', s.kind === 'human' ? (s.trustee ? '托管中' : (s.connected ? '在线' : '已断线')) : '', s.kind === 'human' && s.ready ? '已准备' : ''].filter(Boolean).join(' · ');
     const av = s.charKey ? '<img class="avatar" src="' + CHARS[s.charKey].av + '" alt="">' : '<span class="avatar onl-noav"></span>';
     return '<div class="onl-member">' + av + '<div class="onl-mwho"><b>' + who + '</b>' + (tags ? '<span>' + tags + '</span>' : '') + '</div></div>';
   }).join('');
   const link = location.origin + location.pathname + '?room=' + st.code;
+  const inviteText = '来打一局萌友斗地主，茶局房房码 ' + st.code + '，点链接直接进：' + link;
   $('panel').innerHTML =
     '<h2>联机茶局房 · 大厅</h2>' +
-    '<div class="who-win">' + (st.config.mode === 'laizi' ? '癞子场' : '经典场') + (st.config.elderFriendly ? ' · 长辈友好' : '') + ' · 把房码或链接发给家人，不必等满，房主随时可开局（空位 AI 补）</div>' +
+    '<div class="who-win">' + (st.config.mode === 'laizi' ? '癞子场' : '经典场') + (st.config.elderFriendly ? ' · 长辈友好房' : '') + ' · 把房码或链接发给家人，不必等满，房主随时可开局（空位 AI 补）</div>' +
     '<div class="onl-code">' + st.code + '</div>' +
-    '<div class="onl-row"><button class="ghost" onclick="onCopyInvite(this)">复制邀请链接</button><span class="onl-status" id="onlCopyTip"></span></div>' +
+    '<div class="onl-row"><button class="ghost" onclick="onCopyInvite(this)">复制邀请</button><span class="onl-status" id="onlCopyTip"></span></div>' +
     '<div class="onl-members">' + rows + '</div>' +
     '<div class="onl-row">' +
       '<button class="ghost" onclick="onSendReady(' + (me && me.ready ? 'false' : 'true') + ')">' + (me && me.ready ? '取消准备' : '准备') + '</button>' +
@@ -1681,14 +1702,16 @@ function renderOnlineLobby(st){
     '<div class="onl-status" id="onlStatus"></div>';
   $('overlay').classList.add('show');
   ON.inviteLink = link;
+  ON.inviteText = inviteText;
 }
 function onCopyInvite(){
   const link = ON.inviteLink || '';
+  const text = ON.inviteText || link;   // 邀请语 + 房码 + 链接, 粘贴到家庭群就能直接用
   const tip = $('onlCopyTip');
-  const done = () => { if (tip) tip.textContent = '已复制，发到家庭群里，家人点开就能进'; };
+  const done = () => { if (tip) tip.textContent = '邀请已复制，发到家庭群里，家人点开就能进'; };
   if (navigator.clipboard && navigator.clipboard.writeText)
-    navigator.clipboard.writeText(link).then(done, () => { if (tip) tip.textContent = '复制失败，手动发这个链接：' + link; });
-  else if (tip) tip.textContent = '把这个链接发给家人：' + link;
+    navigator.clipboard.writeText(text).then(done, () => { if (tip) tip.textContent = '复制失败，手动发这段：' + text; });
+  else if (tip) tip.textContent = '把这段发给家人：' + text;
 }
 function onSendReady(r){ if (ON.ws) ON.ws.send(JSON.stringify({ type: 'ready', ready: !!r })); }
 function onSendStart(){ if (ON.ws) ON.ws.send(JSON.stringify({ type: 'start' })); }
@@ -1735,16 +1758,16 @@ function applyOnlineGameState(st){
     selected: new Set(), over: st.phase === 'settled',
   };
   lastShown[0] = lastShown[1] = lastShown[2] = null;
-  g.zones.forEach((z, s) => { if (z) lastShown[disp(s)] = z.pass ? { pass: true } : { cards: z.cards.slice() }; });
+  g.zones.forEach((z, s) => { if (z) lastShown[disp(s)] = z.pass ? { pass: true, trustee: !!z.trustee } : { cards: z.cards.slice(), trustee: !!z.trustee }; });
   const sR = st.seats[srv(1)], sL = st.seats[srv(2)];
-  if (sR.charKey){ $('avR').src = CHARS[sR.charKey].av; $('nmR').textContent = sR.nickname; }
-  if (sL.charKey){ $('avL').src = CHARS[sL.charKey].av; $('nmL').textContent = sL.nickname; }
+  if (sR.charKey){ $('avR').src = CHARS[sR.charKey].av; $('nmR').textContent = sR.nickname + (sR.trustee ? '（托管中）' : ''); }
+  if (sL.charKey){ $('avL').src = CHARS[sL.charKey].av; $('nmL').textContent = sL.nickname + (sL.trustee ? '（托管中）' : ''); }
   $('uiBase').textContent = g.base ? g.base + ' 分' : '—';
-  $('uiMode').textContent = '联机 · ' + (st.config.mode === 'laizi' ? '癞子场' : '经典场');
+  $('uiMode').textContent = '联机 · ' + (st.config.mode === 'laizi' ? '癞子场' : '经典场') + (st.config.elderFriendly ? ' · 长辈友好房' : '');
   const noteEl = $('modeNote');
-  noteEl.textContent = st.config.mode === 'laizi'
+  noteEl.textContent = (st.config.elderFriendly ? '长辈友好房：节奏放慢、不催促。' : '') + (st.config.mode === 'laizi'
     ? '联机癞子场：癞子点 ' + rankName(g.laiziVal) + '，规则与单机癞子场一致，出牌由服务端判定。'
-    : '联机茶局房：出牌由服务端判定；断线会自动重连，空位由 AI 补位。';
+    : '联机茶局房：出牌由服务端判定；断线会自动重连，空位由 AI 补位。');
   noteEl.classList.add('show');
   $('dipai').style.display = '';
   renderDipai(g.landlord >= 0);
@@ -1759,7 +1782,9 @@ function renderOnlineBid(st){
   const b = st.bidding;
   if (!b) return;
   if (b.turn !== ON.seat){
-    bar.innerHTML = '<span class="turntip">叫分中：等 ' + onEsc(st.seats[b.turn].nickname) + ' 叫分（当前最高 ' + (b.highest || 0) + ' 分）</span>';
+    const who = st.seats[b.turn];
+    bar.innerHTML = '<span class="turntip">叫分中：等 ' + onEsc(who.nickname) + ' 叫分（当前最高 ' + (b.highest || 0) + ' 分）</span>' +
+      (who.trustee ? '<span class="turntip">（对方已断线，托管中）</span>' : '');
     return;
   }
   const tip = document.createElement('span');
@@ -1785,7 +1810,7 @@ function renderOnlinePlayBar(st){
   if (g.turn !== ON.seat){
     const who = st.seats[g.turn];
     bar.innerHTML = '<span class="turntip">等 ' + onEsc(who.nickname) + ' 出牌…</span>' +
-      (who.kind === 'human' && !who.connected ? '<span class="turntip">（对方已断线，AI 托管中）</span>' : '');
+      (who.trustee ? '<span class="turntip">（对方已断线，托管中）</span>' : '');
     return;
   }
   const last = (G.lastOwner === 0 || G.lastOwner < 0) ? null : G.lastPlay;
@@ -1817,6 +1842,23 @@ function renderOnlinePlayBar(st){
   };
   bar.append(bHint, bPlay, bPass);
 }
+/* 茶局房胜负文案: 按赢家角色 + 其地主/农民身份各一句, MYSKME 口吻, 不堆砌 */
+const ONLINE_FLAVOR = {
+  monkey: { landlord: '猴先生把这桌守得稳稳的，桃子一颗没让出去。', farmer: '猴先生跟着大伙儿翻了盘，赢完还惦记着分桃。' },
+  fish:   { landlord: '鱼小姐护目镜一推，地主这局赢得漂亮。', farmer: '鱼小姐尾巴拍得啪啪响——农民队赢啦。' },
+  teapot: { landlord: '咕咕文火慢炖，地主这锅到底是炖成了。', farmer: '咕咕说不急不急，转眼就把地主的茶给续凉了。' },
+  egg:    { landlord: '蛋当了回地主，壳硬，牌更硬。', farmer: '蛋难得笑出声：这一局，农民赢了。' },
+  donkey: { landlord: '驴还是那句话：意料之中。地主胜。', farmer: '驴不多话，闷声把地主推下了桌。' },
+  snake:  { landlord: '蛇慢悠悠地说：一切尽在掌握。', farmer: '蛇一句话点破全局，农民队顺势拿下。' },
+};
+function onlineFlavorLine(st){
+  const s = st.settlement;
+  if (!s) return '';
+  const w = st.seats[s.winnerSeat];
+  const f = w && ONLINE_FLAVOR[w.charKey];
+  if (!f) return '';
+  return s.landlordWin ? f.landlord : f.farmer;
+}
 function renderOnlineSettlement(st){
   const s = st.settlement;
   if (!s) return;
@@ -1824,6 +1866,22 @@ function renderOnlineSettlement(st){
   const myDelta = s.deltas[ON.seat];
   const winnerName = s.winnerSeat === ON.seat ? '你' : onEsc(st.seats[s.winnerSeat].nickname);
   const landlordName = s.landlordSeat === ON.seat ? '你' : onEsc(st.seats[s.landlordSeat].nickname);
+  const votes = st.again ? st.again.votes.length : 0;
+  const humans = st.again ? st.again.humans.length : 0;
+  const actions =
+    '<div class="onl-row"><button class="primary" onclick="onSendAgain()">再来一局（已点 ' + votes + ' / ' + humans + ' 人）</button>' +
+    (st.hostSeat === ON.seat ? '<button class="ghost" onclick="onSendStart()">房主直接再开</button>' : '') +
+    '<button class="ghost" onclick="onSendLobby()">返回大厅</button> <button class="ghost" onclick="onLeaveRoom(false)">离开房间</button></div>' +
+    '<div class="onl-status">再来一局：所有在线的真人都点一遍就自动开局；房主也可以直接再开。</div>';
+  if (elderActive()){
+    // 长辈简版: 与单机长辈结算同口径, 只显输赢与我的得分, 不铺明细表
+    $('panel').innerHTML =
+      '<h2 class="' + (myDelta >= 0 ? '' : 'lose') + '">' + (myDelta >= 0 ? '胜 利' : '败 北') + '</h2>' +
+      '<div class="elder-result">本局 ' + (myDelta >= 0 ? '+' : '−') + Math.abs(myDelta) + ' 分</div>' +
+      actions;
+    $('overlay').classList.add('show');
+    return;
+  }
   const rows = [
     ['地主', landlordName],
     ['赢家', winnerName + (s.landlordWin ? '（地主方）' : '（农民方）')],
@@ -1833,16 +1891,13 @@ function renderOnlineSettlement(st){
     ['最终倍数', '×' + s.mult],
     ['我的得分', (myDelta >= 0 ? '+' : '−') + Math.abs(myDelta)],
   ];
-  const votes = st.again ? st.again.votes.length : 0;
-  const humans = st.again ? st.again.humans.length : 0;
+  const flavor = onlineFlavorLine(st);
   $('panel').innerHTML =
     '<h2 class="' + (myDelta >= 0 ? '' : 'lose') + '">' + (myDelta >= 0 ? '胜 利' : '败 北') + '</h2>' +
     '<div class="who-win">' + winnerName + ' 率先出完 · 联机对局结束</div>' +
+    (flavor ? '<div class="onl-flavor">' + flavor + '</div>' : '') +
     '<table>' + rows.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('') + '</table>' +
-    '<div class="onl-row"><button class="primary" onclick="onSendAgain()">再来一局（已点 ' + votes + ' / ' + humans + ' 人）</button>' +
-    (st.hostSeat === ON.seat ? '<button class="ghost" onclick="onSendStart()">房主直接再开</button>' : '') +
-    '<button class="ghost" onclick="onSendLobby()">返回大厅</button> <button class="ghost" onclick="onLeaveRoom(false)">离开房间</button></div>' +
-    '<div class="onl-status">再来一局：所有在线的真人都点一遍就自动开局；房主也可以直接再开。</div>';
+    actions;
   $('overlay').classList.add('show');
 }
 
@@ -1864,7 +1919,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v0.9</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.0</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
@@ -2781,8 +2836,9 @@ const lastShown={0:null,1:null,2:null};
 function seatZoneHTML(seat){
   const z = lastShown[seat];
   if(!z) return '';
-  if(z.pass) return '<div class="passchip">不 出</div>';
-  return zoneCards(z.cards);
+  const tag = z.trustee ? '<div class="trusteechip">托管打出</div>' : '';
+  if(z.pass) return '<div class="passchip">不 出</div>' + tag;
+  return zoneCards(z.cards) + tag;
 }
 function renderZonePass(seat){ lastShown[seat]={pass:true}; }
 function renderHand(){
