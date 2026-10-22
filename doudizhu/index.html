@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.2</title>
+<title>萌友斗地主 · 原型 v1.3</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -483,13 +483,33 @@
   .onl-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0;}
   .onl-status{font-size:13px; opacity:.85; min-height:18px; margin:6px 0; text-align:left;}
   .onl-flavor{font-size:15px; color:var(--gold-l); line-height:1.6; margin:4px 0 10px;}
+
+  /* ---------- v1.3: 教学气泡 / 每日任务 ---------- */
+  #tutCard{position:absolute; left:50%; bottom:25%; transform:translate(-50%,8px); z-index:9; width:min(92%,520px);
+    background:var(--cream); color:var(--ink); border:1.5px solid var(--gold); border-radius:14px;
+    padding:14px 16px 12px; box-shadow:0 10px 30px rgba(0,0,0,.5); opacity:0; pointer-events:none; transition:opacity .25s, transform .25s;}
+  #tutCard.show{opacity:1; transform:translate(-50%,0); pointer-events:auto;}
+  #tutCard .tut-text{font-size:15.5px; line-height:1.65;}
+  #tutCard .tut-actions{display:flex; gap:9px; justify-content:flex-end; margin-top:10px;}
+  body.elder #tutCard{width:min(94%,600px); padding:18px 20px 16px;}
+  body.elder #tutCard .tut-text{font-size:20px; line-height:1.7;}
+  #hand img.hcard.tut-glow{box-shadow:0 0 0 3px var(--gold-l), 0 0 20px rgba(231,200,119,.85);}
+  .task-row{display:flex; align-items:center; gap:12px; text-align:left; padding:11px 4px; border-bottom:1px dashed rgba(201,162,77,.3);}
+  .task-info{flex:1;}
+  .task-info b{display:block; font-size:16px; color:var(--gold-l); letter-spacing:.5px;}
+  .task-info span{display:block; font-size:12.5px; line-height:1.5; color:#cfe0d2; margin-top:2px;}
+  .task-state{font-size:13.5px; color:#a9bcb0; white-space:nowrap;}
+  .task-state.done{color:var(--gold-l); font-weight:700;}
+  body.elder .task-info b{font-size:20px;}
+  body.elder .task-info span{font-size:16px; line-height:1.6;}
+  body.elder .task-state{font-size:16px;}
 </style>
 </head>
 <body>
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small>原型 v1.2 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small>原型 v1.3 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -525,6 +545,7 @@
 
     <div id="centerMsg"></div>
     <div class="fx-pop" id="fxPop"></div>
+    <div id="tutCard"></div>
   </div>
 
   <div id="playerArea">
@@ -1753,6 +1774,7 @@ function showCareer(){
     ['最高连胜', careerGames? c.best+' 连胜（当前 '+c.streak+' 连胜）' : '—'],
     ['打出炸弹', careerGames? c.bombs+' 个' : '—'],
     ['春天局数', careerGames? c.springs+' 局' : '—'],
+    ['茶点', tasksData().treats+' 枚（每日任务纪念，只记不用）'],
     ['残局总星', totalStars()+' / 60'],
     ['每日一局', '已连续完成 '+(dailyData().streak||0)+' 天'],
   ];
@@ -2343,15 +2365,17 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.2</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.3</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
     ['easy','normal','expert'].map(lv=>'<button type="button" class="levelbtn'+(aiLevel===lv?' on':'')+'" data-level="'+lv+'" onclick="setAiLevel(\''+lv+'\')">'+LEVEL_NAMES[lv]+'</button>').join('') +
     '<small>简单：随性出牌、很少用炸弹。普通：默认打法。高手：会记牌、护住整牌型、卡着时机才炸。残局闯关不受难度影响。</small></div>' +
     modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
+    '<button class="modebtn" onclick="startTutorial()"><b>新手教学局</b><span>'+(tutorialData().done ? '已完成，可重温。' : '第一次打？先来这一局。')+'跟着提示打完一局：叫分定地主、出牌成型、管上规则、农民配合，一边打一边学；不计战绩与段位。</span></button>' +
     '<button class="modebtn" onclick="showOnlinePanel()"><b>联机茶局房</b><span>和家人异地开一桌：建房后把房码或邀请链接发到家庭群，长辈点开输房码就能进；空位有 AI 补位，掉线能自动重连回座。</span></button>' +
     dailyEntryHTML() +
+    tasksEntryHTML() +
     '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>二十关固定残局，按最优防守设计：大牌控场、顺子先行、炸弹收尾、送队友先走……通关赢星解锁下一关，三星看你用几手打完。当前总星 '+totalStars()+' / 60。</span></button>' +
     '<button class="modebtn" onclick="showStoryCodex(\'menu\')"><b>故事图鉴</b><span>六位角色各 3 篇小故事，已解锁 '+unlockedStoryCount()+' / 18 篇。赢下对局击败角色，再攒够残局星数，逐篇打开。</span></button>' +
     '<button class="modebtn" onclick="showCareer()"><b>战绩生涯</b><span>总场次、总胜率、地主与农民分项、连胜、炸弹与春天，外加段位履历，一页看全。</span></button>' +
@@ -2479,6 +2503,7 @@ function recordDailyWin(){
   d.streak = d.lastDone === shanghaiYesterday() ? (d.streak || 0) + 1 : 1;
   d.lastDone = d.date;
   saveDaily();
+  taskEvent('daily');   // v1.3: 每日任务「完成每日一局」
   return d;
 }
 function dailyEntryHTML(){
@@ -2659,7 +2684,9 @@ function finishChallenge(winnerSeat){
     stars = myPlays<=lv.best ? 3 : (myPlays<=lv.best+1 ? 2 : 1);
     if(isDaily){ dailyInfo = recordDailyWin(); }
     else if(!link && stars > (challenge.stars[G.challengeIdx]||0)){ challenge.stars[G.challengeIdx] = stars; saveChallenge(); }
+    if(!link) taskEvent('win');   // v1.3: 每日任务「单机获胜一局」(残局/每日通关计, 好友挑战局不计)
   }
+  G.reportSnap = {winnerSeat, stars, playerWin, plays: myPlays, daily: isDaily};   // v1.3: 战报图数据快照
   if(playerWin){ Snd.win(); Fx.gold(); } else { Snd.lose(); }
   renderAll();
   let desc;
@@ -2673,6 +2700,7 @@ function finishChallenge(winnerSeat){
   let btns = '';
   if(playerWin && !isDaily) btns += '<button class="primary" onclick="shareChallenge('+G.challengeIdx+','+stars+','+myPlays+')">把这关发给朋友挑战</button> ';
   btns += '<button class="primary" onclick="'+(isDaily ? 'startDaily()' : 'startLevel('+G.challengeIdx+')')+'">重开本关</button> ';
+  btns += '<button class="ghost" onclick="makeReportImage(\'challenge\')">生成战报</button> ';
   if(playerWin && !link && !isDaily && G.challengeIdx < LEVELS.length-1) btns += '<button class="primary" onclick="startLevel('+(G.challengeIdx+1)+')">下一关</button> ';
   btns += '<button class="ghost" onclick="showLevelSelect()">返回选关</button> <button class="ghost" onclick="showModeSelect()">换个场</button>';
   $('panel').innerHTML =
@@ -2682,8 +2710,10 @@ function finishChallenge(winnerSeat){
     (isDaily && playerWin ? '<div class="challenge-compare">每日一局完成 · 已连续完成 '+(dailyInfo ? dailyInfo.streak : 1)+' 天。明天再来，题目会换。</div>' : '')+
     (isDaily && !playerWin ? '<div class="challenge-compare">每日一局还没过关，重开本关再试——今天所有人都是这一局。</div>' : '')+
     (compare ? '<div class="challenge-compare">'+compare+'</div>' : '')+
+    taskNewLine()+
     btns+
     (playerWin && !isDaily ? '<div class="share-result" id="shareResult"></div>' : '')+
+    '<div class="share-result" id="reportTip"></div>'+
     '<div class="stats">'+(isDaily ? '每日一局 · 连续完成 '+(dailyData().streak||0)+' 天' : '总星 '+totalStars()+' / 60')+'</div>';
   $('overlay').classList.add('show');
   for(const s of [1,2]){
@@ -2816,7 +2846,7 @@ async function runTurn(){
   renderAll();
   const seat = G.turn;
   if(G.hands[seat].length===0) return;
-  if(seat===0){ enablePlayerActions(); return; }
+  if(seat===0){ if(G.tutorial && G.tut.stage!=='free') tutPlayerTurn(); else enablePlayerActions(); return; }
   await sleep(paceDelay(720 + Math.random()*480));
   if(!G || G.gid!==gid || G.over || G.turn!==seat) return;
   const last = (G.lastOwner===seat || G.lastOwner<0) ? null : G.lastPlay;
@@ -2842,7 +2872,14 @@ async function runTurn(){
     isLandlord: roleOf(seat)==='landlord',
     partnerCards,
   };
-  const decision = aiDecide(G.hands[seat], last, ctx);
+  /* v1.3: 教学局前两手走脚本(管上/让路演示), 其余回合强制普通档保证体验稳定 */
+  let decision = null;
+  if(G.tutorial){
+    const td = tutAiDecide(seat, last, ctx);
+    decision = td==='pass' ? null : (td || aiDecide(G.hands[seat], last, {...ctx, level:'normal'}));
+  } else {
+    decision = aiDecide(G.hands[seat], last, ctx);
+  }
   if(decision && last && !canBeat(decision.info, last.info)){ doPass(seat); }
   else if(decision){ doPlay(seat, decision.cards, decision.info); }
   else doPass(seat);
@@ -2861,7 +2898,7 @@ function doPlay(seat, cards, knownInfo){
   for(const c of cards) G.playedCount[c.v]++;
   G.lastPlay = {cards, info}; G.lastOwner = seat; G.passStreak = 0;
   G.playsBySide[roleOf(seat)]++;
-  if(isBombLike(info)){ G.bombs++; if(seat===0) G.ownBombs = (G.ownBombs||0)+1; G.mult *= 2; fxText(info.type==='rocket'?'王 炸':(info.soft?'软 炸':'炸 弹')); }
+  if(isBombLike(info)){ G.bombs++; if(seat===0){ G.ownBombs = (G.ownBombs||0)+1; if(!G.tutorial && !G.online) taskEvent('bomb'); } G.mult *= 2; fxText(info.type==='rocket'?'王 炸':(info.soft?'软 炸':'炸 弹')); }
   // 台词
   if(seat!==0){
     if(isBombLike(info)) say(seat, pickOne(CHARS[G.aiChar[seat]].lines.bomb));
@@ -2870,6 +2907,7 @@ function doPlay(seat, cards, knownInfo){
     for(const s of [1,2]) if(Math.random()<.55) setTimeout(()=>say(s, pickOne(CHARS[G.aiChar[s]].lines.hurt)), paceDelay(350));
   }
   renderAll();
+  if(G.tutorial) tutOnPlay(seat, info);
   if(G.hands[seat].length===0){ finishGame(seat); return; }
   nextTurn();
 }
@@ -2880,6 +2918,7 @@ function doPass(seat){
   if(seat!==0 && Math.random()<.5) say(seat, pickOne(CHARS[G.aiChar[seat]].lines.pass));
   renderZonePass(seat);
   renderAll();
+  if(G.tutorial) tutOnPass(seat);
   nextTurn();
 }
 
@@ -2983,7 +3022,7 @@ function enablePlayerActions(){
    不改任何决策, 普通档同种子轨迹与 v0.6 完全一致。残局模式不记录、不复盘。 */
 let review = null;   // {rec, idx} idx = 已回放到第几步(0 = 开局)
 function recordInitIfNeeded(){
-  if(!G || G.mode==='challenge' || G.record || G.landlord<0) return;
+  if(!G || G.mode==='challenge' || G.tutorial || G.record || G.landlord<0) return;
   G.record = {
     mode: G.mode, laiziVal: G.laiziVal, landlord: G.landlord, base: G.base,
     aiChar: G.aiChar.slice(), dipai: G.dipai.slice(),
@@ -3258,6 +3297,7 @@ function finishGame(winnerSeat){
   G.over = true; G.phase='over';
   setPanelClass();
   if(G.mode==='challenge'){ finishChallenge(winnerSeat); return; }
+  if(G.tutorial){ finishTutorial(winnerSeat); return; }   // v1.3: 教学局单独结算, 不写战绩/段位/生涯
   const landlordWin = winnerSeat===G.landlord;
   // 春天: 地主胜且农民从未出牌 / 农民胜且地主只出过一手
   let spring = false;
@@ -3275,6 +3315,7 @@ function finishGame(winnerSeat){
   renderAll();
   const rankInfo = applyRankResult(myWin, score);   // v0.8: 三场次计入赛季段位(残局已在上方分流, 不会走到这里)
   recordCareerResult(myWin, spring);   // v1.2: 生涯分项累计(与段位同口径, 仅三场次)
+  if(myWin) taskEvent('win');   // v1.3: 每日任务「单机获胜一局」
   G.result = {winnerSeat, landlordWin, spring, myWin, score, rankInfo};
   G.coachNotes = coachAnalyze();
   renderSettlement();
@@ -3290,6 +3331,7 @@ function renderSettlement(){
   const {winnerSeat, landlordWin, spring, myWin, score, rankInfo} = G.result;
   const hasReview = !!(G.record && G.record.steps.length);
   const reviewBtn = hasReview ? ' <button class="ghost" onclick="enterReview()">复盘看看</button>' : '';
+  const reportBtn = ' <button class="ghost" onclick="makeReportImage(\'game\')">生成战报</button>';   // v1.3
   const rows = [
     ['身份', G.landlord===0 ? '你是地主' : (CHARS[G.aiChar[G.landlord]].name+' 是地主')],
     ['底分', G.base+' 分'],
@@ -3306,9 +3348,11 @@ function renderSettlement(){
       '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
       '<div class="who-win">'+(winnerSeat===0?'你先把牌出完了':CHARS[G.aiChar[winnerSeat]].name+' 先把牌出完了')+'</div>'+
       '<div class="elder-result">本局 '+(myWin?'+':'−')+score+' 分<br><span>累计 '+stats.points+' 分</span>'+(rankInfo ? '<br><span>段位 '+rankInfo.name+' · '+(rankInfo.delta>=0?'+':'−')+Math.abs(rankInfo.delta)+' 分</span>' : '')+'</div>'+
-      '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+
+      '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+reportBtn+
       '<button class="ghost elder-detail-btn" id="btnElderCalc" aria-expanded="false" onclick="toggleElderCalc()">看看怎么算的</button>'+
-      '<div class="elder-detail" id="elderCalc" hidden>'+detailTable+'</div>';
+      '<div class="elder-detail" id="elderCalc" hidden>'+detailTable+'</div>'+
+      taskNewLine()+
+      '<div class="share-result" id="reportTip"></div>';
   } else {
     $('panel').innerHTML =
       '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
@@ -3316,7 +3360,9 @@ function renderSettlement(){
       detailTable+
       (rankInfo && rankInfo.promoted ? '<div class="rankup-banner">升段：'+rankInfo.name+'</div>' : '')+
       (rankInfo ? '<div class="rank-line">段位 <b>'+rankInfo.name+'</b> · 段位分 '+rankInfo.afterPts+'（'+(rankInfo.delta>=0?'+':'−')+Math.abs(rankInfo.delta)+'）</div>' : '')+
-      '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+
+      '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+reportBtn+
+      taskNewLine()+
+      '<div class="share-result" id="reportTip"></div>'+
       '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局</div>';
   }
   $('overlay').classList.add('show');
@@ -3461,6 +3507,601 @@ function renderCounter(){
     return '<div class="cell'+(left[v]===0?' out':'')+(v>=16?' red':'')+(isLz?' wildcell':'')+'"><b>'+left[v]+'</b><span>'+(nm[v]||v)+(isLz?'·癞':'')+'</span></div>';
   }).join('');
   bar.classList.add('open');
+}
+
+/* ================= v1.3: 新手教学局 / 每日任务 / 战报分享图 ================= */
+
+/* ---------- 每日任务 ----------
+   在每日一局之上的任务层: 三条固定日任务, 存 myskme_ddz_tasks
+   {date, flags:{daily,win,bomb}, claimed:{...}, treats}。
+   日期口径 Asia/Shanghai(shanghaiToday), 跨日自动重置 flags/claimed, 茶点 treats 只增不减。
+   奖励「茶点」是与段位分完全独立的纪念计数: 只在任务面板与战绩生涯里展示,
+   不参与任何计分, 更不可兑换(面板文案写明)。
+   推进口径: 只统计单机对局——三场次、残局、每日一局; 教学局与联机不计
+   (钩子分别在 finishGame / finishChallenge / doPlay / recordDailyWin, 均已排除教学与联机)。
+   本地单机记录, 不做防改时间处理(口径见任务面板注脚)。 */
+const TASK_DEFS = [
+  ['daily', '完成每日一局', '把今天的每日一局打通关。'],
+  ['win',   '单机获胜一局', '在单机对局中赢下一局（经典 / 癞子 / 不洗牌 / 残局 / 每日一局；教学局与联机不计）。'],
+  ['bomb',  '打出一炸',     '在单机对局中由你亲手打出一副炸弹或王炸。'],
+];
+let tasksStore = null;
+function tasksData(){
+  if(!tasksStore){
+    try{ tasksStore = JSON.parse(localStorage.getItem('myskme_ddz_tasks')||'null'); }catch(e){ tasksStore = null; }
+    if(!tasksStore || typeof tasksStore!=='object')
+      tasksStore = {date:'', flags:{}, claimed:{}, treats:0};
+    if(typeof tasksStore.treats!=='number') tasksStore.treats = 0;
+    if(!tasksStore.flags || typeof tasksStore.flags!=='object') tasksStore.flags = {};
+    if(!tasksStore.claimed || typeof tasksStore.claimed!=='object') tasksStore.claimed = {};
+  }
+  const today = shanghaiToday();
+  if(tasksStore.date !== today){
+    tasksStore.date = today;
+    tasksStore.flags = {};
+    tasksStore.claimed = {};
+    saveTasks();
+  }
+  return tasksStore;
+}
+function saveTasks(){ localStorage.setItem('myskme_ddz_tasks', JSON.stringify(tasksStore)); }
+function taskEvent(kind){
+  const t = tasksData();
+  if(t.flags[kind]) return;
+  t.flags[kind] = 1;
+  saveTasks();
+  if(G && !G.online && !G.tutorial){
+    G._taskNew = G._taskNew || [];
+    if(!G._taskNew.includes(kind)) G._taskNew.push(kind);
+  }
+}
+function claimTask(kind){
+  const t = tasksData();
+  if(!t.flags[kind] || t.claimed[kind]) return;
+  t.claimed[kind] = 1;
+  t.treats++;
+  saveTasks();
+  Snd.play('coins', .8);
+  showTasks();
+}
+function tasksDoneCount(){ const t = tasksData(); return TASK_DEFS.filter(d=>t.flags[d[0]]).length; }
+function tasksEntryHTML(){
+  const t = tasksData();
+  const claimable = TASK_DEFS.some(d=>t.flags[d[0]] && !t.claimed[d[0]]);
+  return '<button class="modebtn" onclick="showTasks()"><b>每日任务</b><span>今日完成 '+tasksDoneCount()+' / 3'+(claimable?' · 有茶点可领':'')+'</span><span class="daily-meta">茶点 '+t.treats+' 枚 · 完成任务领茶点，纯纪念，不可兑换</span></button>';
+}
+function showTasks(){
+  elderContext = 'menu';
+  setPanelClass();
+  hideBubbles();
+  const t = tasksData();
+  const rowsHtml = TASK_DEFS.map(d=>{
+    const done = !!t.flags[d[0]], claimed = !!t.claimed[d[0]];
+    const state = claimed
+      ? '<span class="task-state done">已领取</span>'
+      : done ? '<button class="primary" onclick="claimTask(\''+d[0]+'\')">领取茶点</button>'
+             : '<span class="task-state">未完成</span>';
+    return '<div class="task-row"><div class="task-info"><b>'+d[1]+'</b><span>'+d[2]+'</span></div>'+state+'</div>';
+  }).join('');
+  $('panel').innerHTML =
+    '<h2>每日任务</h2><div class="who-win">'+shanghaiToday()+' · 今日完成 '+tasksDoneCount()+' / 3</div>' +
+    rowsHtml +
+    '<div class="rankbar"><span class="rank-badge">茶点 '+t.treats+' 枚</span><span class="rank-info">每日任务的纪念计数，与段位分互不相干<br>只记在战绩生涯里，不可兑换任何东西</span></div>' +
+    '<button class="primary" onclick="showModeSelect()">返回</button>' +
+    '<div class="career-note">任务按 Asia/Shanghai 日期刷新，跨日自动重置；茶点只增不减。这是本地单机记录，不做防改时间处理。</div>';
+  $('overlay').classList.add('show');
+}
+/* 结算面板里的一行新完成提示(本局刚点亮的任务) */
+function taskNewLine(){
+  if(!G || !G._taskNew || !G._taskNew.length) return '';
+  const names = G._taskNew.map(k => { const d = TASK_DEFS.find(x=>x[0]===k); return d ? d[1] : k; });
+  return '<div class="rank-line">每日任务新完成：'+names.join('、')+'（回场次面板「每日任务」领茶点）</div>';
+}
+
+/* ---------- 新手教学局 ----------
+   固定牌局(种子写死, fabricateHands 分配花色): 玩家手牌含三副对子、三张 9、
+   底牌补进两张 8 凑成炸弹, 保证教学节点必然出现。流程:
+   开场讲解(发牌与排序) -> 脚本叫分(两家不叫, 玩家必须叫分才继续, 叫得地主)
+   -> 底牌讲解 -> 首出必须出对子(点错温和纠正) -> 右家脚本用最小的更大对子管上、
+   左家脚本让路(农民配合) -> 玩家必须管上(更大的对子或炸弹) -> 之后自由对局,
+   牌型第一次出现时就地一句话讲明(顺子/连对/飞机/三带/炸弹/王炸)。
+   教学局走 G.tutorial 标记: finishGame 在写任何存档前分流到 finishTutorial,
+   只写 myskme_ddz_tutorial 完成标记; 战绩/段位/生涯/残局/每日/任务一律不写。
+   长辈模式: elderContext='tutorial' 使 elderActive() 成立, 节奏 paceDelay 自动放慢,
+   教学气泡与按钮字号由 body.elder 样式放大。 */
+const TUT_HANDS = [
+  [17,15,14,13,13,12,11,11,10,10,9,9,9,8,8,7,6],
+  [16,15,14,14,13,12,12,11,10,9,7,7,6,5,4,3,3],
+  [15,15,14,13,12,11,10,7,6,6,5,5,5,4,4,4,3],
+];
+const TUT_DIPAI = [8,8,3];
+let tutorialStore = null;
+function tutorialData(){
+  if(!tutorialStore){
+    try{ tutorialStore = JSON.parse(localStorage.getItem('myskme_ddz_tutorial')||'null'); }catch(e){ tutorialStore = null; }
+    if(!tutorialStore || typeof tutorialStore!=='object') tutorialStore = {done:false, at:''};
+  }
+  return tutorialStore;
+}
+function saveTutorial(){ localStorage.setItem('myskme_ddz_tutorial', JSON.stringify(tutorialData())); }
+
+let tutToastTimer = 0;
+function tutShow(html, blocking){
+  const el = $('tutCard'); if(!el) return;
+  clearTimeout(tutToastTimer);
+  el.innerHTML = html;
+  el.style.pointerEvents = blocking ? 'auto' : 'none';
+  el.classList.add('show');
+}
+function tutHide(){
+  const el = $('tutCard'); if(!el) return;
+  clearTimeout(tutToastTimer);
+  el.classList.remove('show');
+  el.innerHTML = '';
+}
+function tutAsk(text, btn){
+  return new Promise(res=>{
+    tutShow('<div class="tut-text">'+text+'</div><div class="tut-actions"><button class="primary" id="tutOk">'+(btn||'知道了')+'</button></div>', true);
+    const b = $('tutOk');
+    if(b) b.onclick = ()=>{ Snd.play('tap', .6); tutHide(); res(); };
+    else res();
+  });
+}
+function tutToast(text){
+  tutShow('<div class="tut-text">'+text+'</div>', false);
+  clearTimeout(tutToastTimer);
+  tutToastTimer = setTimeout(tutHide, paceDelay(3400));
+}
+function startTutorial(){
+  document.body.classList.remove('reviewing');
+  review = null;
+  pendingChallenge = null;
+  elderContext = 'tutorial';
+  setPanelClass();
+  hideChallengeBanner();
+  applyElderMode();
+  setElderRecommendation(null);
+  $('overlay').classList.remove('show');
+  $('dipai').style.display = '';
+  hideBubbles();
+  setLaizi(0);
+  const groups = fabricateHands([TUT_HANDS[0], TUT_HANDS[1], TUT_HANDS[2], TUT_DIPAI]);
+  window._gid = (window._gid||0)+1;
+  G = {
+    gid: window._gid,
+    mode:'classic', tutorial:true, laiziVal:0,
+    phase:'bidding',
+    hands:[ sortCards(groups[0]), sortCards(groups[1]), sortCards(groups[2]) ],
+    dipai: groups[3],
+    aiChar:[null, 'fish', 'snake'],
+    landlord:-1, base:0, mult:1, bombs:0,
+    turn:0, lastPlay:null, lastOwner:-1, passStreak:0, selfPass:[0,0,0], playsCount:[0,0,0],
+    playedCount:{},
+    playsBySide:{landlord:0, farmer:0},
+    selected:new Set(), over:false,
+    tut:{ stage:'lead', taught:{}, r1:false, l1:false, leadBriefed:false, followBriefed:false },
+  };
+  for(let v=3; v<=17; v++) G.playedCount[v]=0;
+  $('avR').src = CHARS.fish.av; $('nmR').textContent = CHARS.fish.name;
+  $('avL').src = CHARS.snake.av; $('nmL').textContent = CHARS.snake.name;
+  updateStoryButtonVisibility();
+  $('uiBase').textContent='—'; $('uiMult').textContent='×1';
+  $('uiMode').textContent = '教学局';
+  const noteEl = $('modeNote');
+  noteEl.textContent = '教学局：跟着提示打完这一局，学会叫分、出牌与管上；不计战绩与段位。';
+  noteEl.classList.add('show');
+  lastShown[0]=lastShown[1]=lastShown[2]=null;
+  $('actionBar').innerHTML='';
+  renderAll();
+  animateDeal(2);
+  const gid = G.gid;
+  (async ()=>{
+    await tutAsk('欢迎来到教学局。牌已经发好了，并且从大到小排好了序：大王最大，往下是小王、2、A、K、Q……最小的是 3。先学第一件事：谁当地主。', '开始');
+    if(!G || G.gid!==gid || G.over) return;
+    await tutBidding(gid);
+  })();
+}
+async function tutBidding(gid){
+  G.phase = 'bidding';
+  renderDipai(false);
+  centerMsg('叫分环节', '轮流叫分，叫分最高的人当地主');
+  G.turn = 1; renderTurn();
+  await sleep(paceDelay(650)); if(!G || G.gid!==gid) return;
+  showBid(1, 0);
+  G.turn = 2; renderTurn();
+  await sleep(paceDelay(650)); if(!G || G.gid!==gid) return;
+  showBid(2, 0);
+  G.turn = 0; renderTurn();
+  while(true){
+    const bid = await tutPlayerBid();
+    if(!G || G.gid!==gid) return;
+    if(bid > 0){ showBid(0, bid); G.landlord = 0; G.base = bid; break; }
+    showBid(0, 0);
+    await tutAsk('先试着叫一次分：叫分最高的人当地主，能把桌上三张底牌拿走，手牌一下从 17 张变 20 张。这一局，咱们就叫它。', '再叫一次');
+    if(!G || G.gid!==gid) return;
+  }
+  G.mult = 1;
+  $('uiBase').textContent = G.base + ' 分';
+  G.hands[0] = sortCards([...G.hands[0], ...G.dipai]);
+  renderDipai(true);
+  centerMsg('你是地主', '底分 '+G.base+' 分 · 倍数 ×1');
+  renderAll();
+  await tutAsk('这三张就是底牌，现在归你了。留意一下：加上底牌里的两张 8，你手里凑齐了四张 8——这叫炸弹，能管全场的大牌，先记住它的样子，别急着用。接下来由地主先出牌，就是你。', '知道了');
+  if(!G || G.gid!==gid) return;
+  G.phase = 'playing'; G.turn = 0; G.lastPlay = null; G.lastOwner = -1; G.passStreak = 0;
+  renderAll();
+  centerMsg('', '');
+  runTurn();
+}
+function tutPlayerBid(){
+  return new Promise(res=>{
+    Snd.play('hint', .8);
+    const bar = $('actionBar');
+    bar.innerHTML = '<span class="turntip">轮到你叫分</span>';
+    const opts = [[0,'不叫'],[1,'1 分'],[2,'2 分'],[3,'3 分']];
+    for(const [v,lab] of opts){
+      const b = document.createElement('button');
+      b.textContent = lab; if(v===3) b.className='primary';
+      b.onclick = ()=>{ bar.innerHTML=''; res(v); };
+      bar.appendChild(b);
+    }
+  });
+}
+/* 教学局玩家回合: lead/follow 两步有硬性要求(做对才过, 点错温和纠正), free 后回普通操作条 */
+async function tutPlayerTurn(){
+  centerMsg('', '');
+  const gid = G.gid;
+  const last = (G.lastOwner===0 || G.lastOwner<0) ? null : G.lastPlay;
+  if(G.tut.stage==='lead' && !G.tut.leadBriefed){
+    G.tut.leadBriefed = true;
+    await tutAsk('地主先出牌，也就是你先出。先练最基本的一手——对子：两张点数一样的牌。下面发亮的都是你手里的对子，任选一对，再点「出牌」。', '知道了');
+    if(!G || G.gid!==gid || G.over || G.turn!==0) return;
+  }
+  if(G.tut.stage==='follow' && last && !G.tut.followBriefed){
+    G.tut.followBriefed = true;
+    const nm = CHARS[G.aiChar[G.lastOwner]].name;
+    await tutAsk(nm+'刚刚用'+describePlay(last.info)+'管上了你的对子——这就叫「管上」：必须出相同的牌型，而且点数比它大。现在轮到你管回去：用更大的对子，或者干脆用炸弹。这手先别点「不出」。', '知道了');
+    if(!G || G.gid!==gid || G.over || G.turn!==0) return;
+  }
+  tutArmActions();
+}
+function tutArmActions(){
+  const bar = $('actionBar');
+  bar.innerHTML = '';
+  const last = (G.lastOwner===0 || G.lastOwner<0) ? null : G.lastPlay;
+  const tip = document.createElement('span'); tip.className='turntip';
+  tip.textContent = G.tut.stage==='lead' ? '选一对牌，点「出牌」' : (last ? '轮到你管上' : '由你出牌');
+  bar.appendChild(tip);
+  const bHint = document.createElement('button'); bHint.className='ghost'; bHint.textContent='提示';
+  const bPlay = document.createElement('button'); bPlay.className='primary'; bPlay.textContent='出牌'; bPlay.id='btnPlay'; bPlay.disabled = G.selected.size===0;
+  const bPass = document.createElement('button'); bPass.textContent='不出'; bPass.disabled = !last;
+  bHint.onclick = ()=>{
+    const cand = getPlayerHintCandidates(last);
+    if(!cand.length){ tutToast('这手没有能管上的牌，点「不出」过掉。'); return; }
+    const p = cand[hintIdx % cand.length]; hintIdx++;
+    G.selected = new Set(p.cards.map(c=>G.hands[0].indexOf(c)));
+    renderHand(); tutApplyGlow();
+    bPlay.disabled = G.selected.size===0;
+  };
+  bPlay.onclick = ()=>{
+    const cards = [...G.selected].sort((a,b)=>a-b).map(i=>G.hands[0][i]);
+    if(!cards.length) return;
+    const info = resolvePlayInfo(cards, last ? last.info : null);
+    if(!info){
+      Snd.play('deny', .8);
+      tutToast('这几张凑不成一组牌。单张、对子、三张、顺子都有各自的成型规矩，换一手试试。');
+      return;
+    }
+    if(G.tut.stage==='lead' && info.type!=='pair'){
+      Snd.play('deny', .8);
+      tutToast('先练对子：两张一样点数的牌一起出。把多选的牌点掉，只留一对。');
+      return;
+    }
+    if(last && !canBeat(info, last.info)){
+      Snd.play('deny', .8);
+      tutToast('这手管不上对面：要出同样的牌型、点数更大；炸弹和王炸是谁都能管的例外。');
+      return;
+    }
+    if(G.tut.stage==='lead') G.tut.stage = 'follow';
+    else if(G.tut.stage==='follow') G.tut.stage = 'free';
+    bar.innerHTML=''; hintIdx=0; G.selected.clear(); tutHide();
+    doPlay(0, cards, info);
+  };
+  bPass.onclick = ()=>{
+    if(G.tut.stage==='follow'){
+      Snd.play('deny', .8);
+      tutToast('这手先别过：你手里有更大的对子，炸弹也能管。试着管上它，实在不行再过。');
+      return;
+    }
+    bar.innerHTML=''; hintIdx=0; G.selected.clear(); tutHide();
+    doPass(0);
+  };
+  bar.append(bHint, bPlay, bPass);
+  tutApplyGlow();
+}
+function tutApplyGlow(){
+  if(!G || !G.tut || G.tut.stage!=='lead') return;
+  const cnt = countMap(valsOf(G.hands[0]));
+  const wraps = $('hand').children;
+  G.hands[0].forEach((c, i)=>{
+    if(cnt[c.v] < 2) return;
+    const w = wraps[i];
+    if(w && w.children && w.children[0]) w.children[0].classList.add('tut-glow');
+  });
+}
+/* 教学局 AI: 第一轮脚本(右家最小对子管上、左家给队友让路), 其余强制普通档 */
+function tutAiDecide(seat, last, ctx){
+  const S = G.tut;
+  if(seat===1 && !S.r1){
+    S.r1 = true;
+    if(last){
+      const plays = genPlays(G.hands[1], last)
+        .filter(p=>p.info && p.info.type==='pair' && canBeat(p.info, last.info))
+        .sort((a,b)=>a.info.main-b.info.main);
+      if(plays.length) return {cards: plays[0].cards, info: plays[0].info};
+    }
+    return null;
+  }
+  if(seat===2 && !S.l1){
+    S.l1 = true;
+    if(last && G.lastOwner===1) return 'pass';
+    return null;
+  }
+  return null;
+}
+/* 牌型第一次出现就地讲一句; 农民让路第一次出现时讲配合 */
+function tutOnPlay(seat, info){
+  if(!info || !G.tut) return;
+  const T = G.tut.taught;
+  const NAMES = {
+    straight:'顺子：五张以上连续的单张，比如 5、6、7、8、9。注意 2 和大小王不能排进顺子。',
+    pairs:'连对：至少三副对子连着出，比如 3、3、4、4、5、5。',
+    plane:'飞机：两组以上的三张连着出，还可以带同等数量的散牌或对子作翅膀。',
+    trio1:'三带一：三张同点，再带一张散牌。',
+    trio2:'三带二：三张同点，再带一副对子。',
+    four2:'四带二：四张同点带两张散牌——注意这不算炸弹，管不了普通牌型之外的东西。',
+  };
+  if(NAMES[info.type] && !T[info.type]){
+    T[info.type] = 1;
+    tutToast((seat===0 ? '你出的' : '对面出的')+'是'+NAMES[info.type]);
+    return;
+  }
+  if(isBombLike(info) && !T.bomb){
+    T.bomb = 1;
+    tutToast(info.type==='rocket'
+      ? '王炸：大王小王合璧，全场最大的牌，谁也管不了它。出手后倍数翻倍。'
+      : '炸弹出手：四张同点，什么牌型都能管。倍数已经翻倍，现在是 ×'+G.mult+'。');
+  }
+}
+function tutOnPass(seat){
+  if(!G.tut || G.tut.taught.coop) return;
+  if(seat===0 || G.lastOwner<0) return;
+  if(isPartner(seat, G.lastOwner)){
+    G.tut.taught.coop = 1;
+    tutToast('注意看：'+CHARS[G.aiChar[seat]].name+'没有压队友的牌——农民是同一队，要给队友让路，两个人合力拦地主。斗地主不只是比谁牌大，还要看配合。');
+  }
+}
+function finishTutorial(winnerSeat){
+  setPanelClass();
+  tutHide();
+  const landlordWin = winnerSeat===G.landlord;
+  let spring = false;
+  if(landlordWin && G.playsBySide.farmer===0) spring = true;
+  if(!landlordWin && G.playsBySide.landlord<=1) spring = true;
+  if(spring) G.mult *= 2;
+  const myWin = landlordWin ? (G.landlord===0) : (G.landlord!==0);
+  const score = G.base * G.mult;
+  if(myWin){ Snd.win(); Snd.play('coins', .8); } else { Snd.lose(); }
+  const t = tutorialData();
+  if(!t.done){ t.done = true; t.at = shanghaiToday(); saveTutorial(); }
+  renderAll();
+  const rows = [
+    ['身份', G.landlord===0 ? '你是地主' : (CHARS[G.aiChar[G.landlord]].name+' 是地主')],
+    ['底分', G.base+' 分'],
+    ['炸弹', G.bombs+' 个'],
+    ['春天', spring ? '是（×2）' : '否'],
+    ['最终倍数', '×'+G.mult],
+    ['本局得分（正式局口径）', (myWin?'+':'−')+score],
+  ];
+  $('panel').innerHTML =
+    '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
+    '<div class="who-win">教学局结束 · '+(winnerSeat===0?'你率先出完':CHARS[G.aiChar[winnerSeat]].name+' 率先出完')+'</div>'+
+    '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>'+
+    '<div class="challenge-compare">这一局走完了全程：叫分定地主、底牌归地主；出牌先成型，管上要同型更大；炸弹翻倍，春天翻倍；农民是队友，要互相让路。教学局不计战绩与段位。</div>'+
+    '<button class="primary" onclick="startTutorial()">再学一局</button> <button class="ghost" onclick="showModeSelect()">去打正式场</button>'+
+    '<div class="stats">教学局已完成 · 之后可随时从场次面板重温</div>';
+  $('overlay').classList.add('show');
+  for(const s of [1,2]){
+    const won = roleOf(s)===roleOf(winnerSeat);
+    say(s, won ? CHARS[G.aiChar[s]].lines.win : CHARS[G.aiChar[s]].lines.lose);
+  }
+}
+
+/* ---------- 战报分享图 ----------
+   canvas 竖版 1080×1350: 深青底 + 暖金框, 与游戏结算同基调。
+   数据口径: 普通对局用 G.result(结算快照), 残局/每日用 finishChallenge 写入的 G.reportSnap;
+   联机结算不走本地结算面板, 天然不在此列(无完整本地数据口径)。
+   头像一律用现有 assets(玩家=猴先生头像, 与牌桌「你」的头像一致), 不用 emoji。
+   导出: 优先 navigator.share 带文件分享, 不支持或失败则下载 PNG。 */
+const _repAvCache = {};
+function loadAvatarImg(src){
+  return new Promise(res=>{
+    if(_repAvCache[src]) return res(_repAvCache[src]);
+    let done = false;
+    const fin = v => { if(done) return; done = true; if(v) _repAvCache[src] = v; res(v); };
+    let im;
+    try{ im = new Image(); }catch(e){ return fin(null); }
+    im.onload = ()=>fin(im);
+    im.onerror = ()=>fin(null);
+    try{ im.src = src; }catch(e){ fin(null); }
+    setTimeout(()=>fin(null), 2500);
+  });
+}
+function drawAvatarCircle(ctx, im, x, y, r){
+  ctx.save();
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.closePath(); ctx.clip();
+  if(im && im.width && im.height){
+    const s = Math.max(2*r/im.width, 2*r/im.height);
+    const w = im.width*s, h = im.height*s;
+    ctx.drawImage(im, x-w/2, y-h/2, w, h);
+  } else if(im){
+    ctx.drawImage(im, x-r, y-r, 2*r, 2*r);
+  } else {
+    ctx.fillStyle = '#20443e'; ctx.fillRect(x-r, y-r, 2*r, 2*r);
+  }
+  ctx.restore();
+  ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+  ctx.strokeStyle = '#c9a24d'; ctx.lineWidth = 5; ctx.stroke();
+}
+function drawReport(ctx, data, avs, winnerSeat){
+  const W = 1080, H = 1350;
+  const F = '"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif';
+  const grd = ctx.createLinearGradient(0, 0, 0, H);
+  grd.addColorStop(0, '#1a4a43'); grd.addColorStop(1, '#0a2723');
+  ctx.fillStyle = grd; ctx.fillRect(0, 0, W, H);
+  const rg = ctx.createRadialGradient(540, 430, 60, 540, 430, 560);
+  rg.addColorStop(0, 'rgba(231,200,119,.20)'); rg.addColorStop(1, 'rgba(231,200,119,0)');
+  ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(201,162,77,.9)'; ctx.lineWidth = 3; ctx.strokeRect(28, 28, W-56, H-56);
+  ctx.strokeStyle = 'rgba(201,162,77,.35)'; ctx.lineWidth = 1; ctx.strokeRect(42, 42, W-84, H-84);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#e7c877'; ctx.font = '700 96px ' + F;
+  ctx.fillText('萌友斗地主', 540, 150);
+  ctx.fillStyle = '#b7c9bd'; ctx.font = '30px ' + F;
+  ctx.fillText('M Y S K M E · 茶 肆 夜 话 桌', 540, 208);
+  ctx.fillStyle = '#f7efdc'; ctx.font = '34px ' + F;
+  ctx.fillText(data.modeName + ' · ' + shanghaiToday(), 540, 262);
+  ctx.fillStyle = data.win ? '#e7c877' : '#c8cfc9'; ctx.font = '900 160px ' + F;
+  ctx.fillText(data.title, 540, 428);
+  ctx.fillStyle = '#cfe0d2'; ctx.font = '36px ' + F;
+  ctx.fillText(data.sub, 540, 522);
+  /* 三方头像: 左 = 2 号座, 中 = 玩家, 右 = 1 号座, 与牌桌方位一致 */
+  const seats = [{seat:2, x:250}, {seat:0, x:540}, {seat:1, x:830}];
+  for(const s of seats){
+    drawAvatarCircle(ctx, avs[s.seat], s.x, 668, 96);
+    if(s.seat === winnerSeat){
+      ctx.beginPath(); ctx.arc(s.x+68, 600, 30, 0, Math.PI*2);
+      ctx.fillStyle = '#c9a24d'; ctx.fill();
+      ctx.fillStyle = '#2a1f08'; ctx.font = '700 30px ' + F;
+      ctx.fillText('胜', s.x+68, 601);
+    }
+    const nm = s.seat===0 ? '你' : CHARS[G.aiChar[s.seat]].name;
+    ctx.fillStyle = '#f7efdc'; ctx.font = '700 38px ' + F;
+    ctx.fillText(nm, s.x, 668+96+44);
+    const isL = s.seat===G.landlord;
+    ctx.fillStyle = isL ? '#e7c877' : '#b7c9bd'; ctx.font = '30px ' + F;
+    ctx.fillText(isL ? '地主' : '农民', s.x, 668+96+88);
+  }
+  const px = 110, py = 902, pw = W-220, ph = 250;
+  ctx.fillStyle = 'rgba(247,239,220,.06)'; ctx.fillRect(px, py, pw, ph);
+  ctx.strokeStyle = 'rgba(201,162,77,.4)'; ctx.lineWidth = 1.5; ctx.strokeRect(px, py, pw, ph);
+  ctx.textAlign = 'left';
+  data.rows.forEach((row, i)=>{
+    const col = i%2, rw = Math.floor(i/2);
+    const x = px + 44 + col*(pw/2), y = py + 52 + rw*76;
+    ctx.fillStyle = '#a9bcb0'; ctx.font = '30px ' + F;
+    ctx.fillText(row[0], x, y);
+    ctx.fillStyle = '#e7c877'; ctx.font = '700 38px ' + F;
+    ctx.fillText(row[1], x+150, y);
+  });
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#e7c877'; ctx.font = '700 46px ' + F;
+  ctx.fillText('ddz.myskme.com', 540, 1232);
+  ctx.fillStyle = '#8a9a8e'; ctx.font = '26px ' + F;
+  ctx.fillText('萌友斗地主 · 和家人开一桌', 540, 1280);
+}
+async function makeReportImage(kind){
+  const tip = $('reportTip');
+  const setTip = t => { if(tip) tip.textContent = t; };
+  if(!G){ setTip('还没有对局数据，无法生成战报。'); return null; }
+  let data, winnerSeat;
+  if(kind==='challenge'){
+    const snap = G.reportSnap, lv = LEVELS[G.challengeIdx];
+    if(!snap || !lv){ setTip('还没有结算数据，无法生成战报。'); return null; }
+    winnerSeat = snap.winnerSeat;
+    data = {
+      title: snap.playerWin ? '过 关' : '闯关失败', win: snap.playerWin,
+      modeName: snap.daily ? '每日一局' : '残局闯关',
+      sub: '第 '+(G.challengeIdx+1)+' 关《'+lv.name+'》 · '+(snap.playerWin ? '顺利过关' : '还差一步'),
+      rows: [
+        ['成绩', starStr(snap.stars)], ['你的手数', snap.plays+' 手'],
+        ['最优手数', lv.best+' 手'], ['你的身份', G.landlord===0 ? '地主' : '农民'],
+        ['本局炸弹', G.bombs+' 个'], ['类型', snap.daily ? '每日一局' : '残局闯关'],
+      ],
+    };
+  } else {
+    const r = G.result;
+    if(!r){ setTip('还没有结算数据，无法生成战报。'); return null; }
+    winnerSeat = r.winnerSeat;
+    const totalPlays = (G.playsCount[0]||0) + (G.playsCount[1]||0) + (G.playsCount[2]||0);
+    data = {
+      title: r.myWin ? '胜 利' : '败 北', win: r.myWin,
+      modeName: G.mode==='laizi' ? '癞子场' : (G.mode==='noshuffle' ? '不洗牌场' : '经典场'),
+      sub: (r.landlordWin ? '地主获胜' : '农民获胜') + ' · ' + (r.winnerSeat===0 ? '你率先出完' : CHARS[G.aiChar[r.winnerSeat]].name+' 率先出完'),
+      rows: [
+        ['本局得分', (r.myWin?'+':'−')+r.score], ['最终倍数', '×'+G.mult],
+        ['炸弹', G.bombs+' 个'], ['春天', r.spring ? '是' : '否'],
+        ['全场手数', totalPlays+' 手'], ['你的身份', G.landlord===0 ? '地主' : '农民'],
+      ],
+    };
+  }
+  setTip('正在生成战报图…');
+  const cv = document.createElement('canvas');
+  cv.width = 1080; cv.height = 1350;
+  const ctx = cv.getContext ? cv.getContext('2d') : null;
+  if(!ctx){ setTip('当前环境不支持画布，战报图生成失败。'); return null; }
+  const avs = {};
+  for(const s of [2, 0, 1]){
+    avs[s] = await loadAvatarImg(s===0 ? CHARS.monkey.av : CHARS[G.aiChar[s]].av);
+  }
+  drawReport(ctx, data, avs, winnerSeat);
+  shareReportImage(cv);
+  return cv;
+}
+function shareReportImage(canvas){
+  const name = '萌友斗地主-战报-' + shanghaiToday().replace(/-/g, '') + '.png';
+  const setTip = t => { const el = $('reportTip'); if(el) el.textContent = t; };
+  const download = blob => {
+    try{
+      if(typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') return false;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      if(document.body && document.body.appendChild) document.body.appendChild(a);
+      if(a.click) a.click();
+      if(a.remove) a.remove();
+      setTimeout(()=>{ try{ URL.revokeObjectURL(a.href); }catch(e){} }, 4000);
+      return true;
+    }catch(e){ return false; }
+  };
+  try{
+    if(canvas.toBlob){
+      canvas.toBlob(async blob => {
+        if(!blob){ setTip('战报图生成失败，请再试一次。'); return; }
+        let shared = false;
+        try{
+          if(typeof navigator !== 'undefined' && typeof navigator.share === 'function' && typeof navigator.canShare === 'function' && typeof File !== 'undefined'){
+            const f = new File([blob], name, { type:'image/png' });
+            if(navigator.canShare({ files:[f] })){ await navigator.share({ files:[f] }); shared = true; }
+          }
+        }catch(e){ shared = false; }
+        if(shared) setTip('战报图已唤起分享。');
+        else if(download(blob)) setTip('战报图已生成并下载（PNG）。');
+        else setTip('战报图已生成（当前环境无法自动下载）。');
+      }, 'image/png');
+      return;
+    }
+    if(canvas.toDataURL){
+      const a = document.createElement('a');
+      a.href = canvas.toDataURL('image/png');
+      a.download = name;
+      if(document.body && document.body.appendChild) document.body.appendChild(a);
+      if(a.click) a.click();
+      setTip('战报图已生成并下载（PNG）。');
+      return;
+    }
+    setTip('当前环境不支持导出图片。');
+  }catch(e){ setTip('战报图生成失败，请再试一次。'); }
 }
 
 /* 出牌/过牌时同步 lastShown, 并在执行前记录本手(v0.7 复盘用) */
