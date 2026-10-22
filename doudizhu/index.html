@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.3</title>
+<title>萌友斗地主 · 原型 v1.3.1</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -503,16 +503,152 @@
   body.elder .task-info b{font-size:20px;}
   body.elder .task-info span{font-size:16px; line-height:1.6;}
   body.elder .task-state{font-size:16px;}
+
+  /* ---------- v1.3.1: 美术与呈现打磨 ----------
+     借鉴口径: 只取品类第一梯队的通用设计语言——桌面中心光池聚焦行动区、金属徽记式
+     段位表达、大数字优先的结算层级、统一动效令牌; 不复制其任何素材、图标与文案。
+     本节全部为呈现层覆盖, 不改任何逻辑、数据与存档。 */
+  :root{
+    --r-sm:8px; --r-md:12px; --r-lg:16px;
+    --d-fast:.16s; --d-med:.28s; --d-slow:.5s;
+    --ez:cubic-bezier(.25,.8,.35,1); --ez-out:cubic-bezier(.16,1,.3,1);
+  }
+  body{line-height:1.45;}
+
+  /* (1) 牌桌氛围: 桌面中心暖光池 + 边缘暗角 + 行动区锚点 */
+  #bg::after{background:
+    radial-gradient(ellipse 72% 48% at 50% 46%, rgba(255,196,96,.12), transparent 70%),
+    radial-gradient(ellipse at 50% 42%, rgba(6,20,17,.34), rgba(5,17,14,.8) 80%);}
+  #bg{animation:bgIn .9s var(--ez) both;}
+  @keyframes bgIn{from{filter:brightness(.55) saturate(.92);} to{filter:brightness(1) saturate(1);}}
+  #table::before{content:''; position:absolute; left:50%; top:46%; width:min(74vw,660px); height:48%;
+    transform:translate(-50%,-50%); border-radius:50%; pointer-events:none; z-index:0;
+    background:radial-gradient(ellipse at center, rgba(255,205,105,.13), rgba(255,205,105,.045) 55%, transparent 72%);}
+  #table::after{content:''; position:absolute; left:50%; bottom:16%; width:min(62vw,540px); height:120px;
+    transform:translateX(-50%); border-radius:50%; pointer-events:none; z-index:0;
+    background:radial-gradient(ellipse at center, rgba(231,200,119,.10), transparent 70%);}
+  .seat{z-index:1;}
+  #dipai{background:rgba(7,24,21,.55); border:1px solid rgba(201,162,77,.35); border-radius:var(--r-md);
+    padding:5px 9px 7px; box-shadow:0 4px 14px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,240,200,.08);}
+
+  /* (2) 顶栏层级与面板质感 / 按钮三态统一 */
+  #topbar .title{position:relative; padding-left:17px;}
+  #topbar .title::before{content:''; position:absolute; left:1px; top:50%; width:8px; height:8px;
+    transform:translateY(-50%) rotate(45deg); background:linear-gradient(135deg,var(--gold-l),var(--gold));
+    box-shadow:0 0 8px rgba(231,200,119,.7);}
+  .chip{background:rgba(18,58,54,.62);}
+  .panel{border:1px solid rgba(231,200,119,.78); border-radius:var(--r-lg);
+    box-shadow:0 18px 50px rgba(0,0,0,.62), inset 0 1px 0 rgba(255,242,205,.14), inset 0 0 0 1px rgba(0,0,0,.22);
+    max-height:92dvh; overflow-y:auto; animation:panelIn var(--d-med) var(--ez-out) both;}
+  @keyframes panelIn{from{opacity:0; transform:translateY(10px) scale(.975);} to{opacity:1; transform:none;}}
+  button{border-radius:var(--r-sm); box-shadow:0 2px 8px rgba(0,0,0,.25);
+    transition:transform var(--d-fast) var(--ez), filter var(--d-med), opacity var(--d-med), box-shadow var(--d-med);}
+  button.primary{box-shadow:0 3px 12px rgba(201,162,77,.35), inset 0 1px 0 rgba(255,246,214,.5);}
+  button:hover{box-shadow:0 3px 10px rgba(0,0,0,.32);}
+  button:active{box-shadow:0 1px 4px rgba(0,0,0,.3);}
+  button:focus-visible{outline:2px solid var(--gold-l); outline-offset:2px;}
+  .panel .modebtn{border-radius:var(--r-md);}
+  #phrasePanel, .levelcell, .story-lock, .challenge-compare, .onl-block, .share-link{border-radius:var(--r-md);}
+
+  /* (4) 段位徽记: CSS 几何分级(菱形宝石 + 金属渐变, 大师为星芒), 三处共用 */
+  .tier-badge{--t1:#f0d488; --t2:#c39a35; --tink:#2a1f08;
+    flex:none; display:inline-flex; align-items:center; gap:7px; font-size:14.5px; font-weight:800; letter-spacing:1px;
+    color:var(--tink); background:linear-gradient(180deg,var(--t1),var(--t2));
+    border:1.5px solid rgba(255,243,208,.85); border-radius:999px; padding:4px 13px 4px 10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.45); white-space:nowrap;}
+  .tier-badge::before{content:''; width:9px; height:9px; flex:none; transform:rotate(45deg);
+    background:linear-gradient(135deg,var(--t1),var(--t2)); border:1.5px solid rgba(42,31,8,.4);
+    box-shadow:0 0 6px rgba(255,255,255,.35);}
+  .tier-badge.t0{--t1:#dda06a; --t2:#8a5a30;}
+  .tier-badge.t1{--t1:#f2f4f5; --t2:#98a5aa;}
+  .tier-badge.t2{--t1:#f0d488; --t2:#c39a35;}
+  .tier-badge.t3{--t1:#d3ece8; --t2:#5f9a94;}
+  .tier-badge.t4{--t1:#c4e2ff; --t2:#4a7fc9;}
+  .tier-badge.t5{--t1:#eccfff; --t2:#6d3fa0; --tink:#fdf6ff; border-color:rgba(255,220,130,.95);}
+  .tier-badge.t5::before{width:12px; height:12px; transform:none; border:0;
+    background:linear-gradient(135deg,#ffe9a8,#e7c877);
+    clip-path:polygon(50% 0,63% 37%,100% 50%,63% 63%,50% 100%,37% 63%,0 50%,37% 37%);}
+  body.elder .tier-badge{font-size:19px; padding:7px 16px 7px 12px;}
+  #uiTier{font-weight:700;}
+  #uiTier::before{content:''; display:inline-block; width:7px; height:7px; margin-right:6px;
+    transform:rotate(45deg); background:currentColor; vertical-align:1px;}
+  #uiTier.t0{color:#e6b183; border-color:rgba(221,160,106,.75);}
+  #uiTier.t1{color:#edf1f2; border-color:rgba(205,215,219,.75);}
+  #uiTier.t2{color:var(--gold-l); border-color:rgba(231,200,119,.85);}
+  #uiTier.t3{color:#aedcd6; border-color:rgba(140,200,192,.75);}
+  #uiTier.t4{color:#aed2ff; border-color:rgba(120,170,240,.8);}
+  #uiTier.t5{color:#e9c8ff; border-color:rgba(190,140,255,.85);}
+
+  /* (3) 结算仪式感: 胜者头像金环 + 大数字得分层级 */
+  .settle-hero{display:flex; flex-direction:column; align-items:center; margin:2px 0 8px;}
+  .settle-hero .winav{width:74px; height:74px; border-radius:50%; object-fit:cover; display:block; background:#20443e;}
+  .settle-hero.win .winav{border:3px solid var(--gold-l);
+    box-shadow:0 0 0 4px rgba(201,162,77,.35), 0 0 26px rgba(231,200,119,.65);}
+  .settle-hero.lose .winav{border:3px solid rgba(200,207,201,.4); filter:saturate(.72);}
+  .settle-score{font-size:44px; font-weight:900; letter-spacing:1px; line-height:1.12; margin-top:7px;
+    color:var(--gold-l); font-variant-numeric:tabular-nums; text-shadow:0 2px 14px rgba(0,0,0,.45);}
+  .settle-score.lose{color:#c8cfc9;}
+  .settle-score small{font-size:15.5px; font-weight:700; letter-spacing:2px; margin-left:3px;}
+  .settle-sub{font-size:12.5px; color:#a9bcb0; letter-spacing:1.5px; margin-top:2px;}
+  .rank-line.settle-rank{display:flex; align-items:center; justify-content:center; gap:9px; flex-wrap:wrap;}
+  .rank-line.settle-rank .rk-txt{font-size:13.5px;}
+
+  /* (5) 字体与数字排版: 数字等宽对齐扫读 */
+  .chip b, .countbadge, .panel td:last-child, .rank-info b, .onl-code, .task-state,
+  #counterBar .cell b, .settle-score, .elder-result{font-variant-numeric:tabular-nums;}
+  .panel h2{line-height:1.25;}
+  .panel td{line-height:1.5;}
+  .panel td:first-child{letter-spacing:1px;}
+
+  /* (6) 动效节奏统一(令牌见 :root): 入场/切换/强调三档 */
+  .bubble{transition:opacity var(--d-med) var(--ez), transform var(--d-med) var(--ez);}
+  #tutCard{transition:opacity var(--d-med) var(--ez), transform var(--d-med) var(--ez);}
+  #hand img.hcard{transition:transform var(--d-fast) var(--ez), box-shadow var(--d-fast) var(--ez);}
+  .playzone img.pcard{animation:playIn var(--d-med) var(--ez-out) both;}
+
+  /* (7) 空状态与边角: 长名省略 / 生涯零数据 */
+  .who .nm{max-width:118px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  #meInfo .nm{max-width:88px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .onl-mwho{min-width:0;}
+  .onl-mwho b, .onl-mwho span{max-width:230px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  @media (max-width:640px){ .who .nm{max-width:72px;} .onl-mwho b, .onl-mwho span{max-width:170px;} }
+  .empty-state{padding:18px 10px 6px; text-align:center;}
+  .empty-state .big{font-size:19px; color:var(--gold-l); letter-spacing:2px; font-weight:800; margin-bottom:7px;}
+  .empty-state p{font-size:13.5px; line-height:1.65; color:#a9bcb0;}
+
+  /* (8) 品牌入场: 标题淡入 + 桌面渐亮, 1 秒内结束, 点击跳过 */
+  #intro{position:fixed; inset:0; z-index:60; display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(ellipse at 50% 44%, rgba(23,69,63,.97), rgba(7,24,21,.995) 76%);
+    transition:opacity .45s var(--ez), visibility .45s; cursor:pointer;}
+  #intro.done{opacity:0; visibility:hidden; pointer-events:none;}
+  #intro .intro-in{text-align:center; animation:introIn .7s var(--ez-out) both; padding:0 16px;}
+  .intro-mark{width:15px; height:15px; margin:0 auto 16px; transform:rotate(45deg);
+    background:linear-gradient(135deg,var(--gold-l),var(--gold)); box-shadow:0 0 22px rgba(231,200,119,.85);}
+  .intro-title{font-size:37px; font-weight:800; letter-spacing:9px; color:var(--gold-l); text-shadow:0 3px 18px rgba(0,0,0,.6);}
+  .intro-sub{font-size:13px; letter-spacing:6px; color:#b7c9bd; margin-top:10px;}
+  @keyframes introIn{from{opacity:0; transform:translateY(12px) scale(.97);} to{opacity:1; transform:none;}}
+  @media (max-width:640px){ .intro-title{font-size:29px; letter-spacing:6px;} }
+  @media (prefers-reduced-motion: reduce){
+    #intro{display:none;}
+    #bg{animation:none;}
+    .panel{animation:none;}
+  }
 </style>
 </head>
 <body>
 <div id="bg"></div>
+<div id="intro" aria-hidden="true"><div class="intro-in">
+  <div class="intro-mark"></div>
+  <div class="intro-title">萌友斗地主</div>
+  <div class="intro-sub">茶 肆 夜 话 桌</div>
+</div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small>原型 v1.3 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small>原型 v1.3.1 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
+    <div class="chip" id="uiTier">段位 青铜 III</div>
     <div class="chip elder-hide">难度 <b id="uiLevel">普通</b></div>
     <div class="chip elder-hide">战绩 <b id="uiStats">0 胜 / 0 局</b></div>
     <div class="spacer"></div>
@@ -1658,7 +1794,18 @@ let hintIdx=0;
 let stats=JSON.parse(localStorage.getItem('myskme_ddz_stats')||'{"win":0,"total":0,"points":0}');
 
 function saveStats(){ localStorage.setItem('myskme_ddz_stats', JSON.stringify(stats)); }
-function renderStats(){ $('uiStats').textContent = stats.win+' 胜 / '+stats.total+' 局'; }
+function renderStats(){ $('uiStats').textContent = stats.win+' 胜 / '+stats.total+' 局'; renderTierChip(); }
+/* v1.3.1: 顶栏段位 chip 与段位徽记(纯呈现)。chip 直读段位存档换算, 不调 rankData(),
+   避免仅因刷新顶栏就触发赛季初始化/存档写入; 徽记为 CSS 几何分级, 与生涯页/结算共用。 */
+function tierClassOf(points){ return 't' + rankMajorIndex(points); }
+function tierBadgeHTML(points){ return '<span class="tier-badge ' + tierClassOf(points) + '">' + tierName(points) + '</span>'; }
+function renderTierChip(){
+  const el = $('uiTier'); if(!el) return;
+  let pts = 0;
+  try{ const r = JSON.parse(localStorage.getItem('myskme_ddz_rank') || 'null'); if(r && typeof r.points === 'number') pts = r.points; }catch(e){}
+  el.textContent = '段位 ' + tierName(pts);
+  el.className = 'chip ' + tierClassOf(pts);
+}
 
 /* ---------- v0.8: 赛季段位 ----------
    仅经典/癞子/不洗牌三场次对局计入: finishGame 中残局已提前分流到 finishChallenge,
@@ -1724,7 +1871,7 @@ function rankBarHTML(){
   const nxt = rankNextThreshold(rk.points);
   const nextTxt = nxt===null ? '已是最高段位' : '距 '+tierName(nxt)+' 还差 '+(nxt-rk.points)+' 分';
   const last = rk.history.length ? '<br>上赛季（'+seasonLabel(rk.history[0].season)+'）定格 '+rk.history[0].rank+' · '+rk.history[0].points+' 分' : '';
-  return '<div class="rankbar"><span class="rank-badge">'+tierName(rk.points)+'</span>' +
+  return '<div class="rankbar">' + tierBadgeHTML(rk.points) +
     '<span class="rank-info">'+seasonLabel(rk.season)+'赛季 · 段位分 <b>'+rk.points+'</b><br>'+nextTxt+last+'</span></div>';
 }
 
@@ -1778,10 +1925,13 @@ function showCareer(){
     ['残局总星', totalStars()+' / 60'],
     ['每日一局', '已连续完成 '+(dailyData().streak||0)+' 天'],
   ];
+  const emptyBlock = (stats.total===0 && careerGames===0)
+    ? '<div class="empty-state"><div class="big">暂无对局记录</div><p>打完第一局经典场、癞子场或不洗牌场，<br>这里就会记下你的战绩与段位。</p></div>' : '';
   $('panel').innerHTML =
     '<h2>战绩生涯</h2><div class="who-win">茶肆夜话桌 · 你的牌桌履历</div>' +
-    '<div class="rankbar"><span class="rank-badge">'+tierName(rk.points)+'</span>' +
+    '<div class="rankbar">' + tierBadgeHTML(rk.points) +
     '<span class="rank-info">'+seasonLabel(rk.season)+'赛季 · 段位分 <b>'+rk.points+'</b><br>历史最高 '+tierName(histBestPts)+'</span></div>' +
+    emptyBlock +
     '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>' +
     '<button class="primary" onclick="showModeSelect()">返回</button>' +
     '<div class="career-note">总场次、总胜率、累计积分与段位为全部历史累计；地主/农民胜率、连胜、炸弹与春天自 v1.2 起累计（此前对局无分项记录，不回填）。生涯只统计经典/癞子/不洗牌三场次，残局、每日一局与联机不计入。</div>';
@@ -2365,7 +2515,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.3</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.3.1</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
@@ -3356,10 +3506,12 @@ function renderSettlement(){
   } else {
     $('panel').innerHTML =
       '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
-      '<div class="who-win">'+(landlordWin?'地主获胜':'农民获胜')+' · '+(winnerSeat===0?'你率先出完':CHARS[G.aiChar[winnerSeat]].name+' 率先出完')+'</div>'+
+      '<div class="settle-hero '+(myWin?'win':'lose')+'"><img class="winav" src="'+(winnerSeat===0?'assets/头像-monkey.webp':CHARS[G.aiChar[winnerSeat]].av)+'" alt="">'+
+      '<div class="settle-score'+(myWin?'':' lose')+'">'+(myWin?'+':'−')+score+'<small>分</small></div>'+
+      '<div class="settle-sub">'+(winnerSeat===0?'你':CHARS[G.aiChar[winnerSeat]].name)+' 率先出完 · '+(landlordWin?'地主':'农民')+'一方获胜</div></div>'+
       detailTable+
       (rankInfo && rankInfo.promoted ? '<div class="rankup-banner">升段：'+rankInfo.name+'</div>' : '')+
-      (rankInfo ? '<div class="rank-line">段位 <b>'+rankInfo.name+'</b> · 段位分 '+rankInfo.afterPts+'（'+(rankInfo.delta>=0?'+':'−')+Math.abs(rankInfo.delta)+'）</div>' : '')+
+      (rankInfo ? '<div class="rank-line settle-rank">'+tierBadgeHTML(rankInfo.afterPts)+'<span class="rk-txt">段位分 '+rankInfo.afterPts+'（'+(rankInfo.delta>=0?'+':'−')+Math.abs(rankInfo.delta)+'）</span></div>' : '')+
       '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+reportBtn+
       taskNewLine()+
       '<div class="share-result" id="reportTip"></div>'+
@@ -4148,6 +4300,23 @@ function preloadCards(){
   urls.push(cardFile({v:16, s:'王'}), cardFile({v:17, s:'王'}));
   for(const u of urls){ const im = new Image(); im.src = u; }
 }
+/* v1.3.1: 品牌入场(纯呈现): 新用户约 0.95 秒, 老用户(已有战绩存档)约 0.38 秒,
+   点击任意处立即跳过; 减动效偏好直接隐藏。不写任何存档, 只读战绩键判新老。 */
+(function(){
+  try{
+    const el = document.getElementById('intro'); if(!el) return;
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ el.classList.add('done'); return; }
+    const returning = !!localStorage.getItem('myskme_ddz_stats');
+    const t = setTimeout(dismissIntro, returning ? 380 : 950);
+    function dismissIntro(){
+      clearTimeout(t);
+      el.classList.add('done');
+      setTimeout(()=>{ if(el.parentNode) el.parentNode.removeChild(el); }, 650);
+    }
+    el.addEventListener('click', dismissIntro);
+  }catch(e){}
+})();
+
 window.addEventListener('load', ()=>{
   elderContext='menu'; applyElderMode(); renderStats(); preloadCards();
   if(pendingChallenge) startLevel(pendingChallenge.idx);
