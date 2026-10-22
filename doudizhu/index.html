@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>猴先生斗地主 · 原型 v0.6</title>
+<title>猴先生斗地主 · 原型 v0.7</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -269,6 +269,17 @@
   .levelswitch .levelbtn{padding:6px 18px; font-size:14.5px; border-radius:999px;}
   .levelswitch .levelbtn.on{background:linear-gradient(180deg,#d9a94f,#a87c2c); color:#2a1f08; font-weight:700; border-color:#e7c877;}
   .levelswitch small{flex-basis:100%; font-size:12px; line-height:1.5; color:#cfe0d2;}
+  /* ---------- v0.7: 复盘回放 / 教练点评 ---------- */
+  .playzone.now img.pcard{box-shadow:0 0 0 3px var(--gold-l), 0 3px 10px rgba(0,0,0,.55);}
+  .review-note{flex-basis:100%; text-align:center; font-size:15px; line-height:1.6; color:var(--gold-l); letter-spacing:.5px; padding:2px 6px;}
+  .coach-list{margin:2px 0 14px;}
+  .coach-note{
+    font-size:15px; line-height:1.75; color:#f1ead6; text-align:left;
+    background:rgba(247,239,220,.06); border-left:3px solid var(--gold);
+    padding:9px 12px; margin:9px 0; border-radius:0 8px 8px 0;
+  }
+  body.elder .review-note{font-size:20px; line-height:1.55;}
+  body.elder .coach-note{font-size:19px; line-height:1.8; padding:12px 14px;}
   .elder-result{font-size:27px; line-height:1.45; color:var(--cream); font-weight:800; margin:8px 0 16px;}
   .elder-result span{font-size:20px; color:var(--gold-l);}
   .elder-detail-btn{display:block; margin:12px auto 0;}
@@ -374,7 +385,7 @@
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">猴先生斗地主 <small>原型 v0.6 · 茶肆夜话桌</small></div>
+    <div class="title">猴先生斗地主 <small>原型 v0.7 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1384,6 +1395,7 @@ function closeStoryCodex(){
 /* ---------- 开局 ---------- */
 function startMode(m){ newGame(m); }
 function showModeSelect(){
+  review = null;
   pendingChallenge = null;
   elderContext = 'menu';
   setPanelClass();
@@ -1396,7 +1408,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.6</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.7</div>' +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
     ['easy','normal','expert'].map(lv=>'<button type="button" class="levelbtn'+(aiLevel===lv?' on':'')+'" data-level="'+lv+'" onclick="setAiLevel(\''+lv+'\')">'+LEVEL_NAMES[lv]+'</button>').join('') +
@@ -1911,6 +1923,271 @@ function enablePlayerActions(){
   if(bAuto) bar.append(bAuto);
   bar.append(bHint, bPlay, bPass);
 }
+/* ---------- v0.7: 对局记录 / AI 复盘教练 / 回放 ----------
+   记录只读不扰: recordStep 在 doPlay/doPass 包装层执行前抓取状态, 不调用随机数、
+   不改任何决策, 普通档同种子轨迹与 v0.6 完全一致。残局模式不记录、不复盘。 */
+let review = null;   // {rec, idx} idx = 已回放到第几步(0 = 开局)
+function recordInitIfNeeded(){
+  if(!G || G.mode==='challenge' || G.record || G.landlord<0) return;
+  G.record = {
+    mode: G.mode, laiziVal: G.laiziVal, landlord: G.landlord, base: G.base,
+    aiChar: G.aiChar.slice(), dipai: G.dipai.slice(),
+    initHands: G.hands.map(h=>h.slice()),
+    steps: [],
+  };
+}
+function recordStep(seat, kind, cards, info){
+  if(!G || G.mode==='challenge' || G.phase!=='playing') return;
+  recordInitIfNeeded();
+  if(!G.record) return;
+  const last = (G.lastOwner===seat || G.lastOwner<0) ? null : G.lastPlay;
+  const countsBefore = G.hands.map(h=>h.length);
+  const countsAfter = countsBefore.slice();
+  let multAfter = G.mult;
+  if(kind==='play' && cards){
+    countsAfter[seat] -= cards.length;
+    if(info && isBombLike(info)) multAfter = G.mult*2;
+  }
+  G.record.steps.push({
+    seat, kind,
+    cards: cards ? cards.slice() : null,
+    info: info || null,
+    ctxLast: last ? {owner: G.lastOwner, cards: last.cards.slice(), info: last.info} : null,
+    countsBefore, countsAfter, multAfter,
+    handBefore: seat===0 ? G.hands[0].slice() : null,
+  });
+}
+/* 把一手牌说成人话: 教练点评与复盘解说共用 */
+function describePlay(info){
+  if(!info) return '一手牌';
+  const rn = v => v===16 ? '小王' : v===17 ? '大王' : rankName(v);
+  switch(info.type){
+    case 'single': return '单张 '+rn(info.main);
+    case 'pair': return '对 '+rn(info.main);
+    case 'trio': return '三张 '+rn(info.main);
+    case 'trio1': return '三张 '+rn(info.main)+' 带一张';
+    case 'trio2': return '三张 '+rn(info.main)+' 带一对';
+    case 'straight': return '顺子 '+rn(info.main-info.len+1)+' 到 '+rn(info.main);
+    case 'pairs': return '连对 '+rn(info.main-info.len+1)+' 到 '+rn(info.main);
+    case 'plane': return '飞机（到 '+rn(info.main)+'）';
+    case 'four2': return '四带二（'+rn(info.main)+'）';
+    case 'bomb': return (info.soft ? '软炸弹（' : '炸弹（')+rn(info.main)+'）';
+    case 'rocket': return '王炸';
+    default: return '一手牌';
+  }
+}
+/* 教练点评: 结算时用引擎的事后分析, 最多挑 3 个关键点。
+   检测三类: 错失拦截 / 炸弹时机 / 更优出法(高手档 estimateMoves 估计手数差 >= 2)。
+   没有关键点就给一句总体肯定。每条都引用真实手数与牌面。 */
+function coachAnalyze(){
+  const rec = G.record;
+  if(!rec || !rec.steps.length || !G.result) return [];
+  const prevLaizi = LAIZI_VAL;
+  setLaizi(rec.laiziVal);
+  try{
+    const myWin = G.result.myWin, winnerSeat = G.result.winnerSeat;
+    const role = s => s===rec.landlord ? 'landlord' : 'farmer';
+    const isOpp = s => role(s)!==role(0);
+    const name = s => s===0 ? '你' : CHARS[rec.aiChar[s]].name;
+    const lastParam = st => st.ctxLast ? {cards: st.ctxLast.cards, info: st.ctxLast.info} : null;
+    const removeCards = (hand, cards) => hand.filter(c=>!cards.includes(c));
+    const notes = [];
+    /* --- 错失拦截: 对手剩 <=2 张领出, 玩家有能管上的牌却过 --- */
+    let blockCand = null;
+    rec.steps.forEach((st,i)=>{
+      if(st.seat!==0 || st.kind!=='pass' || !st.ctxLast || !st.handBefore) return;
+      const owner = st.ctxLast.owner;
+      if(!isOpp(owner)) return;
+      const ownerLeft = st.countsBefore[owner];
+      if(ownerLeft>2) return;
+      const plays = genPlays(st.handBefore, lastParam(st));
+      if(!plays.length) return;
+      const nonBomb = plays.filter(p=>!isBombLike(p.info)).sort((a,b)=> a.info.main-b.info.main || b.info.count-a.info.count);
+      const avail = nonBomb[0] || plays.slice().sort((a,b)=> a.info.main-b.info.main)[0];
+      const score = (ownerLeft===1?3:2) + (winnerSeat===owner?2:0) + (!myWin?1:0);
+      if(!blockCand || score>blockCand.score || (score===blockCand.score && i>blockCand.i))
+        blockCand = {i, score, owner, ownerLeft, avail, st};
+    });
+    if(blockCand){
+      notes.push({step: blockCand.i+1, kind:'block', score: blockCand.score+4, text:
+        '第 '+(blockCand.i+1)+' 手：'+name(blockCand.owner)+'只剩 '+blockCand.ownerLeft+' 张，出了'+describePlay(blockCand.st.ctxLast.info)+'，你手里的'+describePlay(blockCand.avail.info)+'，正好能管上，却让它过去了。'+(winnerSeat===blockCand.owner ? '后来'+name(blockCand.owner)+'就一路跑完。' : '')+'对手只剩两张以内时，先拦下来再说。'});
+    }
+    /* --- 炸弹时机 A: 出手不久就被更大的炸弹压回, 且当时并非紧要关头 --- */
+    let bombNote = null;
+    rec.steps.forEach((st,i)=>{
+      if(bombNote || st.seat!==0 || st.kind!=='play' || !isBombLike(st.info)) return;
+      let j = i+1;
+      while(j<rec.steps.length && rec.steps[j].kind!=='play') j++;
+      if(j>=rec.steps.length) return;
+      const nx = rec.steps[j];
+      if(!isOpp(nx.seat) || !isBombLike(nx.info) || !canBeat(nx.info, st.info)) return;
+      const urgent = st.ctxLast ? st.countsBefore[st.ctxLast.owner]<=4 : false;
+      if(urgent || st.countsAfter[0]<=2) return;   // 紧要拦截或收官在即, 不算浪费
+      bombNote = {step: i+1, kind:'bomb', score: 3, text:
+        '第 '+(i+1)+' 手：你用'+describePlay(st.info)+'去压'+(st.ctxLast ? describePlay(st.ctxLast.info) : '开局的牌')+'，当时对方手里牌还多，不算紧要关头；紧接着第 '+(j+1)+' 手就被'+name(nx.seat)+'的'+describePlay(nx.info)+'压了回来。炸弹留到对手剩两三张时再出，价值大得多。'};
+    });
+    /* --- 炸弹时机 B: 输掉的局里, 炸弹整局攥在手里没出手 --- */
+    if(!bombNote && !myWin){
+      const played = new Set();
+      for(const st of rec.steps) if(st.seat===0 && st.cards) for(const c of st.cards) played.add(c);
+      const rest = rec.initHands[0].filter(c=>!played.has(c));
+      const bombPlay = genPlays(rest, null).find(p=>isBombLike(p.info));
+      if(bombPlay) bombNote = {step: rec.steps.length, kind:'bomb', score: 3, text:
+        '这局你的'+describePlay(bombPlay.info)+'一直攥在手里没出手，牌局就结束了。输牌不可惜，炸弹留到最后最可惜——对手剩三张以内时，就别再等了。'};
+    }
+    if(bombNote) notes.push(bombNote);
+    /* --- 更优出法: 实际出法比当时最省手的出法多费 >=2 手 --- */
+    let betterCand = null;
+    rec.steps.forEach((st,i)=>{
+      if(st.seat!==0 || st.kind!=='play' || !st.handBefore) return;
+      const after = removeCards(st.handBefore, st.cards);
+      if(!after.length) return;
+      const estA = estimateMoves(after);
+      const plays = genPlays(st.handBefore, lastParam(st));
+      let best = null;
+      for(const p of plays){
+        if(p.cards.length===st.cards.length && p.cards.every(c=>st.cards.includes(c))) continue;
+        if(isBombLike(p.info) && !isBombLike(st.info)) continue;   // 不拿炸弹当“更省手”的建议
+        const e = estimateMoves(removeCards(st.handBefore, p.cards));
+        if(!best || e<best.e) best = {e, p};
+      }
+      if(!best) return;
+      const diff = estA - best.e;
+      if(diff>=2 && (!betterCand || diff>betterCand.diff)) betterCand = {i, diff, st, best, estA};
+    });
+    if(betterCand){
+      notes.push({step: betterCand.i+1, kind:'better', score: 2+betterCand.diff, text:
+        '第 '+(betterCand.i+1)+' 手：你出了'+describePlay(betterCand.st.info)+'，打完估计还要 '+betterCand.estA+' 手才走完；当时先出'+describePlay(betterCand.best.p.info)+'，约 '+betterCand.best.e+' 手就能走完，省 '+betterCand.diff+' 手。先打成型的组合，手数自然就降下来了。'});
+    }
+    /* 汇总: 同一手只留分数最高的一条, 取最多 3 条, 按手数先后呈现 */
+    const byStep = new Map();
+    for(const n of notes){ const ex = byStep.get(n.step); if(!ex || n.score>ex.score) byStep.set(n.step, n); }
+    const picked = [...byStep.values()].sort((a,b)=> b.score-a.score).slice(0,3).sort((a,b)=> a.step-b.step);
+    if(!picked.length){
+      return [{step:0, kind:'good', text: myWin
+        ? '这局打得稳，没挑出明显失误——该拦的时候拦了，该省的手也省了，赢得干净。'
+        : '这局打得稳，没挑出明显失误，输在牌面差一口气，不怪打法。'}];
+    }
+    return picked;
+  } finally { setLaizi(prevLaizi); }
+}
+/* ---------- 复盘回放 ---------- */
+function reviewHandsAt(rec, idx){
+  const hands = rec.initHands.map(h=>h.slice());
+  for(let i=0;i<idx;i++){
+    const st = rec.steps[i];
+    if(st.kind==='play' && st.cards) hands[st.seat] = hands[st.seat].filter(c=>!st.cards.includes(c));
+  }
+  return hands;
+}
+function reviewNarration(){
+  const rec = review.rec, idx = review.idx;
+  if(idx===0) return '开局 · '+(rec.landlord===0 ? '你是地主' : CHARS[rec.aiChar[rec.landlord]].name+' 是地主')+' · 底分 '+rec.base+' 分 · 共 '+rec.steps.length+' 手';
+  const st = rec.steps[idx-1];
+  const nm = st.seat===0 ? '你' : CHARS[rec.aiChar[st.seat]].name;
+  const act = st.kind==='pass' ? '不出' : '出 '+describePlay(st.info);
+  return '第 '+idx+' 手 / 共 '+rec.steps.length+' 手 · '+nm+' '+act+' · 还剩 '+st.countsAfter[st.seat]+' 张';
+}
+function renderReviewHand(cards, currentCards){
+  const handEl = $('hand'); handEl.innerHTML='';
+  const n = cards.length;
+  const cw = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cw')) || 76;
+  const avail = handEl.clientWidth || window.innerWidth - 90;
+  const step = n>1 ? Math.min(cw*0.44, Math.max(elderActive()?7:16,(avail-cw)/(n-1))) : 0;
+  cards.forEach((c,i)=>{
+    const wrap = document.createElement('span');
+    wrap.className = 'hwrap';
+    wrap.style.marginLeft = i===0 ? '0' : (-(cw-step))+'px';
+    wrap.style.zIndex = i;
+    const im = document.createElement('img');
+    im.src = cardFile(c);
+    im.className = 'hcard'+(isWildCard(c)?' wild':'')+((currentCards && currentCards.includes(c))?' sel':'');
+    im.alt = '';
+    wrap.appendChild(im);
+    if(isWildCard(c)){
+      const tag = document.createElement('span');
+      tag.className = 'wildtag'; tag.textContent = '癞';
+      wrap.appendChild(tag);
+    }
+    handEl.appendChild(wrap);
+  });
+}
+function renderReview(){
+  if(!review) return;
+  const rec = review.rec, idx = review.idx;
+  const hands = reviewHandsAt(rec, idx);
+  const cur = idx>0 ? rec.steps[idx-1] : null;
+  renderReviewHand(hands[0], cur && cur.seat===0 && cur.kind==='play' ? cur.cards : null);
+  // 两家牌背与剩余张数
+  const mkFan = (el, n)=>{
+    const fan = $(el); fan.innerHTML = '';
+    const show = Math.min(n, 7);
+    for(let i=0;i<show;i++){ const im = document.createElement('img'); im.src = 'assets/牌背.webp'; im.style.left = (i*8)+'px'; im.style.zIndex = i; fan.appendChild(im); }
+    const b = document.createElement('div'); b.className = 'countbadge'+(n<=3?' low':''); b.textContent = n; fan.appendChild(b);
+  };
+  mkFan('fanR', hands[1].length); mkFan('fanL', hands[2].length);
+  // 各家最近一手, 当前手高亮
+  const zoneOf = {0:'zoneP', 1:'zoneR', 2:'zoneL'};
+  const lastAct = {0:-1, 1:-1, 2:-1};
+  for(let i=0;i<idx;i++) lastAct[rec.steps[i].seat] = i;
+  for(const s of [0,1,2]){
+    const z = $(zoneOf[s]);
+    const li = lastAct[s];
+    if(li<0){ z.innerHTML=''; z.classList.remove('now'); continue; }
+    const st = rec.steps[li];
+    z.innerHTML = st.kind==='pass' ? '<div class="passchip">不 出</div>' : zoneCards(st.cards);
+    z.classList.toggle('now', li===idx-1);
+  }
+  renderRoles();
+  $('seatR').classList.toggle('turn', !!cur && cur.seat===1);
+  $('seatL').classList.toggle('turn', !!cur && cur.seat===2);
+  $('meInfo').classList.toggle('turn', !!cur && cur.seat===0);
+  renderDipai(true);
+  $('uiMult').textContent = '×'+(idx===0 ? 1 : rec.steps[idx-1].multAfter);
+  centerMsg('', '');
+  // 控制条
+  const bar = $('actionBar'); bar.innerHTML = '';
+  const note = document.createElement('span'); note.className = 'review-note'; note.textContent = reviewNarration();
+  bar.appendChild(note);
+  const mkBtn = (label, fn, disabled)=>{
+    const b = document.createElement('button');
+    b.textContent = label; b.disabled = !!disabled;
+    b.onclick = fn;
+    bar.appendChild(b);
+    return b;
+  };
+  mkBtn('回到开头', ()=>{ review.idx = 0; renderReview(); }, idx===0);
+  mkBtn('上一步', ()=>{ review.idx = Math.max(0, review.idx-1); renderReview(); }, idx===0);
+  mkBtn('下一步', ()=>{ review.idx = Math.min(rec.steps.length, review.idx+1); renderReview(); }, idx>=rec.steps.length);
+  mkBtn('跳到结尾', ()=>{ review.idx = rec.steps.length; renderReview(); }, idx>=rec.steps.length);
+  const bCoach = mkBtn('教练点评', showCoachPanel, false); bCoach.className = 'primary';
+  mkBtn('退出复盘', exitReview, false);
+}
+function enterReview(){
+  if(!G || !G.record || !G.record.steps.length) return;
+  review = {rec: G.record, idx: 0};
+  $('overlay').classList.remove('show');
+  renderReview();
+}
+function showCoachPanel(){
+  if(!G) return;
+  setPanelClass();
+  const notes = G.coachNotes && G.coachNotes.length ? G.coachNotes : coachAnalyze();
+  if(notes && notes.length) G.coachNotes = notes;
+  $('panel').innerHTML =
+    '<h2>教练点评</h2>'+
+    '<div class="who-win">这一局的几个关键点</div>'+
+    '<div class="coach-list">'+(notes||[]).map(n=>'<p class="coach-note">'+n.text+'</p>').join('')+'</div>'+
+    '<button class="primary" onclick="closeCoachPanel()">继续回放</button> <button class="ghost" onclick="exitReview()">回到结算</button>';
+  $('overlay').classList.add('show');
+}
+function closeCoachPanel(){ $('overlay').classList.remove('show'); }
+function exitReview(){
+  review = null;
+  renderAll();
+  renderSettlement();
+}
+
 /* ---------- 结算 ---------- */
 function finishGame(winnerSeat){
   G.over = true; G.phase='over';
@@ -1928,6 +2205,21 @@ function finishGame(winnerSeat){
   saveStats(); renderStats();
   recordStoryDefeats(myWin);
   renderAll();
+  G.result = {winnerSeat, landlordWin, spring, myWin, score};
+  G.coachNotes = coachAnalyze();
+  renderSettlement();
+  for(const s of [1,2]){
+    const won = roleOf(s)===roleOf(winnerSeat);
+    say(s, won ? CHARS[G.aiChar[s]].lines.win : CHARS[G.aiChar[s]].lines.lose);
+  }
+}
+/* 结算面板渲染(无副作用, 复盘退出后可重显): 数据取自 G.result */
+function renderSettlement(){
+  if(!G || !G.result) return;
+  setPanelClass();
+  const {winnerSeat, landlordWin, spring, myWin, score} = G.result;
+  const hasReview = !!(G.record && G.record.steps.length);
+  const reviewBtn = hasReview ? ' <button class="ghost" onclick="enterReview()">复盘看看</button>' : '';
   const rows = [
     ['身份', G.landlord===0 ? '你是地主' : (CHARS[G.aiChar[G.landlord]].name+' 是地主')],
     ['底分', G.base+' 分'],
@@ -1944,7 +2236,7 @@ function finishGame(winnerSeat){
       '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
       '<div class="who-win">'+(winnerSeat===0?'你先把牌出完了':CHARS[G.aiChar[winnerSeat]].name+' 先把牌出完了')+'</div>'+
       '<div class="elder-result">本局 '+(myWin?'+':'−')+score+' 分<br><span>累计 '+stats.points+' 分</span></div>'+
-      '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+
+      '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+
       '<button class="ghost elder-detail-btn" id="btnElderCalc" aria-expanded="false" onclick="toggleElderCalc()">看看怎么算的</button>'+
       '<div class="elder-detail" id="elderCalc" hidden>'+detailTable+'</div>';
   } else {
@@ -1952,14 +2244,10 @@ function finishGame(winnerSeat){
       '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
       '<div class="who-win">'+(landlordWin?'地主获胜':'农民获胜')+' · '+(winnerSeat===0?'你率先出完':CHARS[G.aiChar[winnerSeat]].name+' 率先出完')+'</div>'+
       detailTable+
-      '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+
+      '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+
       '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局</div>';
   }
   $('overlay').classList.add('show');
-  for(const s of [1,2]){
-    const won = roleOf(s)===roleOf(winnerSeat);
-    say(s, won ? CHARS[G.aiChar[s]].lines.win : CHARS[G.aiChar[s]].lines.lose);
-  }
 }
 
 /* ---------- 渲染 ---------- */
@@ -2067,15 +2355,15 @@ function renderCounter(){
   }).join('');
 }
 
-/* 出牌/过牌时同步 lastShown */
+/* 出牌/过牌时同步 lastShown, 并在执行前记录本手(v0.7 复盘用) */
 const _doPlay = doPlay, _doPass = doPass;
-doPlay = function(seat, cards, info){ lastShown[seat]={cards:cards.slice()}; _doPlay(seat, cards, info); };
-doPass = function(seat){ lastShown[seat]={pass:true}; _doPass(seat); };
+doPlay = function(seat, cards, info){ recordStep(seat, 'play', cards, info || analyzeCards(cards)); lastShown[seat]={cards:cards.slice()}; _doPlay(seat, cards, info); };
+doPass = function(seat){ recordStep(seat, 'pass', null, null); lastShown[seat]={pass:true}; _doPass(seat); };
 
 $('btnCounter').onclick = ()=> $('counterBar').classList.toggle('open');
 $('btnStory').onclick = ()=> showStoryCodex('game');
 $('btnNew').onclick = ()=> showModeSelect();
-window.addEventListener('resize', ()=>{ if(G) renderHand(); });
+window.addEventListener('resize', ()=>{ if(review) renderReview(); else if(G) renderHand(); });
 
 /* 预加载关键图后开局 */
 /* 预加载全部牌面: 底牌揭示、手牌渲染不出现裂图/空白 */
