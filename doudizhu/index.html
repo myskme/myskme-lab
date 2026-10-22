@@ -329,11 +329,29 @@ function analyzeCards(cards){
   }
   return analyzeWild(cards);
 }
-function analyzeWild(cards){
+/* 癞子双读的唯一优先序(手动判定、AI 与提示共用):
+   王炸 > 炸弹(硬炸 > 软炸, 同软硬比 main 大者) > 其他读法(main 大者优先);
+   main 相同再比 len、count、wings(均小者优先), 最后按类型序裁定(四带二在链型之前)。 */
+const WILD_TYPE_ORDER = {single:0, pair:1, trio:2, trio1:3, trio2:4, four2:5, straight:6, pairs:7, plane:8, bomb:9, rocket:10};
+function compareWildReadings(a, b){
+  if(!a || !b) return !a && !b ? 0 : (!a ? 1 : -1);
+  if(a.type==='rocket' || b.type==='rocket') return a.type===b.type ? 0 : (a.type==='rocket' ? -1 : 1);
+  const aBomb = a.type==='bomb', bBomb = b.type==='bomb';
+  if(aBomb || bBomb){
+    if(aBomb !== bBomb) return aBomb ? -1 : 1;
+    if(a.soft !== b.soft) return a.soft ? 1 : -1;
+  }
+  if(a.main !== b.main) return b.main - a.main;
+  if((a.len||0) !== (b.len||0)) return (a.len||0) - (b.len||0);
+  if((a.count||0) !== (b.count||0)) return (a.count||0) - (b.count||0);
+  if((a.wings||0) !== (b.wings||0)) return (a.wings||0) - (b.wings||0);
+  return (WILD_TYPE_ORDER[a.type] ?? 99) - (WILD_TYPE_ORDER[b.type] ?? 99);
+}
+function enumerateWildReadings(cards){
   const n = cards.length;
   const w = cards.filter(c=>c.v===LAIZI_VAL).length;
   const nv = cards.filter(c=>c.v!==LAIZI_VAL).map(c=>c.v);   // 自然牌点数(癞子牌已剔除)
-  if(n===1) return {type:'single', main:cards[0].v, len:0, count:1, wings:0, soft:false};
+  if(n===1) return [{type:'single', main:cards[0].v, len:0, count:1, wings:0, soft:false}];
   const cnt = countMap(nv);
   const candMains = [...new Set([...nv, LAIZI_VAL])].filter(v=>v<=15);   // 癞子不能替代大小王, 候选主值仅限普通点数
   const hasJok = a => a.some(v=>v>=16);
@@ -414,11 +432,25 @@ function analyzeWild(cards){
       }
     }
   }
-  if(!found.length) return null;
-  const bomb = found.find(f=>f.type==='bomb');   // 歧义时炸弹读法优先
-  if(bomb) return bomb;
-  found.sort((a,b)=> b.main-a.main);              // 其余歧义取 main 最大读法
-  return found[0];
+  const uniq = [], seen = new Set();
+  for(const info of found){
+    const key = [info.type, info.main, info.len||0, info.count, info.wings||0, info.soft?1:0].join('|');
+    if(seen.has(key)) continue;
+    seen.add(key); uniq.push(info);
+  }
+  return uniq.sort(compareWildReadings);
+}
+function analyzeWild(cards){
+  const readings = enumerateWildReadings(cards);
+  return readings.length ? readings[0] : null;
+}
+/* 提交一组牌时的上下文裁定: 自由出牌用统一优先序; 跟牌时先从全部合法读法中
+   选能管上目标牌者, 再按同一优先序裁定。无可管上读法时回自由读法, 供界面提示“管不上”。 */
+function resolvePlayInfo(cards, targetInfo){
+  const freeInfo = analyzeCards(cards);
+  if(!targetInfo || !freeInfo || !LAIZI_VAL || !cards.some(c=>c.v===LAIZI_VAL)) return freeInfo;
+  const beating = enumerateWildReadings(cards).filter(info=>canBeat(info, targetInfo));
+  return beating.length ? beating[0] : freeInfo;
 }
 
 // 牌型判定: 输入牌值数组, 返回 {type, main, len, count, wings} 或 null
@@ -627,14 +659,19 @@ function genPlaysLaizi(hand, last){
   const W = wilds.length;
   const g = {};
   for(const c of hand) if(c.v!==L) (g[c.v]=g[c.v]||[]).push(c);
-  const plays = [], seen = new Set();
+  const plays = [], byCards = new Map();
   function pushW(cards, info){
     if(!cards || !cards.length) return;
-    info.count = cards.length; info.len = info.len||0; info.wings = info.wings||0; info.soft = !!info.soft;
-    const key = cards.map(c=>hand.indexOf(c)).sort((a,b)=>a-b).join(',')+'|'+info.type+info.main+'|'+info.len+'|'+info.wings+'|'+(info.soft?1:0);
-    if(seen.has(key)) return; seen.add(key);
+    // 构造 info 只是候选草稿: 入列前按这组实体牌与当前目标统一裁定,
+    // 保证生成器预定读法与玩家手动提交走同一口径(同一优先序、跟牌先选可管上读法)。
+    info = resolvePlayInfo(cards, last ? last.info : null);
+    if(!info) return;
     if(last && !canBeat(info, last.info)) return;
-    plays.push({cards, info});
+    const cardKey = cards.map(c=>hand.indexOf(c)).sort((a,b)=>a-b).join(',');
+    if(byCards.has(cardKey)) return;   // 同一组实体牌在同一上下文只保留这一读法
+    const play = {cards, info};
+    byCards.set(cardKey, play);
+    plays.push(play);
   }
   function fill(v, need){           // 取 need 张点数 v: 自然牌优先, 癞子补足; v 即癞子点则全用癞子本体
     if(v===L) return W>=need ? wilds.slice(0,need) : null;
@@ -1265,11 +1302,11 @@ function enablePlayerActions(){
   };
   bPlay.onclick = ()=>{
     const cards = [...G.selected].sort((a,b)=>a-b).map(i=>G.hands[0][i]);
-    const info = analyzeCards(cards);
+    const info = resolvePlayInfo(cards, last ? last.info : null);
     if(!info){ centerMsg('所选牌型不成立', '换一手试试'); return; }
     if(last && !canBeat(info, last.info)){ centerMsg('管不上', '换大一点的牌，或点不出'); return; }
     bar.innerHTML=''; hintIdx=0; G.selected.clear();
-    doPlay(0, cards);
+    doPlay(0, cards, info);
   };
   bPass.onclick = ()=>{ bar.innerHTML=''; hintIdx=0; G.selected.clear(); doPass(0); };
   bar.append(bHint, bPlay, bPass);
