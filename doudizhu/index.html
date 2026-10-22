@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>猴先生斗地主 · 原型 v0.7</title>
+<title>猴先生斗地主 · 原型 v0.8</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -329,6 +329,40 @@
   body.elder .levelcell .lvname{font-size:16px;}
   body.elder .levelcell .lvstars{font-size:14px;}
 
+  /* ---------- v0.8: 赛季段位 / 复盘亮牌 ---------- */
+  .rankbar{display:flex; align-items:center; gap:12px; width:100%; margin:12px 0 2px; padding:11px 14px;
+    background:rgba(247,239,220,.06); border:1.5px solid rgba(201,162,77,.45); border-radius:12px; text-align:left;}
+  .rank-badge{flex:none; font-size:16px; font-weight:800; letter-spacing:1px; color:#2a1f08;
+    background:linear-gradient(180deg,#f0d488,#c39a35); border:1.5px solid #fff3d0; border-radius:999px; padding:5px 14px;}
+  .rank-info{font-size:12.5px; line-height:1.55; color:#cfe0d2;}
+  .rank-info b{color:var(--gold-l); font-size:14px;}
+  .rank-line{font-size:14.5px; color:#e9e2cd; margin:0 0 12px;}
+  .rank-line b{color:var(--gold-l);}
+  .rankup-banner{margin:0 0 14px; padding:9px 12px; border-radius:10px; text-align:center;
+    font-size:17px; font-weight:800; letter-spacing:2px; color:#2a1f08;
+    background:linear-gradient(90deg,#d9a94f,#f0d488,#d9a94f); border:1px solid rgba(255,243,208,.8); animation:playIn .3s ease both;}
+  body.elder .rankbar{padding:15px;}
+  body.elder .rank-badge{font-size:20px; padding:8px 18px;}
+  body.elder .rank-info{font-size:16px; line-height:1.6;}
+  body.elder .rank-info b{font-size:18px;}
+  /* 复盘亮牌: 复盘时两家手牌亮开成行(左家向右展开, 右家向左展开), 退出复盘即恢复牌背 */
+  body.reviewing .backfan{width:0; height:52px; overflow:visible;}
+  .openfan{display:none;}
+  body.reviewing .openfan{position:absolute; top:0; display:flex; align-items:flex-start; z-index:5;}
+  #fanL .openfan{left:0;}
+  #fanR .openfan{right:0;}
+  .openfan img{position:static; width:38px; height:53px; border-radius:4px; background:#fff;
+    box-shadow:0 3px 8px rgba(0,0,0,.5); border:1px solid rgba(201,162,77,.45);}
+  .openfan img+img{margin-left:-20px;}
+  .openfan img.wild{box-shadow:0 0 0 2.5px var(--gold-l), 0 3px 8px rgba(0,0,0,.5);}
+  .review-note.open-note{font-size:12.5px; color:#a9bcb0;}
+  body.elder .review-note.open-note{font-size:16px;}
+  @media (max-width:640px){
+    body.reviewing .backfan{height:44px;}
+    .openfan img{width:30px; height:42px;}
+    .openfan img+img{margin-left:-17px;}
+  }
+
   /* ---------- 双断点 ---------- */
   @media (min-width:900px){
     :root{ --cw:88px; --pw:60px; --dw:52px; }
@@ -385,7 +419,7 @@
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">猴先生斗地主 <small>原型 v0.7 · 茶肆夜话桌</small></div>
+    <div class="title">猴先生斗地主 <small>原型 v0.8 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1230,6 +1264,72 @@ let stats=JSON.parse(localStorage.getItem('myskme_ddz_stats')||'{"win":0,"total"
 function saveStats(){ localStorage.setItem('myskme_ddz_stats', JSON.stringify(stats)); }
 function renderStats(){ $('uiStats').textContent = stats.win+' 胜 / '+stats.total+' 局'; }
 
+/* ---------- v0.8: 赛季段位 ----------
+   仅经典/癞子/不洗牌三场次对局计入: finishGame 中残局已提前分流到 finishChallenge,
+   走到计分代码的必然是三场次。存档独立键 myskme_ddz_rank, 不动既有任何键。
+   段位阶梯(头部产品通行做法): 青铜/白银/黄金/铂金/钻石 各 III、II、I 三小段 + 大师;
+   每小段 100 分, 门槛 = 小段序号 × 100(青铜III 0 … 钻石I 1400, 大师 1500)。
+   计分公式: 胜 delta = 本局得分 + 4(基础胜分); 负 delta = -(本局得分 + 2)(基础负分);
+   保级: 实扣不跌穿本局开局时所在大段的最低分(大段底 = 大段序号 × 300, 大师 1500)。
+   赛季: 自然月一季; 跨月首次读取时结算上赛季(最终段位写入 history, 最多留 6 条),
+   新赛季段位分软重置到「上赛季最终大段 - 1 档」的起点(青铜保底 0)。 */
+const RANK_MAJORS = ['青铜','白银','黄金','铂金','钻石','大师'];
+const RANK_STEP = 100;        // 每小段分差
+const RANK_WIN_BASE = 4;      // 基础胜分
+const RANK_LOSE_BASE = 2;     // 基础负分
+function rankIndex(points){ return Math.min(15, Math.floor(Math.max(0, points) / RANK_STEP)); }   // 0..14 小段, 15 大师
+function rankMajorIndex(points){ const i = rankIndex(points); return i>=15 ? 5 : Math.floor(i/3); }
+function rankMajorFloor(points){ return rankMajorIndex(points) * 300; }
+function rankName(points){
+  const i = rankIndex(points);
+  if(i>=15) return '大师';
+  return RANK_MAJORS[Math.floor(i/3)] + ' ' + ['III','II','I'][i%3];
+}
+function rankNextThreshold(points){ const i = rankIndex(points); return i>=15 ? null : (i+1)*RANK_STEP; }
+function rankDeltaFor(myWin, score){ return myWin ? score + RANK_WIN_BASE : -(score + RANK_LOSE_BASE); }
+function currentSeason(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
+function seasonLabel(s){ const p = String(s||'').split('-'); return p.length===2 ? p[0]+' 年 '+Number(p[1])+' 月' : String(s||''); }
+let rankStore = null;
+function saveRank(){ localStorage.setItem('myskme_ddz_rank', JSON.stringify(rankStore)); }
+function rankData(){
+  if(!rankStore){
+    try{ rankStore = JSON.parse(localStorage.getItem('myskme_ddz_rank')||'null'); }catch(e){ rankStore = null; }
+    if(!rankStore || typeof rankStore!=='object' || typeof rankStore.points!=='number' || !rankStore.season){
+      rankStore = {season: currentSeason(), points: 0, history: []};
+      saveRank();
+    }
+    if(!Array.isArray(rankStore.history)) rankStore.history = [];
+  }
+  if(rankStore.season !== currentSeason()){
+    rankStore.history.unshift({season: rankStore.season, points: rankStore.points, rank: rankName(rankStore.points)});
+    rankStore.history = rankStore.history.slice(0, 6);
+    rankStore.points = Math.max(0, rankMajorIndex(rankStore.points) - 1) * 300;
+    rankStore.season = currentSeason();
+    saveRank();
+  }
+  return rankStore;
+}
+/* 结算一局三场次对局的段位分: 返回实际变化(经保级钳制后)与升段信息, 供结算面板展示 */
+function applyRankResult(myWin, score){
+  const rk = rankData();
+  const beforePts = rk.points;
+  const beforeIdx = rankIndex(beforePts);
+  let afterPts = beforePts + rankDeltaFor(myWin, score);
+  const floor = rankMajorFloor(beforePts);
+  if(afterPts < floor) afterPts = floor;
+  rk.points = afterPts;
+  saveRank();
+  return {delta: afterPts - beforePts, beforePts, afterPts, promoted: rankIndex(afterPts) > beforeIdx, name: rankName(afterPts)};
+}
+function rankBarHTML(){
+  const rk = rankData();
+  const nxt = rankNextThreshold(rk.points);
+  const nextTxt = nxt===null ? '已是最高段位' : '距 '+rankName(nxt)+' 还差 '+(nxt-rk.points)+' 分';
+  const last = rk.history.length ? '<br>上赛季（'+seasonLabel(rk.history[0].season)+'）定格 '+rk.history[0].rank+' · '+rk.history[0].points+' 分' : '';
+  return '<div class="rankbar"><span class="rank-badge">'+rankName(rk.points)+'</span>' +
+    '<span class="rank-info">'+seasonLabel(rk.season)+'赛季 · 段位分 <b>'+rk.points+'</b><br>'+nextTxt+last+'</span></div>';
+}
+
 /* ---------- v0.4: 长辈模式状态 ----------
    elderMode 是用户偏好(选择面板开关, localStorage 记忆); elderContext 区分三场次与残局:
    残局不强制套用长辈模式, 进入选关/关卡时上下文切为 challenge, elderActive() 返回 false。 */
@@ -1396,6 +1496,7 @@ function closeStoryCodex(){
 function startMode(m){ newGame(m); }
 function showModeSelect(){
   review = null;
+  document.body.classList.remove('reviewing');
   pendingChallenge = null;
   elderContext = 'menu';
   setPanelClass();
@@ -1408,7 +1509,8 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.7</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.8</div>' +
+    rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
     ['easy','normal','expert'].map(lv=>'<button type="button" class="levelbtn'+(aiLevel===lv?' on':'')+'" data-level="'+lv+'" onclick="setAiLevel(\''+lv+'\')">'+LEVEL_NAMES[lv]+'</button>').join('') +
@@ -1647,6 +1749,7 @@ function finishChallenge(winnerSeat){
 
 function newGame(mode){
   mode = mode || (G && G.mode) || 'classic';
+  document.body.classList.remove('reviewing');
   elderContext = mode;
   setPanelClass();
   hideChallengeBanner();
@@ -2118,14 +2221,21 @@ function renderReview(){
   const hands = reviewHandsAt(rec, idx);
   const cur = idx>0 ? rec.steps[idx-1] : null;
   renderReviewHand(hands[0], cur && cur.seat===0 && cur.kind==='play' ? cur.cards : null);
-  // 两家牌背与剩余张数
-  const mkFan = (el, n)=>{
+  // v0.8 复盘亮牌: 两家手牌按该步状态亮开显示(不再是牌背); 对局进行中的正常界面不受影响
+  document.body.classList.add('reviewing');
+  const mkOpen = (el, cards)=>{
     const fan = $(el); fan.innerHTML = '';
-    const show = Math.min(n, 7);
-    for(let i=0;i<show;i++){ const im = document.createElement('img'); im.src = 'assets/牌背.webp'; im.style.left = (i*8)+'px'; im.style.zIndex = i; fan.appendChild(im); }
-    const b = document.createElement('div'); b.className = 'countbadge'+(n<=3?' low':''); b.textContent = n; fan.appendChild(b);
+    const wrap = document.createElement('div'); wrap.className = 'openfan';
+    cards.forEach(c=>{
+      const im = document.createElement('img');
+      im.src = cardFile(c); im.alt = '';
+      if(isWildCard(c)) im.className = 'wild';
+      wrap.appendChild(im);
+    });
+    fan.appendChild(wrap);
+    const b = document.createElement('div'); b.className = 'countbadge'+(cards.length<=3?' low':''); b.textContent = cards.length; fan.appendChild(b);
   };
-  mkFan('fanR', hands[1].length); mkFan('fanL', hands[2].length);
+  mkOpen('fanR', hands[1]); mkOpen('fanL', hands[2]);
   // 各家最近一手, 当前手高亮
   const zoneOf = {0:'zoneP', 1:'zoneR', 2:'zoneL'};
   const lastAct = {0:-1, 1:-1, 2:-1};
@@ -2149,6 +2259,8 @@ function renderReview(){
   const bar = $('actionBar'); bar.innerHTML = '';
   const note = document.createElement('span'); note.className = 'review-note'; note.textContent = reviewNarration();
   bar.appendChild(note);
+  const openNote = document.createElement('span'); openNote.className = 'review-note open-note'; openNote.textContent = '复盘亮牌：看清对手的牌，学得更明白';
+  bar.appendChild(openNote);
   const mkBtn = (label, fn, disabled)=>{
     const b = document.createElement('button');
     b.textContent = label; b.disabled = !!disabled;
@@ -2184,6 +2296,7 @@ function showCoachPanel(){
 function closeCoachPanel(){ $('overlay').classList.remove('show'); }
 function exitReview(){
   review = null;
+  document.body.classList.remove('reviewing');   // 撤掉亮牌样式, renderAll 会把两家恢复成牌背
   renderAll();
   renderSettlement();
 }
@@ -2205,7 +2318,8 @@ function finishGame(winnerSeat){
   saveStats(); renderStats();
   recordStoryDefeats(myWin);
   renderAll();
-  G.result = {winnerSeat, landlordWin, spring, myWin, score};
+  const rankInfo = applyRankResult(myWin, score);   // v0.8: 三场次计入赛季段位(残局已在上方分流, 不会走到这里)
+  G.result = {winnerSeat, landlordWin, spring, myWin, score, rankInfo};
   G.coachNotes = coachAnalyze();
   renderSettlement();
   for(const s of [1,2]){
@@ -2217,7 +2331,7 @@ function finishGame(winnerSeat){
 function renderSettlement(){
   if(!G || !G.result) return;
   setPanelClass();
-  const {winnerSeat, landlordWin, spring, myWin, score} = G.result;
+  const {winnerSeat, landlordWin, spring, myWin, score, rankInfo} = G.result;
   const hasReview = !!(G.record && G.record.steps.length);
   const reviewBtn = hasReview ? ' <button class="ghost" onclick="enterReview()">复盘看看</button>' : '';
   const rows = [
@@ -2235,7 +2349,7 @@ function renderSettlement(){
     $('panel').innerHTML =
       '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
       '<div class="who-win">'+(winnerSeat===0?'你先把牌出完了':CHARS[G.aiChar[winnerSeat]].name+' 先把牌出完了')+'</div>'+
-      '<div class="elder-result">本局 '+(myWin?'+':'−')+score+' 分<br><span>累计 '+stats.points+' 分</span></div>'+
+      '<div class="elder-result">本局 '+(myWin?'+':'−')+score+' 分<br><span>累计 '+stats.points+' 分</span>'+(rankInfo ? '<br><span>段位 '+rankInfo.name+' · '+(rankInfo.delta>=0?'+':'−')+Math.abs(rankInfo.delta)+' 分</span>' : '')+'</div>'+
       '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+
       '<button class="ghost elder-detail-btn" id="btnElderCalc" aria-expanded="false" onclick="toggleElderCalc()">看看怎么算的</button>'+
       '<div class="elder-detail" id="elderCalc" hidden>'+detailTable+'</div>';
@@ -2244,6 +2358,8 @@ function renderSettlement(){
       '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
       '<div class="who-win">'+(landlordWin?'地主获胜':'农民获胜')+' · '+(winnerSeat===0?'你率先出完':CHARS[G.aiChar[winnerSeat]].name+' 率先出完')+'</div>'+
       detailTable+
+      (rankInfo && rankInfo.promoted ? '<div class="rankup-banner">升段：'+rankInfo.name+'</div>' : '')+
+      (rankInfo ? '<div class="rank-line">段位 <b>'+rankInfo.name+'</b> · 段位分 '+rankInfo.afterPts+'（'+(rankInfo.delta>=0?'+':'−')+Math.abs(rankInfo.delta)+'）</div>' : '')+
       '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+
       '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局</div>';
   }
