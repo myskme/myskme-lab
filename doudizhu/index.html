@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>猴先生斗地主 · 原型 v0.2</title>
+<title>猴先生斗地主 · 原型 v0.3</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -202,6 +202,19 @@
   .panel .modebtn b{display:block; font-size:16.5px; letter-spacing:1px; color:var(--gold-l);}
   .panel .modebtn span{display:block; font-size:12px; line-height:1.55; color:#cfe0d2; margin-top:3px; letter-spacing:0;}
 
+  /* ---------- v0.3: 残局闯关 ---------- */
+  .panel .levelgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:7px; margin:10px 0 14px;}
+  .levelcell{background:rgba(18,58,54,.85); border:1px solid rgba(201,162,77,.55); border-radius:10px;
+    padding:9px 3px 7px; text-align:center; color:var(--cream); font-family:inherit; letter-spacing:0;}
+  button.levelcell{cursor:pointer; width:100%;}
+  button.levelcell:hover{filter:brightness(1.22);}
+  .levelcell .lvno{font-size:10.5px; color:#a9bcb0; letter-spacing:1px;}
+  .levelcell .lvname{font-size:13.5px; font-weight:700; color:var(--gold-l); margin:2px 0; letter-spacing:1px;}
+  .levelcell .lvstars{font-size:11.5px; color:var(--gold-l); letter-spacing:1px;}
+  .levelcell.locked{opacity:.45;}
+  .levelcell .lvstars.dim{color:#8a9a8e; font-size:10.5px;}
+  .lvstars.big{font-size:30px; color:var(--gold-l); letter-spacing:6px; margin:2px 0 6px; text-align:center;}
+
   /* ---------- 双断点 ---------- */
   @media (min-width:900px){
     :root{ --cw:88px; --pw:60px; }
@@ -239,7 +252,7 @@
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">猴先生斗地主 <small>原型 v0.2 · 茶肆夜话桌</small></div>
+    <div class="title">猴先生斗地主 <small>原型 v0.3 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -903,14 +916,155 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.2</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.3</div>' +
     modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
+    '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>十关固定残局，按最优防守设计：大牌控场、顺子先行、炸弹收尾、送队友先走……通关赢星解锁下一关，三星看你用几手打完。当前总星 '+totalStars()+' / 30。</span></button>' +
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
   $('overlay').classList.add('show');
 }
+
+/* ---------- v0.3: 残局闯关 ----------
+   关卡标准: 全信息求解器按"对最优防守也存在获胜线"逐关验证;
+   best = 求解器给出的最优玩家出牌手数 (获胜且手数<=best 得三星, <=best+1 得两星, 获胜得一星)。 */
+const LEVELS = [
+  { name:'大牌控场', landlord:0, chars:['fish','donkey'], best:6,
+    goal:'你是地主，先手出牌。大牌都在你手里，但先出哪张大有讲究——沉住气，先放小牌，大牌留着控场收官。',
+    hands:[[17,15,14,9,9,6,3],[16,11,10,9,8,7],[15,14,14,12,10,5,4]] },
+  { name:'顺子先行', landlord:0, chars:['snake','egg'], best:3,
+    goal:'你是地主，先手出牌。你有高顺和对 2，对面藏着大王与一副低顺——先把成型的牌打出去，别给对面的顺子留机会。',
+    hands:[[15,15,13,12,11,10,9,4],[17,9,8,7,6,5,3],[16,14,14,12,10,7,6]] },
+  { name:'炸弹收尾', landlord:0, chars:['fish','snake'], best:5,
+    goal:'你是地主，先手出牌。对面藏着一副小炸弹——先送出一张小牌作饵，等小炸弹露头，再用你的大炸弹压回去收尾。',
+    hands:[[14,13,11,11,11,11,9,4],[8,8,8,8,3],[15,12,9,5]] },
+  { name:'王炸时机', landlord:0, chars:['snake','donkey'], best:3,
+    goal:'你是地主，先手出牌。王炸下早了必输——沉住气，等对面的炸弹先露头，再用王炸压住它。',
+    hands:[[17,16,12,12,12,7,4],[15,11,8,8,8,8,5],[15,13,10,9,6,5,3]] },
+  { name:'拆对陷阱', landlord:0, chars:['egg','fish'], best:3,
+    goal:'你是地主，先手出牌。三张 K 可以带牌，但带法不同、结局不同——把对 A 拆去当翅膀，整局就会被大牌堵死。',
+    hands:[[14,14,13,13,13,8,4],[15,12,10,9,5,3],[16,15,11,10,7,5]] },
+  { name:'送队友先走', landlord:2, chars:['teapot','snake'], best:3,
+    goal:'你是农民，先手出牌。队友只剩两张牌——先送小牌，把出牌权递到队友手里；手里的大牌抢先出，反而会害了全队。',
+    hands:[[17,15,10,8,4,3],[12,5],[16,13,13,13,10,10]] },
+  { name:'三带一诱饵', landlord:0, chars:['fish','egg'], best:4,
+    goal:'你是地主，先手出牌。左手边藏着炸弹和一张 A——先用三带一作饵，把炸弹钓出来，再稳稳收尾。',
+    hands:[[15,15,12,12,12,9,3],[15,13,10,7,6,5],[14,8,8,8,8,5]] },
+  { name:'连对压制', landlord:0, chars:['donkey','snake'], best:3,
+    goal:'你是地主，先手出牌。连对一出，对面的对 K、对 Q 都只能旁观——次序错了，就会被单张大牌缠死。',
+    hands:[[15,14,7,7,6,6,5,5],[16,13,13,11,9,8,4],[17,12,12,10,9,8,3]] },
+  { name:'飞机收尾', landlord:0, chars:['egg','fish'], best:1,
+    goal:'你是地主，先手出牌。手里的飞机能一手清台——犹豫拆打，就会被对面的炸弹抢走先机。',
+    hands:[[9,5,5,5,4,4,4,3],[17,15,13,11,10,7],[12,8,8,8,8,6]] },
+  { name:'终局决战', landlord:0, chars:['snake','fish'], best:3,
+    goal:'你是地主，先手出牌。终局决战：三张、顺子与大牌俱全，环环相扣——找出获胜线，把优势稳稳打到底。',
+    hands:[[17,13,13,13,11,10,9,8,7,3],[16,15,14,12,11,10,6,5,3],[15,15,12,11,9,8,6,5,4]] },
+];
+let challenge = JSON.parse(localStorage.getItem('myskme_ddz_challenge')||'{"stars":[]}');
+if(!Array.isArray(challenge.stars)) challenge.stars = [];
+function saveChallenge(){ localStorage.setItem('myskme_ddz_challenge', JSON.stringify(challenge)); }
+function totalStars(){ return challenge.stars.reduce((a,b)=>a+(b||0),0); }
+function levelUnlocked(i){ return i===0 || (challenge.stars[i-1]||0)>=1; }
+function starStr(n){ return '★★★'.slice(0,n) + '☆☆☆'.slice(0,3-n); }
+function showLevelSelect(){
+  hideBubbles();
+  window._gid = (window._gid||0)+1;
+  if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
+  const cells = LEVELS.map((lv,i)=>{
+    const st = challenge.stars[i]||0;
+    if(!levelUnlocked(i))
+      return '<div class="levelcell locked"><div class="lvno">第 '+(i+1)+' 关</div><div class="lvname">'+lv.name+'</div><div class="lvstars dim">未解锁</div></div>';
+    return '<button class="levelcell" onclick="startLevel('+i+')"><div class="lvno">第 '+(i+1)+' 关</div><div class="lvname">'+lv.name+'</div><div class="lvstars">'+starStr(st)+'</div></button>';
+  }).join('');
+  $('panel').innerHTML = '<h2>残局闯关</h2><div class="who-win">总星 '+totalStars()+' / 30 · 通关解锁下一关</div>' +
+    '<div class="levelgrid">'+cells+'</div>' +
+    '<button class="ghost" onclick="showModeSelect()">返回场次选择</button>';
+  $('overlay').classList.add('show');
+}
+function fabricateHands(handsVals){   // 按全局出现序号分配花色, 保证同一副牌内不重复
+  const occ = {};
+  return handsVals.map(h => h.map(v => {
+    if(v>=16) return {v, s:'王'};
+    const i = occ[v] || 0; occ[v] = i+1;
+    return {v, s: SUITS[i%4]};
+  }));
+}
+function startLevel(idx){
+  const lv = LEVELS[idx];
+  $('overlay').classList.remove('show');
+  hideBubbles();
+  setLaizi(0);
+  window._gid = (window._gid||0)+1;
+  G = {
+    gid: window._gid,
+    mode:'challenge', laiziVal:0, challengeIdx: idx,
+    phase:'playing',
+    hands: fabricateHands(lv.hands).map(sortCards),
+    dipai: [],
+    aiChar:[null, lv.chars[0], lv.chars[1]],
+    landlord: lv.landlord, base:0, mult:1, bombs:0,
+    turn:0, lastPlay:null, lastOwner:-1, passStreak:0, selfPass:[0,0,0], playsCount:[0,0,0],
+    playedCount:{},
+    playsBySide:{landlord:0, farmer:0},
+    selected:new Set(), over:false,
+  };
+  // 记牌器口径: 未出场的牌视为已离场, 只统计三家手里还剩的牌
+  for(let v=3; v<=17; v++){
+    const total = v>=16 ? 1 : 4;
+    let inHands = 0;
+    for(const h of lv.hands) for(const x of h) if(x===v) inHands++;
+    G.playedCount[v] = total - inHands;
+  }
+  $('avR').src = CHARS[lv.chars[0]].av; $('nmR').textContent = CHARS[lv.chars[0]].name;
+  $('avL').src = CHARS[lv.chars[1]].av; $('nmL').textContent = CHARS[lv.chars[1]].name;
+  $('uiBase').textContent = '—'; $('uiMult').textContent = '×1';
+  $('uiMode').textContent = '残局 · 第 '+(idx+1)+' 关';
+  const noteEl = $('modeNote');
+  noteEl.textContent = '第 '+(idx+1)+' 关《'+lv.name+'》：'+lv.goal+' 本关 '+lv.best+' 手内获胜得三星，'+(lv.best+1)+' 手内得两星。';
+  noteEl.classList.add('show');
+  $('dipai').style.display = 'none';
+  lastShown[0]=lastShown[1]=lastShown[2]=null;
+  $('actionBar').innerHTML = '';
+  hintIdx = 0;
+  renderAll();
+  centerMsg('第 '+(idx+1)+' 关 · '+lv.name, lv.landlord===0 ? '你是地主 · 由你先手出牌' : '你是农民 · 由你先手出牌');
+  runTurn();
+}
+function finishChallenge(winnerSeat){
+  const lv = LEVELS[G.challengeIdx];
+  const playerWin = roleOf(winnerSeat) === roleOf(0);
+  const myPlays = G.playsCount[0];
+  let stars = 0;
+  if(playerWin){
+    stars = myPlays<=lv.best ? 3 : (myPlays<=lv.best+1 ? 2 : 1);
+    if(stars > (challenge.stars[G.challengeIdx]||0)){ challenge.stars[G.challengeIdx] = stars; saveChallenge(); }
+  }
+  renderAll();
+  let desc;
+  if(playerWin){
+    desc = (winnerSeat===0 ? '你率先出完' : '队友 '+CHARS[G.aiChar[winnerSeat]].name+' 率先出完') +
+      ' · 你共出牌 '+myPlays+' 手（最优 '+lv.best+' 手）';
+  } else {
+    desc = CHARS[G.aiChar[winnerSeat]].name+' 率先出完 · 调整打法，重开本关再战';
+  }
+  let btns = '<button class="primary" onclick="startLevel('+G.challengeIdx+')">重开本关</button> ';
+  if(playerWin && G.challengeIdx < LEVELS.length-1) btns += '<button class="primary" onclick="startLevel('+(G.challengeIdx+1)+')">下一关</button> ';
+  btns += '<button class="ghost" onclick="showLevelSelect()">返回选关</button> <button class="ghost" onclick="showModeSelect()">换个场</button>';
+  $('panel').innerHTML =
+    '<h2 class="'+(playerWin?'':'lose')+'">'+(playerWin?'过 关':'闯关失败')+'</h2>'+
+    '<div class="lvstars big">'+starStr(stars)+'</div>'+
+    '<div class="who-win">'+desc+'</div>'+
+    btns+
+    '<div class="stats">总星 '+totalStars()+' / 30</div>';
+  $('overlay').classList.add('show');
+  for(const s of [1,2]){
+    const won = roleOf(s)===roleOf(winnerSeat);
+    say(s, won ? CHARS[G.aiChar[s]].lines.win : CHARS[G.aiChar[s]].lines.lose);
+  }
+}
+
 function newGame(mode){
   mode = mode || (G && G.mode) || 'classic';
   $('overlay').classList.remove('show');
+  $('dipai').style.display = '';
   hideBubbles();
   setLaizi(mode==='laizi' ? 3+Math.floor(Math.random()*13) : 0);
   let dealHands, dealDipai;
@@ -1124,6 +1278,7 @@ function enablePlayerActions(){
 /* ---------- 结算 ---------- */
 function finishGame(winnerSeat){
   G.over = true; G.phase='over';
+  if(G.mode==='challenge'){ finishChallenge(winnerSeat); return; }
   const landlordWin = winnerSeat===G.landlord;
   // 春天: 地主胜且农民从未出牌 / 农民胜且地主只出过一手
   let spring = false;
