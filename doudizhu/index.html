@@ -1523,7 +1523,7 @@ function closeStoryCodex(){
      设备, 单机与联机都生效(elderContext 在联机对局时置为 'online', 不会被残局逻辑关掉)。
    - 联机房的 elderFriendly 是房主建房时定的房间规则: 服务端放慢 AI 出牌节奏、
      本玩法本来就没有出牌倒计时, 对全房三人生效。两者互相独立, 可以叠加。 */
-const ONLINE_WS_BASE = 'ws://127.0.0.1:8787';   // ← 部署后只改这一处, 如 'wss://myskme-ddz.<账号>.workers.dev'
+const ONLINE_WS_BASE = 'wss://myskme-ddz.kaput-becklespinax-369.workers.dev';   // ← 部署后只改这一处, 如 'wss://myskme-ddz.<账号>.workers.dev'
 const ON = {
   active: false,       // 是否在联机流程中(面板/大厅/对局)
   inGame: false,       // 是否已进入联机对局(非大厅)
