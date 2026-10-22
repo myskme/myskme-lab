@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>猴先生斗地主 · 原型 v0.1</title>
+<title>猴先生斗地主 · 原型 v0.2</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -182,6 +182,26 @@
   .panel td:last-child{text-align:right; color:var(--gold-l); font-weight:700;}
   .panel .stats{font-size:12.5px; color:#a9bcb0; margin-top:12px;}
 
+  /* ---------- v0.2: 模式说明 / 癞子标识 / 场次选择 ---------- */
+  #modeNote{display:none; padding:4px 12px; font-size:11.5px; line-height:1.5; color:#cdbd93;
+    background:rgba(7,24,21,.66); border-bottom:1px solid rgba(201,162,77,.22); letter-spacing:.5px;}
+  #modeNote.show{display:block;}
+  #counterBar .cell.wildcell{border-color:var(--gold-l); background:rgba(201,162,77,.25);}
+  #counterBar .cell.wildcell span{color:var(--gold-l);}
+  .hwrap{position:relative; flex:none;}
+  #hand img.hcard.wild{box-shadow:0 0 0 3px var(--gold-l), 0 4px 14px rgba(231,200,119,.6);}
+  .wildtag{
+    position:absolute; top:-9px; left:-3px; z-index:40; width:21px; height:21px; line-height:21px;
+    text-align:center; border-radius:50%; font-size:11.5px; font-weight:800; color:#2a1f08;
+    background:linear-gradient(180deg,#f0d488,#c39a35); border:1.5px solid #fff3d0;
+    box-shadow:0 2px 6px rgba(0,0,0,.55); pointer-events:none;
+  }
+  .playzone img.pcard.wild{box-shadow:0 0 0 2.5px var(--gold-l), 0 3px 8px rgba(0,0,0,.5);}
+  #dipai img.wild{box-shadow:0 0 0 2.5px var(--gold-l), 0 3px 8px rgba(0,0,0,.55);}
+  .panel .modebtn{display:block; width:100%; text-align:left; margin:9px 0; padding:12px 14px; border-radius:10px;}
+  .panel .modebtn b{display:block; font-size:16.5px; letter-spacing:1px; color:var(--gold-l);}
+  .panel .modebtn span{display:block; font-size:12px; line-height:1.55; color:#cfe0d2; margin-top:3px; letter-spacing:0;}
+
   /* ---------- 双断点 ---------- */
   @media (min-width:900px){
     :root{ --cw:88px; --pw:60px; }
@@ -219,15 +239,17 @@
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">猴先生斗地主 <small>原型 v0.1 · 茶肆夜话桌</small></div>
+    <div class="title">猴先生斗地主 <small>原型 v0.2 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
+    <div class="chip">场次 <b id="uiMode">经典场</b></div>
     <div class="chip">战绩 <b id="uiStats">0 胜 / 0 局</b></div>
     <div class="spacer"></div>
     <button class="ghost" id="btnCounter">记牌器</button>
     <button class="ghost" id="btnNew">新对局</button>
   </div>
   <div id="counterBar"></div>
+  <div id="modeNote"></div>
 
   <div id="table">
     <div id="dipai"><div class="lab">底 牌</div><div class="cards" id="dipaiCards"></div></div>
@@ -279,6 +301,112 @@ function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.rand
 function sortCards(cards){ return cards.slice().sort((a,b)=> b.v-a.v || (a.s<b.s?-1:1)); }
 function valsOf(cards){ return cards.map(c=>c.v); }
 function countMap(vals){ const m={}; for(const v of vals) m[v]=(m[v]||0)+1; return m; }
+
+/* ---------- 癞子(万能牌) ----------
+   LAIZI_VAL=0 表示经典场; 否则点数 LAIZI_VAL 的所有牌为万能牌:
+   可替代任意普通点数(3..15)参与组合, 不能替代大小王(16/17)。
+   炸弹分软/硬: 含替身癞子的四张同点为软炸(info.soft=true), 全自然为硬炸; 硬炸压软炸, 王炸最高。 */
+let LAIZI_VAL = 0;
+function setLaizi(v){ LAIZI_VAL = v || 0; }
+function analyzeCards(cards){
+  if(!LAIZI_VAL || !cards.some(c=>c.v===LAIZI_VAL)){
+    const info = analyzeVals(valsOf(cards));
+    if(info && info.type==='bomb') info.soft = false;
+    return info;
+  }
+  return analyzeWild(cards);
+}
+function analyzeWild(cards){
+  const n = cards.length;
+  const w = cards.filter(c=>c.v===LAIZI_VAL).length;
+  const nv = cards.filter(c=>c.v!==LAIZI_VAL).map(c=>c.v);   // 自然牌点数(癞子牌已剔除)
+  if(n===1) return {type:'single', main:cards[0].v, len:0, count:1, wings:0, soft:false};
+  const cnt = countMap(nv);
+  const candMains = [...new Set([...nv, LAIZI_VAL])].filter(v=>v<=15);   // 癞子不能替代大小王, 候选主值仅限普通点数
+  const hasJok = a => a.some(v=>v>=16);
+  const found = [];
+  const add = (type, main, len, wings, soft)=>found.push({type, main, len:len||0, count:n, wings:wings||0, soft:!!soft});
+  // 同点组: 对子 / 三张 / 炸弹(全部自然牌须同点)
+  for(const m of candMains){
+    if(!nv.every(v=>v===m)) continue;
+    if(n===2) add('pair', m);
+    else if(n===3) add('trio', m);
+    else if(n===4) add('bomb', m, 0, 0, m!==LAIZI_VAL && w>0);
+  }
+  // 三带一 / 三带二
+  for(const m of candMains){
+    const natM = cnt[m]||0;
+    if(m===LAIZI_VAL){ if(w<3) continue; }
+    else { if(natM>3 || natM+w<3) continue; }
+    const wildUsed = m===LAIZI_VAL ? 3 : 3-natM;
+    const restNat = nv.filter(v=>v!==m);
+    const restWild = w - wildUsed;
+    const rest = n - 3;
+    if(rest===1 && restNat.length+restWild===1) add('trio1', m);
+    if(rest===2 && restNat.length+restWild===2 && !hasJok(restNat)){
+      if(restNat.length===0 || restNat.length===1 || restNat[0]===restNat[1]) add('trio2', m);
+    }
+  }
+  // 顺子(自然牌须互不相同且 <=A, 癞子补缺位)
+  if(n>=5 && nv.every(v=>v<=14) && new Set(nv).size===nv.length){
+    const loMin = nv.length ? Math.min(...nv) : 3, hiMax = nv.length ? Math.max(...nv) : 14;
+    for(let lo=Math.max(3, hiMax-n+1); lo<=Math.min(loMin, 15-n); lo++){
+      if(nv.every(v=>v>=lo && v<lo+n)) add('straight', lo+n-1, n);
+    }
+  }
+  // 连对(窗口内每点恰需 2 张, 癞子补缺; 自然牌不得在窗口外)
+  if(n>=6 && n%2===0){
+    const L = n/2;
+    for(let lo=3; lo+L-1<=14; lo++){
+      let deficit=0, ok=true;
+      for(let v=lo; v<lo+L; v++){ const c=cnt[v]||0; if(c>2){ ok=false; break; } deficit += 2-c; }
+      if(!ok || nv.some(v=>v<lo || v>=lo+L)) continue;
+      if(deficit===w) add('pairs', lo+L-1, L);
+    }
+  }
+  // 飞机(核心窗口每点 3 张, 癞子补缺; 余牌作边翼)
+  for(let L=2; 3*L<=n; L++){
+    for(let lo=3; lo+L-1<=14; lo++){
+      let deficit=0;
+      const remVals = [];
+      for(let v=lo; v<lo+L; v++){ const c=cnt[v]||0; if(c<3) deficit+=3-c; else for(let k=3;k<c;k++) remVals.push(v); }
+      if(deficit>w) continue;
+      for(const v of nv) if(v<lo || v>=lo+L) remVals.push(v);
+      const remWild = w - deficit, rem = n - 3*L;
+      if(remVals.length+remWild !== rem) continue;
+      if(rem===0) add('plane', lo+L-1, L, 0);
+      else if(rem===L) add('plane', lo+L-1, L, 1);
+      else if(rem===2*L && !hasJok(remVals)){
+        const rc = countMap(remVals);
+        const odd = Object.values(rc).filter(c=>c%2===1).length;
+        if(odd<=remWild && (remWild-odd)%2===0) add('plane', lo+L-1, L, 2);
+      }
+    }
+  }
+  // 四带二(带单张对 / 带两对)
+  if(n===6 || n===8){
+    for(const m of candMains){
+      const natM = cnt[m]||0;
+      if(m===LAIZI_VAL){ if(w<4) continue; }
+      else { if(natM<1 || natM>4 || natM+w<4) continue; }
+      const wildUsed = m===LAIZI_VAL ? 4 : 4-natM;
+      const restNat = nv.filter(v=>v!==m);
+      const restWild = w - wildUsed;
+      if(restNat.length+restWild !== n-4) continue;
+      if(n===6) add('four2', m);
+      else if(!hasJok(restNat)){
+        const rc = countMap(restNat);
+        const odd = Object.values(rc).filter(c=>c%2===1).length;
+        if(odd<=restWild && (restWild-odd)%2===0) add('four2', m);
+      }
+    }
+  }
+  if(!found.length) return null;
+  const bomb = found.find(f=>f.type==='bomb');   // 歧义时炸弹读法优先
+  if(bomb) return bomb;
+  found.sort((a,b)=> b.main-a.main);              // 其余歧义取 main 最大读法
+  return found[0];
+}
 
 // 牌型判定: 输入牌值数组, 返回 {type, main, len, count, wings} 或 null
 // type: single pair trio trio1 trio2 straight pairs plane four2 bomb rocket
@@ -338,7 +466,11 @@ function canBeat(a, b){
   if(a.type==='rocket') return true;
   if(b.type==='rocket') return false;
   if(a.type==='bomb' && b.type!=='bomb') return true;
-  if(a.type==='bomb' && b.type==='bomb') return a.main > b.main;
+  if(a.type==='bomb' && b.type==='bomb'){
+    const ah = a.soft?0:1, bh = b.soft?0:1;       // 硬炸压软炸, 同类比点数
+    if(ah!==bh) return ah>bh;
+    return a.main > b.main;
+  }
   if(b.type==='bomb') return false;
   if(a.type!==b.type) return false;
   if(a.count!==b.count || a.len!==b.len) return false;
@@ -372,7 +504,7 @@ function lowestPairs(g, excludeVals, n){
   return out.length===2*n ? out : null;
 }
 // 生成全部候选出法(返回 [{cards, info}]), last=null 为首出
-function genPlays(hand, last){
+function genPlaysClassic(hand, last){
   const g = groupByVal(hand);
   const vs = Object.keys(g).map(Number).sort((a,b)=>a-b);
   const plays = [];
@@ -471,6 +603,174 @@ function genPlays(hand, last){
   return plays;
 }
 
+/* ---------- 出牌生成: 模式分发 ---------- */
+function genPlays(hand, last){
+  return LAIZI_VAL ? genPlaysLaizi(hand, last) : genPlaysClassic(hand, last);
+}
+/* 癞子场生成: 按"目标点数 + 癞子替身"组合构造, info 为生成时的预定读法 */
+function genPlaysLaizi(hand, last){
+  const L = LAIZI_VAL;
+  const wilds = hand.filter(c=>c.v===L);
+  const W = wilds.length;
+  const g = {};
+  for(const c of hand) if(c.v!==L) (g[c.v]=g[c.v]||[]).push(c);
+  const plays = [], seen = new Set();
+  function pushW(cards, info){
+    if(!cards || !cards.length) return;
+    info.count = cards.length; info.len = info.len||0; info.wings = info.wings||0; info.soft = !!info.soft;
+    const key = cards.map(c=>hand.indexOf(c)).sort((a,b)=>a-b).join(',')+'|'+info.type+info.main+'|'+info.len+'|'+info.wings+'|'+(info.soft?1:0);
+    if(seen.has(key)) return; seen.add(key);
+    if(last && !canBeat(info, last.info)) return;
+    plays.push({cards, info});
+  }
+  function fill(v, need){           // 取 need 张点数 v: 自然牌优先, 癞子补足; v 即癞子点则全用癞子本体
+    if(v===L) return W>=need ? wilds.slice(0,need) : null;
+    const nat = (g[v]||[]);
+    if(nat.length + W < need) return null;
+    const useNat = nat.slice(0, Math.min(nat.length, need));
+    return [...useNat, ...wilds.slice(0, need-useNat.length)];
+  }
+  function subsUsed(v, need){ return v===L ? 0 : need - Math.min((g[v]||[]).length, need); }
+  function restAfter(used){ const u=new Set(used); return hand.filter(c=>!u.has(c)); }
+  function lowestFrom(pool, n){     // 边翼取最小: 自然牌优先(按点数), 癞子最后
+    return pool.slice().sort((a,b)=> ((a.v===L)-(b.v===L)) || a.v-b.v).slice(0, n);
+  }
+  function pairsFrom(pool, npairs){ // 从余牌组对: 自然对优先, 其次单张配癞, 最后双癞; 大小王不可组对
+    const byV = {}, w = [];
+    for(const c of pool){
+      if(c.v===L) w.push(c);
+      else if(c.v<16) (byV[c.v]=byV[c.v]||[]).push(c);
+    }
+    const out = [], singles = [];
+    for(const v of Object.keys(byV).map(Number).sort((a,b)=>a-b)){
+      const arr = byV[v].slice();
+      while(arr.length>=2 && out.length<2*npairs){ out.push(arr.shift(), arr.shift()); }
+      if(arr.length) singles.push(...arr);
+    }
+    let wi = 0;
+    while(out.length<2*npairs && singles.length && wi<w.length) out.push(singles.shift(), w[wi++]);
+    while(out.length<2*npairs && w.length-wi>=2) out.push(w[wi++], w[wi++]);
+    return out.length===2*npairs ? out : null;
+  }
+  function chainCompose(lo, len, per){  // 链型核心: 窗口内每点 per 张, 不足用癞子补
+    const cards = []; let wi = 0;
+    for(let v=lo; v<lo+len; v++){
+      const nat = (g[v]||[]).slice(0, per);
+      cards.push(...nat);
+      for(let k=nat.length; k<per; k++){ if(wi>=W) return null; cards.push(wilds[wi++]); }
+    }
+    return cards;
+  }
+  const natVals = Object.keys(g).map(Number).sort((a,b)=>a-b);
+  const groupVals = [...new Set([...natVals.filter(v=>v<=15), ...(W?[L]:[])])].sort((a,b)=>a-b);
+  // 单张(每个点数一张; 癞子单张按本点数出)
+  for(const v of [...new Set(hand.map(c=>c.v))].sort((a,b)=>a-b)){
+    pushW([v===L ? wilds[0] : g[v][0]], {type:'single', main:v});
+  }
+  // 同点组: 对 / 三 / 三带 / 炸 / 四带
+  for(const v of groupVals){
+    const pair = fill(v,2); if(pair) pushW(pair, {type:'pair', main:v});
+    const trio = fill(v,3);
+    if(trio){
+      pushW(trio, {type:'trio', main:v});
+      const rest1 = restAfter(trio);
+      const w1 = lowestFrom(rest1, 1); if(w1.length===1) pushW([...trio, ...w1], {type:'trio1', main:v});
+      const w2 = pairsFrom(rest1, 1); if(w2) pushW([...trio, ...w2], {type:'trio2', main:v});
+    }
+    const four = fill(v,4);
+    if(four){
+      pushW(four, {type:'bomb', main:v, soft: subsUsed(v,4)>0});
+      const rest2 = restAfter(four);
+      const s2 = lowestFrom(rest2, 2); if(s2.length===2) pushW([...four, ...s2], {type:'four2', main:v});
+      const p2 = pairsFrom(rest2, 2); if(p2) pushW([...four, ...p2], {type:'four2', main:v});
+    }
+  }
+  // 顺子
+  for(let len=5; len<=12; len++) for(let lo=3; lo+len-1<=14; lo++){
+    const cards = chainCompose(lo, len, 1);
+    if(cards) pushW(cards, {type:'straight', main:lo+len-1, len});
+  }
+  // 连对
+  for(let len=3; len<=10; len++) for(let lo=3; lo+len-1<=14; lo++){
+    const cards = chainCompose(lo, len, 2);
+    if(cards) pushW(cards, {type:'pairs', main:lo+len-1, len});
+  }
+  // 飞机(不带 / 带单 / 带对)
+  for(let len=2; len<=6; len++) for(let lo=3; lo+len-1<=14; lo++){
+    const core = chainCompose(lo, len, 3);
+    if(!core) continue;
+    pushW(core, {type:'plane', main:lo+len-1, len, wings:0});
+    const rest = restAfter(core);
+    const w1 = lowestFrom(rest, len); if(w1.length===len) pushW([...core, ...w1], {type:'plane', main:lo+len-1, len, wings:1});
+    const w2 = pairsFrom(rest, len); if(w2) pushW([...core, ...w2], {type:'plane', main:lo+len-1, len, wings:2});
+  }
+  // 王炸(双王必须自然牌)
+  if(g[16] && g[17]) pushW([g[16][0], g[17][0]], {type:'rocket', main:17});
+  return plays;
+}
+
+/* ---------- 不洗牌: 成包发牌 ----------
+   先从整副牌中切出组合牌包(王包/炸弹/顺子/连对/三张/对子), 余牌为散牌;
+   牌包洗乱后轮流分给三家(不超 17 张上限, 放不下则拆入散牌), 散牌补满 17。
+   全副仍为 54 张不重复, 三家各 17 张 + 底牌 3 张。 */
+function dealNoShuffle(){
+  const byRank = {};
+  for(const s of ['红桃','黑桃','梅花','方块']) for(let v=3; v<=15; v++) (byRank[v]=byRank[v]||[]).push({v, s});
+  const avail = v => (byRank[v]||[]).length;
+  const rnd = (a,b)=> a + Math.floor(Math.random()*(b-a+1));
+  const pickFrom = arr => arr[Math.floor(Math.random()*arr.length)];
+  const packets = [];
+  let jokersPacked = false;
+  if(Math.random()<0.35){ packets.push([{v:16,s:'王'},{v:17,s:'王'}]); jokersPacked = true; }
+  if(Math.random()<0.55){
+    const cand = []; for(let v=3; v<=15; v++) if(avail(v)===4) cand.push(v);
+    if(cand.length) packets.push(byRank[pickFrom(cand)].splice(0,4));
+  }
+  for(let t=0; t<2; t++){
+    const len = rnd(5,8), starts = [];
+    for(let lo=3; lo+len-1<=14; lo++){ let ok=true; for(let v=lo; v<lo+len; v++) if(avail(v)<1){ ok=false; break; } if(ok) starts.push(lo); }
+    if(!starts.length) continue;
+    const lo = pickFrom(starts), pkt = [];
+    for(let v=lo; v<lo+len; v++) pkt.push(byRank[v].splice(Math.floor(Math.random()*byRank[v].length),1)[0]);
+    packets.push(pkt);
+  }
+  for(let t=0, chainN=rnd(1,2); t<chainN; t++){
+    const len = rnd(3,4), starts = [];
+    for(let lo=3; lo+len-1<=14; lo++){ let ok=true; for(let v=lo; v<lo+len; v++) if(avail(v)<2){ ok=false; break; } if(ok) starts.push(lo); }
+    if(!starts.length) continue;
+    const lo = pickFrom(starts), pkt = [];
+    for(let v=lo; v<lo+len; v++) pkt.push(...byRank[v].splice(0,2));
+    packets.push(pkt);
+  }
+  for(let t=0, trioN=rnd(2,3); t<trioN; t++){
+    const cand = []; for(let v=3; v<=15; v++) if(avail(v)>=3) cand.push(v);
+    if(!cand.length) break;
+    packets.push(byRank[pickFrom(cand)].splice(0,3));
+  }
+  for(let t=0, pairN=rnd(3,5); t<pairN; t++){
+    const cand = []; for(let v=3; v<=15; v++) if(avail(v)>=2) cand.push(v);
+    if(!cand.length) break;
+    packets.push(byRank[pickFrom(cand)].splice(0,2));
+  }
+  const loose = [];
+  for(let v=3; v<=15; v++) loose.push(...byRank[v]);
+  if(!jokersPacked) loose.push({v:16,s:'王'},{v:17,s:'王'});
+  shuffle(loose); shuffle(packets);
+  const hands = [[],[],[]];
+  let seat = Math.floor(Math.random()*3);
+  for(const pkt of packets){
+    let placed = false;
+    for(let k=0; k<3; k++){
+      const s = (seat+k)%3;
+      if(hands[s].length + pkt.length <= 17){ hands[s].push(...pkt); seat = (s+1)%3; placed = true; break; }
+    }
+    if(!placed) loose.push(...pkt);
+  }
+  shuffle(loose);
+  for(let s=0; s<3; s++) while(hands[s].length<17) hands[s].push(loose.pop());
+  return {hands, dipai: loose.slice()};
+}
+
 /* ---------- AI ---------- */
 // 性格: bombLuck 炸弹冲动, hold 忍耐(大牌保留倾向)
 const PERSONA = {
@@ -484,6 +784,7 @@ const PERSONA = {
 function handStrength(hand){
   const cnt = countMap(valsOf(hand)); let s = 0;
   if(cnt[17]) s += 3.2; if(cnt[16]) s += 2.2;
+  if(LAIZI_VAL && cnt[LAIZI_VAL]) s += cnt[LAIZI_VAL]*1.5;
   for(const v in cnt){ if(cnt[v]===4) s += 3; if(+v===15) s += cnt[v]*1.1; if(+v===14) s += cnt[v]*.4; }
   return s;
 }
@@ -515,10 +816,24 @@ function aiDecide(hand, last, ctx){
     return sorted[0];
   }
   // 跟牌
+  // 防旁观: 本局从未出过牌且已让过一次时, 再遇合法出法必须出最小的一手(队友只剩<=2 张时仍让行)
+  const neverPlayed = (ctx.playsMade||0)===0;
   if(ctx.rel==='partner'){
-    // 队友的牌: 只在能直接走完时接管
+    // 队友的牌: 能直接走完时接管; 仅当队友接近走完(<=5 张)或刚出炸弹时让行,
+    // 否则打最小可管的普通牌——避免队友长期领出时整局旁观
     if(full && canBeat(full.info, last.info)) return full;
+    const mustJoin = neverPlayed && (ctx.selfPass||0)>=1 && ctx.lastOwnerCards>2;
+    if(!mustJoin && (ctx.lastOwnerCards<=5 || isBombLike(last.info))) return null;
+    const pn = plays.filter(p=>!isBombLike(p.info))
+      .sort((a,b)=> a.info.main-b.info.main || b.info.count-a.info.count);
+    if(pn.length) return pn[0];
+    if(mustJoin && plays.length)
+      return plays.slice().sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || a.info.main-b.info.main)[0];
     return null;
+  }
+  // 防旁观兜底: 从未出过牌且已让过一次, 或已连续不出 4 轮时, 有合法出法必须出最小的一手
+  if(plays.length && ((neverPlayed && (ctx.selfPass||0)>=1) || (ctx.selfPass||0)>=4)){
+    return plays.slice().sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || a.info.main-b.info.main)[0];
   }
   const normal = plays.filter(p=>!isBombLike(p.info))
     .sort((a,b)=> a.info.main-b.info.main || b.info.count-a.info.count);
@@ -550,6 +865,8 @@ function cardFile(c){
   if(c.v>=11 && c.v<=14) return 'assets/'+FACE_FILE[c.s][RANK_NAME[c.v]]+'.webp';
   return 'assets/'+c.s+(c.v===15?'2':c.v)+'.webp';
 }
+function rankName(v){ return RANK_NAME[v] || (''+v); }
+function isWildCard(c){ return !!(G && G.mode==='laizi' && c.v===G.laiziVal); }
 const CHARS={
   monkey:{name:'猴先生', av:'assets/头像-monkey.webp', lines:{
     lead:['看我的。','这把我先走一步。'], bomb:['炸！这把稳了。'], hurt:['有点东西。','嘶，这一手不赖。'], pass:['过。','你们先请。'], win:'赢啦，桃子管够。', lose:'这把不算，再来。'}},
@@ -576,20 +893,46 @@ function saveStats(){ localStorage.setItem('myskme_ddz_stats', JSON.stringify(st
 function renderStats(){ $('uiStats').textContent = stats.win+' 胜 / '+stats.total+' 局'; }
 
 /* ---------- 开局 ---------- */
-function newGame(){
+function startMode(m){ newGame(m); }
+function showModeSelect(){
+  hideBubbles();
+  window._gid = (window._gid||0)+1;
+  if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
+  const modes = [
+    ['classic','经典场','标准斗地主规则，随机洗牌发牌，全牌型对决。'],
+    ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
+    ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
+  ];
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.2</div>' +
+    modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
+    '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
+  $('overlay').classList.add('show');
+}
+function newGame(mode){
+  mode = mode || (G && G.mode) || 'classic';
   $('overlay').classList.remove('show');
-  const deck = shuffle(newDeck());
+  hideBubbles();
+  setLaizi(mode==='laizi' ? 3+Math.floor(Math.random()*13) : 0);
+  let dealHands, dealDipai;
+  if(mode==='noshuffle'){
+    const d = dealNoShuffle(); dealHands = d.hands; dealDipai = d.dipai;
+  } else {
+    const deck = shuffle(newDeck());
+    dealHands = [deck.slice(0,17), deck.slice(17,34), deck.slice(34,51)];
+    dealDipai = deck.slice(51,54);
+  }
   const keys = Object.keys(CHARS);
   const two = shuffle(keys.slice()).slice(0,2);
   window._gid = (window._gid||0)+1;
   G = {
     gid: window._gid,
+    mode, laiziVal: LAIZI_VAL,
     phase:'bidding',
-    hands:[ sortCards(deck.slice(0,17)), sortCards(deck.slice(17,34)), sortCards(deck.slice(34,51)) ],
-    dipai: deck.slice(51,54),
+    hands:[ sortCards(dealHands[0]), sortCards(dealHands[1]), sortCards(dealHands[2]) ],
+    dipai: dealDipai,
     aiChar:[null, two[0], two[1]],   // 座位: 0=玩家 1=右 2=左
     landlord:-1, base:0, mult:1, bombs:0,
-    turn:0, lastPlay:null, lastOwner:-1, passStreak:0,
+    turn:0, lastPlay:null, lastOwner:-1, passStreak:0, selfPass:[0,0,0], playsCount:[0,0,0],
     playedCount:{},                  // 已出牌计数(记牌器)
     playsBySide:{landlord:0, farmer:0},
     selected:new Set(), over:false,
@@ -599,6 +942,13 @@ function newGame(){
   $('avR').src = CHARS[two[0]].av; $('nmR').textContent = CHARS[two[0]].name;
   $('avL').src = CHARS[two[1]].av; $('nmL').textContent = CHARS[two[1]].name;
   $('uiBase').textContent='—'; $('uiMult').textContent='×1';
+  $('uiMode').textContent = mode==='laizi' ? '癞子场 · '+rankName(LAIZI_VAL)+' 癞' : (mode==='noshuffle' ? '不洗牌场' : '经典场');
+  const noteEl = $('modeNote');
+  noteEl.textContent = mode==='laizi'
+    ? '癞子点 '+rankName(LAIZI_VAL)+'：该点全部牌为万能牌（金框加「癞」标记），可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'
+    : mode==='noshuffle' ? '不洗牌场：成包发牌，顺子、连对、三张、炸弹更成型；全副仍为 54 张。'
+    : '经典场：标准规则，随机洗牌发牌。';
+  noteEl.classList.add('show');
   lastShown[0]=lastShown[1]=lastShown[2]=null;
   $('actionBar').innerHTML='';
   renderAll();
@@ -613,7 +963,7 @@ async function startBidding(){
   G.phase='bidding';
   let cur = Math.floor(Math.random()*3);
   let highest = 0, highestSeat = -1, acted = 0;
-  centerMsg('叫分环节', '最高分者当地主');
+  centerMsg('叫分环节', G.mode==='laizi' ? '最高分者当地主 · 本局癞子点 '+rankName(G.laiziVal) : '最高分者当地主');
   renderDipai(false);
   while(acted < 3){
     G.turn = cur; renderTurn();
@@ -684,10 +1034,12 @@ async function runTurn(){
     lastOwnerCards: last ? G.hands[G.lastOwner].length : 99,
     nextOppCards: Math.min(...others.filter(i=>roleOf(i)!==roleOf(seat)).map(i=>G.hands[i].length)),
     personaKey: G.aiChar[seat],
+    selfPass: G.selfPass[seat],
+    playsMade: G.playsCount[seat],
   };
   const decision = aiDecide(G.hands[seat], last, ctx);
   if(decision && last && !canBeat(decision.info, last.info)){ doPass(seat); }
-  else if(decision){ doPlay(seat, decision.cards); }
+  else if(decision){ doPlay(seat, decision.cards, decision.info); }
   else doPass(seat);
 }
 function nextTurn(){
@@ -695,13 +1047,16 @@ function nextTurn(){
   if(G.passStreak>=2){ G.lastPlay=null; G.lastOwner=-1; G.passStreak=0; }
   runTurn();
 }
-function doPlay(seat, cards){
-  const info = analyzeVals(valsOf(cards));
+function doPlay(seat, cards, knownInfo){
+  const info = knownInfo || analyzeCards(cards);
+  G.selfPass[seat] = 0;
+  G.playsCount[seat]++;
+  centerMsg('', '');
   G.hands[seat] = G.hands[seat].filter(c=>!cards.includes(c));
   for(const c of cards) G.playedCount[c.v]++;
   G.lastPlay = {cards, info}; G.lastOwner = seat; G.passStreak = 0;
   G.playsBySide[roleOf(seat)]++;
-  if(isBombLike(info)){ G.bombs++; G.mult *= 2; fxText(info.type==='rocket'?'王 炸':'炸 弹'); }
+  if(isBombLike(info)){ G.bombs++; G.mult *= 2; fxText(info.type==='rocket'?'王 炸':(info.soft?'软 炸':'炸 弹')); }
   // 台词
   if(seat!==0){
     if(isBombLike(info)) say(seat, pickOne(CHARS[G.aiChar[seat]].lines.bomb));
@@ -715,6 +1070,8 @@ function doPlay(seat, cards){
 }
 function doPass(seat){
   G.passStreak++;
+  G.selfPass[seat]++;
+  centerMsg('', '');
   if(seat!==0 && Math.random()<.5) say(seat, pickOne(CHARS[G.aiChar[seat]].lines.pass));
   renderZonePass(seat);
   renderAll();
@@ -723,6 +1080,7 @@ function doPass(seat){
 
 /* ---------- 玩家操作 ---------- */
 function enablePlayerActions(){
+  centerMsg('', '');
   const bar = $('actionBar');
   const last = (G.lastOwner===0 || G.lastOwner<0) ? null : G.lastPlay;
   bar.innerHTML = '';
@@ -733,17 +1091,27 @@ function enablePlayerActions(){
   const bPlay = document.createElement('button'); bPlay.className='primary'; bPlay.textContent='出牌'; bPlay.id='btnPlay'; bPlay.disabled = G.selected.size===0;
   const bPass = document.createElement('button'); bPass.textContent='不出'; bPass.disabled = !last;
   bHint.onclick = ()=>{
-    const plays = genPlays(G.hands[0], last);
-    if(!plays.length){ centerMsg('没有能管上的牌', ''); return; }
-    if(last) plays.sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || a.info.main-b.info.main || b.info.count-a.info.count);
-    else plays.sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || b.info.count-a.info.count || a.info.main-b.info.main);
-    const p = plays[hintIdx % plays.length]; hintIdx++;
+    // 独立复核: 每个候选须经 analyzeCards 重判成立, 跟牌时还须 canBeat 目标牌, 通过后才呈给玩家
+    let cand = genPlays(G.hands[0], last).filter(p=>{
+      if(!analyzeCards(p.cards)) return false;
+      return !last || canBeat(p.info, last.info);
+    });
+    if(!cand.length && !last && G.hands[0].length){
+      // 首出兜底: 最低单张必合法, 保证手牌非空时提示必有结果
+      const low = G.hands[0].slice().sort((a,b)=>a.v-b.v)[0];
+      cand = [{cards:[low], info: analyzeCards([low])}];
+    }
+    if(!cand.length){ centerMsg('没有能管上的牌', '点「不出」过掉这一手'); return; }
+    if(last) cand.sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || a.info.main-b.info.main || b.info.count-a.info.count);
+    else cand.sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || b.info.count-a.info.count || a.info.main-b.info.main);
+    const p = cand[hintIdx % cand.length]; hintIdx++;
     G.selected = new Set(p.cards.map(c=>G.hands[0].indexOf(c)));
     renderHand();
+    bPlay.disabled = G.selected.size===0;   // 关键修复: 提示选牌后同步「出牌」按钮状态(此前一直禁用, 造成死锁)
   };
   bPlay.onclick = ()=>{
     const cards = [...G.selected].sort((a,b)=>a-b).map(i=>G.hands[0][i]);
-    const info = analyzeVals(valsOf(cards));
+    const info = analyzeCards(cards);
     if(!info){ centerMsg('所选牌型不成立', '换一手试试'); return; }
     if(last && !canBeat(info, last.info)){ centerMsg('管不上', '换大一点的牌，或点不出'); return; }
     bar.innerHTML=''; hintIdx=0; G.selected.clear();
@@ -780,7 +1148,7 @@ function finishGame(winnerSeat){
     '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
     '<div class="who-win">'+(landlordWin?'地主获胜':'农民获胜')+' · '+(winnerSeat===0?'你率先出完':CHARS[G.aiChar[winnerSeat]].name+' 率先出完')+'</div>'+
     '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>'+
-    '<button class="primary" onclick="newGame()">再来一局</button>'+
+    '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局</div>';
   $('overlay').classList.add('show');
   for(const s of [1,2]){
@@ -790,17 +1158,28 @@ function finishGame(winnerSeat){
 }
 
 /* ---------- 渲染 ---------- */
-function centerMsg(t, sub){ $('centerMsg').innerHTML = t + (sub?'<span class="sub">'+sub+'</span>':''); }
+let centerTimer = 0;
+function centerMsg(t, sub){
+  $('centerMsg').innerHTML = t + (sub?'<span class="sub">'+sub+'</span>':'');
+  clearTimeout(centerTimer);
+  if(t) centerTimer = setTimeout(()=>{ $('centerMsg').innerHTML=''; }, 3000);   // 兜底: 任何横幅 3 秒自动消失
+}
 function fxText(t){ const el=$('fxPop'); el.textContent=t; el.classList.remove('boom'); void el.offsetWidth; el.classList.add('boom'); }
 let bubbleTimers={};
 function say(seat, text){
   const el = seat===1 ? $('bubR') : $('bubL');
   el.textContent = text; el.classList.add('show');
   clearTimeout(bubbleTimers[seat]);
-  bubbleTimers[seat] = setTimeout(()=>el.classList.remove('show'), 2600);
+  bubbleTimers[seat] = setTimeout(()=>el.classList.remove('show'), 2000);   // 2 秒自动淡出, 新气泡重置计时
+}
+function hideBubbles(){
+  for(const seat of [1,2]){
+    clearTimeout(bubbleTimers[seat]);
+    (seat===1 ? $('bubR') : $('bubL')).classList.remove('show');
+  }
 }
 function renderDipai(reveal){
-  $('dipaiCards').innerHTML = G.dipai.map(c=>'<img src="'+(reveal?cardFile(c):'assets/牌背.webp')+'" alt="">').join('');
+  $('dipaiCards').innerHTML = G.dipai.map(c=>'<img'+(reveal&&isWildCard(c)?' class="wild"':'')+' src="'+(reveal?cardFile(c):'assets/牌背.webp')+'" alt="">').join('');
 }
 function renderAll(){
   renderHand(); renderFans(); renderZones(); renderRoles(); renderTurn(); renderCounter();
@@ -825,7 +1204,7 @@ function renderFans(){
   mk('fanR', G.hands[1].length); mk('fanL', G.hands[2].length);
 }
 function zoneCards(cards){
-  return cards.map(c=>'<img class="pcard" src="'+cardFile(c)+'" alt="">').join('');
+  return cards.map(c=>'<img class="pcard'+(isWildCard(c)?' wild':'')+'" src="'+cardFile(c)+'" alt="">').join('');
 }
 function renderZones(){
   // 只显示"当前目标牌"归属座位与其余座位最近一次动作较复杂: 这里显示每家最近一手
@@ -849,17 +1228,26 @@ function renderHand(){
   const avail = handEl.clientWidth || window.innerWidth - 90;
   const step = n>1 ? Math.min(cw*0.44, Math.max(16,(avail-cw)/(n-1))) : 0;
   hand.forEach((c,i)=>{
+    const wrap = document.createElement('span');
+    wrap.className = 'hwrap';
+    wrap.style.marginLeft = i===0 ? '0' : (-(cw-step))+'px';
+    wrap.style.zIndex = i;
     const im = document.createElement('img');
-    im.src = cardFile(c); im.className='hcard'+(G.selected.has(i)?' sel':''); im.alt='';
-    im.style.marginLeft = i===0 ? '0' : (-(cw-step))+'px';
-    im.style.zIndex = i; im.style.animationDelay = (i*0.018)+'s';
-    im.onclick = ()=>{
+    im.src = cardFile(c); im.className='hcard'+(G.selected.has(i)?' sel':'')+(isWildCard(c)?' wild':''); im.alt='';
+    im.style.animationDelay = (i*0.018)+'s';
+    wrap.appendChild(im);
+    if(isWildCard(c)){
+      const tag = document.createElement('span');
+      tag.className = 'wildtag'; tag.textContent = '癞';
+      wrap.appendChild(tag);
+    }
+    wrap.onclick = ()=>{
       if(G.phase!=='playing' || G.turn!==0 || G.over) return;
       G.selected.has(i) ? G.selected.delete(i) : G.selected.add(i);
-      hintIdx = 0; renderHand();
+      hintIdx = 0; centerMsg('', ''); renderHand();
       const bp = $('btnPlay'); if(bp) bp.disabled = G.selected.size===0;
     };
-    handEl.appendChild(im);
+    handEl.appendChild(wrap);
   });
 }
 function renderCounter(){
@@ -869,21 +1257,29 @@ function renderCounter(){
   bar.innerHTML = '<span class="lab">剩余</span>' + order.map(v=>{
     const total = v>=16 ? 1 : 4;
     const left = total - G.playedCount[v];
-    return '<div class="cell'+(left===0?' out':'')+(v>=16?' red':'')+'"><b>'+left+'</b><span>'+(nm[v]||v)+'</span></div>';
+    const isLz = G.mode==='laizi' && v===G.laiziVal;
+    return '<div class="cell'+(left===0?' out':'')+(v>=16?' red':'')+(isLz?' wildcell':'')+'"><b>'+left+'</b><span>'+(nm[v]||v)+(isLz?'·癞':'')+'</span></div>';
   }).join('');
 }
 
 /* 出牌/过牌时同步 lastShown */
 const _doPlay = doPlay, _doPass = doPass;
-doPlay = function(seat, cards){ lastShown[seat]={cards:cards.slice()}; _doPlay(seat, cards); };
+doPlay = function(seat, cards, info){ lastShown[seat]={cards:cards.slice()}; _doPlay(seat, cards, info); };
 doPass = function(seat){ lastShown[seat]={pass:true}; _doPass(seat); };
 
 $('btnCounter').onclick = ()=> $('counterBar').classList.toggle('open');
-$('btnNew').onclick = ()=> newGame();
+$('btnNew').onclick = ()=> showModeSelect();
 window.addEventListener('resize', ()=>{ if(G) renderHand(); });
 
 /* 预加载关键图后开局 */
-window.addEventListener('load', ()=>{ renderStats(); newGame(); });
+/* 预加载全部牌面: 底牌揭示、手牌渲染不出现裂图/空白 */
+function preloadCards(){
+  const urls = ['assets/牌背.webp'];
+  for(const s of SUITS) for(let v=3; v<=15; v++) urls.push(cardFile({v, s}));
+  urls.push(cardFile({v:16, s:'王'}), cardFile({v:17, s:'王'}));
+  for(const u of urls){ const im = new Image(); im.src = u; }
+}
+window.addEventListener('load', ()=>{ renderStats(); preloadCards(); showModeSelect(); });
 </script>
 </body>
 </html>
