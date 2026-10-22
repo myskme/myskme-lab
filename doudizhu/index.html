@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>猴先生斗地主 · 原型 v0.4</title>
+<title>猴先生斗地主 · 原型 v0.5</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -216,6 +216,42 @@
   .levelcell .lvstars.dim{color:#8a9a8e; font-size:10.5px;}
   .lvstars.big{font-size:30px; color:var(--gold-l); letter-spacing:6px; margin:2px 0 6px; text-align:center;}
 
+  /* ---------- v0.5: 故事图鉴 / 残局分享挑战 ---------- */
+  #challengeBanner{display:none; padding:8px 12px; text-align:center; font-size:14.5px; font-weight:700; letter-spacing:.5px;
+    color:#2a1f08; background:linear-gradient(90deg,#d9a94f,#f0d488,#d9a94f); border-bottom:1px solid rgba(255,243,208,.8);}
+  #challengeBanner.show{display:block;}
+  .panel.story-panel{width:min(94vw,760px); max-height:92dvh; overflow-y:auto; text-align:left;}
+  .panel.story-panel h2{text-align:center;}
+  .panel.story-panel .who-win{text-align:center;}
+  .story-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:12px 0;}
+  .story-char{display:flex; flex-direction:column; align-items:center; gap:5px; padding:13px 8px 11px; text-align:center;}
+  .story-char .avatar{width:62px; height:62px;}
+  .story-char b{font-size:16.5px; color:var(--gold-l); letter-spacing:1px;}
+  .story-char span{font-size:12px; line-height:1.45; color:#cfe0d2;}
+  .story-head{display:flex; align-items:center; gap:14px; margin:8px 0 4px;}
+  .story-head .avatar{width:76px; height:76px;}
+  .story-head h3{font-size:24px; color:var(--gold-l); letter-spacing:2px; margin-bottom:4px;}
+  .story-head p{font-size:13px; line-height:1.55; color:#cfe0d2;}
+  .story-cards{display:flex; gap:9px; justify-content:center; margin:12px 0 4px; flex-wrap:wrap;}
+  .story-cards img{width:96px; height:134px; object-fit:cover; border-radius:8px; border:1px solid rgba(201,162,77,.6); box-shadow:0 5px 14px rgba(0,0,0,.45); background:#fff;}
+  .story-item{border-top:1px dashed rgba(201,162,77,.35); padding:13px 2px 11px;}
+  .story-item h4{font-size:15.5px; color:var(--gold-l); letter-spacing:1px; margin-bottom:6px;}
+  .story-item p{font-size:14.5px; line-height:1.75; color:#f1ead6;}
+  .story-lock{display:flex; gap:13px; align-items:center; background:rgba(247,239,220,.06); border:1px dashed rgba(201,162,77,.4); border-radius:10px; padding:11px 13px;}
+  .story-lock .q{font-size:34px; font-weight:900; color:#8a9a8e; line-height:1; flex:none;}
+  .story-lock b{display:block; font-size:14.5px; color:#d8e4da; margin-bottom:3px;}
+  .story-lock span{font-size:12.5px; line-height:1.5; color:#a9bcb0;}
+  .story-actions{display:flex; gap:9px; justify-content:center; flex-wrap:wrap; margin-top:14px;}
+  .share-result{margin-top:11px; font-size:13.5px; line-height:1.55; color:var(--gold-l);}
+  .share-link{margin-top:7px; padding:9px 11px; border:1px solid rgba(201,162,77,.5); border-radius:8px; background:rgba(7,24,21,.55);
+    color:#f7efdc; font-size:12px; line-height:1.5; word-break:break-all; user-select:text; -webkit-user-select:text;}
+  .challenge-compare{font-size:14.5px; line-height:1.65; color:#f1ead6; background:rgba(247,239,220,.07);
+    border:1px solid rgba(201,162,77,.4); border-radius:10px; padding:10px 13px; margin:0 0 14px;}
+  @media (max-width:640px){
+    .story-grid{grid-template-columns:repeat(2,1fr);}
+    .story-cards img{width:82px; height:115px;}
+    .panel.story-panel{padding:20px 17px 16px;}
+  }
 
   /* ---------- v0.4: 长辈模式 ---------- */
   .elder-toggle{
@@ -331,17 +367,19 @@
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">猴先生斗地主 <small>原型 v0.4 · 茶肆夜话桌</small></div>
+    <div class="title">猴先生斗地主 <small>原型 v0.5 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
     <div class="chip elder-hide">战绩 <b id="uiStats">0 胜 / 0 局</b></div>
     <div class="spacer"></div>
     <button class="ghost elder-hide" id="btnCounter">记牌器</button>
+    <button class="ghost elder-hide" id="btnStory">故事图鉴</button>
     <button class="ghost" id="btnNew">新对局</button>
   </div>
   <div id="counterBar"></div>
   <div id="modeNote"></div>
+  <div id="challengeBanner"></div>
 
   <div id="table">
     <div id="dipai"><div class="lab">底 牌</div><div class="cards" id="dipaiCards"></div></div>
@@ -1055,11 +1093,128 @@ function toggleElderCalc(){
   b.setAttribute('aria-expanded', String(show));
   b.textContent = show ? '收起怎么算的' : '看看怎么算的';
 }
+function setPanelClass(extra){
+  $('panel').className = 'panel' + (extra ? ' ' + extra : '');
+}
+
+/* ---------- v0.5: 故事图鉴 ----------
+   解锁进度单独存 myskme_ddz_story, 只记录普通场次结算时的击败次数;
+   篇一默认解锁, 篇二看击败次数, 篇三同时看击败次数与残局总星。 */
+const STORY_FEATURE_CARDS = {
+  monkey:['红桃K-猴先生','黑桃J-猴先生','方块K-猴先生'],
+  fish:['红桃Q-鱼小姐','梅花Q-鱼小姐','方块A-鱼小姐'],
+  teapot:['红桃A-咕咕','梅花K-咕咕','方块J-咕咕'],
+  egg:['小王-蛋','红桃J-蛋','黑桃A-蛋'],
+  donkey:['黑桃K-驴','梅花J-驴'],
+  snake:['黑桃Q-蛇','梅花A-蛇','方块Q-蛇'],
+};
+const STORIES = {
+  monkey:[
+    '猴先生有一本账，记的全是朋友们的糗事，谁也不许看——其实大家都知道，账本最后一页写着每个人的生日。',
+    '鱼小姐说东边新开了茶摊，猴先生偏说西边的好。两人争了一路，最后坐在东边的茶摊里，点了西边的招牌茶。',
+    '『是猴鲤鱼，不是红鲤鱼！』猴先生第无数次纠正驴。驴抬起眼皮：『你先把舌头捋直了再说。』',
+  ],
+  fish:[
+    '鱼小姐的护目镜从不离头。她说水里的路要看清，岸上的路更要看清——所以新地方永远是她第一个提议去。',
+    '地图上画着『到此为止』，鱼小姐看了看，把地图翻过来：『背面还没人画过呢。』大家就这么跟着她多走了一座山。',
+    '她赢牌的时候会把尾巴拍得啪啪响，输了就鼓起腮帮子假装吹泡泡。猴先生说，那不是泡泡，是不服气。',
+  ],
+  teapot:[
+    '咕咕的茶讲究文火慢沏，谁催都不行。他说火候到了茶自己会香，事情也一样——『催也没用，我这火是文火。』',
+    '市集上最晚收摊的是咕咕。不是生意多好，是他总要给最后一个客人把茶续满，哪怕对方只买了一杯。',
+    '年轻的脸，老派的心。咕咕下雨天会给门口的石狮子撑伞，问起来就说：『它站了一百年了，没人问过它冷不冷。』',
+  ],
+  egg:[
+    '蛋一直没有孵化，也不着急。壳上的表情大多数时候有点委屈，可熟悉他的都知道，委屈归委屈，他认准的事比谁都倔。',
+    '蛇说蛋是『走不动的石头』，蛋不吭声。第二天蛇的必经之路上多了一颗蛋——他提前滚了三个时辰，就为堵她这一回。',
+    '蛋很少笑。可上次大家赢了牌，他咧开嘴笑了整整一晚上，第二天壳上还留着笑纹，擦都擦不掉。',
+  ],
+  donkey:[
+    '驴的话最少，活最稳。谁的车陷进泥里，他不说话，挽起袖子就推。推出来了，拍拍手：『下次绕着走。』',
+    '大家讲笑话，驴从不笑。后来才发现，他不是不笑，是笑点高得离谱——能让他笑的笑话，全员要记小本本。',
+    '约好卯时出发，驴寅时就到了，带着多备的一份干粮。『总有人忘带。』他说。果然，猴先生空着手。',
+  ],
+  snake:[
+    '蛇最爱趴在花木桩上晒太阳，看起来懒洋洋的。可桌上要是吵起来，她一句话就能让所有人安静——因为她总说得对。',
+    '蛇和蛋是死对头。她嫌他慢，他嫌她滑。可下雨那天，蛇还是把叶子往蛋那边挪了挪：『壳淋湿了，要发霉的。』',
+    '猴先生和鱼小姐为了一局牌争输赢，蛇慢悠悠地说：『你俩争的不是牌，是谁先低头。』两人一愣，各自笑出了声。',
+  ],
+};
+let storyProgress = JSON.parse(localStorage.getItem('myskme_ddz_story')||'{"defeats":{}}');
+if(!storyProgress || typeof storyProgress!=='object' || !storyProgress.defeats || typeof storyProgress.defeats!=='object') storyProgress = {defeats:{}};
+function saveStoryProgress(){ localStorage.setItem('myskme_ddz_story', JSON.stringify(storyProgress)); }
+function storyDefeatCount(key){ return storyProgress.defeats[key] || 0; }
+function storyPieceUnlocked(key, idx){
+  if(idx===0) return true;
+  if(idx===1) return storyDefeatCount(key) >= 2;
+  return storyDefeatCount(key) >= 4 && totalStars() >= 6;
+}
+function storyPieceCondition(idx){
+  return idx===1 ? '击败该角色 2 次后解锁' : '击败该角色 4 次，且残局总星达到 6 星后解锁';
+}
+function storyUnlockedFor(key){ return [0,1,2].filter(i=>storyPieceUnlocked(key, i)).length; }
+function unlockedStoryCount(){ return Object.keys(CHARS).reduce((sum,key)=>sum + storyUnlockedFor(key), 0); }
+function recordStoryDefeats(playerWon){
+  if(!playerWon || !G || !Array.isArray(G.aiChar)) return;
+  for(const seat of [1,2]){
+    const key = G.aiChar[seat];
+    if(key && CHARS[key]) storyProgress.defeats[key] = storyDefeatCount(key) + 1;
+  }
+  saveStoryProgress();
+}
+let storyReturn = 'menu';
+function showStoryCodex(from){
+  storyReturn = from || 'menu';
+  setPanelClass('story-panel');
+  const cards = Object.keys(CHARS).map(key=>{
+    const c = CHARS[key], unlocked = storyUnlockedFor(key);
+    return '<button class="modebtn story-char" onclick="showStoryChar(\''+key+'\')">' +
+      '<img class="avatar" src="'+c.av+'" alt="">' +
+      '<b>'+c.name+'</b><span>已解锁 '+unlocked+' / 3 篇<br>已击败 '+storyDefeatCount(key)+' 次</span></button>';
+  }).join('');
+  $('panel').innerHTML =
+    '<h2>故事图鉴</h2>' +
+    '<div class="who-win">已解锁 '+unlockedStoryCount()+' / 18 篇 · 残局总星 '+totalStars()+' / 30</div>' +
+    '<div class="story-grid">'+cards+'</div>' +
+    '<div class="story-actions"><button class="ghost" onclick="closeStoryCodex()">'+(storyReturn==='game'?'返回对局':'返回场次选择')+'</button></div>';
+  $('overlay').classList.add('show');
+}
+function showStoryChar(key){
+  const c = CHARS[key];
+  if(!c || !STORIES[key]) return;
+  setPanelClass('story-panel');
+  const pieces = STORIES[key].map((text, idx)=>{
+    if(storyPieceUnlocked(key, idx)){
+      return '<article class="story-item"><h4>篇'+['一','二','三'][idx]+'</h4><p>'+text+'</p></article>';
+    }
+    return '<article class="story-item"><div class="story-lock"><div class="q">?</div><div>' +
+      '<b>篇'+['一','二','三'][idx]+'尚未解锁</b><span>'+storyPieceCondition(idx)+'。当前已击败 '+storyDefeatCount(key)+' 次，残局总星 '+totalStars()+' 星。</span></div></div></article>';
+  }).join('');
+  const cards = STORY_FEATURE_CARDS[key].map(name=>'<img src="assets/'+name+'.webp" alt="'+c.name+'特色牌">').join('');
+  $('panel').innerHTML =
+    '<div class="story-head"><img class="avatar" src="'+c.av+'" alt=""><div><h3>'+c.name+'</h3>' +
+    '<p>已解锁 '+storyUnlockedFor(key)+' / 3 篇 · 已击败 '+storyDefeatCount(key)+' 次 · 残局总星 '+totalStars()+' / 30</p></div></div>' +
+    '<div class="story-cards">'+cards+'</div>' + pieces +
+    '<div class="story-actions"><button class="ghost" onclick="showStoryCodex(\''+storyReturn+'\')">返回图鉴</button>' +
+    '<button class="ghost" onclick="closeStoryCodex()">'+(storyReturn==='game'?'返回对局':'返回场次选择')+'</button></div>';
+  $('overlay').classList.add('show');
+}
+function closeStoryCodex(){
+  if(storyReturn==='game' && G && !G.over){
+    setPanelClass();
+    $('overlay').classList.remove('show');
+  } else {
+    showModeSelect();
+  }
+}
 
 /* ---------- 开局 ---------- */
 function startMode(m){ newGame(m); }
 function showModeSelect(){
+  pendingChallenge = null;
   elderContext = 'menu';
+  setPanelClass();
+  hideChallengeBanner();
   hideBubbles();
   window._gid = (window._gid||0)+1;
   if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
@@ -1068,10 +1223,11 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.4</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.5</div>' +
+    '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
     '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>十关固定残局，按最优防守设计：大牌控场、顺子先行、炸弹收尾、送队友先走……通关赢星解锁下一关，三星看你用几手打完。当前总星 '+totalStars()+' / 30。</span></button>' +
-    '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
+    '<button class="modebtn" onclick="showStoryCodex(\'menu\')"><b>故事图鉴</b><span>六位角色各 3 篇小故事，已解锁 '+unlockedStoryCount()+' / 18 篇。赢下对局击败角色，再攒够残局星数，逐篇打开。</span></button>' +
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
   $('overlay').classList.add('show');
   applyElderMode();
@@ -1118,8 +1274,70 @@ function saveChallenge(){ localStorage.setItem('myskme_ddz_challenge', JSON.stri
 function totalStars(){ return challenge.stars.reduce((a,b)=>a+(b||0),0); }
 function levelUnlocked(i){ return i===0 || (challenge.stars[i-1]||0)>=1; }
 function starStr(n){ return '★★★'.slice(0,n) + '☆☆☆'.slice(0,3-n); }
+
+/* ---------- v0.5: 残局分享挑战 ----------
+   链接参数: challenge=关卡序号(1 起), stars=好友星数, plays=好友手数。
+   带参打开只生成一次性 pendingChallenge: 直达关卡、绕过选关锁定, 本局不写残局存档。 */
+function parseChallengeParams(){
+  try{
+    const p = new URLSearchParams(window.location.search || '');
+    if(!p.has('challenge')) return null;
+    const levelNum = Number(p.get('challenge'));
+    const stars = Number(p.get('stars'));
+    const plays = Number(p.get('plays'));
+    if(!Number.isInteger(levelNum) || levelNum<1 || levelNum>LEVELS.length) return null;
+    if(!Number.isInteger(stars) || stars<1 || stars>3) return null;
+    if(!Number.isInteger(plays) || plays<1 || plays>999) return null;
+    return {idx: levelNum-1, stars, plays};
+  }catch(e){ return null; }
+}
+let pendingChallenge = parseChallengeParams();
+function hideChallengeBanner(){
+  const b = $('challengeBanner');
+  if(b){ b.textContent=''; b.classList.remove('show'); }
+}
+function updateStoryButtonVisibility(){
+  const b = $('btnStory');
+  if(b) b.style.display = (G && G.mode==='challenge') ? 'none' : '';
+}
+function buildChallengeLink(idx, stars, plays){
+  const url = new URL(window.location.href);
+  url.searchParams.set('challenge', String(idx+1));
+  url.searchParams.set('stars', String(stars));
+  url.searchParams.set('plays', String(plays));
+  url.hash = '';
+  return url.toString();
+}
+async function shareChallenge(idx, stars, plays){
+  const link = buildChallengeLink(idx, stars, plays);
+  const out = $('shareResult');
+  if(!out) return;
+  if(typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function'){
+    try{
+      await navigator.clipboard.writeText(link);
+      out.textContent = '链接已复制，快发给朋友挑战吧。';
+      return;
+    }catch(e){ /* 剪贴板不可用时走下方手动复制 */ }
+  }
+  const safe = link.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  out.innerHTML = '自动复制没有成功，请手动复制这条链接：<div class="share-link">'+safe+'</div>';
+}
+function challengeCompareText(link, stars, plays, playerWin){
+  if(!link) return '';
+  const mine = stars+' 星 · '+plays+' 手';
+  const theirs = link.stars+' 星 · '+link.plays+' 手';
+  if(!playerWin) return '挑战结果：好友以 '+theirs+'过关，你这次还没过关，好友守住了这次挑战。';
+  if(stars>link.stars || (stars===link.stars && plays<link.plays))
+    return '挑战成功：你以 '+mine+'过关，超过了好友的 '+theirs+'。';
+  if(stars===link.stars && plays===link.plays)
+    return '挑战打平：你和好友都是 '+theirs+'过关。';
+  return '还差一点：你以 '+mine+'过关，好友的成绩是 '+theirs+'，这次好友获胜。';
+}
 function showLevelSelect(){
+  pendingChallenge = null;
   elderContext = 'challenge';
+  setPanelClass();
+  hideChallengeBanner();
   applyElderMode();
   hideBubbles();
   window._gid = (window._gid||0)+1;
@@ -1145,8 +1363,10 @@ function fabricateHands(handsVals){   // 按全局出现序号分配花色, 保�
 }
 function startLevel(idx){
   elderContext = 'challenge';
+  setPanelClass();
   applyElderMode();
   setElderRecommendation(null);
+  const linkChallenge = (pendingChallenge && pendingChallenge.idx===idx) ? pendingChallenge : null;
   const lv = LEVELS[idx];
   $('overlay').classList.remove('show');
   hideBubbles();
@@ -1154,7 +1374,7 @@ function startLevel(idx){
   window._gid = (window._gid||0)+1;
   G = {
     gid: window._gid,
-    mode:'challenge', laiziVal:0, challengeIdx: idx,
+    mode:'challenge', laiziVal:0, challengeIdx: idx, linkChallenge,
     phase:'playing',
     hands: fabricateHands(lv.hands).map(sortCards),
     dipai: [],
@@ -1179,6 +1399,15 @@ function startLevel(idx){
   const noteEl = $('modeNote');
   noteEl.textContent = '第 '+(idx+1)+' 关《'+lv.name+'》：'+lv.goal+' 本关 '+lv.best+' 手内获胜得三星，'+(lv.best+1)+' 手内得两星。';
   noteEl.classList.add('show');
+  const banner = $('challengeBanner');
+  if(linkChallenge){
+    banner.textContent = '好友向你发起挑战：'+linkChallenge.stars+' 星 · '+linkChallenge.plays+' 手过关，你能更好吗？';
+    banner.classList.add('show');
+  } else {
+    banner.textContent = '';
+    banner.classList.remove('show');
+  }
+  updateStoryButtonVisibility();
   $('dipai').style.display = 'none';
   lastShown[0]=lastShown[1]=lastShown[2]=null;
   $('actionBar').innerHTML = '';
@@ -1188,13 +1417,15 @@ function startLevel(idx){
   runTurn();
 }
 function finishChallenge(winnerSeat){
+  setPanelClass();
   const lv = LEVELS[G.challengeIdx];
+  const link = G.linkChallenge || null;
   const playerWin = roleOf(winnerSeat) === roleOf(0);
   const myPlays = G.playsCount[0];
   let stars = 0;
   if(playerWin){
     stars = myPlays<=lv.best ? 3 : (myPlays<=lv.best+1 ? 2 : 1);
-    if(stars > (challenge.stars[G.challengeIdx]||0)){ challenge.stars[G.challengeIdx] = stars; saveChallenge(); }
+    if(!link && stars > (challenge.stars[G.challengeIdx]||0)){ challenge.stars[G.challengeIdx] = stars; saveChallenge(); }
   }
   renderAll();
   let desc;
@@ -1204,14 +1435,19 @@ function finishChallenge(winnerSeat){
   } else {
     desc = CHARS[G.aiChar[winnerSeat]].name+' 率先出完 · 调整打法，重开本关再战';
   }
-  let btns = '<button class="primary" onclick="startLevel('+G.challengeIdx+')">重开本关</button> ';
-  if(playerWin && G.challengeIdx < LEVELS.length-1) btns += '<button class="primary" onclick="startLevel('+(G.challengeIdx+1)+')">下一关</button> ';
+  const compare = challengeCompareText(link, stars, myPlays, playerWin);
+  let btns = '';
+  if(playerWin) btns += '<button class="primary" onclick="shareChallenge('+G.challengeIdx+','+stars+','+myPlays+')">把这关发给朋友挑战</button> ';
+  btns += '<button class="primary" onclick="startLevel('+G.challengeIdx+')">重开本关</button> ';
+  if(playerWin && !link && G.challengeIdx < LEVELS.length-1) btns += '<button class="primary" onclick="startLevel('+(G.challengeIdx+1)+')">下一关</button> ';
   btns += '<button class="ghost" onclick="showLevelSelect()">返回选关</button> <button class="ghost" onclick="showModeSelect()">换个场</button>';
   $('panel').innerHTML =
     '<h2 class="'+(playerWin?'':'lose')+'">'+(playerWin?'过 关':'闯关失败')+'</h2>'+
     '<div class="lvstars big">'+starStr(stars)+'</div>'+
     '<div class="who-win">'+desc+'</div>'+
+    (compare ? '<div class="challenge-compare">'+compare+'</div>' : '')+
     btns+
+    (playerWin ? '<div class="share-result" id="shareResult"></div>' : '')+
     '<div class="stats">总星 '+totalStars()+' / 30</div>';
   $('overlay').classList.add('show');
   for(const s of [1,2]){
@@ -1223,6 +1459,8 @@ function finishChallenge(winnerSeat){
 function newGame(mode){
   mode = mode || (G && G.mode) || 'classic';
   elderContext = mode;
+  setPanelClass();
+  hideChallengeBanner();
   applyElderMode();
   setElderRecommendation(null);
   $('overlay').classList.remove('show');
@@ -1257,6 +1495,7 @@ function newGame(mode){
   // AI 人设绑定
   $('avR').src = CHARS[two[0]].av; $('nmR').textContent = CHARS[two[0]].name;
   $('avL').src = CHARS[two[1]].av; $('nmL').textContent = CHARS[two[1]].name;
+  updateStoryButtonVisibility();
   $('uiBase').textContent='—'; $('uiMult').textContent='×1';
   $('uiMode').textContent = mode==='laizi' ? '癞子场 · '+rankName(LAIZI_VAL)+' 癞' : (mode==='noshuffle' ? '不洗牌场' : '经典场');
   const noteEl = $('modeNote');
@@ -1488,6 +1727,7 @@ function enablePlayerActions(){
 /* ---------- 结算 ---------- */
 function finishGame(winnerSeat){
   G.over = true; G.phase='over';
+  setPanelClass();
   if(G.mode==='challenge'){ finishChallenge(winnerSeat); return; }
   const landlordWin = winnerSeat===G.landlord;
   // 春天: 地主胜且农民从未出牌 / 农民胜且地主只出过一手
@@ -1499,6 +1739,7 @@ function finishGame(winnerSeat){
   const score = G.base * G.mult;
   stats.total++; if(myWin){ stats.win++; stats.points += score; } else stats.points -= score;
   saveStats(); renderStats();
+  recordStoryDefeats(myWin);
   renderAll();
   const rows = [
     ['身份', G.landlord===0 ? '你是地主' : (CHARS[G.aiChar[G.landlord]].name+' 是地主')],
@@ -1645,6 +1886,7 @@ doPlay = function(seat, cards, info){ lastShown[seat]={cards:cards.slice()}; _do
 doPass = function(seat){ lastShown[seat]={pass:true}; _doPass(seat); };
 
 $('btnCounter').onclick = ()=> $('counterBar').classList.toggle('open');
+$('btnStory').onclick = ()=> showStoryCodex('game');
 $('btnNew').onclick = ()=> showModeSelect();
 window.addEventListener('resize', ()=>{ if(G) renderHand(); });
 
@@ -1656,7 +1898,11 @@ function preloadCards(){
   urls.push(cardFile({v:16, s:'王'}), cardFile({v:17, s:'王'}));
   for(const u of urls){ const im = new Image(); im.src = u; }
 }
-window.addEventListener('load', ()=>{ elderContext='menu'; applyElderMode(); renderStats(); preloadCards(); showModeSelect(); });
+window.addEventListener('load', ()=>{
+  elderContext='menu'; applyElderMode(); renderStats(); preloadCards();
+  if(pendingChallenge) startLevel(pendingChallenge.idx);
+  else showModeSelect();
+});
 </script>
 </body>
 </html>
