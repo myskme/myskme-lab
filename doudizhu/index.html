@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>猴先生斗地主 · 原型 v0.8.1</title>
+<title>萌友斗地主 · 原型 v0.9</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -416,13 +416,28 @@
     body.elder #actionBar .elder-auto{min-height:62px; padding:12px 18px; font-size:20px;}
     body.elder #actionBar .turntip{font-size:17px;}
   }
+  /* ---------- v0.9: 联机茶局房 ---------- */
+  .onl-block{border:1px solid rgba(212,175,55,.35); border-radius:10px; padding:10px 12px; margin:10px 0; text-align:left;}
+  .onl-block>b{display:block; margin-bottom:6px;}
+  .onl-line{display:flex; align-items:center; gap:8px; margin:6px 0; font-size:14px;}
+  .onl-input{background:#10241f; color:#f3e9d2; border:1px solid rgba(212,175,55,.5); border-radius:8px; padding:8px 10px; font-size:15px; min-height:40px;}
+  .onl-codein{letter-spacing:4px; text-transform:uppercase; width:150px;}
+  .onl-code{font-size:36px; letter-spacing:10px; text-align:center; color:#e8c96a; font-weight:700; margin:8px 0 2px;}
+  .onl-members{margin:10px 0;}
+  .onl-member{display:flex; align-items:center; gap:10px; padding:6px 4px; border-bottom:1px dashed rgba(212,175,55,.25);}
+  .onl-member .avatar{width:40px; height:40px; border-radius:50%;}
+  .onl-noav{display:inline-block; background:#2c4a3e;}
+  .onl-mwho{display:flex; flex-direction:column; align-items:flex-start;}
+  .onl-mwho span{font-size:12px; opacity:.75;}
+  .onl-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:8px 0;}
+  .onl-status{font-size:13px; opacity:.85; min-height:18px; margin:6px 0; text-align:left;}
 </style>
 </head>
 <body>
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">猴先生斗地主 <small>原型 v0.8.1 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small>原型 v0.9 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1497,9 +1512,344 @@ function closeStoryCodex(){
   }
 }
 
+/* ================= v0.9: 联机茶局房(客户端) =================
+   后端见 ../后端/: Cloudflare Workers + Durable Objects, 服务端权威判定。
+   联机时本页只是客户端: 对局状态完全由服务端 state 消息驱动, 映射进 G 镜像后
+   复用单机的桌面渲染(renderAll/renderHand/renderZones 等)与选牌交互;
+   本地引擎只用来给「提示」算候选(自己的手牌已知, 口径与单机相同),
+   出牌是否合法一律以服务端回执为准。
+   【长辈模式 与 联机"长辈友好" 的关系】
+   - 本地 elderMode(长辈模式) 是个人显示偏好: 大字、大牌、慢节奏, 只影响自己这台
+     设备, 单机与联机都生效(elderContext 在联机对局时置为 'online', 不会被残局逻辑关掉)。
+   - 联机房的 elderFriendly 是房主建房时定的房间规则: 服务端放慢 AI 出牌节奏、
+     本玩法本来就没有出牌倒计时, 对全房三人生效。两者互相独立, 可以叠加。 */
+const ONLINE_WS_BASE = 'ws://127.0.0.1:8787';   // ← 部署后只改这一处, 如 'wss://myskme-ddz.<账号>.workers.dev'
+const ON = {
+  active: false,       // 是否在联机流程中(面板/大厅/对局)
+  inGame: false,       // 是否已进入联机对局(非大厅)
+  ws: null, code: '', token: '', seat: -1,
+  state: null,         // 最近一份服务端 state 快照
+  intentional: false,  // 主动关闭连接时置真, 抑制自动重连
+  expectResume: false, // 本次连接是回座尝试(被拒时回到联机面板)
+  reconnects: 0,
+  nick: '',
+};
+function onEsc(s){ return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function onlStatus(t){ const el = $('onlStatus'); if (el) el.textContent = t || ''; }
+
+function showOnlinePanel(prefill){
+  elderContext = 'menu';
+  setPanelClass();
+  const nick = localStorage.getItem('myskme_ddz_nick') || '';
+  $('panel').innerHTML =
+    '<h2>联机茶局房</h2>' +
+    '<div class="who-win">和家人异地开一桌：你建房，把房码或邀请链接发到家庭群里，长辈点开输房码就能进。空位有 AI 补位，掉线能自动重连回座。</div>' +
+    '<div class="onl-block"><b>你的昵称</b>' +
+    '<label class="onl-line"><input class="onl-input" id="onlNick" maxlength="12" placeholder="如：爸爸" value="' + onEsc(nick) + '"></label></div>' +
+    '<div class="onl-block"><b>建一个新房间</b>' +
+    '<label class="onl-line">场次 <select class="onl-input" id="onlMode"><option value="classic">经典场</option><option value="laizi">癞子场</option></select></label>' +
+    '<label class="onl-line"><input type="checkbox" id="onlElder"> 长辈友好（AI 节奏放慢、不催促）</label>' +
+    '<button class="primary" onclick="onCreateRoom()">建房</button></div>' +
+    '<div class="onl-block"><b>加入已有房间</b>' +
+    '<label class="onl-line">房码 <input class="onl-input onl-codein" id="onlCode" maxlength="6" placeholder="6 位房码" value="' + onEsc(prefill || '') + '"></label>' +
+    '<button class="primary" onclick="onJoinRoom()">加入</button></div>' +
+    '<div class="onl-status" id="onlStatus"></div>' +
+    '<button class="ghost" onclick="showModeSelect()">返回场次选择</button>';
+  $('overlay').classList.add('show');
+}
+function onReadNick(){
+  const v = ($('onlNick') && $('onlNick').value || '').trim();
+  ON.nick = v || '牌友';
+  localStorage.setItem('myskme_ddz_nick', ON.nick);
+  return ON.nick;
+}
+function onCreateRoom(){
+  onReadNick();
+  const mode = $('onlMode').value === 'laizi' ? 'laizi' : 'classic';
+  const elderFriendly = !!$('onlElder').checked;
+  onlStatus('正在连接联机服务…');
+  onConnect('/ws/new', { type: 'create', nickname: ON.nick, mode, elderFriendly });
+}
+function onJoinRoom(){
+  onReadNick();
+  const code = (($('onlCode') && $('onlCode').value) || '').trim().toUpperCase();
+  if (!/^[A-HJ-NP-Z2-9]{6}$/.test(code)){ onlStatus('房码是 6 位字母和数字，核对一下再试'); return; }
+  onlStatus('正在连接联机服务…');
+  onConnect('/ws/' + code, { type: 'join', nickname: ON.nick });
+}
+function onConnect(path, hello){
+  if (ON.ws){ ON.intentional = true; try { ON.ws.close(); } catch (e) {} ON.ws = null; }
+  ON.intentional = false;
+  ON.expectResume = hello.type === 'resume';
+  let ws;
+  try { ws = new WebSocket(ONLINE_WS_BASE + path); }
+  catch (e) { onConnectFail(); return; }
+  ON.ws = ws;
+  let opened = false;
+  ws.onopen = () => { opened = true; ON.reconnects = 0; ws.send(JSON.stringify(hello)); };
+  ws.onmessage = ev => { let m; try { m = JSON.parse(ev.data); } catch (e) { return; } onWsMessage(m); };
+  ws.onerror = () => {};
+  ws.onclose = () => {
+    if (ON.ws !== ws || ON.intentional) return;
+    ON.ws = null;
+    if (!opened && !ON.active){ onConnectFail(); return; }
+    if (ON.active) onScheduleReconnect();
+  };
+}
+function onConnectFail(){
+  onlStatus('联机服务暂时连不上。本地预览要先启动后端（在 后端 目录运行 npm run local），正式版会指向线上地址。单机场次不受影响，可以先玩单机。');
+  centerMsg('联机服务连不上', '可以先玩单机');
+}
+function onScheduleReconnect(){
+  if (ON.reconnects >= 15){ centerMsg('连接断了', '重连不上，点「新对局」回主菜单'); return; }
+  ON.reconnects++;
+  centerMsg('连接断了', '正在自动重连…（第 ' + ON.reconnects + ' 次）');
+  const bar = $('actionBar');
+  if (bar && ON.inGame) bar.innerHTML = '<span class="turntip">连接断了，正在重连…</span>';
+  setTimeout(() => {
+    if (!ON.active || ON.intentional) return;
+    onConnect('/ws/' + ON.code, { type: 'resume', token: ON.token });
+  }, 2000);
+}
+function onWsMessage(m){
+  if (m.type === 'created' || m.type === 'joined'){
+    ON.code = m.code; ON.token = m.token; ON.seat = m.seat; ON.active = true; ON.reconnects = 0;
+    return;
+  }
+  if (m.type === 'resumed'){
+    ON.code = m.code; ON.seat = m.seat; ON.active = true; ON.expectResume = false;
+    centerMsg('已回到牌局', '');
+    return;
+  }
+  if (m.type === 'error'){
+    if (ON.expectResume){
+      ON.expectResume = false;
+      onLeaveRoom(true);
+      showOnlinePanel();
+      onlStatus(m.msg);
+      return;
+    }
+    if (ON.inGame){
+      centerMsg(m.msg, '');
+      if (ON.state) applyOnlineGameState(ON.state);   // 回滚到服务端快照: 恢复操作区与选牌
+    } else onlStatus(m.msg);
+    return;
+  }
+  if (m.type === 'event'){ onWsEvent(m); return; }
+  if (m.type === 'state'){ ON.state = m; onApplyState(m); }
+}
+function onWsEvent(m){
+  if (!ON.inGame || !G) return;
+  const disp = s => (s - ON.seat + 3) % 3;
+  if (m.event === 'play' && m.info && isBombLike(m.info))
+    fxText(m.info.type === 'rocket' ? '王 炸' : (m.info.soft ? '软 炸' : '炸 弹'));
+  else if (m.event === 'bid'){
+    const ds = disp(m.seat);
+    if (ds !== 0) say(ds, m.value > 0 ? m.value + ' 分！' : '不叫');
+  }
+  else if (m.event === 'redeal') centerMsg('无人叫分', '重新发牌…');
+}
+function onApplyState(st){
+  if (!ON.active) return;
+  if (st.phase === 'lobby'){ ON.inGame = false; renderOnlineLobby(st); return; }
+  ON.inGame = true;
+  $('overlay').classList.remove('show');
+  applyOnlineGameState(st);
+}
+function renderOnlineLobby(st){
+  elderContext = 'menu';
+  setPanelClass();
+  const me = st.seats[ON.seat];
+  const rows = st.seats.map(s => {
+    const who = s.kind === 'empty' ? '空位（开局后 AI 补位）' : (s.kind === 'ai' ? onEsc(s.nickname) + '（AI）' : onEsc(s.nickname));
+    const tags = [s.host ? '房主' : '', s.seat === ON.seat ? '你' : '', s.kind === 'human' ? (s.connected ? '在线' : '已断线') : '', s.kind === 'human' && s.ready ? '已准备' : ''].filter(Boolean).join(' · ');
+    const av = s.charKey ? '<img class="avatar" src="' + CHARS[s.charKey].av + '" alt="">' : '<span class="avatar onl-noav"></span>';
+    return '<div class="onl-member">' + av + '<div class="onl-mwho"><b>' + who + '</b>' + (tags ? '<span>' + tags + '</span>' : '') + '</div></div>';
+  }).join('');
+  const link = location.origin + location.pathname + '?room=' + st.code;
+  $('panel').innerHTML =
+    '<h2>联机茶局房 · 大厅</h2>' +
+    '<div class="who-win">' + (st.config.mode === 'laizi' ? '癞子场' : '经典场') + (st.config.elderFriendly ? ' · 长辈友好' : '') + ' · 把房码或链接发给家人，不必等满，房主随时可开局（空位 AI 补）</div>' +
+    '<div class="onl-code">' + st.code + '</div>' +
+    '<div class="onl-row"><button class="ghost" onclick="onCopyInvite(this)">复制邀请链接</button><span class="onl-status" id="onlCopyTip"></span></div>' +
+    '<div class="onl-members">' + rows + '</div>' +
+    '<div class="onl-row">' +
+      '<button class="ghost" onclick="onSendReady(' + (me && me.ready ? 'false' : 'true') + ')">' + (me && me.ready ? '取消准备' : '准备') + '</button>' +
+      (st.hostSeat === ON.seat ? '<button class="primary" onclick="onSendStart()">开局</button>' : '<span class="onl-status">等房主开局…</span>') +
+      '<button class="ghost" onclick="onLeaveRoom(false)">离开房间</button>' +
+    '</div>' +
+    '<div class="onl-status" id="onlStatus"></div>';
+  $('overlay').classList.add('show');
+  ON.inviteLink = link;
+}
+function onCopyInvite(){
+  const link = ON.inviteLink || '';
+  const tip = $('onlCopyTip');
+  const done = () => { if (tip) tip.textContent = '已复制，发到家庭群里，家人点开就能进'; };
+  if (navigator.clipboard && navigator.clipboard.writeText)
+    navigator.clipboard.writeText(link).then(done, () => { if (tip) tip.textContent = '复制失败，手动发这个链接：' + link; });
+  else if (tip) tip.textContent = '把这个链接发给家人：' + link;
+}
+function onSendReady(r){ if (ON.ws) ON.ws.send(JSON.stringify({ type: 'ready', ready: !!r })); }
+function onSendStart(){ if (ON.ws) ON.ws.send(JSON.stringify({ type: 'start' })); }
+function onSendAgain(){ if (ON.ws) ON.ws.send(JSON.stringify({ type: 'again' })); }
+function onSendLobby(){ if (ON.ws) ON.ws.send(JSON.stringify({ type: 'lobby' })); }
+function onLeaveRoom(silent){
+  if (ON.ws && ON.active){ try { ON.ws.send(JSON.stringify({ type: 'leave' })); } catch (e) {} }
+  ON.intentional = true;
+  if (ON.ws){ try { ON.ws.close(); } catch (e) {} ON.ws = null; }
+  ON.active = false; ON.inGame = false; ON.state = null;
+  ON.code = ''; ON.token = ''; ON.seat = -1; ON.reconnects = 0;
+  setLaizi(0);
+  elderContext = 'menu';
+  if (!silent) showModeSelect();
+}
+/* 服务端 state -> G 镜像(显示坐标: 自己恒为 0 号位, 下家 1 号=右, 上家 2 号=左), 复用单机渲染 */
+function applyOnlineGameState(st){
+  const g = st.game;
+  if (!g) return;
+  const disp = s => (s - ON.seat + 3) % 3;
+  const srv = d => (ON.seat + d) % 3;
+  elderContext = 'online';
+  applyElderMode();
+  setLaizi(st.config.mode === 'laizi' ? (g.laiziVal || 0) : 0);
+  const placeholder = n => Array.from({ length: n }, () => ({ v: 0, s: '背' }));
+  window._gid = (window._gid || 0) + 1;
+  G = {
+    gid: window._gid, online: true,
+    mode: st.config.mode, laiziVal: g.laiziVal || 0,
+    phase: st.phase === 'settled' ? 'over' : st.phase,
+    hands: [st.you.hand.slice(), placeholder(g.counts[srv(1)]), placeholder(g.counts[srv(2)])],
+    dipai: g.dipai ? g.dipai.slice() : [{ v: 0, s: '背' }, { v: 0, s: '背' }, { v: 0, s: '背' }],
+    aiChar: [null,
+      st.seats[srv(1)].kind === 'ai' ? st.seats[srv(1)].charKey : null,
+      st.seats[srv(2)].kind === 'ai' ? st.seats[srv(2)].charKey : null],
+    landlord: g.landlord >= 0 ? disp(g.landlord) : -1,
+    base: g.base, mult: g.mult, bombs: g.bombs,
+    turn: disp(g.turn),
+    lastPlay: g.lastPlay ? { cards: g.lastPlay.cards.slice(), info: g.lastPlay.info } : null,
+    lastOwner: g.lastOwner >= 0 ? disp(g.lastOwner) : -1,
+    passStreak: 0, selfPass: [0, 0, 0], playsCount: [0, 0, 0],
+    playedCount: g.playedCount || {},
+    playsBySide: { landlord: 0, farmer: 0 },
+    selected: new Set(), over: st.phase === 'settled',
+  };
+  lastShown[0] = lastShown[1] = lastShown[2] = null;
+  g.zones.forEach((z, s) => { if (z) lastShown[disp(s)] = z.pass ? { pass: true } : { cards: z.cards.slice() }; });
+  const sR = st.seats[srv(1)], sL = st.seats[srv(2)];
+  if (sR.charKey){ $('avR').src = CHARS[sR.charKey].av; $('nmR').textContent = sR.nickname; }
+  if (sL.charKey){ $('avL').src = CHARS[sL.charKey].av; $('nmL').textContent = sL.nickname; }
+  $('uiBase').textContent = g.base ? g.base + ' 分' : '—';
+  $('uiMode').textContent = '联机 · ' + (st.config.mode === 'laizi' ? '癞子场' : '经典场');
+  const noteEl = $('modeNote');
+  noteEl.textContent = st.config.mode === 'laizi'
+    ? '联机癞子场：癞子点 ' + rankName(g.laiziVal) + '，规则与单机癞子场一致，出牌由服务端判定。'
+    : '联机茶局房：出牌由服务端判定；断线会自动重连，空位由 AI 补位。';
+  noteEl.classList.add('show');
+  $('dipai').style.display = '';
+  renderDipai(g.landlord >= 0);
+  renderAll();
+  if (st.phase === 'bidding') renderOnlineBid(st);
+  else if (st.phase === 'playing') renderOnlinePlayBar(st);
+  else if (st.phase === 'settled') renderOnlineSettlement(st);
+}
+function renderOnlineBid(st){
+  const bar = $('actionBar');
+  bar.innerHTML = '';
+  const b = st.bidding;
+  if (!b) return;
+  if (b.turn !== ON.seat){
+    bar.innerHTML = '<span class="turntip">叫分中：等 ' + onEsc(st.seats[b.turn].nickname) + ' 叫分（当前最高 ' + (b.highest || 0) + ' 分）</span>';
+    return;
+  }
+  const tip = document.createElement('span');
+  tip.className = 'turntip'; tip.textContent = '轮到你叫分';
+  bar.appendChild(tip);
+  [[0, '不叫'], [1, '1 分'], [2, '2 分'], [3, '3 分']].forEach(([v, lab]) => {
+    const btn = document.createElement('button');
+    btn.textContent = lab;
+    if (v === 3) btn.className = 'primary';
+    btn.disabled = v > 0 && v <= b.highest;
+    btn.onclick = () => {
+      bar.innerHTML = '<span class="turntip">已提交，等其他人叫分…</span>';
+      if (ON.ws) ON.ws.send(JSON.stringify({ type: 'bid', value: v }));
+    };
+    bar.appendChild(btn);
+  });
+}
+function renderOnlinePlayBar(st){
+  const bar = $('actionBar');
+  bar.innerHTML = '';
+  const g = st.game;
+  hintIdx = 0;
+  if (g.turn !== ON.seat){
+    const who = st.seats[g.turn];
+    bar.innerHTML = '<span class="turntip">等 ' + onEsc(who.nickname) + ' 出牌…</span>' +
+      (who.kind === 'human' && !who.connected ? '<span class="turntip">（对方已断线，AI 托管中）</span>' : '');
+    return;
+  }
+  const last = (G.lastOwner === 0 || G.lastOwner < 0) ? null : G.lastPlay;
+  const tip = document.createElement('span');
+  tip.className = 'turntip';
+  tip.textContent = last ? '轮到你出牌' : '由你首出，点选手牌后出牌';
+  bar.appendChild(tip);
+  const bHint = document.createElement('button'); bHint.className = 'ghost'; bHint.textContent = '提示';
+  const bPlay = document.createElement('button'); bPlay.className = 'primary'; bPlay.textContent = '出牌'; bPlay.id = 'btnPlay'; bPlay.disabled = true;
+  const bPass = document.createElement('button'); bPass.textContent = '不出'; bPass.disabled = !last;
+  bHint.onclick = () => {
+    const cand = getPlayerHintCandidates(last);
+    if (!cand.length){ centerMsg('没有能管上的牌', '点「不出」过掉这一手'); return; }
+    const p = cand[hintIdx % cand.length]; hintIdx++;
+    G.selected = new Set(p.cards.map(c => G.hands[0].indexOf(c)));
+    renderHand();
+    bPlay.disabled = G.selected.size === 0;
+  };
+  bPlay.onclick = () => {
+    const cards = [...G.selected].sort((a, b) => a - b).map(i => G.hands[0][i]);
+    if (!cards.length) return;
+    if (ON.ws) ON.ws.send(JSON.stringify({ type: 'play', cards: cards.map(c => ({ v: c.v, s: c.s })) }));
+    G.selected.clear();
+    bar.innerHTML = '<span class="turntip">已出牌，等其他人…</span>';
+  };
+  bPass.onclick = () => {
+    if (ON.ws) ON.ws.send(JSON.stringify({ type: 'pass' }));
+    bar.innerHTML = '<span class="turntip">已过，等其他人…</span>';
+  };
+  bar.append(bHint, bPlay, bPass);
+}
+function renderOnlineSettlement(st){
+  const s = st.settlement;
+  if (!s) return;
+  setPanelClass();
+  const myDelta = s.deltas[ON.seat];
+  const winnerName = s.winnerSeat === ON.seat ? '你' : onEsc(st.seats[s.winnerSeat].nickname);
+  const landlordName = s.landlordSeat === ON.seat ? '你' : onEsc(st.seats[s.landlordSeat].nickname);
+  const rows = [
+    ['地主', landlordName],
+    ['赢家', winnerName + (s.landlordWin ? '（地主方）' : '（农民方）')],
+    ['底分', s.base + ' 分'],
+    ['炸弹', s.bombs + ' 个'],
+    ['春天', s.spring ? '是' : '否'],
+    ['最终倍数', '×' + s.mult],
+    ['我的得分', (myDelta >= 0 ? '+' : '−') + Math.abs(myDelta)],
+  ];
+  const votes = st.again ? st.again.votes.length : 0;
+  const humans = st.again ? st.again.humans.length : 0;
+  $('panel').innerHTML =
+    '<h2 class="' + (myDelta >= 0 ? '' : 'lose') + '">' + (myDelta >= 0 ? '胜 利' : '败 北') + '</h2>' +
+    '<div class="who-win">' + winnerName + ' 率先出完 · 联机对局结束</div>' +
+    '<table>' + rows.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('') + '</table>' +
+    '<div class="onl-row"><button class="primary" onclick="onSendAgain()">再来一局（已点 ' + votes + ' / ' + humans + ' 人）</button>' +
+    (st.hostSeat === ON.seat ? '<button class="ghost" onclick="onSendStart()">房主直接再开</button>' : '') +
+    '<button class="ghost" onclick="onSendLobby()">返回大厅</button> <button class="ghost" onclick="onLeaveRoom(false)">离开房间</button></div>' +
+    '<div class="onl-status">再来一局：所有在线的真人都点一遍就自动开局；房主也可以直接再开。</div>';
+  $('overlay').classList.add('show');
+}
+
 /* ---------- 开局 ---------- */
 function startMode(m){ newGame(m); }
 function showModeSelect(){
+  if (ON.active) onLeaveRoom(true);   // 回到场次选择 = 离开联机房间(静默)
   review = null;
   document.body.classList.remove('reviewing');
   pendingChallenge = null;
@@ -1514,13 +1864,14 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.8.1</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v0.9</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
     ['easy','normal','expert'].map(lv=>'<button type="button" class="levelbtn'+(aiLevel===lv?' on':'')+'" data-level="'+lv+'" onclick="setAiLevel(\''+lv+'\')">'+LEVEL_NAMES[lv]+'</button>').join('') +
     '<small>简单：随性出牌、很少用炸弹。普通：默认打法。高手：会记牌、护住整牌型、卡着时机才炸。残局闯关不受难度影响。</small></div>' +
     modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
+    '<button class="modebtn" onclick="showOnlinePanel()"><b>联机茶局房</b><span>和家人异地开一桌：建房后把房码或邀请链接发到家庭群，长辈点开输房码就能进；空位有 AI 补位，掉线能自动重连回座。</span></button>' +
     '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>十关固定残局，按最优防守设计：大牌控场、顺子先行、炸弹收尾、送队友先走……通关赢星解锁下一关，三星看你用几手打完。当前总星 '+totalStars()+' / 30。</span></button>' +
     '<button class="modebtn" onclick="showStoryCodex(\'menu\')"><b>故事图鉴</b><span>六位角色各 3 篇小故事，已解锁 '+unlockedStoryCount()+' / 18 篇。赢下对局击败角色，再攒够残局星数，逐篇打开。</span></button>' +
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
@@ -2497,7 +2848,12 @@ function preloadCards(){
 window.addEventListener('load', ()=>{
   elderContext='menu'; applyElderMode(); renderStats(); preloadCards();
   if(pendingChallenge) startLevel(pendingChallenge.idx);
-  else showModeSelect();
+  else {
+    showModeSelect();
+    // v0.9: 带 ?room=房码 打开(邀请链接) -> 直达联机加入面板并预填房码
+    const rp = new URLSearchParams(location.search).get('room');
+    if(rp) showOnlinePanel(rp.trim().toUpperCase());
+  }
 });
 </script>
 </body>
