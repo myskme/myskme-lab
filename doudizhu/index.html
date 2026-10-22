@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>猴先生斗地主 · 原型 v0.5</title>
+<title>猴先生斗地主 · 原型 v0.6</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -262,6 +262,13 @@
   .elder-toggle input{width:28px; height:28px; flex:none; accent-color:var(--gold);}
   .elder-toggle b{display:block; font-size:16.5px; color:var(--gold-l); letter-spacing:1px;}
   .elder-toggle small{display:block; font-size:12px; line-height:1.5; color:#cfe0d2; margin-top:2px;}
+  /* ---------- v0.6: AI 难度切换 ---------- */
+  .levelswitch{display:flex; align-items:center; gap:8px; flex-wrap:wrap; width:100%; margin:10px 0 2px; padding:11px 14px;
+    background:rgba(247,239,220,.06); border:1.5px solid rgba(201,162,77,.45); border-radius:12px; text-align:left;}
+  .levelswitch .lvlab{font-size:15px; color:var(--gold-l); letter-spacing:1px; font-weight:700; margin-right:2px;}
+  .levelswitch .levelbtn{padding:6px 18px; font-size:14.5px; border-radius:999px;}
+  .levelswitch .levelbtn.on{background:linear-gradient(180deg,#d9a94f,#a87c2c); color:#2a1f08; font-weight:700; border-color:#e7c877;}
+  .levelswitch small{flex-basis:100%; font-size:12px; line-height:1.5; color:#cfe0d2;}
   .elder-result{font-size:27px; line-height:1.45; color:var(--cream); font-weight:800; margin:8px 0 16px;}
   .elder-result span{font-size:20px; color:var(--gold-l);}
   .elder-detail-btn{display:block; margin:12px auto 0;}
@@ -367,10 +374,11 @@
 <div id="bg"></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">猴先生斗地主 <small>原型 v0.5 · 茶肆夜话桌</small></div>
+    <div class="title">猴先生斗地主 <small>原型 v0.6 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
+    <div class="chip elder-hide">难度 <b id="uiLevel">普通</b></div>
     <div class="chip elder-hide">战绩 <b id="uiStats">0 胜 / 0 局</b></div>
     <div class="spacer"></div>
     <button class="ghost elder-hide" id="btnCounter">记牌器</button>
@@ -955,17 +963,169 @@ function handStrength(hand){
   for(const v in cnt){ if(cnt[v]===4) s += 3; if(+v===15) s += cnt[v]*1.1; if(+v===14) s += cnt[v]*.4; }
   return s;
 }
-function aiBid(hand, persona){
+function aiBid(hand, persona, level){
   const s = handStrength(hand) + (persona ? persona.aggro : .5) * .8;
+  if(level==='easy'){   // 简单: 叫分保守, 最高只叫 2 分
+    if(s >= 7.6) return 2; if(s >= 5.4) return 1; return 0;
+  }
+  if(level==='expert'){ // 高手: 强度评估更准, 强牌果断叫满, 中等牌也敢争
+    if(s >= 7.9) return 3; if(s >= 5.8) return 2; if(s >= 4.0) return 1; return 0;
+  }
   if(s >= 8.4) return 3; if(s >= 6.2) return 2; if(s >= 4.2) return 1; return 0;
 }
 function isBombLike(info){ return info.type==='bomb' || info.type==='rocket'; }
+/* ---------- v0.6: AI 三档难度 ----------
+   level 经 ctx.level 传入('easy'|'normal'|'expert', 缺省 normal)。
+   普通档即 aiDecide 原有启发式, 代码路径与随机调用顺序不变;
+   残局闯关在 UI 层强制 normal, 不受难度设置影响。 */
+function aiDecideEasy(hand, last, ctx){
+  const plays = genPlays(hand, last);
+  if(!plays.length) return null;
+  const rndPick = arr => arr[Math.floor(Math.random()*arr.length)];
+  const nonBomb = plays.filter(p=>!isBombLike(p.info));
+  if(!last){
+    const full = plays.find(p=>p.cards.length===hand.length);
+    if(full && Math.random()<0.5) return full;
+    // 偏随机出牌: 拆对、拆三张出单张、随手甩掉大牌, 都会发生
+    return rndPick(nonBomb.length ? nonBomb : plays);
+  }
+  // 跟牌: 没有队友配合概念(队友的牌同样照跟), 且常常直接过
+  const mustPlay = (ctx.selfPass||0) >= 6;   // 兜底: 久不出手时被迫打一手, 避免整局旁观
+  if(!mustPlay && Math.random() < 0.5) return null;
+  if(nonBomb.length) return rndPick(nonBomb);
+  // 只剩炸弹类出法: 极低概率才舍得炸
+  if(mustPlay || Math.random() < 0.06)
+    return plays.slice().sort((a,b)=>a.info.main-b.info.main)[0];
+  return null;
+}
+// 拆整惩罚: 一个出法只用掉某点数的一部分(拆炸弹/拆三张/拆对子)时计罚
+function splitPenalty(hand, play){
+  const g = groupByVal(hand), used = countMap(valsOf(play.cards));
+  let pen = 0;
+  for(const v in used){
+    const total = (g[v]||[]).length;
+    if(used[v] < total){
+      if(total===4) pen += 60;
+      else if(total===3) pen += 26;
+      else if(total===2) pen += 12;
+    }
+  }
+  return pen;
+}
+// 记牌推断: 某点数还可能在外面的张数(总数 - 已出 - 自己手里), 与记牌器同一数据源
+function unseenCount(ctx, hand, v){
+  const total = v>=16 ? 1 : 4;
+  const played = (ctx.played && ctx.played[v]) || 0;
+  let mine = 0; for(const c of hand) if(c.v===v) mine++;
+  return total - played - mine;
+}
+function highestUnseen(ctx, hand){
+  for(let v=17; v>=3; v--) if(unseenCount(ctx, hand, v)>0) return v;
+  return 0;
+}
+function bombMayBeOut(ctx, hand){
+  for(let v=3; v<=15; v++) if(unseenCount(ctx, hand, v)===4) return true;
+  return unseenCount(ctx, hand, 16)>0 && unseenCount(ctx, hand, 17)>0;
+}
+// 手数估计: 贪心拆解一手牌, 估计打完所需的最少手数(链型优先抽取, 三张挂翅膀不另计手)
+function estimateMoves(cards){
+  if(!cards.length) return 0;
+  const cnt = countMap(valsOf(cards));
+  let moves = 0;
+  const take = (v, n)=>{ cnt[v] -= n; if(cnt[v]<=0) delete cnt[v]; };
+  if(cnt[16] && cnt[17]){ moves++; delete cnt[16]; delete cnt[17]; }
+  for(const v in Object.keys(cnt)) if(cnt[v]===4){ moves++; delete cnt[v]; }
+  for(;;){
+    const ranks = Object.keys(cnt).map(Number).filter(v=>v<=14).sort((a,b)=>a-b);
+    let best = null;
+    for(let i=0;i<ranks.length;i++){ let j=i; while(j+1<ranks.length && ranks[j+1]===ranks[j]+1) j++;
+      if(j-i+1>=5 && (!best || j-i+1>best.cover)) best = {seq:ranks.slice(i,j+1), use:1, cover:j-i+1, plane:false}; }
+    const pr = ranks.filter(v=>cnt[v]>=2);
+    for(let i=0;i<pr.length;i++){ let j=i; while(j+1<pr.length && pr[j+1]===pr[j]+1) j++;
+      if(j-i+1>=3 && (!best || (j-i+1)*2>best.cover)) best = {seq:pr.slice(i,j+1), use:2, cover:(j-i+1)*2, plane:false}; }
+    const tr = ranks.filter(v=>cnt[v]>=3);
+    for(let i=0;i<tr.length;i++){ let j=i; while(j+1<tr.length && tr[j+1]===tr[j]+1) j++;
+      if(j-i+1>=2 && (!best || (j-i+1)*3>best.cover)) best = {seq:tr.slice(i,j+1), use:3, cover:(j-i+1)*3, plane:true}; }
+    if(!best) break;
+    for(const v of best.seq) take(v, best.use);
+    moves++;
+    if(best.plane){
+      // 翅膀: 优先整单张组, 其次整对子组, 凑满核心节数则不另计手
+      const len = best.seq.length;
+      let got = 0;
+      for(const v of Object.keys(cnt).map(Number).sort((a,b)=>a-b)){
+        if(got>=len) break;
+        if(cnt[v]===1){ take(v,1); got++; }
+      }
+      if(got<len) for(const v of Object.keys(cnt).map(Number).sort((a,b)=>a-b)){
+        if(got>=len) break;
+        if(cnt[v]===2){ take(v,2); got++; }
+      }
+    }
+  }
+  const groups = Object.keys(cnt).length;
+  const trios = Object.values(cnt).filter(c=>c===3).length;
+  moves += groups - Math.min(trios, groups - trios);
+  return moves;
+}
+function aiDecideExpert(hand, last, ctx, plays){
+  const full = plays.find(p=>p.cards.length===hand.length);
+  const restAfter = p => hand.filter(c=>!p.cards.includes(c));
+  // 以"打出后剩余手数"为主序: 手数少者优; 次序为多出牌、低点数、少拆整
+  const movesScore = p => estimateMoves(restAfter(p))*100 - p.info.count*3 + p.info.main*0.5 + splitPenalty(hand, p)*0.2;
+  const pickByMoves = arr => arr.slice().sort((a,b)=>movesScore(a)-movesScore(b))[0];
+  if(!last){
+    if(full) return full;
+    const nonBomb = plays.filter(p=>!isBombLike(p.info));
+    const pool = nonBomb.length ? nonBomb : plays;
+    // 农民队友只剩 <=2 张: 喂最小单张送队友先走(自己能一手走完已在上面处理)
+    if(!ctx.isLandlord && (ctx.partnerCards==null ? 99 : ctx.partnerCards)<=2){
+      const singles = pool.filter(p=>p.info.type==='single').sort((a,b)=>a.info.main-b.info.main);
+      if(singles.length) return singles[0];
+    }
+    let cands = pool;
+    if(ctx.nextOppCards===1){
+      // 对手只剩 1 张: 不喂单张——只出组合, 或出记牌确认的已知最大单张
+      const hus = highestUnseen(ctx, hand);
+      const safe = pool.filter(p=> p.info.type!=='single' || p.info.main>=hus);
+      if(safe.length) cands = safe;
+    }
+    return pickByMoves(cands);
+  }
+  // 跟牌: 能一手走完必走(普通档的对手跟牌路径没有这条判断)
+  if(full && canBeat(full.info, last.info)) return full;
+  if(ctx.rel==='partner'){
+    if(ctx.lastOwnerCards<=5 || isBombLike(last.info)) return null;   // 让行, 且绝不炸队友
+    const pn = plays.filter(p=>!isBombLike(p.info));
+    if(pn.length) return pickByMoves(pn);
+    return null;
+  }
+  const nonBomb = plays.filter(p=>!isBombLike(p.info));
+  if(nonBomb.length){
+    const best = pickByMoves(nonBomb);
+    // 保留控制牌: 跟小牌若必须动用大牌(2/王)且打完手数不降、出牌者还远未收官, 则让过这一手
+    if(best.info.main>=15 && last.info.main<=13 && ctx.lastOwnerCards>5
+       && estimateMoves(restAfter(best)) >= estimateMoves(hand)) return null;
+    return best;
+  }
+  const bombs = plays.filter(p=>isBombLike(p.info)).sort((a,b)=>a.info.main-b.info.main);
+  if(bombs.length){
+    const ownerLow = ctx.lastOwnerCards<=2;                          // 出牌者只剩 <=2 张, 必拦
+    const finishByBomb = estimateMoves(restAfter(bombs[0])) <= 1;    // 炸完一手内可收官
+    const safeWindow = ctx.lastOwnerCards<=3 && !bombMayBeOut(ctx, hand); // 记牌确认外面已无更大炸弹/王炸
+    if(ownerLow || finishByBomb || safeWindow) return bombs[0];
+  }
+  return null;
+}
 // ctx: {rel:'lead'|'partner'|'opponent', lastOwnerCards, nextOppCards, personaKey}
 // 返回 {cards, info} 或 null(不出)
 function aiDecide(hand, last, ctx){
   const P = PERSONA[ctx.personaKey] || PERSONA.monkey;
+  const level = ctx.level || 'normal';
+  if(level==='easy') return aiDecideEasy(hand, last, ctx);
   const plays = genPlays(hand, last);
   if(!plays.length) return null;
+  if(level==='expert') return aiDecideExpert(hand, last, ctx, plays);
   const full = plays.find(p=>p.cards.length===hand.length);
   if(!last){
     if(full) return full;
@@ -1062,6 +1222,19 @@ function renderStats(){ $('uiStats').textContent = stats.win+' 胜 / '+stats.tot
 /* ---------- v0.4: 长辈模式状态 ----------
    elderMode 是用户偏好(选择面板开关, localStorage 记忆); elderContext 区分三场次与残局:
    残局不强制套用长辈模式, 进入选关/关卡时上下文切为 challenge, elderActive() 返回 false。 */
+/* ---------- v0.6: AI 难度偏好 ----------
+   aiLevel 是用户偏好(选择面板三段切换, localStorage 记忆, 默认普通);
+   仅作用于经典/癞子/不洗牌三场次, 残局闯关在 runTurn 处强制 normal。 */
+const LEVEL_NAMES = {easy:'简单', normal:'普通', expert:'高手'};
+let aiLevel = localStorage.getItem('myskme_ddz_level');
+if(!LEVEL_NAMES[aiLevel]) aiLevel = 'normal';
+function setAiLevel(v){
+  if(!LEVEL_NAMES[v]) return;
+  aiLevel = v;
+  localStorage.setItem('myskme_ddz_level', v);
+  document.querySelectorAll('.levelbtn').forEach(b=>b.classList.toggle('on', b.dataset.level===v));
+  const ui = $('uiLevel'); if(ui) ui.textContent = LEVEL_NAMES[v];
+}
 let elderMode = localStorage.getItem('myskme_ddz_elder')==='1';
 let elderContext = 'menu';
 let elderRecPlay = null;
@@ -1223,13 +1396,17 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
     ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.5</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">猴先生斗地主 · 原型 v0.6</div>' +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
+    '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
+    ['easy','normal','expert'].map(lv=>'<button type="button" class="levelbtn'+(aiLevel===lv?' on':'')+'" data-level="'+lv+'" onclick="setAiLevel(\''+lv+'\')">'+LEVEL_NAMES[lv]+'</button>').join('') +
+    '<small>简单：随性出牌、很少用炸弹。普通：默认打法。高手：会记牌、护住整牌型、卡着时机才炸。残局闯关不受难度影响。</small></div>' +
     modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
     '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>十关固定残局，按最优防守设计：大牌控场、顺子先行、炸弹收尾、送队友先走……通关赢星解锁下一关，三星看你用几手打完。当前总星 '+totalStars()+' / 30。</span></button>' +
     '<button class="modebtn" onclick="showStoryCodex(\'menu\')"><b>故事图鉴</b><span>六位角色各 3 篇小故事，已解锁 '+unlockedStoryCount()+' / 18 篇。赢下对局击败角色，再攒够残局星数，逐篇打开。</span></button>' +
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
   $('overlay').classList.add('show');
+  const uiLv = $('uiLevel'); if(uiLv) uiLv.textContent = LEVEL_NAMES[aiLevel];
   applyElderMode();
 }
 
@@ -1529,7 +1706,7 @@ async function startBidding(){
     } else {
       await sleep(paceDelay(650));
       if(!G || G.gid!==gid) return;
-      let bid = aiBid(G.hands[cur], PERSONA[G.aiChar[cur]]);
+      let bid = aiBid(G.hands[cur], PERSONA[G.aiChar[cur]], aiLevel);
       if(bid<=highest) bid = 0;
       if(bid>highest){ highest=bid; highestSeat=cur; }
       showBid(cur, bid);
@@ -1584,6 +1761,11 @@ async function runTurn(){
   let rel = 'lead';
   if(last){ rel = isPartner(seat, G.lastOwner) ? 'partner' : 'opponent'; }
   const others = [0,1,2].filter(i=>i!==seat);
+  let partnerCards = 99;
+  if(roleOf(seat)==='farmer'){
+    const ps = others.find(i=>roleOf(i)==='farmer');
+    if(ps!==undefined) partnerCards = G.hands[ps].length;
+  }
   const ctx = {
     rel: last ? rel : 'lead',
     lastOwnerCards: last ? G.hands[G.lastOwner].length : 99,
@@ -1591,6 +1773,11 @@ async function runTurn(){
     personaKey: G.aiChar[seat],
     selfPass: G.selfPass[seat],
     playsMade: G.playsCount[seat],
+    // v0.6: 难度与记牌上下文; 残局闯关强制普通档, 保证关卡体验与求解校准不变
+    level: G.mode==='challenge' ? 'normal' : aiLevel,
+    played: G.playedCount,
+    isLandlord: roleOf(seat)==='landlord',
+    partnerCards,
   };
   const decision = aiDecide(G.hands[seat], last, ctx);
   if(decision && last && !canBeat(decision.info, last.info)){ doPass(seat); }
