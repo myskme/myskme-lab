@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.4.1</title>
+<title>萌友斗地主 · 原型 v1.5.0</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -252,6 +252,12 @@
   .levelcell.locked{opacity:.45;}
   .levelcell .lvstars.dim{color:#8a9a8e; font-size:10.5px;}
   .lvstars.big{font-size:30px; color:var(--gold-l); letter-spacing:6px; margin:2px 0 6px; text-align:center;}
+  /* v1.5: 选关难度档标签 / 个人最佳手数 / 断局恢复横幅 */
+  .lvtier{grid-column:1/-1; font-size:12px; letter-spacing:2px; color:var(--gold-l); font-weight:700; margin-top:5px;}
+  .levelcell .lvbest{font-size:10.5px; color:#a9bcb0; margin-top:1px;}
+  .resume-banner{background:rgba(201,162,77,.13); border:1px solid rgba(201,162,77,.65); border-radius:10px;
+    padding:10px 12px; margin-bottom:12px; text-align:center; font-size:14px; line-height:1.55;}
+  .resume-banner button{margin:7px 4px 0;}
 
   /* ---------- v0.5: 故事图鉴 / 残局分享挑战 ---------- */
   #challengeBanner{display:none; padding:8px 12px; text-align:center; font-size:14.5px; font-weight:700; letter-spacing:.5px;
@@ -683,7 +689,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">原型 v1.4.1 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">原型 v1.5.0 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1612,7 +1618,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '原型 v1.4.1 · ' + bgName + '桌';
+  if(tv) tv.textContent = '原型 v1.5.0 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -1846,6 +1852,7 @@ if(typeof document.addEventListener === 'function'){
   document.addEventListener('pointerdown', ()=> Mus.kick(), false);
   document.addEventListener('keydown', ()=> Mus.kick(), false);
   document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden) saveResume();   /* v1.5: 切后台补写一笔断局快照兜底 */
     Mus.hidden = !!document.hidden;
     if(Mus.hidden) Mus.suspend();
     else if(musicOn && Mus.started) Mus.resume();
@@ -2132,7 +2139,7 @@ function showCareer(){
     ['打出炸弹', careerGames? c.bombs+' 个' : '—'],
     ['春天局数', careerGames? c.springs+' 局' : '—'],
     ['茶点', tasksData().treats+' 枚（每日任务纪念，只记不用）'],
-    ['残局总星', totalStars()+' / 60'],
+    ['残局总星', totalStars()+' / '+(LEVELS.length*3)],
     ['每日一局', '已连续完成 '+(dailyData().streak||0)+' 天'],
   ];
   const emptyBlock = (stats.total===0 && careerGames===0)
@@ -2300,7 +2307,7 @@ function showStoryCodex(from){
   }).join('');
   $('panel').innerHTML =
     '<h2>故事图鉴</h2>' +
-    '<div class="who-win">已解锁 '+unlockedStoryCount()+' / 18 篇 · 残局总星 '+totalStars()+' / 60</div>' +
+    '<div class="who-win">已解锁 '+unlockedStoryCount()+' / 18 篇 · 残局总星 '+totalStars()+' / '+(LEVELS.length*3)+'</div>' +
     '<div class="story-grid">'+cards+'</div>' +
     '<div class="story-actions"><button class="ghost" onclick="closeStoryCodex()">'+(storyReturn==='game'?'返回对局':'返回场次选择')+'</button></div>';
   $('overlay').classList.add('show');
@@ -2319,7 +2326,7 @@ function showStoryChar(key){
   const cards = STORY_FEATURE_CARDS[key].map(name=>'<img src="assets/'+name+'.webp" alt="'+c.name+'特色牌">').join('');
   $('panel').innerHTML =
     '<div class="story-head"><img class="avatar" src="'+c.av+'" alt=""><div><h3>'+c.name+'</h3>' +
-    '<p>已解锁 '+storyUnlockedFor(key)+' / 3 篇 · 已击败 '+storyDefeatCount(key)+' 次 · 残局总星 '+totalStars()+' / 60</p></div></div>' +
+    '<p>已解锁 '+storyUnlockedFor(key)+' / 3 篇 · 已击败 '+storyDefeatCount(key)+' 次 · 残局总星 '+totalStars()+' / '+(LEVELS.length*3)+'</p></div></div>' +
     '<div class="story-cards">'+cards+'</div>' + pieces +
     '<div class="story-actions"><button class="ghost" onclick="showStoryCodex(\''+storyReturn+'\')">返回图鉴</button>' +
     '<button class="ghost" onclick="closeStoryCodex()">'+(storyReturn==='game'?'返回对局':'返回场次选择')+'</button></div>';
@@ -2768,7 +2775,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一点数为癞子（金框标记），可当任意普通牌，不能当大小王。癞子炸弹是软炸，硬炸更大，王炸最大。'],
     ['noshuffle','不洗牌场','整副牌成组分发，顺子、连对、炸弹更易成型。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.4.1</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.5.0</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked, true)"><span><b>大字模式</b><small>大字大牌、慢节奏，发亮的牌可直接出。三场次生效。按屏幕自动推荐，可手动改。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
@@ -2788,7 +2795,7 @@ function showModeSelect(){
     '<button class="modebtn" onclick="showOnlinePanel()"><b>联机茶局房</b><span>建房发房码，家人输码即进；空位 AI 补，掉线自动重连。</span></button>' +
     dailyEntryHTML() +
     tasksEntryHTML() +
-    '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>20 关固定残局：通关赢星解锁下一关，手数越少星越高。当前总星 '+totalStars()+' / 60。</span></button>' +
+    '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>'+LEVELS.length+' 关固定残局：通关赢星解锁下一关，手数越少星越高。当前总星 '+totalStars()+' / '+(LEVELS.length*3)+'。</span></button>' +
     '<button class="modebtn" onclick="showStoryCodex(\'menu\')"><b>故事图鉴</b><span>六位角色各 3 篇，已解锁 '+unlockedStoryCount()+' / 18 篇。击败角色、攒残局星逐篇解锁。</span></button>' +
     '<button class="modebtn" onclick="showCareer()"><b>战绩生涯</b><span>总场次、胜率、分项、连胜与段位履历，一页看全。</span></button>' +
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
@@ -2865,16 +2872,73 @@ const LEVELS = [
   { name:'茶肆终局', landlord:0, chars:['snake','fish'], best:5,
     goal:'四十一张牌的残局决战：三张、对子、长顺俱全，对面还埋着四张 4——把每一分优势算清，稳稳打到底。',
     hands:[[17,15,14,14,13,13,13,11,10,9,8,7,6,3],[16,15,14,12,12,11,11,10,9,8,5,4],[15,13,12,11,10,10,9,9,8,7,6,4,4,4,3]] },
+  /* ---------- v1.5: A 批 21–30 关(熟练档) ----------
+     结构修正: 农民关补到 3 关(含拦/守防守母题), 猴先生首次在残局当对手;
+     每关均过五步验证门(可解+best 一致 / 首手分析 / 最优首手占比 <80% /
+     50 局对打全胜 / 农民关软门), 记录见 残局验证记录-v1.5.txt。 */
+  { name:'四带二的算盘', landlord:0, chars:['monkey','fish'], best:4,
+    goal:'四张 9 当炸弹先扔必输——四带二带走两张小牌，再靠大牌夺回出牌权，才是这关的活法。',
+    hands:[[15,15,9,9,9,9,14,4,3],[5,5,5,5,14,13,12,10],[16,13,12,11,10,8,6]] },
+  { name:'对二探路', landlord:0, chars:['snake','monkey'], best:3,
+    goal:'顺子先出，正中对面四张 4 的埋伏——先打对 2 探路，等炸弹露头，再走顺子、用 A 收尾。',
+    hands:[[15,15,14,9,8,7,6,5],[13,12,11,4,4,4,4,3],[14,13,12,11,10,7,6]] },
+  { name:'一翅之差', landlord:1, chars:['donkey','fish'], best:2,
+    goal:'三带一带哪张小牌是全关的胜负手——带 3 是桥，带 4 是坑，差一张，满盘皆输。',
+    hands:[[15,15,15,4,3],[16,14,12,12,11,11,10,10,9],[13,13,13,12,12]] },
+  { name:'替队友守门', landlord:2, chars:['fish','donkey'], best:4,
+    goal:'地主在左手边——先放小牌探路，对子和对 2 留着守门；大牌先亮，地主就会顺着节奏跑掉。',
+    hands:[[15,15,14,13,13,6,4],[17,9,9,3],[16,14,14,12,12,11,11,10,10,8]] },
+  { name:'炸弹的另一种活法', landlord:0, chars:['fish','monkey'], best:3,
+    goal:'四张 8 当炸弹扔出去必输——四带二对一手带走八张牌，才是这副炸弹真正的活法。',
+    hands:[[16,8,8,8,8,13,13,7,7,5],[17,15,15,14,12,11,10,9],[15,14,14,13,12,11,6,4]] },
+  { name:'只有一扇门', landlord:0, chars:['donkey','snake'], best:2,
+    goal:'五副对子能拼出好几条连对——只有最长的四连对能过关，短一条、拆一副，都走不出去。',
+    hands:[[14,14,13,13,12,12,11,11,9,9],[15,15,13,13,10,10,8,8],[16,15,15,12,11,10,7,7]] },
+  { name:'飞机带对子', landlord:0, chars:['snake','fish'], best:2,
+    goal:'这架飞机要带两副对子当翅膀，两手就能清台——散带一张，就得多绕一手。',
+    hands:[[12,12,12,11,11,11,10,10,15,15,4],[16,14,13,13,9,8,7,6],[17,14,13,12,10,9,5,3]] },
+  { name:'先拦一手', landlord:1, chars:['snake','egg'], best:2,
+    goal:'地主的长顺只等一个空当——王炸和三张 A 必须整手压上，拆成单张一张张送，只会被顺子冲垮。',
+    hands:[[17,16,14,14,14,4],[15,15,13,12,11,10,9,8,7,5,5,5,5],[13,12,10,8,6,3,3]] },
+  { name:'王炸最后说', landlord:0, chars:['donkey','egg'], best:4,
+    goal:'王炸先手必输，大小王拆开先行也要多付一手——让小牌先走，王炸留到最后再开口。',
+    hands:[[17,16,15,15,15,10,10,6,6,3],[14,14,13,12,11,9,8,7],[14,13,13,12,11,10,5,4]] },
+  { name:'单张拉锯', landlord:0, chars:['fish','snake'], best:7,
+    goal:'满手单张，没有一张成型牌——小牌先行探路，大牌和王炸都是陷阱，谁先亮底谁先输。',
+    hands:[[17,16,13,11,9,7,5],[15,14,12,10,8,6,4],[15,14,13,12,10,6,3]] },
+];
+/* v1.5: 求解级首手(每关一条, 由求解器首手分析预计算并经测试断言与求解器一致):
+   残局中玩家尚未出第一手且由玩家首出时, 「提示」优先给这一手, 免费不限次;
+   出过牌后不再提供(回落启发式提示管线)。值为点数数组(升序)。 */
+const FIRST_HINTS = [
+  [3], [9,10,11,12,13], [4], [4], [4,13,13,13], [3], [3,12,12,12], [5,5,6,6,7,7],
+  [3,4,4,4,5,5,5,9], [7,8,9,10,11], [8,9,10,11,12,13,14], [4,9,13,13,13,13], [3],
+  [3,9,11,11,11,12,12,12], [10,10,11,11,12,12,13,13,14,14], [8,8], [6,13,13,13], [4], [3],
+  [6,7,8,9,10,11],
+  [3,4,9,9,9,9], [15,15], [3,15,15,15], [4], [7,7,8,8,8,8,13,13],
+  [11,11,12,12,13,13,14,14], [10,10,11,11,11,12,12,12,15,15], [4,14,14,14], [3], [5],
 ];
 let challenge = JSON.parse(localStorage.getItem('myskme_ddz_challenge')||'{"stars":[]}');
 if(!Array.isArray(challenge.stars)) challenge.stars = [];
+/* v1.5: 每关个人最佳手数, 复用 challenge 键扩 bestPlays 字段(不新增键);
+   旧存档无此字段时静默初始化为空数组, 星数等既有字段零改动。 */
+if(!Array.isArray(challenge.bestPlays)) challenge.bestPlays = [];
 function saveChallenge(){ localStorage.setItem('myskme_ddz_challenge', JSON.stringify(challenge)); }
+function challengeBest(i){ const v = Array.isArray(challenge.bestPlays) ? challenge.bestPlays[i] : 0; return (Number.isInteger(v) && v > 0) ? v : 0; }
+function recordChallengeBest(i, plays){
+  if(!Array.isArray(challenge.bestPlays)) challenge.bestPlays = [];
+  if(!Number.isInteger(plays) || plays <= 0) return false;
+  const cur = challengeBest(i);
+  if(cur && plays >= cur) return false;
+  challenge.bestPlays[i] = plays;
+  return true;
+}
 function totalStars(){ return challenge.stars.reduce((a,b)=>a+(b||0),0); }
 function levelUnlocked(i){ return i===0 || (challenge.stars[i-1]||0)>=1; }
 function starStr(n){ return '★★★'.slice(0,n) + '☆☆☆'.slice(0,3-n); }
 
 /* ---------- v1.1: 每日一局 ----------
-   按 Asia/Shanghai 日期确定性选关: 同一天所有人同一局(种子 = 日期数字 % 20 关)。
+   按 Asia/Shanghai 日期确定性选关: 同一天所有人同一局(种子 = 日期数字 % 关卡数)。
    记录存 myskme_ddz_daily {date, done, streak, lastDone}; 每日局不写残局闯关星数、不影响段位;
    通关规则与星数显示沿用残局结算, 但结果只落每日记录。 */
 function shanghaiToday(){
@@ -2940,6 +3004,7 @@ function startDaily(){
   const banner = $('challengeBanner');
   banner.textContent = '每日一局 · ' + shanghaiToday() + ' · 连续完成 ' + (dailyData().streak || 0) + ' 天';
   banner.classList.add('show');
+  saveResume();   /* v1.5: 每日标记落定后重写快照(带 daily 与日期口径) */
 }
 
 /* ---------- v0.5: 残局分享挑战 ----------
@@ -3009,13 +3074,19 @@ function showLevelSelect(){
   hideBubbles();
   window._gid = (window._gid||0)+1;
   if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
+  /* v1.5: 难度档标签(1–10 入门 / 11–20 进阶 / 21–30 熟练) + 个人最佳手数 */
+  const tierOf = i => i < 10 ? '入门' : (i < 20 ? '进阶' : '熟练');
+  let lastTier = '';
   const cells = LEVELS.map((lv,i)=>{
     const st = challenge.stars[i]||0;
+    const head = tierOf(i) !== lastTier ? (lastTier = tierOf(i), '<div class="lvtier">'+lastTier+'档</div>') : '';
+    const best = challengeBest(i);
+    const bestLine = best ? '<div class="lvbest">最佳 '+best+' 手</div>' : '';
     if(!levelUnlocked(i))
-      return '<div class="levelcell locked"><div class="lvno">第 '+(i+1)+' 关</div><div class="lvname">'+lv.name+'</div><div class="lvstars dim">未解锁</div></div>';
-    return '<button class="levelcell" onclick="startLevel('+i+')"><div class="lvno">第 '+(i+1)+' 关</div><div class="lvname">'+lv.name+'</div><div class="lvstars">'+starStr(st)+'</div></button>';
+      return head + '<div class="levelcell locked"><div class="lvno">第 '+(i+1)+' 关</div><div class="lvname">'+lv.name+'</div><div class="lvstars dim">未解锁</div></div>';
+    return head + '<button class="levelcell" onclick="startLevel('+i+')"><div class="lvno">第 '+(i+1)+' 关</div><div class="lvname">'+lv.name+'</div><div class="lvstars">'+starStr(st)+'</div>'+bestLine+'</button>';
   }).join('');
-  $('panel').innerHTML = '<h2>残局闯关</h2><div class="who-win">总星 '+totalStars()+' / 60 · 通关解锁下一关</div>' +
+  $('panel').innerHTML = '<h2>残局闯关</h2><div class="who-win">总星 '+totalStars()+' / '+(LEVELS.length*3)+' · 通关解锁下一关</div>' +
     '<div class="levelgrid">'+cells+'</div>' +
     '<button class="ghost" onclick="showModeSelect()">返回场次选择</button>';
   $('overlay').classList.add('show');
@@ -3086,6 +3157,7 @@ function startLevel(idx){
   animateDeal(2);
   centerMsg('第 '+(idx+1)+' 关 · '+lv.name, lv.landlord===0 ? '你是地主 · 由你先手出牌' : '你是农民 · 由你先手出牌');
   runTurn();
+  saveResume();   /* v1.5: 残局/每日开局即写快照 */
 }
 function finishChallenge(winnerSeat){
   setPanelClass();
@@ -3100,6 +3172,8 @@ function finishChallenge(winnerSeat){
     stars = myPlays<=lv.best ? 3 : (myPlays<=lv.best+1 ? 2 : 1);
     if(isDaily){ dailyInfo = recordDailyWin(); }
     else if(!link && stars > (challenge.stars[G.challengeIdx]||0)){ challenge.stars[G.challengeIdx] = stars; saveChallenge(); }
+    /* v1.5: 个人最佳手数(好友挑战局不计; 与星数分开落盘, 刷新纪录才写) */
+    if(!link && recordChallengeBest(G.challengeIdx, myPlays)) saveChallenge();
     if(!link) taskEvent('win');   // v1.3: 每日任务「单机获胜一局」(残局/每日通关计, 好友挑战局不计)
   }
   G.reportSnap = {winnerSeat, stars, playerWin, plays: myPlays, daily: isDaily};   // v1.3: 战报图数据快照
@@ -3109,6 +3183,7 @@ function finishChallenge(winnerSeat){
   if(playerWin){
     desc = (winnerSeat===0 ? '你率先出完' : '队友 '+CHARS[G.aiChar[winnerSeat]].name+' 率先出完') +
       ' · 你共出牌 '+myPlays+' 手（最优 '+lv.best+' 手）';
+    if(!link && challengeBest(G.challengeIdx)) desc += '<br>你的最佳 '+challengeBest(G.challengeIdx)+' 手';
   } else {
     desc = CHARS[G.aiChar[winnerSeat]].name+' 率先出完 · 调整打法，重开本关再战';
   }
@@ -3130,7 +3205,7 @@ function finishChallenge(winnerSeat){
     btns+
     (playerWin && !isDaily ? '<div class="share-result" id="shareResult"></div>' : '')+
     '<div class="share-result" id="reportTip"></div>'+
-    '<div class="stats">'+(isDaily ? '每日一局 · 连续完成 '+(dailyData().streak||0)+' 天' : '总星 '+totalStars()+' / 60')+'</div>';
+    '<div class="stats">'+(isDaily ? '每日一局 · 连续完成 '+(dailyData().streak||0)+' 天' : '总星 '+totalStars()+' / '+(LEVELS.length*3))+'</div>';
   $('overlay').classList.add('show');
   for(const s of [1,2]){
     const won = roleOf(s)===roleOf(winnerSeat);
@@ -3192,6 +3267,7 @@ function newGame(mode){
   renderAll();
   Snd.play('shuffle', .9);
   animateDeal(3);
+  saveResume();   /* v1.5: 叫分前先存 dealt 轻量快照, 刷新最坏同副牌重叫 */
   startBidding();
 }
 function roleOf(i){ return i===G.landlord ? 'landlord' : 'farmer'; }
@@ -3230,6 +3306,7 @@ async function startBidding(){
   centerMsg(CHARS[G.aiChar[highestSeat]] ? CHARS[G.aiChar[highestSeat]].name+' 是地主' : '你是地主', '底分 '+highest+' 分 · 倍数 ×1');
   G.phase='playing'; G.turn = highestSeat; G.lastPlay=null; G.lastOwner=-1; G.passStreak=0;
   renderAll();
+  saveResume();   /* v1.5: 地主确定, 写第一笔 playing 快照(取代 dealt 态) */
   await sleep(paceDelay(900));
   centerMsg('', '');
   runTurn();
@@ -3356,6 +3433,22 @@ function getPlayerHintCandidates(last){
   else cand.sort((a,b)=> (isBombLike(a.info)-isBombLike(b.info)) || b.info.count-a.info.count || a.info.main-b.info.main);
   return cand;
 }
+/* v1.5: 求解级首手 —— 仅当残局(非好友挑战局)、玩家尚未出过牌、且本手由玩家首出时可用;
+   数据为 FIRST_HINTS 求解器预计算结果; 任一条件不满足返回 null, 回落上面的启发式管线。 */
+function solverFirstHint(last){
+  if(!G || G.mode!=='challenge' || G.linkChallenge || G.playsCount[0]!==0 || last) return null;
+  const vals = FIRST_HINTS[G.challengeIdx];
+  if(!vals || !vals.length) return null;
+  const pool = G.hands[0].slice();
+  const cards = [];
+  for(const v of vals){
+    const i = pool.findIndex(c=>c.v===v);
+    if(i<0) return null;
+    cards.push(pool.splice(i,1)[0]);
+  }
+  const info = analyzeCards(cards);
+  return info ? {cards, info} : null;
+}
 function enablePlayerActions(){
   centerMsg('', '');
   Snd.play('hint', .45);
@@ -3388,6 +3481,16 @@ function enablePlayerActions(){
     };
   }
   bHint.onclick = ()=>{
+    /* v1.5: 残局第一手优先给求解级最优解(免费不限次, 文案只陈述事实) */
+    const sh = solverFirstHint(last);
+    if(sh){
+      G.selected = new Set(sh.cards.map(c=>G.hands[0].indexOf(c)));
+      hintIdx = 0;
+      renderHand();
+      bPlay.disabled = G.selected.size===0;
+      centerMsg('最优首手', '这一手经求解器验证，是本关的最优开局之一');
+      return;
+    }
     const cand = getPlayerHintCandidates(last);
     if(!cand.length){ centerMsg('没有能管上的牌', '点「不出」过掉这一手'); return; }
     const p = cand[hintIdx % cand.length]; hintIdx++;
@@ -3711,6 +3814,7 @@ function exitReview(){
 /* ---------- 结算 ---------- */
 function finishGame(winnerSeat){
   G.over = true; G.phase='over';
+  clearResume();   /* v1.5: 对局正常结算即清断局快照(残局/教学/三场次同口径) */
   setPanelClass();
   if(G.mode==='challenge'){ finishChallenge(winnerSeat); return; }
   if(G.tutorial){ finishTutorial(winnerSeat); return; }   // v1.3: 教学局单独结算, 不写战绩/段位/生涯
@@ -4543,8 +4647,9 @@ doPlay = function(seat, cards, info){
     Snd.play('place', .9, 0.96 + Math.random() * 0.08);
   }
   _doPlay(seat, cards, info);
+  saveResume();   /* v1.5: 每手落定后写断局快照(已结算/不纳入模式时内部自动跳过) */
 };
-doPass = function(seat){ recordStep(seat, 'pass', null, null); lastShown[seat]={pass:true}; _doPass(seat); };
+doPass = function(seat){ recordStep(seat, 'pass', null, null); lastShown[seat]={pass:true}; _doPass(seat); saveResume(); };
 
 $('btnCounter').onclick = ()=> setTrackerOn(!trackerOn);
 $('btnPhrase').onclick = ()=> togglePhrasePanel();
@@ -4589,14 +4694,218 @@ function preloadCards(){
   }catch(e){}
 })();
 
+/* ---------- v1.5: 单机断局恢复(本版新增存档键 myskme_ddz_resume, 总数 14→15, 旧键零改动) ----------
+   信封 {v:1, app:'1.5.0', ts, data}; 写入: 叫分前 dealt 轻量态 / 定地主后 / 每手落定后 / 切后台补写;
+   清理: 正常结算 / 用户放弃 / 校验失败 / 超 24 小时。纳入: 经典/癞子/不洗牌/残局/每日一局;
+   不纳入: 好友分享挑战(一次性语义)/教学局/联机(服务端权威)。恢复走询问横幅, 不自动进局。 */
+const RESUME_KEY = 'myskme_ddz_resume';
+const RESUME_MODES = ['classic', 'laizi', 'noshuffle', 'challenge'];
+let resumeOffer = null;   // 本次打开时校验通过的快照 data(仅横幅文案用; 恢复时重新读键校验)
+
+function saveResume(){
+  try{
+    if(!G || G.over || G.online || G.tutorial || G.linkChallenge) return;
+    if(!RESUME_MODES.includes(G.mode)) return;
+    let data = null;
+    if(G.mode !== 'challenge' && G.phase === 'bidding'){
+      /* 叫分阶段局部状态不可恢复: 只存牌面, 恢复时同副牌重新叫分 */
+      data = { phase:'dealt', mode:G.mode, laiziVal:G.laiziVal || 0,
+        hands:G.hands, dipai:G.dipai, aiChar:G.aiChar };
+    } else if(G.phase === 'playing'){
+      data = { phase:'playing', mode:G.mode, laiziVal:G.laiziVal || 0,
+        hands:G.hands, dipai:G.dipai, aiChar:G.aiChar,
+        landlord:G.landlord, base:G.base, mult:G.mult, bombs:G.bombs, ownBombs:G.ownBombs || 0,
+        turn:G.turn, lastPlay:G.lastPlay, lastOwner:G.lastOwner, passStreak:G.passStreak,
+        selfPass:G.selfPass, playsCount:G.playsCount, playedCount:G.playedCount, playsBySide:G.playsBySide };
+      if(G.mode === 'challenge'){
+        data.challengeIdx = G.challengeIdx; data.daily = !!G.daily;
+        data.dailyDate = shanghaiToday();
+        data.trackSeed = G.trackSeed; data.trackBase = G.trackBase;
+      } else if(G.record && G.record.steps && G.record.steps.length <= 120){
+        data.record = G.record;   /* 复盘记录在阈值内一并存(超 120 步剥落, 其余照存), 恢复局仍可复盘 */
+      }
+    } else return;
+    localStorage.setItem(RESUME_KEY, JSON.stringify({ v:1, app:'1.5.0', ts:Date.now(), data }));
+  }catch(e){ /* 无痕/配额等写入失败静默, 不影响对局 */ }
+}
+function clearResume(){ try{ localStorage.removeItem(RESUME_KEY); }catch(e){} }
+
+function resumeCardOk(c){ return !!c && Number.isInteger(c.v) && c.v >= 3 && c.v <= 17 && typeof c.s === 'string'; }
+function resumeCounts(cardLists){
+  const cnt = {};
+  for(const cards of cardLists) for(const c of cards) cnt[c.v] = (cnt[c.v] || 0) + 1;
+  return cnt;
+}
+/* 读端结构不变量校验: 任一不过即判损坏(删键静默回退, 绝不挡首页) */
+function resumeDataValid(d){
+  if(!d || typeof d !== 'object' || !RESUME_MODES.includes(d.mode)) return false;
+  if(!Array.isArray(d.hands) || d.hands.length !== 3 || !d.hands.every(h => Array.isArray(h) && h.every(resumeCardOk))) return false;
+  if(!Array.isArray(d.aiChar) || d.aiChar.length !== 3 || !CHARS[d.aiChar[1]] || !CHARS[d.aiChar[2]]) return false;
+  const cnt = resumeCounts(d.hands);
+  const played = (d.playedCount && typeof d.playedCount === 'object') ? d.playedCount : {};
+  if(d.mode === 'challenge'){
+    if(d.phase !== 'playing') return false;
+    if(!Number.isInteger(d.challengeIdx) || d.challengeIdx < 0 || d.challengeIdx >= LEVELS.length) return false;
+    const lv = LEVELS[d.challengeIdx];
+    if(d.landlord !== lv.landlord) return false;
+    if(d.daily && d.dailyDate !== shanghaiToday()) return false;   /* 每日局跨日作废 */
+    if(!d.trackSeed || !d.trackBase) return false;
+    const init = {};
+    for(const h of lv.hands) for(const v of h) init[v] = (init[v] || 0) + 1;
+    for(let v = 3; v <= 17; v++){
+      const cap = v >= 16 ? 1 : 4, iv = init[v] || 0;
+      if(d.trackBase[v] !== iv || d.trackSeed[v] !== cap - iv) return false;
+      if((cnt[v] || 0) > iv) return false;
+      if((played[v] || 0) !== d.trackSeed[v] + (iv - (cnt[v] || 0))) return false;
+    }
+  } else {
+    if(!Array.isArray(d.dipai) || d.dipai.length !== 3 || !d.dipai.every(resumeCardOk)) return false;
+    const dipCnt = resumeCounts([d.dipai]);
+    if(d.phase === 'dealt'){
+      if(d.landlord !== undefined && d.landlord !== -1) return false;
+      let total = 0;
+      for(let v = 3; v <= 17; v++){
+        const cap = v >= 16 ? 1 : 4;
+        if((cnt[v] || 0) + (dipCnt[v] || 0) > cap) return false;
+        total += cnt[v] || 0;
+      }
+      if(total !== 51) return false;
+    } else if(d.phase === 'playing'){
+      if(![0,1,2].includes(d.landlord)) return false;
+      if(!Number.isInteger(d.base) || d.base < 0 || d.base > 3) return false;
+      if(!(typeof d.mult === 'number' && d.mult >= 1 && d.mult <= 4096)) return false;
+      for(let v = 3; v <= 17; v++){
+        const cap = v >= 16 ? 1 : 4;
+        if((cnt[v] || 0) + (played[v] || 0) !== cap) return false;   /* 手牌+已出 恒等于一副牌 */
+      }
+      const lc = resumeCounts([d.hands[d.landlord]]);
+      for(let v = 3; v <= 17; v++) if((dipCnt[v] || 0) > (lc[v] || 0)) return false;   /* 底牌已并入地主手牌 */
+    } else return false;
+  }
+  if(d.phase === 'playing'){
+    if(![0,1,2].includes(d.turn)) return false;
+    if(d.lastPlay !== null && d.lastPlay !== undefined){
+      const lp = d.lastPlay;
+      if(!lp || !Array.isArray(lp.cards) || !lp.cards.length || !lp.cards.every(resumeCardOk)) return false;
+      if(!lp.info || typeof lp.info.type !== 'string') return false;
+      if(![0,1,2].includes(d.lastOwner)) return false;
+      setLaizi(d.laiziVal || 0);
+      const inf = analyzeCards(lp.cards);   /* 癞子局先 setLaizi 再复核牌型可解析 */
+      setLaizi(0);
+      if(!inf) return false;
+    }
+  }
+  return true;
+}
+function loadResumeOffer(){
+  try{
+    const raw = localStorage.getItem(RESUME_KEY);
+    if(!raw) return null;
+    const env = JSON.parse(raw);
+    const bad = !env || env.v !== 1 || typeof env.ts !== 'number'
+      || (typeof env.app === 'string' && parseInt(env.app, 10) > 1)
+      || (Date.now() - env.ts > 24 * 3600 * 1000)
+      || !resumeDataValid(env.data);
+    if(bad){ clearResume(); return null; }
+    return env.data;
+  }catch(e){ clearResume(); return null; }
+}
+function resumeModeLabel(d){
+  if(d.mode === 'challenge') return (d.daily ? '每日一局' : '残局') + ' · 第 ' + (d.challengeIdx + 1) + ' 关';
+  return d.mode === 'laizi' ? '癞子场' : (d.mode === 'noshuffle' ? '不洗牌场' : '经典场');
+}
+function injectResumeBanner(){
+  if(!resumeOffer) return;
+  const d = resumeOffer;
+  const who = d.phase === 'dealt' ? '叫分还没开始'
+    : (d.landlord === 0 ? '你是地主' : ((CHARS[d.aiChar[d.landlord]] || {}).name || '对方') + ' 是地主');
+  const left = (d.hands && d.hands[0]) ? d.hands[0].length : 0;
+  const html = '<div class="resume-banner">有一局没打完——' + resumeModeLabel(d) + ' · ' + who + ' · 你还剩 ' + left + ' 张。<br>' +
+    '<button class="primary" onclick="resumeGame()">继续对局</button> <button class="ghost" onclick="discardResume()">放弃这局</button></div>';
+  const p = $('panel');
+  if(p) p.innerHTML = html + p.innerHTML;
+}
+function discardResume(){ clearResume(); resumeOffer = null; showModeSelect(); }
+function resumeGame(){
+  const d = loadResumeOffer();   /* 恢复时重新读键校验, 不信内存副本 */
+  resumeOffer = null;
+  if(!d){ showModeSelect(); return; }
+  elderContext = d.mode === 'challenge' ? 'challenge' : d.mode;
+  setPanelClass();
+  hideChallengeBanner();
+  applyElderMode();
+  setElderRecommendation(null);
+  $('overlay').classList.remove('show');
+  hideBubbles();
+  $('dipai').style.display = d.mode === 'challenge' ? 'none' : '';
+  setLaizi(d.laiziVal || 0);
+  window._gid = (window._gid || 0) + 1;
+  G = {
+    gid: window._gid,
+    mode: d.mode, laiziVal: d.laiziVal || 0,
+    phase: d.phase === 'dealt' ? 'bidding' : 'playing',
+    hands: d.hands, dipai: d.dipai || [],
+    aiChar: d.aiChar,
+    landlord: d.phase === 'dealt' ? -1 : d.landlord,
+    base: d.base || 0, mult: d.mult || 1, bombs: d.bombs || 0, ownBombs: d.ownBombs || 0,
+    turn: d.phase === 'dealt' ? 0 : d.turn,
+    lastPlay: d.lastPlay || null, lastOwner: (d.lastOwner === undefined ? -1 : d.lastOwner),
+    passStreak: d.passStreak || 0, selfPass: d.selfPass || [0,0,0], playsCount: d.playsCount || [0,0,0],
+    playedCount: d.playedCount || {},
+    playsBySide: d.playsBySide || { landlord:0, farmer:0 },
+    selected: new Set(), over: false,
+  };
+  if(d.mode === 'challenge'){
+    G.challengeIdx = d.challengeIdx; G.daily = !!d.daily; G.linkChallenge = null;
+    G.trackSeed = d.trackSeed; G.trackBase = d.trackBase;
+  } else if(d.phase === 'dealt'){
+    G.playedCount = {};
+    for(let v = 3; v <= 17; v++) G.playedCount[v] = 0;
+  }
+  if(d.record) G.record = d.record;
+  $('avR').src = CHARS[d.aiChar[1]].av; $('nmR').textContent = CHARS[d.aiChar[1]].name;
+  $('avL').src = CHARS[d.aiChar[2]].av; $('nmL').textContent = CHARS[d.aiChar[2]].name;
+  updateStoryButtonVisibility();
+  $('uiBase').textContent = (d.mode === 'challenge' || d.phase === 'dealt') ? '—' : d.base + ' 分';
+  $('uiMult').textContent = '×' + G.mult;
+  const noteEl = $('modeNote');
+  if(d.mode === 'challenge'){
+    const lv = LEVELS[d.challengeIdx];
+    $('uiMode').textContent = '残局 · 第 ' + (d.challengeIdx + 1) + ' 关';
+    noteEl.textContent = '第 ' + (d.challengeIdx + 1) + ' 关《' + lv.name + '》：' + lv.goal + ' ' + lv.best + ' 手内三星，' + (lv.best + 1) + ' 手内两星。';
+    if(d.daily){
+      noteEl.textContent = '每日一局 · 第 ' + (d.challengeIdx + 1) + ' 关《' + lv.name + '》：全桌同题。记入连续记录，不影响残局星数。';
+      const banner = $('challengeBanner');
+      banner.textContent = '每日一局 · ' + shanghaiToday() + ' · 连续完成 ' + (dailyData().streak || 0) + ' 天';
+      banner.classList.add('show');
+    }
+  } else {
+    $('uiMode').textContent = d.mode === 'laizi' ? '癞子场 · ' + rankName(d.laiziVal || 0) + ' 癞' : (d.mode === 'noshuffle' ? '不洗牌场' : '经典场');
+    noteEl.textContent = d.mode === 'laizi'
+      ? '癞子点 ' + rankName(d.laiziVal || 0) + '：金框带「癞」，可当任意普通牌，不能当大小王。软炸小于硬炸，王炸最大。'
+      : d.mode === 'noshuffle' ? '不洗牌场：成组发牌，牌型更易成型。'
+      : '经典场：标准规则，随机洗牌发牌。';
+  }
+  noteEl.classList.add('show');
+  lastShown[0] = lastShown[1] = lastShown[2] = null;
+  if(G.lastPlay && G.lastOwner >= 0) lastShown[G.lastOwner] = { cards: G.lastPlay.cards };
+  $('actionBar').innerHTML = '';
+  hintIdx = 0;
+  renderAll();
+  if(d.phase === 'dealt') startBidding();
+  else runTurn();
+}
+
 window.addEventListener('load', ()=>{
   elderContext='menu'; applyElderMode(); renderStats(); preloadCards();
   if(pendingChallenge) startLevel(pendingChallenge.idx);
   else {
+    resumeOffer = loadResumeOffer();   /* v1.5: 断局恢复询问(校验不过已在读端静默删键) */
     showModeSelect();
     // v0.9: 带 ?room=房码 打开(邀请链接) -> 直达联机加入面板并预填房码
     const rp = new URLSearchParams(location.search).get('room');
     if(rp) showOnlinePanel(rp.trim().toUpperCase());
+    else injectResumeBanner();
   }
 });
 
