@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.5.0</title>
+<title>萌友斗地主 · 原型 v1.6.0</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -689,7 +689,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">原型 v1.5.0 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">原型 v1.6.0 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1618,7 +1618,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '原型 v1.5.0 · ' + bgName + '桌';
+  if(tv) tv.textContent = '原型 v1.6.0 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -2775,7 +2775,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一点数为癞子（金框标记），可当任意普通牌，不能当大小王。癞子炸弹是软炸，硬炸更大，王炸最大。'],
     ['noshuffle','不洗牌场','整副牌成组分发，顺子、连对、炸弹更易成型。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.5.0</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.6.0</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked, true)"><span><b>大字模式</b><small>大字大牌、慢节奏，发亮的牌可直接出。三场次生效。按屏幕自动推荐，可手动改。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
@@ -2906,6 +2906,41 @@ const LEVELS = [
   { name:'单张拉锯', landlord:0, chars:['fish','snake'], best:7,
     goal:'满手单张，没有一张成型牌——小牌先行探路，大牌和王炸都是陷阱，谁先亮底谁先输。',
     hands:[[17,16,13,11,9,7,5],[15,14,12,10,8,6,4],[15,14,13,12,10,6,3]] },
+  /* ---------- v1.6: B 批 31–40 关(困难档) ----------
+     规格: best 4–6 / 最优首手占比 ≤40% / 败着 ≥1 / 总牌 25–35;
+     结构修正: 农民关 3 关(含双农民轮转送牌), 六角色对手累计出场配平至每人 ≥6;
+     新母题: 对子拉锯 / 藏炸时机 / 双农民轮转送牌。每关均过五步验证门,
+     记录见 残局验证记录-v1.6.txt。 */
+  { name:'对子拉锯', landlord:0, chars:['monkey','teapot'], best:6,
+    goal:'对子一副压一副——先从小对子起拉锯，把对面的对 A 逼出来，再用对 2 夺回牌权，一副副压到最后。',
+    hands:[[15,15,13,13,11,11,9,9,7,7,5,5],[14,14,12,12,10,8,6,4],[16,15,13,12,10,10,8,7]] },
+  { name:'藏炸待时', landlord:0, chars:['teapot','egg'], best:4,
+    goal:'四张 10 先藏着——顺子和对子先行探路，等对面的四张 J 露头，炸弹再落下收官。',
+    hands:[[10,10,10,10,9,8,7,6,5,14,14,12,12,4,3],[17,15,14,13,11,11,11,11],[15,13,13,12,12,9,8,7]] },
+  { name:'轮转送牌', landlord:2, chars:['monkey','donkey'], best:5,
+    goal:'不是一个人冲到底：对子递给队友，队友接棒往前送，你再把回程守住——两个人轮流出牌，谁也别抢拍。',
+    hands:[[17,16,10,10,6,6,3],[12,12,10,10,5,3],[15,15,14,14,14,13,13,12,11,11,9,9,8]] },
+  { name:'低空三飞', landlord:0, chars:['monkey','teapot'], best:6,
+    goal:'三副三张贴着地面排开——先拆哪一副、单张 6 给谁当翅膀，决定这架低空飞机能不能稳稳落地。',
+    hands:[[16,14,14,11,11,11,10,10,10,9,9,9,6],[15,11,9,7,5,4],[15,8,8,8,8,4,4]] },
+  { name:'对子长河', landlord:0, chars:['egg','donkey'], best:4,
+    goal:'对子连成长河——先让小对子探路，大对子压阵，整条连对一次过河，别中途拆成单张。',
+    hands:[[17,14,14,13,13,12,12,11,11,10,10,4,4,3,3],[16,15,15,13,11,9,8,6],[15,14,12,10,9,7,5,4,4]] },
+  { name:'四张两用', landlord:0, chars:['teapot','monkey'], best:5,
+    goal:'四张 K 不只是炸弹——对 5 先探路，等对面的小炸露头，再决定它是炸出去，还是带走两张散牌。',
+    hands:[[17,16,13,13,13,13,10,9,5,5,4],[8,8,8,8,14,12,9,7,5],[15,14,12,11,6,6,6,6,3]] },
+  { name:'二次守门', landlord:1, chars:['egg','teapot'], best:4,
+    goal:'地主带着炸弹上门——王炸留着接炸，三张 A 紧随其后守第二轮；大小王拆开用，门就守不住。',
+    hands:[[17,16,14,14,14,9,9,7,4],[15,14,13,12,11,10,9,8,7,5,5,5,5,3],[15,15,13,12,10,8,6]] },
+  { name:'长顺带对', landlord:0, chars:['donkey','monkey'], best:5,
+    goal:'长顺和对子挤在一手里——先清哪一头都有讲究，次序错了，大小王就会分头堵你。',
+    hands:[[15,14,13,12,11,10,9,8,7,7,4,4,3],[16,14,13,11,10,8,6,5,3],[17,12,11,9,8,6,5,3]] },
+  { name:'守门加厚', landlord:2, chars:['teapot','snake'], best:5,
+    goal:'地主手牌更厚——先放小牌探路，对 K 和对 2 留着分段守门；大牌一次亮尽，地主就会顺势跑掉。',
+    hands:[[15,15,14,13,13,6,4],[14,9,9,8,5,3],[16,14,14,12,12,11,11,10,10,9,7,5]] },
+  { name:'决战添翼', landlord:0, chars:['fish','egg'], best:4,
+    goal:'决战之外多一副对 4——它不是尾巴：算清哪一手把它带走，三张 K 和顺子才收得干净。',
+    hands:[[17,13,13,13,11,10,9,8,7,4,4,3],[16,15,14,12,11,10,6,5,3],[15,15,12,11,9,8,6,5,4]] },
 ];
 /* v1.5: 求解级首手(每关一条, 由求解器首手分析预计算并经测试断言与求解器一致):
    残局中玩家尚未出第一手且由玩家首出时, 「提示」优先给这一手, 免费不限次;
@@ -2917,6 +2952,8 @@ const FIRST_HINTS = [
   [6,7,8,9,10,11],
   [3,4,9,9,9,9], [15,15], [3,15,15,15], [4], [7,7,8,8,8,8,13,13],
   [11,11,12,12,13,13,14,14], [10,10,11,11,11,12,12,12,15,15], [4,14,14,14], [3], [5],
+  [5,5], [3,4,5,6,7,8,9], [6,6], [9,9,9], [3,3],
+  [5,5], [4,14,14,14], [4,4], [4], [3],
 ];
 let challenge = JSON.parse(localStorage.getItem('myskme_ddz_challenge')||'{"stars":[]}');
 if(!Array.isArray(challenge.stars)) challenge.stars = [];
@@ -3074,8 +3111,8 @@ function showLevelSelect(){
   hideBubbles();
   window._gid = (window._gid||0)+1;
   if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
-  /* v1.5: 难度档标签(1–10 入门 / 11–20 进阶 / 21–30 熟练) + 个人最佳手数 */
-  const tierOf = i => i < 10 ? '入门' : (i < 20 ? '进阶' : '熟练');
+  /* v1.5: 难度档标签(1–10 入门 / 11–20 进阶 / 21–30 熟练 / 31–40 困难) + 个人最佳手数 */
+  const tierOf = i => i < 10 ? '入门' : (i < 20 ? '进阶' : (i < 30 ? '熟练' : '困难'));
   let lastTier = '';
   const cells = LEVELS.map((lv,i)=>{
     const st = challenge.stars[i]||0;
