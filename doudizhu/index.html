@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.2.1</title>
+<title>萌友斗地主 · 正式版 v2.2.2</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -854,7 +854,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.1 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.2 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1814,7 +1814,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.2.1 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.2.2 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -2204,6 +2204,10 @@ function animateDeal(count){
 
 let G=null;       // 对局状态
 let hintIdx=0;
+/* v2.2.2: 选牌来源标记 —— 当前 G.selected 是否由「提示」预选写入(含求解首手/长辈回合自动推荐)。
+   此前无此标记, 点牌只是无条件 toggle: 提示预选 AA 后点 7 只会把 7 叠加成 AA+7(非法组),
+   预选组永不落下, 玩家感觉「点 7 没反应、提示一直在干扰」。手动点任意一张牌即令此标记失效。 */
+let hintSel=false;
 /* v2.0 查 bug 修复: 顶层 JSON.parse 加 try/catch 与形状校验——stats 键损坏(非法 JSON)时旧写法会在脚本求值期抛错整页白屏; 现静默回退默认 */
 let stats=(()=>{ try{ const s=JSON.parse(localStorage.getItem('myskme_ddz_stats')||'null');
   if(s && typeof s==='object' && typeof s.win==='number' && typeof s.total==='number' && typeof s.points==='number') return s;
@@ -3045,6 +3049,7 @@ function renderOnlinePlayBar(st){
   bar.innerHTML = '';
   const g = st.game;
   hintIdx = 0;
+  hintSel = false;
   if (g.turn !== ON.seat){
     ON._playCue = false;
     if (ON._warnT){ clearTimeout(ON._warnT); ON._warnT = 0; }
@@ -3071,6 +3076,7 @@ function renderOnlinePlayBar(st){
     if (!cand.length){ centerMsg('没有能管上的牌', '点「不出」过掉这一手'); return; }
     const p = cand[hintIdx % cand.length]; hintIdx++;
     G.selected = new Set(p.cards.map(c => G.hands[0].indexOf(c)));
+    hintSel = true;
     renderHand();
     bPlay.disabled = G.selected.size === 0;
   };
@@ -3078,7 +3084,7 @@ function renderOnlinePlayBar(st){
     const cards = [...G.selected].sort((a, b) => a - b).map(i => G.hands[0][i]);
     if (!cards.length) return;
     if (ON.ws) ON.ws.send(JSON.stringify({ type: 'play', cards: cards.map(c => ({ v: c.v, s: c.s })) }));
-    G.selected.clear();
+    G.selected.clear(); hintSel = false;
     bar.innerHTML = '<span class="turntip">已出牌，等其他人…</span>';
   };
   bPass.onclick = () => {
@@ -3189,7 +3195,7 @@ function showModeSelect(){
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.1</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.2</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
@@ -3977,6 +3983,7 @@ function enablePlayerActions(){
   centerMsg('', '');
   Snd.play('hint', .45);
   setElderRecommendation(null);
+  hintSel = false;
   const bar = $('actionBar');
   const last = (G.lastOwner===0 || G.lastOwner<0) ? null : G.lastPlay;
   bar.innerHTML = '';
@@ -4000,7 +4007,7 @@ function enablePlayerActions(){
         return;
       }
       G.selected = new Set(cards.map(c=>G.hands[0].indexOf(c)));
-      bar.innerHTML=''; hintIdx=0; G.selected.clear(); setElderRecommendation(null);
+      bar.innerHTML=''; hintIdx=0; G.selected.clear(); hintSel=false; setElderRecommendation(null);
       doPlay(0, cards, info);
     };
   }
@@ -4009,6 +4016,7 @@ function enablePlayerActions(){
     const sh = solverFirstHint(last);
     if(sh){
       G.selected = new Set(sh.cards.map(c=>G.hands[0].indexOf(c)));
+      hintSel = true;
       hintIdx = 0;
       renderHand();
       bPlay.disabled = G.selected.size===0;
@@ -4019,6 +4027,7 @@ function enablePlayerActions(){
     if(!cand.length){ centerMsg('没有能管上的牌', '点「不出」过掉这一手'); return; }
     const p = cand[hintIdx % cand.length]; hintIdx++;
     G.selected = new Set(p.cards.map(c=>G.hands[0].indexOf(c)));
+    hintSel = true;
     if(elderActive()){ setElderRecommendation(p); if(bAuto) bAuto.disabled = false; }
     renderHand();
     bPlay.disabled = G.selected.size===0;   // 关键修复: 提示选牌后同步「出牌」按钮状态(此前一直禁用, 造成死锁)
@@ -4038,16 +4047,17 @@ function enablePlayerActions(){
       else centerMsg('管不上', '换大一点的牌，或点不出');
       return;
     }
-    bar.innerHTML=''; hintIdx=0; G.selected.clear(); setElderRecommendation(null);
+    bar.innerHTML=''; hintIdx=0; G.selected.clear(); hintSel=false; setElderRecommendation(null);
     doPlay(0, cards, info);
   };
-  bPass.onclick = ()=>{ bar.innerHTML=''; hintIdx=0; G.selected.clear(); setElderRecommendation(null); doPass(0); };
+  bPass.onclick = ()=>{ bar.innerHTML=''; hintIdx=0; G.selected.clear(); hintSel=false; setElderRecommendation(null); doPass(0); };
   if(elderActive()){
     const cand = getPlayerHintCandidates(last);
     if(cand.length){
       const rec = cand[0];
       setElderRecommendation(rec);
       G.selected = new Set(rec.cards.map(c=>G.hands[0].indexOf(c)));
+      hintSel = true;
       hintIdx = 1;
       if(bAuto) bAuto.disabled = false;
       tip.textContent = last ? '轮到你了，跟着发亮的牌出就行' : '轮到你了，发亮的这一组可以直接出';
@@ -4532,11 +4542,16 @@ function renderHand(){
     }
     wrap.onclick = ()=>{
       if(G.phase!=='playing' || G.turn!==0 || G.over) return;
-      const selecting = !G.selected.has(i);
+      /* v2.2.2: 手动点牌永远优先于提示预选 —— 提示态下点组外牌, 先整组落下、从这张重新选;
+         点已选牌(含预选中的)取消它; 两种情况都退出提示态并清掉长辈推荐高亮/自动出牌载荷。 */
+      if(hintSel && !G.selected.has(i)) G.selected.clear();
       G.selected.has(i) ? G.selected.delete(i) : G.selected.add(i);
+      const selecting = G.selected.has(i);
+      hintSel = false;
       Snd.play('select', selecting ? .8 : .45);
-      hintIdx = 0; centerMsg('', ''); renderHand();
+      hintIdx = 0; centerMsg('', ''); setElderRecommendation(null); renderHand();
       const bp = $('btnPlay'); if(bp) bp.disabled = G.selected.size===0;
+      const ba = $('btnElderAuto'); if(ba) ba.disabled = true;
     };
     handEl.appendChild(wrap);
   });
@@ -5606,6 +5621,7 @@ async function tutPlayerTurn(){
 function tutArmActions(){
   const bar = $('actionBar');
   bar.innerHTML = '';
+  hintSel = false;
   const last = (G.lastOwner===0 || G.lastOwner<0) ? null : G.lastPlay;
   const tip = document.createElement('span'); tip.className='turntip';
   tip.textContent = G.tut.stage==='lead' ? '选一对牌，点「出牌」' : (last ? '轮到你管上' : '由你出牌');
@@ -5618,6 +5634,7 @@ function tutArmActions(){
     if(!cand.length){ tutToast('这手没有能管上的牌，点「不出」过掉。'); return; }
     const p = cand[hintIdx % cand.length]; hintIdx++;
     G.selected = new Set(p.cards.map(c=>G.hands[0].indexOf(c)));
+    hintSel = true;
     renderHand(); tutApplyGlow();
     bPlay.disabled = G.selected.size===0;
   };
@@ -5642,7 +5659,7 @@ function tutArmActions(){
     }
     if(G.tut.stage==='lead') G.tut.stage = 'follow';
     else if(G.tut.stage==='follow') G.tut.stage = 'free';
-    bar.innerHTML=''; hintIdx=0; G.selected.clear(); tutHide();
+    bar.innerHTML=''; hintIdx=0; G.selected.clear(); hintSel=false; tutHide();
     doPlay(0, cards, info);
   };
   bPass.onclick = ()=>{
@@ -5651,7 +5668,7 @@ function tutArmActions(){
       tutToast('这手先别过：你有更大的对子，炸弹也能管。先试着管上。');
       return;
     }
-    bar.innerHTML=''; hintIdx=0; G.selected.clear(); tutHide();
+    bar.innerHTML=''; hintIdx=0; G.selected.clear(); hintSel=false; tutHide();
     doPass(0);
   };
   bar.append(bHint, bPlay, bPass);
