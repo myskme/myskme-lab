@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.0.0</title>
+<title>萌友斗地主 · 正式版 v2.1.0</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -678,6 +678,54 @@
     #bg{animation:none;}
     .panel{animation:none;}
   }
+
+  /* ---------- v2.1: 茶点小铺 / 头像框 / 黑卡 ---------- */
+  .avframe{position:relative; display:inline-block; line-height:0;}
+  .avframe img.avatar{border-radius:50%;}
+  .avframe .framering{position:absolute; left:-19%; top:-19%; width:138%; height:138%; max-width:none; pointer-events:none;}
+  .shop-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0;}
+  .shop-item{background:rgba(247,239,220,.05); border:1px solid rgba(201,162,77,.25); border-radius:12px; padding:10px; text-align:center;}
+  .shop-item.equipped{border-color:var(--gold-l); box-shadow:0 0 0 1px rgba(231,200,119,.4);}
+  .shop-thumb{width:100%; height:86px; object-fit:cover; border-radius:8px; display:block; margin:0 auto;}
+  .shop-thumb.back{width:auto; height:96px;}
+  .shop-thumb.fxph{display:flex; align-items:center; justify-content:center; background:linear-gradient(160deg,#1a4a43,#0a2723); color:var(--gold-l); font-weight:700; height:86px;}
+  .shop-av .avatar{width:64px; height:64px;}
+  .shop-iname{font-weight:700; margin-top:6px;}
+  .shop-idesc{font-size:12.5px; color:rgba(247,239,220,.66); margin:4px 0 8px; line-height:1.55;}
+  .shop-ibtns{display:flex; gap:6px; justify-content:center; flex-wrap:wrap;}
+  .shop-ibtns .primary,.shop-ibtns .ghost{min-height:44px;}
+  .tier-tag{font-size:11px; border:1px solid rgba(201,162,77,.5); border-radius:20px; padding:1px 7px; color:var(--gold-l); white-space:nowrap;}
+  .tier-tag.t-N{color:#b7c9bd; border-color:rgba(183,201,189,.4);}
+  .tier-tag.t-CR{color:#f3d98a; border-color:#a67c3d; background:rgba(166,124,61,.15);}
+  .shop-h{margin:16px 0 8px; color:var(--gold-l); text-align:left;}
+  .shop-set{background:rgba(247,239,220,.05); border:1px solid rgba(201,162,77,.25); border-radius:12px; padding:10px 12px; margin:8px 0; text-align:left;}
+  .set-dots{display:flex; gap:6px; margin:6px 0;}
+  .set-dot{width:12px; height:12px; border-radius:50%; border:1px solid rgba(201,162,77,.6);}
+  .set-dot.on{background:var(--gold-l);}
+  .shop-progress{height:8px; background:rgba(247,239,220,.08); border-radius:6px; margin:8px 0; overflow:hidden;}
+  .shop-progress-fill{height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-l));}
+  .shop-preview{text-align:center; margin:8px 0; color:rgba(247,239,220,.66); font-size:13px;}
+  .fanprev{display:flex; justify-content:center; margin-top:6px;}
+  .fanprev img{width:64px; height:90px; border-radius:6px; margin-left:-14px; box-shadow:0 2px 8px rgba(0,0,0,.4);}
+  .fanprev img:first-child{margin-left:0;}
+  .num-big{font-size:34px; font-weight:800; letter-spacing:.08em; color:#e7c877; text-align:center; margin:6px 0 2px;}
+  .num-tier{text-align:center; margin-bottom:6px;}
+  .pity-box{margin:8px 0;}
+  .pity-row{display:flex; align-items:center; gap:8px; font-size:12.5px; color:rgba(247,239,220,.66); margin:4px 0;}
+  .pity-bar{flex:1; height:7px; background:rgba(247,239,220,.08); border-radius:5px; overflow:hidden;}
+  .pity-fill{height:100%; background:var(--gold);}
+  .prob-table{width:100%;}
+  .blackcard{background:linear-gradient(150deg,#0b0c0b,#171814); border:1.5px solid #a67c3d; border-radius:18px; padding:16px 18px; margin:10px 0; aspect-ratio:1.586; display:flex; flex-direction:column; justify-content:space-between; box-sizing:border-box; box-shadow:inset 0 0 0 4px #0b0c0b, inset 0 0 0 5px rgba(201,162,77,.35);}
+  .blackcard .bc-brand{color:#a67c3d; font-size:12px; letter-spacing:.18em;}
+  .blackcard .bc-no{color:#e7c877; font-weight:700; font-size:clamp(30px,8vw,42px); letter-spacing:.12em; font-variant-numeric:tabular-nums;}
+  .blackcard.gold .bc-no{color:#f3d98a; text-shadow:0 0 18px rgba(243,217,138,.45);}
+  .blackcard .bc-row{display:flex; justify-content:space-between; align-items:center; gap:8px;}
+  .blackcard .bc-nick{color:#f7efdc; font-weight:700;}
+  .blackcard .bc-tier{color:#b7c9bd; display:flex; align-items:center; gap:6px;}
+  .blackcard .bc-sub{color:#8a9a8e; font-size:12px; line-height:1.6;}
+  .blackcard.locked{border-color:rgba(166,124,61,.35); box-shadow:none;}
+  .blackcard .bc-no.dim{color:#5c665e; font-size:26px;}
+  body.elder .shop-idesc{font-size:14.5px;}
 </style>
 </head>
 <body>
@@ -689,7 +737,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.0.0 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.1.0 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1613,12 +1661,14 @@ function saveSetting(k, v){
 /* v1.4.1: 桌布切换 —— 三张既有桌布资产(茶肆夜话/桃园午后/金榜大厅)此前只有茶肆夜话接入页面,
    本版在场次面板设置区补齐切换; 选择存 myskme_ddz_settings.bg, 不新增存档键。 */
 const TABLECLOTHS = ['茶肆夜话', '桃园午后', '金榜大厅'];
+/* v2.1: 已拥有的商城桌布由文末商城段 shopFixBg() 在初始化时并入本表(只增内容, 不改绑定);
+   商城桌布作 bg 时此处首检不通过先落默认, shopFixBg 随即按 settings.bg 纠正。 */
 let bgName = TABLECLOTHS.includes(ddzSettings.bg) ? ddzSettings.bg : '茶肆夜话';
 function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.0.0 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.1.0 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -2141,14 +2191,15 @@ function showCareer(){
     ['最高连胜', careerGames? c.best+' 连胜（当前 '+c.streak+' 连胜）' : '—'],
     ['打出炸弹', careerGames? c.bombs+' 个' : '—'],
     ['春天局数', careerGames? c.springs+' 局' : '—'],
-    ['茶点', tasksData().treats+' 枚（每日任务纪念，只记不用）'],
+    ['茶点', '余额 '+tasksData().treats+' 枚 · 累计获得 '+tasksData().treatsEarned+' 枚'],
     ['残局总星', totalStars()+' / '+(LEVELS.length*3)],
     ['每日一局', '已连续完成 '+(dailyData().streak||0)+' 天'],
   ];
   const emptyBlock = (stats.total===0 && careerGames===0)
     ? '<div class="empty-state"><div class="big">暂无对局记录</div><p>打完第一局三场次对局，战绩与段位记在这里。</p></div>' : '';
   $('panel').innerHTML =
-    '<h2>战绩生涯</h2><div class="who-win">茶肆夜话桌 · 你的牌桌履历</div>' +
+    '<h2>战绩生涯</h2><div class="who-win">' + bgName + '桌 · 你的牌桌履历</div>' +
+    blackCardHTML() +
     '<div class="rankbar">' + tierBadgeHTML(rk.points) +
     '<span class="rank-info">'+seasonLabel(rk.season)+'赛季 · 段位分 <b>'+rk.points+'</b><br>历史最高 '+tierName(histBestPts)+'</span></div>' +
     emptyBlock +
@@ -2772,6 +2823,7 @@ function showModeSelect(){
   setPanelClass();
   hideChallengeBanner();
   hideBubbles();
+  try{ applyTablecloth(); }catch(e){}   /* v2.1: 复位商城桌布预览(试换不落存) */
   window._gid = (window._gid||0)+1;
   if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
   const modes = [
@@ -2779,7 +2831,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一点数为癞子（金框标记），可当任意普通牌，不能当大小王。癞子炸弹是软炸，硬炸更大，王炸最大。'],
     ['noshuffle','不洗牌场','整副牌成组分发，顺子、连对、炸弹更易成型。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 正式版 v2.0.0</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 正式版 v2.1.0</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked, true)"><span><b>大字模式</b><small>大字大牌、慢节奏，发亮的牌可直接出。三场次生效。按屏幕自动推荐，可手动改。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
@@ -2793,12 +2845,13 @@ function showModeSelect(){
     '<div class="musiccredit">音乐：Liyan — elerya（CC-BY 3.0）；大厅曲与紧张曲为 CC0 作品。来源：OpenGameArt。</div>' +
     '<div class="levelswitch"><span class="lvlab">桌布</span>' +
     TABLECLOTHS.map(t=>'<button type="button" class="levelbtn'+(bgName===t?' on':'')+'" data-bg="'+t+'" onclick="setTablecloth(\''+t+'\')">'+t+'</button>').join('') +
-    '<small>三张桌布随心换，选择记在设置里。</small></div>' +
+    '<small>桌布随心换，选择记在设置里；更多桌布在「茶点小铺」里换。</small></div>' +
     modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
     '<button class="modebtn" onclick="startTutorial()"><b>新手教学局</b><span>'+(tutorialData().done ? '已完成，可重温。' : '第一次打？先来这一局。')+'边打边学：叫分、出牌、管上、配合。不计战绩与段位。</span></button>' +
     '<button class="modebtn" onclick="showOnlinePanel()"><b>联机茶局房</b><span>建房发房码，家人输码即进；空位 AI 补，掉线自动重连。</span></button>' +
     dailyEntryHTML() +
     tasksEntryHTML() +
+    shopEntryHTML() +
     '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>'+LEVELS.length+' 关固定残局：通关赢星解锁下一关，手数越少星越高。当前总星 '+totalStars()+' / '+(LEVELS.length*3)+'。</span></button>' +
     '<button class="modebtn" onclick="showStoryCodex(\'menu\')"><b>故事图鉴</b><span>六位角色各 3 篇，已解锁 '+unlockedStoryCount()+' / 18 篇。击败角色、攒残局星逐篇解锁。</span></button>' +
     '<button class="modebtn" onclick="showCareer()"><b>战绩生涯</b><span>总场次、胜率、分项、连胜与段位履历，一页看全。</span></button>' +
@@ -3100,7 +3153,11 @@ function parseChallengeParams(){
     if(!Number.isInteger(levelNum) || levelNum<1 || levelNum>LEVELS.length) return null;
     if(!Number.isInteger(stars) || stars<1 || stars>3) return null;
     if(!Number.isInteger(plays) || plays<1 || plays>999) return null;
-    return {idx: levelNum-1, stars, plays};
+    const out = {idx: levelNum-1, stars, plays};
+    /* v2.1: 可选的挑战者茶号参数(严格校验, 非法即忽略; 仅展示) */
+    const cn = p.get('n'), ct = p.get('t');
+    if(cn && /^[1-9][0-9]{5}$/.test(cn) && ['N','R','SR','SSR','CR'].includes(ct)) out.from = {no: cn, tier: ct};
+    return out;
   }catch(e){ return null; }
 }
 let pendingChallenge = parseChallengeParams();
@@ -3117,6 +3174,8 @@ function buildChallengeLink(idx, stars, plays){
   url.searchParams.set('challenge', String(idx+1));
   url.searchParams.set('stars', String(stars));
   url.searchParams.set('plays', String(plays));
+  /* v2.1: 附挑战者茶号(仅落地页展示, 不参与任何判定) */
+  try{ const sd = shopData(); if(sd.num && sd.num.no){ url.searchParams.set('n', sd.num.no); url.searchParams.set('t', sd.num.tier); } }catch(e){}
   url.hash = '';
   return url.toString();
 }
@@ -3128,11 +3187,13 @@ async function shareChallenge(idx, stars, plays){
     try{
       await navigator.clipboard.writeText(link);
       out.textContent = '链接已复制，快发给朋友挑战吧。';
+      creditShareTreat();   /* v2.1: 分享回馈茶点(日/周上限在 creditShareTreat 内) */
       return;
     }catch(e){ /* 剪贴板不可用时走下方手动复制 */ }
   }
   const safe = link.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   out.innerHTML = '自动复制没有成功，请手动复制这条链接：<div class="share-link">'+safe+'</div>';
+  creditShareTreat();
 }
 function challengeCompareText(link, stars, plays, playerWin){
   if(!link) return '';
@@ -3222,7 +3283,8 @@ function startLevel(idx){
   noteEl.classList.add('show');
   const banner = $('challengeBanner');
   if(linkChallenge){
-    banner.textContent = '好友向你发起挑战：'+linkChallenge.stars+' 星 · '+linkChallenge.plays+' 手过关，你能更好吗？';
+    banner.textContent = '好友向你发起挑战：'+linkChallenge.stars+' 星 · '+linkChallenge.plays+' 手过关，你能更好吗？' +
+      (linkChallenge.from ? ' 挑战者茶号 NO.'+linkChallenge.from.no+' · '+NUM_TIER_NAME[linkChallenge.from.tier]+'档。' : '');
     banner.classList.add('show');
   } else {
     banner.textContent = '';
@@ -3248,6 +3310,7 @@ function finishChallenge(winnerSeat){
   const myPlays = G.playsCount[0];
   let stars = 0;
   let dailyInfo = null;
+  G._chWasThree = ((challenge.stars[G.challengeIdx]||0) >= 3);   /* v2.1: 首次三星判定须在写新星数前取旧值 */
   if(playerWin){
     stars = myPlays<=lv.best ? 3 : (myPlays<=lv.best+1 ? 2 : 1);
     if(isDaily){ dailyInfo = recordDailyWin(); }
@@ -3257,7 +3320,15 @@ function finishChallenge(winnerSeat){
     if(!link) taskEvent('win');   // v1.3: 每日任务「单机获胜一局」(残局/每日通关计, 好友挑战局不计)
   }
   G.reportSnap = {winnerSeat, stars, playerWin, plays: myPlays, daily: isDaily};   // v1.3: 战报图数据快照
-  if(playerWin){ Snd.win(); Fx.gold(); } else { Snd.lose(); }
+  /* v2.1: 茶点产出 —— 残局/每日首通 +1(每日 1 次); 普通残局首次三星一次性 +2; 好友挑战局不计 */
+  G._treatsGain = 0;
+  if(playerWin && !link){
+    const tt = tasksData(); let gain = 0;
+    if(!tt.earn.ch){ tt.earn.ch = 1; gain += 1; }
+    if(!isDaily && stars===3 && !G._chWasThree) gain += 2;
+    if(gain > 0){ saveTasks(); creditTreats(gain); G._treatsGain = gain; }
+  }
+  if(playerWin){ Snd.win(); shopCelebrate(); } else { Snd.lose(); }
   renderAll();
   let desc;
   if(playerWin){
@@ -3281,6 +3352,7 @@ function finishChallenge(winnerSeat){
     (isDaily && playerWin ? '<div class="challenge-compare">每日一局完成 · 连续 '+(dailyInfo ? dailyInfo.streak : 1)+' 天。明天换新题。</div>' : '')+
     (isDaily && !playerWin ? '<div class="challenge-compare">还没过关，重开再试——今天全桌同题。</div>' : '')+
     (compare ? '<div class="challenge-compare">'+compare+'</div>' : '')+
+    treatsLine() +
     taskNewLine()+
     btns+
     (playerWin && !isDaily ? '<div class="share-result" id="shareResult"></div>' : '')+
@@ -3908,7 +3980,7 @@ function finishGame(winnerSeat){
   const score = G.base * G.mult;
   /* v1.1: 结算音效与特效(春天花瓣雨 / 胜利金粉 / 金币声; 失败保持克制) */
   if(spring){ fxText('春 天'); Snd.spring(); Fx.petals(); }
-  if(myWin){ Snd.win(); Snd.play('coins', .9); Fx.gold(); bounceAvatar(winnerSeat); } else { Snd.lose(); }
+  if(myWin){ Snd.win(); Snd.play('coins', .9); shopCelebrate(); bounceAvatar(winnerSeat); } else { Snd.lose(); }
   stats.total++; if(myWin){ stats.win++; stats.points += score; } else stats.points -= score;
   saveStats(); renderStats();
   recordStoryDefeats(myWin);
@@ -3916,6 +3988,9 @@ function finishGame(winnerSeat){
   const rankInfo = applyRankResult(myWin, score);   // v0.8: 三场次计入赛季段位(残局已在上方分流, 不会走到这里)
   recordCareerResult(myWin, spring);   // v1.2: 生涯分项累计(与段位同口径, 仅三场次)
   if(myWin) taskEvent('win');   // v1.3: 每日任务「单机获胜一局」
+  /* v2.1: 茶点产出 —— 单机获胜 +1, 每日上限 3(教学/联机不走本函数, 口径与任务一致) */
+  G._treatsGain = 0;
+  if(myWin && !G.online){ const tt = tasksData(); const w = tt.earn.win||0; if(w<3){ tt.earn.win = w+1; saveTasks(); creditTreats(1); G._treatsGain = 1; } }
   G.result = {winnerSeat, landlordWin, spring, myWin, score, rankInfo};
   G.coachNotes = coachAnalyze();
   renderSettlement();
@@ -3951,18 +4026,20 @@ function renderSettlement(){
       '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+reportBtn+
       '<button class="ghost elder-detail-btn" id="btnElderCalc" aria-expanded="false" onclick="toggleElderCalc()">看看怎么算的</button>'+
       '<div class="elder-detail" id="elderCalc" hidden>'+detailTable+'</div>'+
+      treatsLine() +
       taskNewLine()+
       '<div class="share-result" id="reportTip"></div>';
   } else {
     $('panel').innerHTML =
       '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
-      '<div class="settle-hero '+(myWin?'win':'lose')+'"><img class="winav" src="'+(winnerSeat===0?'assets/头像-monkey.webp':CHARS[G.aiChar[winnerSeat]].av)+'" alt="">'+
+      '<div class="settle-hero '+(myWin?'win':'lose')+'">'+(winnerSeat===0 ? framedAvatarHTML('assets/头像-monkey.webp','winav') : '<img class="winav" src="'+CHARS[G.aiChar[winnerSeat]].av+'" alt="">')+
       '<div class="settle-score'+(myWin?'':' lose')+'">'+(myWin?'+':'−')+score+'<small>分</small></div>'+
       '<div class="settle-sub">'+(winnerSeat===0?'你':CHARS[G.aiChar[winnerSeat]].name)+' 率先出完 · '+(landlordWin?'地主':'农民')+'一方获胜</div></div>'+
       detailTable+
       (rankInfo && rankInfo.promoted ? '<div class="rankup-banner">升段：'+rankInfo.name+'</div>' : '')+
       (rankInfo ? '<div class="rank-line settle-rank">'+tierBadgeHTML(rankInfo.afterPts)+'<span class="rk-txt">段位分 '+rankInfo.afterPts+'（'+(rankInfo.delta>=0?'+':'−')+Math.abs(rankInfo.delta)+'）</span></div>' : '')+
       '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+reportBtn+
+      treatsLine() +
       taskNewLine()+
       '<div class="share-result" id="reportTip"></div>'+
       '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局</div>';
@@ -3995,7 +4072,7 @@ function hideBubbles(){
   const pp = $('phrasePanel'); if(pp) pp.classList.remove('open');
 }
 function renderDipai(reveal){
-  $('dipaiCards').innerHTML = G.dipai.map(c=>'<img'+(reveal&&isWildCard(c)?' class="wild"':'')+' src="'+(reveal?cardFile(c):'assets/牌背.webp')+'" alt="">').join('');
+  $('dipaiCards').innerHTML = G.dipai.map(c=>'<img'+(reveal&&isWildCard(c)?' class="wild"':'')+' src="'+(reveal?cardFile(c):cardBackFile())+'" alt="">').join('');
 }
 function renderAll(){
   renderHand(); renderFans(); renderZones(); renderRoles(); renderTurn(); renderCounter(); refreshPhraseUI();
@@ -4015,7 +4092,7 @@ function renderFans(){
   const mk=(el,n)=>{
     const fan=$(el); fan.innerHTML='';
     const show=Math.min(n,7);
-    for(let i=0;i<show;i++){ const im=document.createElement('img'); im.src='assets/牌背.webp'; im.style.left=(i*8)+'px'; im.style.zIndex=i; fan.appendChild(im); }
+    for(let i=0;i<show;i++){ const im=document.createElement('img'); im.src=cardBackFile(); im.style.left=(i*8)+'px'; im.style.zIndex=i; fan.appendChild(im); }
     const b=document.createElement('div'); b.className='countbadge'+(n<=3?' low':''); b.textContent=n; fan.appendChild(b);
   };
   mk('fanR', G.hands[1].length); mk('fanL', G.hands[2].length);
@@ -4116,10 +4193,10 @@ function renderCounter(){
 
 /* ---------- 每日任务 ----------
    在每日一局之上的任务层: 三条固定日任务, 存 myskme_ddz_tasks
-   {date, flags:{daily,win,bomb}, claimed:{...}, treats}。
-   日期口径 Asia/Shanghai(shanghaiToday), 跨日自动重置 flags/claimed, 茶点 treats 只增不减。
-   奖励「茶点」是与段位分完全独立的纪念计数: 只在任务面板与战绩生涯里展示,
-   不参与任何计分, 更不可兑换(面板文案写明)。
+   {date, flags:{daily,win,bomb}, claimed:{...}, treats, treatsEarned, earn}。
+   日期口径 Asia/Shanghai(shanghaiToday), 跨日自动重置 flags/claimed/earn。
+   v2.1 起茶点改为余额制: treats 为可花余额(茶点小铺唯一货币), treatsEarned 为历史累计
+   (生涯展示); 产出口径见文末商城段。与段位分、累计积分完全独立, 不参与任何计分。
    推进口径: 只统计单机对局——三场次、残局、每日一局; 教学局与联机不计
    (钩子分别在 finishGame / finishChallenge / doPlay / recordDailyWin, 均已排除教学与联机)。
    本地单机记录, 不做防改时间处理(口径见任务面板注脚)。 */
@@ -4135,6 +4212,10 @@ function tasksData(){
     if(!tasksStore || typeof tasksStore!=='object')
       tasksStore = {date:'', flags:{}, claimed:{}, treats:0};
     if(typeof tasksStore.treats!=='number') tasksStore.treats = 0;
+    /* v2.1: 余额制迁移 —— treatsEarned(历史累计)老存档没有时以当时 treats 初始化, 无损;
+       earn 为当日产出计数 {win: 单机获胜, ch: 残局首通}, 跨日随 flags 一起重置。 */
+    if(typeof tasksStore.treatsEarned!=='number') tasksStore.treatsEarned = tasksStore.treats;
+    if(!tasksStore.earn || typeof tasksStore.earn!=='object') tasksStore.earn = {};
     if(!tasksStore.flags || typeof tasksStore.flags!=='object') tasksStore.flags = {};
     if(!tasksStore.claimed || typeof tasksStore.claimed!=='object') tasksStore.claimed = {};
   }
@@ -4143,6 +4224,7 @@ function tasksData(){
     tasksStore.date = today;
     tasksStore.flags = {};
     tasksStore.claimed = {};
+    tasksStore.earn = {};
     saveTasks();
   }
   return tasksStore;
@@ -4162,8 +4244,8 @@ function claimTask(kind){
   const t = tasksData();
   if(!t.flags[kind] || t.claimed[kind]) return;
   t.claimed[kind] = 1;
-  t.treats++;
   saveTasks();
+  creditTreats(1);   /* v2.1: 余额与历史累计同步 +1(creditTreats 在文末商城段) */
   Snd.play('coins', .8);
   showTasks();
 }
@@ -4171,7 +4253,7 @@ function tasksDoneCount(){ const t = tasksData(); return TASK_DEFS.filter(d=>t.f
 function tasksEntryHTML(){
   const t = tasksData();
   const claimable = TASK_DEFS.some(d=>t.flags[d[0]] && !t.claimed[d[0]]);
-  return '<button class="modebtn" onclick="showTasks()"><b>每日任务</b><span>今日完成 '+tasksDoneCount()+' / 3'+(claimable?' · 有茶点可领':'')+'</span><span class="daily-meta">茶点 '+t.treats+' 枚 · 完成任务领茶点，纯纪念，不可兑换</span></button>';
+  return '<button class="modebtn" onclick="showTasks()"><b>每日任务</b><span>今日完成 '+tasksDoneCount()+' / 3'+(claimable?' · 有茶点可领':'')+'</span><span class="daily-meta">茶点余额 '+t.treats+' 枚 · 在「茶点小铺」换装扮</span></button>';
 }
 function showTasks(){
   elderContext = 'menu';
@@ -4189,9 +4271,9 @@ function showTasks(){
   $('panel').innerHTML =
     '<h2>每日任务</h2><div class="who-win">'+shanghaiToday()+' · 今日完成 '+tasksDoneCount()+' / 3</div>' +
     rowsHtml +
-    '<div class="rankbar"><span class="rank-badge">茶点 '+t.treats+' 枚</span><span class="rank-info">任务纪念计数，与段位分无关<br>只记在生涯里，不可兑换</span></div>' +
+    '<div class="rankbar"><span class="rank-badge">茶点余额 '+t.treats+' 枚</span><span class="rank-info">累计获得 '+t.treatsEarned+' 枚 · 与段位分无关<br>去「茶点小铺」换桌布、牌背与装扮</span></div>' +
     '<button class="primary" onclick="showModeSelect()">返回场次选择</button>' +
-    '<div class="career-note">按 Asia/Shanghai 日期刷新；茶点只增不减。本地记录，不防改时间。</div>';
+    '<div class="career-note">按 Asia/Shanghai 日期刷新。茶点靠打牌攒：任务、单机获胜、残局与分享都有产出（各有每日上限）。本地记录，不防改时间。</div>';
   $('overlay').classList.add('show');
 }
 /* 结算面板里的一行新完成提示(本局刚点亮的任务) */
@@ -4200,6 +4282,633 @@ function taskNewLine(){
   const names = G._taskNew.map(k => { const d = TASK_DEFS.find(x=>x[0]===k); return d ? d[1] : k; });
   return '<div class="rank-line">每日任务新完成：'+names.join('、')+'（去「每日任务」领茶点）</div>';
 }
+
+/* ================= v2.1: 茶点小铺(积分商城轻量版) =================
+   口径(设计稿《设计-v2.1-积分商城》): 只卖外观, 只用茶点, 不充值不兑实物, 不抽奖。
+   茶点余额在 myskme_ddz_tasks.treats(可花) / treatsEarned(历史累计); 本段新增且仅新增
+   存档键 myskme_ddz_shop: {owned, sets, num{茶号/保底/收藏册/重置卡}, share{分享计数}, show{橱窗}}。
+   装备存 settings 键扩字段 back/frame/fx(与 bg 并列, 不新增键)。
+   产出: 每日任务 3/日(claimTask) + 单机获胜 +1(上限 3/日, finishGame) + 残局首通 +1/日
+   与首次三星 +2/关(finishChallenge) + 分享回馈 +1(日 1 / 周 3, creditShareTreat)。
+   限定: 万圣两件与万圣套装只在 10/20–11/2 上架, 文案只说「明年还会回来」, 无倒计时。
+   联机装扮透传(look)排 v2.2, 本段数据结构已含 owned/装备字段可直接取用。 */
+const NUM_TIERS = ['N', 'R', 'SR', 'SSR', 'CR'];
+const NUM_TIER_NAME = {N:'普通', R:'好记', SR:'吉利', SSR:'豹子', CR:'绝世'};
+const NUM_TIER_SYM = {N:'●', R:'◆', SR:'★', SSR:'✦', CR:'♛'};
+const FRAME_FILE = {
+  'frame_gudong': 'assets/框-古铜环.png', 'frame_nuanjin': 'assets/框-暖金环.png',
+  'frame_tuanyuan': 'assets/框-团圆环.png', 'frame_wansheng': 'assets/框-万圣夜环.png',
+  'frame_xinghuan': 'assets/框-星环.png',
+};
+const FRAME_COLOR = {'frame_gudong':'#a67c3d', 'frame_nuanjin':'#e7c877', 'frame_tuanyuan':'#58b368', 'frame_wansheng':'#e8862e', 'frame_xinghuan':'#7fa8e0'};
+function frameFileOf(id){ return FRAME_FILE[id] || null; }
+function equippedFrameId(){ const f = ddzSettings.frame; return (f && FRAME_FILE[f]) ? f : null; }
+function frameRingColor(){ const f = equippedFrameId(); return f ? FRAME_COLOR[f] : null; }
+function cardBackFile(){
+  const b = ddzSettings.back, it = b && SHOP_ITEM_MAP[b];
+  return (it && it.cat === 'back') ? 'assets/牌背-' + it.file + '.webp' : 'assets/牌背.webp';
+}
+function framedAvatarHTML(src, cls){
+  const img = '<img class="' + cls + '" src="' + src + '" alt="">';
+  const fid = equippedFrameId();
+  if(!fid) return img;
+  return '<span class="avframe">' + img + '<img class="framering" src="' + frameFileOf(fid) + '" alt=""></span>';
+}
+function applyFrameDOM(){
+  try{
+    const mi = document.getElementById('meInfo'); if(!mi || !mi.querySelector) return;
+    const img = mi.querySelector('img.avatar'); if(!img || !img.parentNode) return;
+    let wrap = img.parentNode;
+    if(!wrap.classList || !wrap.classList.contains('avframe')){
+      wrap = document.createElement('span'); wrap.className = 'avframe';
+      img.parentNode.insertBefore(wrap, img); wrap.appendChild(img);
+    }
+    let ring = wrap.querySelector ? wrap.querySelector('img.framering') : null;
+    const fid = equippedFrameId();
+    if(fid){
+      if(!ring){ ring = document.createElement('img'); ring.className = 'framering'; ring.alt = ''; wrap.appendChild(ring); }
+      ring.src = frameFileOf(fid);
+    } else if(ring && ring.remove){ ring.remove(); }
+  }catch(e){}
+}
+
+/* ---------- 商品与套装(16 件, 总盘 765 枚; 重置卡为消耗品不计收藏) ---------- */
+const SHOP_ITEMS = [
+  {id:'bg_star', cat:'bg', name:'星空茶会', file:'星空茶会', tier:'R', price:45, desc:'六位朋友在星空下喝茶的那一晚。'},
+  {id:'bg_tea', cat:'bg', name:'雾隐茶山', file:'雾隐茶山', tier:'SR', price:80, desc:'云雾里的茶山与小亭，清晨第一杯。'},
+  {id:'bg_six', cat:'bg', name:'六友围炉', file:'六友围炉', tier:'SR', price:85, desc:'六位朋友围坐一桌，棋盘正酣。'},
+  {id:'bg_halloween', cat:'bg', name:'万圣前夜', file:'万圣前夜', tier:'CR', price:90, limited:'halloween', desc:'南瓜灯与满月，茶肆的万圣夜。'},
+  {id:'back_qinghua', cat:'back', name:'青花茶纹', file:'青花茶纹', tier:'N', price:15, desc:'青花缠枝，瓷白茶壶。'},
+  {id:'back_jinbo', cat:'back', name:'金箔流纹', file:'金箔流纹', tier:'R', price:28, desc:'暖奶油纸面，金箔缓缓流动。'},
+  {id:'back_star', cat:'back', name:'星空牌背', file:'星空牌背', tier:'R', price:40, desc:'深蓝夜空，一弯新月。'},
+  {id:'back_six', cat:'back', name:'六友牌背', file:'六友牌背', tier:'SR', price:60, desc:'六位朋友环列，金徽居中。'},
+  {id:'frame_gudong', cat:'frame', name:'古铜环', file:'gudong', tier:'N', price:10, desc:'古铜一圈，稳重耐看。'},
+  {id:'frame_nuanjin', cat:'frame', name:'暖金环', file:'nuanjin', tier:'R', price:24, desc:'暖金环面，细刻纹路。'},
+  {id:'frame_tuanyuan', cat:'frame', name:'团圆环', file:'tuanyuan', tier:'SR', price:55, desc:'六色珠子一圈，一桌团圆。'},
+  {id:'frame_wansheng', cat:'frame', name:'万圣夜环', file:'wansheng', tier:'CR', price:55, limited:'halloween', desc:'南瓜橙配夜紫，只在万圣窗口出现。'},
+  {id:'fx_jinban', cat:'fx', name:'金瓣雨', file:'jinban', tier:'R', price:32, desc:'胜利时金瓣与金粉一起落下。'},
+  {id:'fx_xinghuo', cat:'fx', name:'星火贺胜', file:'xinghuo', tier:'SR', price:58, desc:'胜利时星火绽放，金粉随后。'},
+  {id:'fx_mantang', cat:'fx', name:'满堂金雨', file:'mantang', tier:'CR', price:88, desc:'双波金雨加花瓣，满堂喝彩。'},
+  {id:'card_roll', cat:'card', name:'号码重置卡', file:'roll', tier:'N', price:8, desc:'用一张，重随一次茶号。概率与保底见靓号区。'},
+];
+const XINGHUAN_ITEM = {id:'frame_xinghuan', cat:'frame', name:'星环', file:'xinghuan', tier:'SR', price:0, desc:'星空茶会套装专属，集齐套装点亮。'};
+const SHOP_ITEM_MAP = {};
+SHOP_ITEMS.forEach(it => { SHOP_ITEM_MAP[it.id] = it; });
+SHOP_ITEM_MAP['frame_xinghuan'] = XINGHUAN_ITEM;
+const SHOP_SETS = [
+  {id:'star', name:'星空茶会套装', items:['bg_star', 'back_star', 'fx_xinghuo'], price:128, gift:'集齐赠「星环」头像框（套装专属）'},
+  {id:'family', name:'全家围炉套装', items:['bg_six', 'back_six', 'frame_tuanyuan'], price:180, gift:'集齐赠黑卡点亮资格 + 结算称号「一桌团圆」'},
+  {id:'halloween', name:'万圣之夜套装', items:['bg_halloween', 'frame_wansheng'], price:130, limited:'halloween', gift:'集齐赠万圣限定徽章（生涯页展示）'},
+];
+
+/* ---------- 商城存档 ---------- */
+let shopStore = null;
+function shopData(){
+  if(shopStore) return shopStore;
+  let d = null;
+  try{ d = JSON.parse(localStorage.getItem('myskme_ddz_shop') || 'null'); }catch(e){ d = null; }
+  if(!d || typeof d !== 'object') d = {};
+  if(!d.owned || typeof d.owned !== 'object') d.owned = {};
+  if(!d.sets || typeof d.sets !== 'object') d.sets = {};
+  if(!d.share || typeof d.share !== 'object') d.share = {};
+  if(!d.show || typeof d.show !== 'object') d.show = null;
+  if(!d.num || typeof d.num !== 'object' || !/^[1-9][0-9]{5}$/.test(String(d.num.no || ''))) d.num = null;
+  shopStore = d;
+  if(!shopStore.num){
+    shopStore.num = newPlayerNumber();   /* 首次得号免费, 保底好记档以上 */
+    saveShop();
+  } else {
+    const n = shopStore.num;
+    if(!n.pity || typeof n.pity !== 'object') n.pity = {r:0, sr:0, ssr:0};
+    if(!Array.isArray(n.vault)) n.vault = [];
+    if(typeof n.cards !== 'number') n.cards = 0;
+    if(typeof n.rolls !== 'number') n.rolls = 0;
+    if(!NUM_TIERS.includes(n.tier)) n.tier = classifyNum(n.no);
+  }
+  return shopStore;
+}
+function saveShop(){ try{ localStorage.setItem('myskme_ddz_shop', JSON.stringify(shopStore)); }catch(e){} }
+function shopOwned(id){
+  const sd = shopData();
+  if(id === 'frame_xinghuan') return !!sd.sets.star;
+  return !!sd.owned[id];
+}
+function shopCollectCount(){
+  let c = 0;
+  for(const it of SHOP_ITEMS){ if(it.cat !== 'card' && shopOwned(it.id)) c++; }
+  if(shopData().sets.star) c++;   /* 星环占第 16 格 */
+  return c;
+}
+function halloweenWindow(){
+  const p = shanghaiToday().split('-');
+  const md = (+p[1]) * 100 + (+p[2]);
+  return md >= 1020 && md <= 1102;
+}
+function isLimitedOff(it){ return it.limited === 'halloween' && !halloweenWindow(); }
+
+/* ---------- 茶点产出 ---------- */
+function creditTreats(n){
+  const t = tasksData();
+  t.treats += n; t.treatsEarned += n;
+  saveTasks();
+}
+function isoWeekStr(){
+  const d = new Date();
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = (t.getUTCDay() + 6) % 7;
+  t.setUTCDate(t.getUTCDate() - day + 3);
+  const firstThu = new Date(Date.UTC(t.getUTCFullYear(), 0, 4));
+  const fd = (firstThu.getUTCDay() + 6) % 7;
+  firstThu.setUTCDate(firstThu.getUTCDate() - fd + 3);
+  const wk = 1 + Math.round((t - firstThu) / (7 * 24 * 3600 * 1000));
+  return t.getUTCFullYear() + '-W' + String(wk).padStart(2, '0');
+}
+function creditShareTreat(){
+  const sd = shopData();
+  const sh = sd.share, today = shanghaiToday(), wk = isoWeekStr();
+  if(sh.d !== today){ sh.d = today; sh.dc = 0; }
+  if(sh.w !== wk){ sh.w = wk; sh.wc = 0; }
+  if((sh.dc | 0) >= 1 || (sh.wc | 0) >= 3){ saveShop(); return 0; }
+  sh.dc = (sh.dc | 0) + 1; sh.wc = (sh.wc | 0) + 1;
+  saveShop();
+  creditTreats(1);
+  return 1;
+}
+function treatsLine(){
+  if(!G || !G._treatsGain) return '';
+  return '<div class="rank-line">本局茶点 +' + G._treatsGain + ' 枚 · 余额 ' + tasksData().treats + ' 枚（茶点小铺可换装扮）</div>';
+}
+
+/* ---------- 结算特效(装备变体; 负局不播的口径在调用处保持) ---------- */
+function celebrateFx(fxId){
+  const cx = (typeof window !== 'undefined' && window.innerWidth) ? window.innerWidth / 2 : 540;
+  const cy = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight / 3 : 300;
+  if(fxId === 'fx_jinban'){ Fx.petals(); Fx.gold(); }
+  else if(fxId === 'fx_xinghuo'){ Fx.burst(cx, cy, true); Fx.gold(); }
+  else if(fxId === 'fx_mantang'){ Fx.gold(); Fx.petals(); setTimeout(() => { try{ Fx.gold(); }catch(e){} }, 350); fxText('满 堂'); }
+  else Fx.gold();
+}
+function shopCelebrate(){
+  try{
+    const fx = ddzSettings.fx;
+    if(fx && SHOP_ITEM_MAP[fx] && SHOP_ITEM_MAP[fx].cat === 'fx' && shopOwned(fx)) celebrateFx(fx);
+    else Fx.gold();
+  }catch(e){ try{ Fx.gold(); }catch(e2){} }
+}
+
+/* ---------- 茶号: 分类 / 生成 / 保底 / 收藏册 / 橱窗 ---------- */
+function classifyNum(no){
+  const s = String(no);
+  if(!/^[1-9][0-9]{5}$/.test(s)) return 'N';
+  const d = s.split('').map(Number);
+  const CR_POOL = ['168168', '520520', '888168', '666888', '520131', '168888', '888520', '131416'];
+  if(CR_POOL.includes(s)) return 'CR';
+  if(d.every(v => v === d[0])) return 'CR';
+  let asc = true, desc = true;
+  for(let i = 1; i < 6; i++){ if(d[i] !== d[i - 1] + 1) asc = false; if(d[i] !== d[i - 1] - 1) desc = false; }
+  if(asc || desc) return 'CR';
+  let run = 1, maxRun = 1;
+  for(let i = 1; i < 6; i++){ run = d[i] === d[i - 1] ? run + 1 : 1; if(run > maxRun) maxRun = run; }
+  if(maxRun >= 3) return 'SSR';
+  if(s.includes('168') || s.includes('520') || s.includes('1314')) return 'SR';
+  for(let i = 0; i <= 2; i++){
+    const w = d.slice(i, i + 4); let a = true, ds = true;
+    for(let j = 1; j < 4; j++){ if(w[j] !== w[0] + j) a = false; if(w[j] !== w[0] - j) ds = false; }
+    if(a || ds) return 'SR';
+  }
+  for(let i = 0; i <= 3; i++){
+    const w = d.slice(i, i + 3);
+    if(w[1] === w[0] + 1 && w[2] === w[0] + 2) return 'R';
+    if(w[1] === w[0] - 1 && w[2] === w[0] - 2) return 'R';
+  }
+  if(s.endsWith('66') || s.endsWith('88')) return 'R';
+  for(let i = 0; i <= 2; i++){ if(d[i] === d[i + 1] && d[i + 2] === d[i + 3] && d[i] !== d[i + 2]) return 'R'; }
+  return 'N';
+}
+function rndDigit(){ return Math.floor(Math.random() * 10); }
+function rnd19(){ return 1 + Math.floor(Math.random() * 9); }
+function genNumberOnce(tier){
+  const r = Math.random();
+  const fill = arr => { for(let i = 0; i < 6; i++) if(arr[i] === null || arr[i] === undefined) arr[i] = rndDigit(); if(arr[0] === 0) arr[0] = rnd19(); return arr.join(''); };
+  if(tier === 'CR'){
+    if(r < 0.45){ const pool = ['168168', '520520', '888168', '666888', '520131', '168888', '888520', '131416']; return pool[Math.floor(Math.random() * pool.length)]; }
+    if(r < 0.7){ return String(rnd19()).repeat(6); }
+    const st = Math.floor(Math.random() * 4), up = Math.random() < 0.7;
+    let s = ''; for(let i = 0; i < 6; i++) s += String(up ? st + i : st + 5 - i);
+    return s;
+  }
+  if(tier === 'SSR'){
+    const dg = rnd19(), len = r < 0.7 ? 3 : (r < 0.92 ? 4 : 5);
+    const pos = Math.floor(Math.random() * (6 - len + 1));
+    const arr = new Array(6).fill(null);
+    for(let i = 0; i < len; i++) arr[pos + i] = dg;
+    return fill(arr);
+  }
+  if(tier === 'SR'){
+    if(r < 0.55){
+      const sub = ['168', '520', '1314'][Math.floor(Math.random() * 3)];
+      if(sub.length === 4){ const extra = String(rnd19()) + String(rndDigit()); return Math.random() < 0.5 ? extra + sub : sub + extra; }
+      const pos = Math.floor(Math.random() * 4), arr = new Array(6).fill(null);
+      for(let i = 0; i < 3; i++) arr[pos + i] = Number(sub[i]);
+      return fill(arr);
+    }
+    const st = 1 + Math.floor(Math.random() * 6), up = Math.random() < 0.75, pos = Math.floor(Math.random() * 3);
+    const arr = new Array(6).fill(null);
+    for(let i = 0; i < 4; i++) arr[pos + i] = up ? st + i : st + 3 - i;
+    return fill(arr);
+  }
+  if(tier === 'R'){
+    if(r < 0.4){
+      const st = 1 + Math.floor(Math.random() * 7), up = Math.random() < 0.7, pos = Math.floor(Math.random() * 4);
+      const arr = new Array(6).fill(null);
+      for(let i = 0; i < 3; i++) arr[pos + i] = up ? st + i : st + 2 - i;
+      return fill(arr);
+    }
+    if(r < 0.7){
+      const arr = [];
+      for(let i = 0; i < 4; i++) arr.push(rndDigit());
+      const tail = Math.random() < 0.5 ? [6, 6] : [8, 8];
+      arr.push(tail[0], tail[1]);
+      if(arr[0] === 0) arr[0] = rnd19();
+      return arr.join('');
+    }
+    const a = rnd19(); let b = rnd19(); if(b === a) b = (a % 9) + 1;
+    const pos = [0, 1, 2][Math.floor(Math.random() * 3)], arr = new Array(6).fill(null);
+    arr[pos] = a; arr[pos + 1] = a; arr[pos + 2] = b; arr[pos + 3] = b;
+    return fill(arr);
+  }
+  let s = String(rnd19());
+  for(let i = 0; i < 5; i++) s += String(rndDigit());
+  return s;
+}
+function genNumber(tier){
+  for(let k = 0; k < 300; k++){ const s = genNumberOnce(tier); if(s && classifyNum(s) === tier) return s; }
+  return {N:'102938', R:'123599', SR:'168234', SSR:'777123', CR:'168168'}[tier];
+}
+function drawTier(minTier){
+  const W = [['N', 62], ['R', 25], ['SR', 9], ['SSR', 3.5], ['CR', 0.5]];
+  const minIdx = minTier ? NUM_TIERS.indexOf(minTier) : 0;
+  let sum = 0;
+  for(let i = minIdx; i < 5; i++) sum += W[i][1];
+  let x = Math.random() * sum;
+  for(let i = minIdx; i < 5; i++){ x -= W[i][1]; if(x < 0) return W[i][0]; }
+  return 'CR';
+}
+function newPlayerNumber(){
+  const tier = drawTier('R');
+  return {no: genNumber(tier), tier, rolls: 0, pity: {r:0, sr:0, ssr:0}, vault: [], cards: 0, cardDay: '', cardBought: 0};
+}
+function rollNumber(){
+  const sd = shopData(), n = sd.num;
+  if(!n || (n.cards | 0) < 1) return null;
+  n.cards -= 1; n.rolls = (n.rolls | 0) + 1;
+  if(!n.pity || typeof n.pity !== 'object') n.pity = {r:0, sr:0, ssr:0};
+  const pity = n.pity;
+  let minTier = null;
+  if((pity.ssr | 0) >= 54) minTier = 'SSR';
+  else if((pity.sr | 0) >= 19) minTier = 'SR';
+  else if((pity.r | 0) >= 8) minTier = 'R';
+  const tier = drawTier(minTier), no = genNumber(tier), got = NUM_TIERS.indexOf(tier);
+  if(got >= 1) pity.r = 0; else pity.r = (pity.r | 0) + 1;
+  if(got >= 2) pity.sr = 0; else pity.sr = (pity.sr | 0) + 1;
+  if(got >= 3) pity.ssr = 0; else pity.ssr = (pity.ssr | 0) + 1;
+  if(!Array.isArray(n.vault)) n.vault = [];
+  if(NUM_TIERS.indexOf(n.tier) >= 3 && n.no !== no && !n.vault.some(v => v.no === n.no)) n.vault.push({no: n.no, tier: n.tier});
+  n.no = no; n.tier = tier;
+  if(sd.show && Array.isArray(sd.show.items)) sd.show.items.forEach(it => { if(it.no === no) it.sold = 1; });
+  saveShop();
+  return {no, tier};
+}
+function vaultSwap(i){
+  const sd = shopData(), n = sd.num;
+  const v = (n.vault || [])[i];
+  if(!v) return;
+  const cur = {no: n.no, tier: n.tier};
+  n.vault.splice(i, 1);
+  if(NUM_TIERS.indexOf(cur.tier) >= 3 && !n.vault.some(x => x.no === cur.no)) n.vault.push(cur);
+  n.no = v.no; n.tier = v.tier;
+  saveShop();
+  shopMsg = '已换回茶号 NO.' + v.no + ' · ' + NUM_TIER_NAME[v.tier] + '档。';
+  renderShop();
+}
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function genNumberSeeded(tier, rng){
+  const orig = Math.random; Math.random = rng;
+  try{ return genNumberOnce(tier); } finally { Math.random = orig; }
+}
+function showcaseData(){
+  const sd = shopData(), wk = isoWeekStr();
+  if(sd.show && sd.show.w === wk && Array.isArray(sd.show.items)) return sd.show;
+  let h = 0;
+  for(const ch of wk) h = (h * 31 + ch.charCodeAt(0)) | 0;
+  const rng = mulberry32(h);
+  const items = ['SR', 'SR', 'SR', 'SSR', 'SSR', 'CR'].map(tier => {
+    let no = null;
+    for(let k = 0; k < 400 && !no; k++){ const cand = genNumberSeeded(tier, rng); if(cand && classifyNum(cand) === tier) no = cand; }
+    if(!no) no = {SR:'168234', SSR:'777123', CR:'168168'}[tier];
+    const price = tier === 'SR' ? 120 + Math.floor(rng() * 7) * 10 : tier === 'SSR' ? 380 + Math.floor(rng() * 8) * 20 : 1688;
+    return {no, tier, price, sold: 0};
+  });
+  sd.show = {w: wk, items};
+  saveShop();
+  return sd.show;
+}
+function buyShowcase(i){
+  const sd = shopData(), sh = showcaseData(), it = sh.items[i];
+  if(!it || it.sold) return;
+  if(sd.num.no === it.no){ showShopMsg('这正是你现在的茶号。'); return; }
+  const t = tasksData();
+  if(t.treats < it.price){ showShopMsg('茶点不够，先去打牌攒茶点。'); return; }
+  t.treats -= it.price; saveTasks();
+  const n = sd.num;
+  if(!Array.isArray(n.vault)) n.vault = [];
+  if(NUM_TIERS.indexOf(n.tier) >= 3 && !n.vault.some(v => v.no === n.no)) n.vault.push({no: n.no, tier: n.tier});
+  n.no = it.no; n.tier = it.tier;
+  const got = NUM_TIERS.indexOf(it.tier);
+  if(n.pity){ if(got >= 1) n.pity.r = 0; if(got >= 2) n.pity.sr = 0; if(got >= 3) n.pity.ssr = 0; }
+  it.sold = 1;
+  saveShop();
+  try{ Snd.play('coins', .9); }catch(e){}
+  shopMsg = '茶号已换成 NO.' + it.no + ' · ' + NUM_TIER_NAME[it.tier] + '档。';
+  renderShop();
+}
+function buyRollCard(){
+  const sd = shopData(), n = sd.num, t = tasksData(), today = shanghaiToday();
+  if(n.cardDay !== today){ n.cardDay = today; n.cardBought = 0; }
+  if((n.cardBought | 0) >= 20){ saveShop(); showShopMsg('今天先到这里，明天再来。'); return; }
+  if(t.treats < 8){ showShopMsg('茶点不够，先去打牌攒茶点。'); return; }
+  t.treats -= 8; saveTasks();
+  n.cards = (n.cards | 0) + 1; n.cardBought = (n.cardBought | 0) + 1;
+  saveShop();
+  try{ Snd.play('coins', .8); }catch(e){}
+  shopMsg = '号码重置卡 +1（现有 ' + n.cards + ' 张）。';
+  renderShop();
+}
+function doRoll(){
+  const r = rollNumber();
+  if(!r){ showShopMsg('没有号码重置卡了，先买一张（8 枚茶点）。'); return; }
+  try{ Snd.play('place', .8); }catch(e){}
+  shopMsg = '新茶号 NO.' + r.no + ' · ' + NUM_TIER_NAME[r.tier] + '档' + (NUM_TIERS.indexOf(r.tier) >= 3 ? '。' : '。') ;
+  renderShop();
+}
+
+/* ---------- 黑卡(不单卖: 豹子档以上号码 / 集齐任一套装) ---------- */
+function blackCardState(){
+  const sd = shopData(), n = sd.num || {};
+  let viaNum = false, gold = false;
+  const check = (no, tier) => { if(NUM_TIERS.indexOf(tier) >= 3) viaNum = true; if(tier === 'CR') gold = true; };
+  if(n.no) check(n.no, n.tier);
+  (n.vault || []).forEach(v => check(v.no, v.tier));
+  const viaSet = SHOP_SETS.some(s2 => sd.sets[s2.id]);
+  return {unlocked: viaNum || viaSet, gold, viaNum, viaSet};
+}
+function playerNick(){
+  try{ return localStorage.getItem('myskme_ddz_nick') || '茶客'; }catch(e){ return '茶客'; }
+}
+function blackCardHTML(){
+  const sd = shopData(), n = sd.num, bc = blackCardState(), rk = rankData();
+  const setsDone = SHOP_SETS.filter(s2 => sd.sets[s2.id]).length;
+  let card;
+  if(bc.unlocked){
+    card = '<div class="blackcard' + (bc.gold ? ' gold' : '') + '"><div class="bc-brand">MYSKME · 茶肆</div>' +
+      '<div class="bc-no">NO.' + n.no + '</div>' +
+      '<div class="bc-row"><span class="bc-nick">' + onEsc(playerNick()) + '</span><span class="bc-tier">' + tierName(rk.points) + ' · ' + rk.points + ' 分</span></div>' +
+      '<div class="bc-sub">茶号 ' + NUM_TIER_NAME[n.tier] + '档' + (bc.gold ? ' · 曜金版' : '') + '</div></div>';
+  } else {
+    card = '<div class="blackcard locked"><div class="bc-brand">MYSKME · 茶肆</div>' +
+      '<div class="bc-no dim">黑 卡</div>' +
+      '<div class="bc-sub">点亮方法一：茶号达到豹子档（当前 ' + NUM_TIER_NAME[n.tier] + '档）<br>点亮方法二：集齐任意一套套装（已集齐 ' + setsDone + ' / 3）</div></div>';
+  }
+  if(sd.sets.halloween) card += '<div class="rank-line">万圣之夜限定徽章 · 已点亮</div>';
+  return card;
+}
+
+/* ---------- 购买 / 装备 / 套装 ---------- */
+let shopConfirm = '', shopConfirmSet = '', shopPreviewBack = '';
+let shopMsg = '';
+function showShopMsg(m){ shopMsg = m; renderShop(); }
+function cancelShopConfirm(){ shopConfirm = ''; shopConfirmSet = ''; renderShop(); }
+function equipItem(id){
+  const it = SHOP_ITEM_MAP[id];
+  if(!it || !shopOwned(id)) return;
+  if(it.cat === 'bg') setTablecloth(it.name);
+  else if(it.cat === 'back') saveSetting('back', id);
+  else if(it.cat === 'frame'){ saveSetting('frame', id); applyFrameDOM(); }
+  else if(it.cat === 'fx') saveSetting('fx', id);
+  renderShop();
+}
+function unequipItem(id){
+  const it = SHOP_ITEM_MAP[id];
+  if(!it) return;
+  if(it.cat === 'back') saveSetting('back', '');
+  else if(it.cat === 'frame'){ saveSetting('frame', ''); applyFrameDOM(); }
+  else if(it.cat === 'fx') saveSetting('fx', '');
+  renderShop();
+}
+function buyItem(id){
+  const it = SHOP_ITEM_MAP[id];
+  if(!it || it.cat === 'card' || id === 'frame_xinghuan') return;
+  if(shopOwned(id)){ equipItem(id); return; }
+  if(isLimitedOff(it)){ showShopMsg('万圣限定只在 10 月下旬到 11 月初上架，明年还会回来。'); return; }
+  if(shopConfirm !== id){ shopConfirm = id; renderShop(); return; }
+  shopConfirm = '';
+  const t = tasksData();
+  if(t.treats < it.price){ showShopMsg('茶点不够，先去打牌攒茶点。'); return; }
+  t.treats -= it.price; saveTasks();
+  const sd = shopData();
+  sd.owned[id] = Date.now();
+  if(it.cat === 'bg' && !TABLECLOTHS.includes(it.name)) TABLECLOTHS.push(it.name);
+  saveShop();
+  SHOP_SETS.forEach(s2 => claimSetGift(s2.id));
+  try{ Snd.play('coins', .9); }catch(e){}
+  equipItem(id);
+}
+function setMissingCost(set){
+  let ownedSum = 0; const missing = [];
+  for(const id of set.items){ if(shopOwned(id)) ownedSum += SHOP_ITEM_MAP[id].price; else missing.push(id); }
+  return {cost: Math.max(0, set.price - ownedSum), missing};
+}
+function claimSetGift(setId){
+  const sd = shopData(), set = SHOP_SETS.find(x => x.id === setId);
+  if(!set) return;
+  if(set.items.every(id => shopOwned(id)) && !sd.sets[setId]){ sd.sets[setId] = 1; saveShop(); }
+}
+function buySet(setId){
+  const set = SHOP_SETS.find(x => x.id === setId);
+  if(!set) return;
+  if(set.limited === 'halloween' && !halloweenWindow()){ showShopMsg('万圣套装只在 10 月下旬到 11 月初上架，明年还会回来。'); return; }
+  const mc = setMissingCost(set);
+  if(!mc.missing.length){ claimSetGift(setId); shopMsg = '套装已集齐，赠品已点亮。'; renderShop(); return; }
+  if(shopConfirmSet !== setId){ shopConfirmSet = setId; renderShop(); return; }
+  shopConfirmSet = '';
+  const t = tasksData();
+  if(t.treats < mc.cost){ showShopMsg('茶点不够，先去打牌攒茶点。'); return; }
+  t.treats -= mc.cost; saveTasks();
+  const sd = shopData();
+  mc.missing.forEach(id => { sd.owned[id] = Date.now(); });
+  for(const it of SHOP_ITEMS){ if(it.cat === 'bg' && sd.owned[it.id] && !TABLECLOTHS.includes(it.name)) TABLECLOTHS.push(it.name); }
+  saveShop();
+  claimSetGift(setId);
+  try{ Snd.play('coins', .9); }catch(e){}
+  shopMsg = '「' + set.name + '」已集齐，赠品已点亮。';
+  renderShop();
+}
+function previewBg(id){
+  const it = SHOP_ITEM_MAP[id];
+  if(!it) return;
+  const bg = document.getElementById('bg');
+  if(bg) bg.style.backgroundImage = "url('assets/桌布-" + it.file + ".webp')";
+  shopMsg = '正在预览桌布《' + it.name + '》（只是看看，不保存；返回场次选择即恢复）。';
+  renderShop();
+}
+function previewBack(id){ shopPreviewBack = id; renderShop(); }
+function previewFx(id){
+  try{ celebrateFx(id); }catch(e){}
+  shopMsg = '已试播「' + SHOP_ITEM_MAP[id].name + '」（胜利结算时播放）。';
+  const m = document.getElementById('shopMsg');
+  if(m) m.textContent = shopMsg;
+}
+
+/* ---------- 商城页 ---------- */
+let shopTab = 'all';
+function setShopTab(t){ shopTab = t; shopConfirm = ''; shopConfirmSet = ''; renderShop(); }
+function showShop(){
+  elderContext = 'menu';
+  setPanelClass();
+  hideBubbles();
+  renderShop();
+  $('overlay').classList.add('show');
+}
+function shopEntryHTML(){
+  const t = tasksData();
+  shopData();
+  return '<button class="modebtn" onclick="showShop()"><b>茶点小铺</b><span>只用打牌攒的茶点换装扮，不花钱</span><span class="daily-meta">茶点 ' + t.treats + ' 枚 · 已收集 ' + shopCollectCount() + ' / 16</span></button>';
+}
+function tierTag(tier){ return '<span class="tier-tag t-' + tier + '">' + NUM_TIER_SYM[tier] + ' ' + NUM_TIER_NAME[tier] + '</span>'; }
+function shopItemHTML(it){
+  const owned = shopOwned(it.id);
+  const equipped = (it.cat === 'bg' && bgName === it.name) || (it.cat === 'back' && ddzSettings.back === it.id) ||
+    (it.cat === 'frame' && ddzSettings.frame === it.id) || (it.cat === 'fx' && ddzSettings.fx === it.id);
+  const off = isLimitedOff(it);
+  let preview = '';
+  if(it.cat === 'bg') preview = '<img class="shop-thumb" src="assets/桌布-' + it.file + '.webp" alt="">';
+  else if(it.cat === 'back') preview = '<img class="shop-thumb back" src="assets/牌背-' + it.file + '.webp" alt="">';
+  else if(it.cat === 'frame') preview = '<span class="avframe shop-av"><img class="avatar" src="assets/头像-monkey.webp" alt=""><img class="framering" src="' + frameFileOf(it.id) + '" alt=""></span>';
+  else if(it.cat === 'fx') preview = '<div class="shop-thumb fxph">' + it.name + '</div>';
+  let btn;
+  if(it.id === 'frame_xinghuan' && !owned) btn = '<span class="task-state">集齐星空茶会套装点亮</span>';
+  else if(equipped) btn = it.cat === 'bg' ? '<span class="task-state done">使用中</span>' : '<button class="ghost" onclick="unequipItem(\'' + it.id + '\')">卸下</button>';
+  else if(owned) btn = '<button class="primary" onclick="equipItem(\'' + it.id + '\')">装备</button>';
+  else if(off) btn = '<span class="task-state">万圣窗口外 · 明年还会回来</span>';
+  else if(shopConfirm === it.id) btn = '<button class="primary" onclick="buyItem(\'' + it.id + '\')">确认花 ' + it.price + ' 枚？购后余 ' + (tasksData().treats - it.price) + '</button> <button class="ghost" onclick="cancelShopConfirm()">取消</button>';
+  else if(tasksData().treats < it.price) btn = '<button class="ghost" onclick="showTasks()">茶点 ' + it.price + ' 枚 · 去攒茶点</button>';
+  else btn = '<button class="primary" onclick="buyItem(\'' + it.id + '\')">购买 ' + it.price + ' 枚</button>';
+  let prev = '';
+  if(it.cat === 'bg') prev = ' <button class="ghost" onclick="previewBg(\'' + it.id + '\')">预览</button>';
+  else if(it.cat === 'back') prev = ' <button class="ghost" onclick="previewBack(\'' + it.id + '\')">预览</button>';
+  else if(it.cat === 'fx') prev = ' <button class="ghost" onclick="previewFx(\'' + it.id + '\')">试播</button>';
+  return '<div class="shop-item' + (equipped ? ' equipped' : '') + '">' + preview +
+    '<div class="shop-iname">' + it.name + ' ' + tierTag(it.tier) + (it.limited ? ' <span class="tier-tag t-CR">限定</span>' : '') + '</div>' +
+    '<div class="shop-idesc">' + it.desc + '</div><div class="shop-ibtns">' + btn + prev + '</div></div>';
+}
+function shopSetsHTML(){
+  let h = '<h3 class="shop-h">套装</h3>';
+  for(const set of SHOP_SETS){
+    const mc = setMissingCost(set);
+    const done = !!shopData().sets[set.id];
+    const off = set.limited === 'halloween' && !halloweenWindow();
+    let btn;
+    if(done) btn = '<span class="task-state done">已集齐 · 赠品已点亮</span>';
+    else if(!mc.missing.length) btn = '<button class="primary" onclick="buySet(\'' + set.id + '\')">领取集齐赠品</button>';
+    else if(off) btn = '<span class="task-state">万圣窗口外 · 明年还会回来</span>';
+    else if(shopConfirmSet === set.id) btn = '<button class="primary" onclick="buySet(\'' + set.id + '\')">确认补差 ' + mc.cost + ' 枚？购后余 ' + (tasksData().treats - mc.cost) + '</button> <button class="ghost" onclick="cancelShopConfirm()">取消</button>';
+    else if(tasksData().treats < mc.cost) btn = '<button class="ghost" onclick="showTasks()">补差 ' + mc.cost + ' 枚 · 去攒茶点</button>';
+    else btn = '<button class="primary" onclick="buySet(\'' + set.id + '\')">整套 ' + set.price + ' 枚（已购件抵扣，补差 ' + mc.cost + '）</button>';
+    h += '<div class="shop-set"><div class="shop-iname">' + set.name + '</div>' +
+      '<div class="shop-idesc">含：' + set.items.map(id => SHOP_ITEM_MAP[id].name).join('、') + '<br>' + set.gift + '</div>' +
+      '<div class="set-dots">' + set.items.map(id => '<span class="set-dot' + (shopOwned(id) ? ' on' : '') + '"></span>').join('') + '</div>' +
+      '<div class="shop-ibtns">' + btn + '</div></div>';
+  }
+  return h;
+}
+function shopNumHTML(){
+  const sd = shopData(), n = sd.num, t = tasksData(), sh = showcaseData();
+  const pityRow = (label, cur, max) => '<div class="pity-row"><span>' + label + '</span><div class="pity-bar"><div class="pity-fill" style="width:' + Math.min(100, Math.round(cur / max * 100)) + '%"></div></div><span>' + cur + ' / ' + max + '</span></div>';
+  let h = '<h3 class="shop-h">靓号 · 茶号</h3>' +
+    '<div class="num-big">茶号 NO.' + n.no + '</div>' +
+    '<div class="num-tier">' + tierTag(n.tier) + ' · 本机号码，非全服唯一</div>' +
+    '<div class="shop-idesc">茶点只能靠打牌攒。换号用号码重置卡（8 枚/张，可囤）；被换下的豹子档以上号码收进收藏册，可随时免费换回。</div>' +
+    '<div class="pity-box">' +
+    pityRow('好记档保底', n.pity.r | 0, 9) + pityRow('吉利档保底', n.pity.sr | 0, 20) + pityRow('豹子档保底', n.pity.ssr | 0, 55) +
+    '<div class="shop-idesc">重随满 9 次必出好记以上、20 次必出吉利以上、55 次必出豹子以上；绝世档不设保底，出现机会约 0.5%。</div></div>' +
+    '<div class="shop-ibtns">' +
+    '<button class="primary" onclick="buyRollCard()">买重置卡 8 枚' + ((n.cardDay === shanghaiToday() && (n.cardBought | 0) >= 20) ? '（今日已满 20 张）' : '') + '</button>' +
+    '<button class="primary" onclick="doRoll()">用一张重随（余 ' + (n.cards | 0) + ' 张）</button></div>' +
+    '<h3 class="shop-h">号码收藏册</h3>' +
+    ((n.vault && n.vault.length)
+      ? n.vault.map((v, i) => '<div class="task-row"><div class="task-info"><b>NO.' + v.no + '</b><span>' + NUM_TIER_NAME[v.tier] + '档</span></div><button class="ghost" onclick="vaultSwap(' + i + ')">免费换回</button></div>').join('')
+      : '<div class="shop-idesc">还没有收藏。重随换下豹子档以上的号码会自动收进来。</div>') +
+    '<h3 class="shop-h">本周橱窗</h3>' +
+    '<div class="shop-idesc">每周轮换 6 个具体号码，明码标价，看中直接换。</div>' +
+    sh.items.map((it, i) => {
+      let btn;
+      if(it.sold) btn = '<span class="task-state done">已换走</span>';
+      else if(it.no === n.no) btn = '<span class="task-state done">正是你的号码</span>';
+      else if(t.treats < it.price) btn = '<button class="ghost" onclick="showTasks()">' + it.price + ' 枚 · 去攒茶点</button>';
+      else btn = '<button class="primary" onclick="buyShowcase(' + i + ')">' + it.price + ' 枚换这个号</button>';
+      return '<div class="task-row"><div class="task-info"><b>NO.' + it.no + '</b><span>' + NUM_TIER_NAME[it.tier] + '档</span></div>' + btn + '</div>';
+    }).join('') +
+    '<h3 class="shop-h">出现机会公示</h3>' +
+    '<table class="prob-table"><tr><td>普通</td><td>约 62%</td></tr><tr><td>好记</td><td>约 25%</td></tr><tr><td>吉利</td><td>约 9%</td></tr><tr><td>豹子</td><td>约 3.5%</td></tr><tr><td>绝世</td><td>约 0.5%</td></tr></table>' +
+    '<div class="shop-idesc">号码按两段生成：先定档，再按该档的样子生成，公示的机会就是实际机会。号码里的 168、520 等组合只作趣味，不作别的断言。</div>';
+  return h;
+}
+function renderShop(){
+  elderContext = 'menu';
+  setPanelClass();
+  const sd = shopData(), t = tasksData();
+  const tabs = [['all', '全部'], ['bg', '桌布'], ['back', '牌背'], ['frame', '头像框'], ['fx', '特效'], ['num', '靓号']];
+  let h = '<h2>茶点小铺</h2>' +
+    '<div class="who-win">这里的东西都只能用打牌攒的茶点换，不花钱。</div>' +
+    '<div class="rankbar"><span class="rank-badge">茶点 ' + t.treats + ' 枚</span><span class="rank-info">已收集 ' + shopCollectCount() + ' / 16<br>累计获得 ' + t.treatsEarned + ' 枚</span></div>' +
+    '<div class="shop-progress"><div class="shop-progress-fill" style="width:' + Math.round(shopCollectCount() / 16 * 100) + '%"></div></div>' +
+    '<div class="rank-line" id="shopMsg">' + (shopMsg || '') + '</div>' +
+    '<div class="levelswitch"><span class="lvlab">分类</span>' + tabs.map(tb => '<button type="button" class="levelbtn' + (shopTab === tb[0] ? ' on' : '') + '" onclick="setShopTab(\'' + tb[0] + '\')">' + tb[1] + '</button>').join('') + '</div>';
+  if(shopPreviewBack && SHOP_ITEM_MAP[shopPreviewBack]){
+    const it = SHOP_ITEM_MAP[shopPreviewBack];
+    h += '<div class="shop-preview">牌背预览 · ' + it.name + '<div class="fanprev">' + ('<img src="assets/牌背-' + it.file + '.webp" alt="">').repeat(3) + '</div></div>';
+  }
+  if(shopTab !== 'num'){
+    let items = SHOP_ITEMS.filter(it => it.cat !== 'card' && (shopTab === 'all' || it.cat === shopTab));
+    if(shopTab === 'all' || shopTab === 'frame') items = items.concat([XINGHUAN_ITEM]);
+    h += '<div class="shop-grid">' + items.map(shopItemHTML).join('') + '</div>';
+    h += shopSetsHTML();
+  } else {
+    h += shopNumHTML();
+  }
+  h += '<button class="primary" onclick="showModeSelect()">返回场次选择</button>' +
+    '<div class="career-note">茶点产出：每日任务 3 枚、单机获胜 +1（每日 3 枚内）、残局首通 +1/日、残局首次三星 +2/关、分享 +1（每日 1 枚、每周 3 枚内）。茶号是本机号码，非全服唯一；换设备号码不跟随。本地记录，不防改时间。</div>';
+  $('panel').innerHTML = h;
+  $('overlay').classList.add('show');
+}
+
+/* ---------- 初始化: 商城桌布并入切换表 + bg 纠正 + 头像框 ---------- */
+function shopFixBg(){
+  const sd = shopData();
+  for(const it of SHOP_ITEMS){ if(it.cat === 'bg' && sd.owned[it.id] && !TABLECLOTHS.includes(it.name)) TABLECLOTHS.push(it.name); }
+  if(ddzSettings.bg && TABLECLOTHS.includes(ddzSettings.bg) && bgName !== ddzSettings.bg){
+    bgName = ddzSettings.bg;
+    try{ applyTablecloth(); }catch(e){}
+  }
+}
+try{ shopFixBg(); applyFrameDOM(); }catch(e){}
 
 /* ---------- 新手教学局 ----------
    固定牌局(种子写死, fabricateHands 分配花色): 玩家手牌含三副对子、三张 9、
@@ -4540,7 +5249,7 @@ function loadAvatarImg(src){
     setTimeout(()=>fin(null), 2500);
   });
 }
-function drawAvatarCircle(ctx, im, x, y, r){
+function drawAvatarCircle(ctx, im, x, y, r, ringCol){
   ctx.save();
   ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.closePath(); ctx.clip();
   if(im && im.width && im.height){
@@ -4554,7 +5263,7 @@ function drawAvatarCircle(ctx, im, x, y, r){
   }
   ctx.restore();
   ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
-  ctx.strokeStyle = '#c9a24d'; ctx.lineWidth = 5; ctx.stroke();
+  ctx.strokeStyle = ringCol || '#c9a24d'; ctx.lineWidth = 5; ctx.stroke();
 }
 function drawReport(ctx, data, avs, winnerSeat){
   const W = 1080, H = 1350;
@@ -4571,9 +5280,14 @@ function drawReport(ctx, data, avs, winnerSeat){
   ctx.fillStyle = '#e7c877'; ctx.font = '700 96px ' + F;
   ctx.fillText('萌友斗地主', 540, 150);
   ctx.fillStyle = '#b7c9bd'; ctx.font = '30px ' + F;
-  ctx.fillText('M Y S K M E · 茶 肆 夜 话 桌', 540, 208);
+  ctx.fillText('M Y S K M E · ' + (data.bgName || '茶肆夜话') + ' 桌', 540, 208);   /* v2.1: 副标题跟随当前桌布 */
   ctx.fillStyle = '#f7efdc'; ctx.font = '34px ' + F;
   ctx.fillText(data.modeName + ' · ' + shanghaiToday(), 540, 262);
+  /* v2.1: 全员战报带茶号行 */
+  if(data.numNo){
+    ctx.fillStyle = '#e7c877'; ctx.font = '700 36px ' + F;
+    ctx.fillText('茶号 NO.' + data.numNo + ' · ' + data.numTierName + '档', 540, 308);
+  }
   ctx.fillStyle = data.win ? '#e7c877' : '#c8cfc9'; ctx.font = '900 160px ' + F;
   ctx.fillText(data.title, 540, 428);
   ctx.fillStyle = '#cfe0d2'; ctx.font = '36px ' + F;
@@ -4581,7 +5295,8 @@ function drawReport(ctx, data, avs, winnerSeat){
   /* 三方头像: 左 = 2 号座, 中 = 玩家, 右 = 1 号座, 与牌桌方位一致 */
   const seats = [{seat:2, x:250}, {seat:0, x:540}, {seat:1, x:830}];
   for(const s of seats){
-    drawAvatarCircle(ctx, avs[s.seat], s.x, 668, 96);
+    drawAvatarCircle(ctx, avs[s.seat], s.x, 668, 96, s.seat===0 ? frameRingColor() : null);
+    if(s.seat===0 && data.frameImg){ ctx.drawImage(data.frameImg, s.x-114, 668-114, 228, 228); }   /* v2.1: 玩家头像叠所装框环 */
     if(s.seat === winnerSeat){
       ctx.beginPath(); ctx.arc(s.x+68, 600, 30, 0, Math.PI*2);
       ctx.fillStyle = '#c9a24d'; ctx.fill();
@@ -4595,7 +5310,28 @@ function drawReport(ctx, data, avs, winnerSeat){
     ctx.fillStyle = isL ? '#e7c877' : '#b7c9bd'; ctx.font = '30px ' + F;
     ctx.fillText(isL ? '地主' : '农民', s.x, 668+96+88);
   }
-  const px = 110, py = 902, pw = W-220, ph = 250;
+  const px = 110, pw = W-220;
+  let py = 902, ph = 250;
+  if(data.black){
+    /* v2.1: 黑卡带 —— 深黑圆角带 + 古铜双线, 左标签 / 中号码 / 右段位; 数据框顺延压缩 */
+    ctx.save();
+    ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(110, 876, pw, 74, 16); else ctx.rect(110, 876, pw, 74);
+    ctx.fillStyle = '#0b0c0b'; ctx.fill();
+    ctx.strokeStyle = '#a67c3d'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(117, 883, pw-14, 60, 12); else ctx.rect(117, 883, pw-14, 60);
+    ctx.strokeStyle = 'rgba(201,162,77,.35)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left'; ctx.fillStyle = '#a67c3d'; ctx.font = '700 26px ' + F;
+    ctx.fillText(data.gold ? '曜金黑卡' : '黑 卡', 150, 914);
+    ctx.textAlign = 'center'; ctx.fillStyle = data.gold ? '#f3d98a' : '#e7c877'; ctx.font = '700 40px ' + F;
+    ctx.fillText('NO.' + data.numNo, 540, 914);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#b7c9bd'; ctx.font = '30px ' + F;
+    ctx.fillText(data.tierName || '', 930, 914);
+    ctx.restore();
+    py = 958; ph = 220;
+  }
   ctx.fillStyle = 'rgba(247,239,220,.06)'; ctx.fillRect(px, py, pw, ph);
   ctx.strokeStyle = 'rgba(201,162,77,.4)'; ctx.lineWidth = 1.5; ctx.strokeRect(px, py, pw, ph);
   ctx.textAlign = 'left';
@@ -4657,6 +5393,16 @@ async function makeReportImage(kind){
   for(const s of [2, 0, 1]){
     avs[s] = await loadAvatarImg(s===0 ? CHARS.monkey.av : CHARS[G.aiChar[s]].av);
   }
+  /* v2.1: 战报装扮数据 —— 当前桌布名 / 茶号行 / 黑卡带 / 头像框 */
+  try{
+    const sd = shopData();
+    data.bgName = bgName;
+    if(sd.num && sd.num.no){ data.numNo = sd.num.no; data.numTierName = NUM_TIER_NAME[sd.num.tier] || ''; }
+    const bc = blackCardState();
+    if(bc.unlocked){ data.black = true; data.gold = bc.gold; data.tierName = tierName(rankData().points); }
+    const fid = equippedFrameId();
+    if(fid) data.frameImg = await loadAvatarImg(frameFileOf(fid));
+  }catch(e){}
   drawReport(ctx, data, avs, winnerSeat);
   shareReportImage(cv);
   return cv;
@@ -4688,8 +5434,8 @@ function shareReportImage(canvas){
             if(navigator.canShare({ files:[f] })){ await navigator.share({ files:[f] }); shared = true; }
           }
         }catch(e){ shared = false; }
-        if(shared) setTip('战报图已唤起分享。');
-        else if(download(blob)) setTip('战报图已生成并下载（PNG）。');
+        if(shared){ setTip('战报图已唤起分享。'); creditShareTreat(); }   /* v2.1: 分享回馈茶点 */
+        else if(download(blob)){ setTip('战报图已生成并下载（PNG）。'); creditShareTreat(); }
         else setTip('战报图已生成（当前环境无法自动下载）。');
       }, 'image/png');
       return;
@@ -4701,6 +5447,7 @@ function shareReportImage(canvas){
       if(document.body && document.body.appendChild) document.body.appendChild(a);
       if(a.click) a.click();
       setTip('战报图已生成并下载（PNG）。');
+      creditShareTreat();
       return;
     }
     setTip('当前环境不支持导出图片。');
@@ -4752,7 +5499,7 @@ window.addEventListener('resize', ()=>{ if(review) renderReview(); else if(G) re
 /* 预加载关键图后开局 */
 /* 预加载全部牌面: 底牌揭示、手牌渲染不出现裂图/空白 */
 function preloadCards(){
-  const urls = ['assets/牌背.webp'];
+  const urls = [cardBackFile()];   /* v2.1: 预加载当前装备的牌背 */
   for(const s of SUITS) for(let v=3; v<=15; v++) urls.push(cardFile({v, s}));
   urls.push(cardFile({v:16, s:'王'}), cardFile({v:17, s:'王'}));
   for(const u of urls){ const im = new Image(); im.src = u; }
