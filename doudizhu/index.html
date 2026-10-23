@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.2.8</title>
+<title>萌友斗地主 · 正式版 v2.3.0</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -936,6 +936,33 @@
     body.elder #centerMsg{font-size:20px;}
     body.elder .bubble{max-width:180px; font-size:14px;}
   }
+  /* ---------- v2.3: 互动道具 / 茶会荣誉 / 房内小赛 / 节日残局 ---------- */
+  #btnProps{padding:3px 12px; font-size:12.5px; border-radius:999px; letter-spacing:1px; min-height:44px;}
+  #propPanel{display:none; flex-direction:column; gap:7px; padding:9px 10px; margin-bottom:4px; background:rgba(7,24,21,.82); border:1px solid rgba(201,162,77,.4); border-radius:12px;}
+  #propPanel.open{display:flex;}
+  #propPanel .phrase-gtitle{font-size:12.5px; color:#a9bcb0; letter-spacing:1px;}
+  #propPanel .phrasebtn{padding:6px 13px; font-size:13.5px; border-radius:999px; letter-spacing:.5px; background:rgba(247,239,220,.1); border:1px solid rgba(201,162,77,.55); color:#f7efdc; min-height:44px; display:inline-flex; align-items:center; cursor:pointer;}
+  .prop-grid{display:flex; flex-wrap:wrap; gap:7px; justify-content:center;}
+  .propbtn{display:inline-flex; flex-direction:column; align-items:center; gap:3px; padding:8px 10px; min-height:44px; border-radius:12px; background:rgba(247,239,220,.08); border:1px solid rgba(201,162,77,.45); color:#f7efdc; font-size:13px; cursor:pointer;}
+  .propbtn.locked{opacity:.55;}
+  .propbtn .prop-lock{font-size:11px; color:#a9bcb0;}
+  .prop-targets{display:flex; flex-wrap:wrap; gap:7px; justify-content:center;}
+  .propfx{position:fixed; z-index:95; width:76px; height:76px; margin:-38px 0 0 -38px; pointer-events:none; display:flex; align-items:center; justify-content:center; animation:propRise 1.9s ease-out forwards;}
+  .propfx .propic{width:64px; height:64px; border-radius:50%; background:radial-gradient(circle at 50% 38%, #27584e, #123129); border:2px solid rgba(231,200,119,.85); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 24px rgba(0,0,0,.45);}
+  .propfx .propic.wig{animation:propWig .45s ease-in-out 3;}
+  .propfx .propic.pulse{animation:propPulse .45s ease-in-out 3;}
+  @keyframes propRise{0%{opacity:0; transform:translateY(14px) scale(.7);}18%{opacity:1; transform:translateY(0) scale(1.05);}30%{transform:translateY(-4px) scale(1);}75%{opacity:1;}100%{opacity:0; transform:translateY(-52px) scale(1);}}
+  @keyframes propWig{0%,100%{transform:rotate(0deg);}25%{transform:rotate(-13deg);}75%{transform:rotate(13deg);}}
+  @keyframes propPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.14);}}
+  .honor-wrap{text-align:center; margin:12px 0 6px;}
+  .honor-title{display:inline-block; padding:5px 18px; border-radius:999px; border:1px solid rgba(231,200,119,.75); color:#e7c877; font-weight:700; letter-spacing:2px; background:rgba(231,200,119,.08);}
+  .honor-score{font-size:54px; font-weight:900; color:#e7c877; line-height:1.15;}
+  .lvtier.fest{color:#f0a35e;}
+  .levelcell.fest{border-color:rgba(232,134,46,.55);}
+  .onl-tour{background:rgba(231,200,119,.06); border:1px solid rgba(201,162,77,.35); border-radius:12px; padding:10px 12px; margin:10px 0;}
+  .tour-row{display:flex; justify-content:space-between; gap:10px; padding:6px 2px; border-bottom:1px dashed rgba(201,162,77,.18); font-size:15px;}
+  .tour-row.top{color:#e7c877; font-weight:700;}
+  .tour-champ{font-size:26px; font-weight:800; color:#f7efdc; margin-top:6px;}
 </style>
 </head>
 <body>
@@ -947,7 +974,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.8 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.3.0 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -990,11 +1017,13 @@
   <div id="playerArea">
     <div id="actionBar"></div>
     <div id="phrasePanel"></div>
+    <div id="propPanel"></div>
     <div id="meRow">
       <div id="meInfo">
         <img class="avatar" src="assets/头像-monkey.webp" alt="">
         <div class="nm">你</div><div class="role" id="roleP">农民</div><div id="streakBadge" style="display:none"></div>
         <button class="ghost" id="btnPhrase" style="display:none">台词</button>
+        <button class="ghost" id="btnProps" style="display:none">道具</button>
         <div class="bubble" id="bubP"></div>
       </div>
       <div id="hand"></div>
@@ -1833,6 +1862,7 @@ function phraseImgCapable(){
 }
 function togglePhrasePanel(){
   const pp = $('phrasePanel'); if(!pp || !phraseCapable()) return;
+  const qp = $('propPanel'); if(qp) qp.classList.remove('open');   /* v2.3: 与道具面板互斥 */
   if(pp.classList.contains('open')){ pp.classList.remove('open'); return; }
   let html = '';
   if(phraseImgCapable()){
@@ -1879,6 +1909,149 @@ function sendPhrase(idx){
 }
 
 
+/* ---------- v2.3: 互动道具(善意搞怪, 不做羞辱向) ----------
+   玩法: 对局中点「道具」选一件, 再选一位牌友(或自己), 对方位上方放一个小特效;
+   单机时 AI 收到会以角色气泡回一句。基础三件免费; 动态三件在茶点小铺「道具」
+   分类用茶点换、永久拥有(shop 键 owned, 不新增存档键)。发送冷却 4 秒防刷屏。
+   联机: 本机特效立即可见; 好友互发需后端 caps.prop(转发 {event:'prop', seat,
+   to, prop}) —— 当前后端 v1.1.0 无此能力, 前端发送/接收均已按 caps 门控写好,
+   后端补上 caps.prop 后自动点亮, 无需再改前端。 */
+const PROP_DEFS = [
+  {id:'tea',    name:'敬一杯茶', kind:'cup',    anim:'',      free:true},
+  {id:'flower', name:'送一枝花', kind:'flower', anim:'pulse', free:true},
+  {id:'fur',    name:'猴毛挠痒', kind:'fur',    anim:'wig',   free:true},
+  {id:'steam',  name:'茶香一缕', kind:'steam',  anim:'',      shop:'prop_steam'},
+  {id:'bell',   name:'金铃轻响', kind:'bell',   anim:'pulse', shop:'prop_bell'},
+  {id:'fan',    name:'纸扇生风', kind:'fan',    anim:'wig',   shop:'prop_fan'},
+];
+const PROP_MAP = {}; PROP_DEFS.forEach(p => { PROP_MAP[p.id] = p; });
+const PROP_REACT = {
+  tea:['这茶不错。','谢啦，正渴着。','嗯，茶香对味。','先喝一口，再战。'],
+  flower:['哟，还挺会来事。','花收下了，牌可不让。','谢啦，心情都好了。','好看，我喜欢。'],
+  fur:['哈哈——别挠别挠！','哎哟，痒！你这猴毛哪来的。','哈哈哈，停停停。','讨厌，笑得我手抖。'],
+  steam:['好香……心都静了。','这茶香，够讲究。','闻着就暖和。','慢工出细活。'],
+  bell:['叮——听见啦，好运要来。','这铃声清脆。','耳朵都亮了。','好好好，借你吉言。'],
+  fan:['好风！凉快。','扇得妙，暑气全消。','这风送得及时。','借你的风，我这把要顺了。'],
+};
+const PROP_REACT_SPECIAL = {
+  'teapot:tea':'好眼力，我这壶刚开。',
+  'teapot:steam':'同行啊，这香我懂。',
+  'monkey:fur':'哈哈哈——自己的毛挠自己人啦！',
+  'fish:flower':'呀，是给我的？收下啦。',
+  'egg:fur':'呜……痒痒的，但有点开心。',
+  'donkey:fan':'……还行。',
+  'snake:bell':'叮的一声，我可听清了。',
+};
+function propSvg(kind, size){
+  const s = size || 38;
+  const head = '<svg width="' + s + '" height="' + s + '" viewBox="0 0 48 48" fill="none" stroke="#e7c877" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">';
+  const tail = '</svg>';
+  if(kind === 'cup') return head + '<path d="M9 21h25v7a11 11 0 0 1-11 11h-3A11 11 0 0 1 9 28z"/><path d="M34 23c4.5.3 6.5 2.4 6 5-.4 2.4-2.8 3.8-6 3.4"/><path d="M7 43h30"/><path d="M17 15c-1.6-2 .8-3.4 0-5.6M25 15c-1.6-2 .8-3.4 0-5.6"/>' + tail;
+  if(kind === 'flower') return head + '<path d="M24 45V29"/><path d="M24 36c-4.5-.4-7-2.8-7.6-6.8 4 .4 6.8 2.4 7.6 6.8z"/><circle cx="24" cy="14" r="3.4" fill="#e7c877" stroke="none"/><circle cx="24" cy="7.5" r="3.2"/><circle cx="30.5" cy="12" r="3.2"/><circle cx="28.4" cy="19.5" r="3.2"/><circle cx="19.6" cy="19.5" r="3.2"/><circle cx="17.5" cy="12" r="3.2"/>' + tail;
+  if(kind === 'fur') return head + '<path d="M15 39C12.5 20 20 9.5 36 6.5c1.8 12.5-4.5 24-16.5 30.5-1.8 1-3.6 1.4-4.5 2z"/><path d="M17.5 36.5C23 27 28.5 19.5 34 12"/>' + tail;
+  if(kind === 'steam') return head + '<path d="M13 40h22l-2.4 4.4H15.4z"/><path d="M16 31c-2-2.6 1.6-4.4 0-7.4M24 31c-2-2.6 1.6-4.4 0-7.4M32 31c-2-2.6 1.6-4.4 0-7.4"/><path d="M18 20c-1.4-2 .8-3.2 0-5.2M26 20c-1.4-2 .8-3.2 0-5.2"/>' + tail;
+  if(kind === 'bell') return head + '<path d="M24 9c5.8 0 9 4.6 9 11l2.2 7.6H12.8L15 20c0-6.4 3.2-11 9-11z"/><circle cx="24" cy="33.5" r="3.2"/><path d="M6 15c-1.6 2.4-1.6 5.6 0 8M42 15c1.6 2.4 1.6 5.6 0 8"/>' + tail;
+  if(kind === 'fan') return head + '<path d="M24 42L9 20a17.5 17.5 0 0 1 30 0z"/><path d="M24 42L15.5 16M24 42V13.5M24 42l8.5-26"/><circle cx="24" cy="42" r="2.2" fill="#e7c877" stroke="none"/>' + tail;
+  return head + '<circle cx="24" cy="24" r="12"/>' + tail;
+}
+function propOwned(p){ return !!p.free || shopOwned(p.shop); }
+function propCapable(){
+  if(!G || G.over) return false;
+  if(typeof review !== 'undefined' && review) return false;
+  return true;
+}
+let propArm = null;        // 已选待发送的道具 id
+let propLastAt = 0;        // 上次发送时间戳(冷却)
+let propHintShown = false; // 联机未点亮互发时的一次性说明
+function refreshPropUI(){
+  const b = $('btnProps'); if(!b) return;
+  const okk = propCapable();
+  b.style.display = okk ? '' : 'none';
+  if(!okk){ const pp = $('propPanel'); if(pp) pp.classList.remove('open'); propArm = null; }
+}
+function togglePropPanel(){
+  const pp = $('propPanel'); if(!pp || !propCapable()) return;
+  const fp = $('phrasePanel'); if(fp) fp.classList.remove('open');   /* 与台词面板互斥 */
+  if(pp.classList.contains('open')){ pp.classList.remove('open'); propArm = null; return; }
+  renderPropPanel();
+  pp.classList.add('open');
+}
+function seatDisplayName(s){
+  if(s === 0) return '自己';
+  if(G && G.online && ON.state && ON.state.seats){
+    const srv = (s + ON.seat) % 3, st = ON.state.seats[srv];
+    if(st) return st.kind === 'ai' ? ((CHARS[st.charKey] ? CHARS[st.charKey].name : 'AI') + '（AI）') : onEsc(st.nickname);
+  }
+  return (G && CHARS[G.aiChar[s]]) ? CHARS[G.aiChar[s]].name : '牌友';
+}
+function renderPropPanel(){
+  const pp = $('propPanel'); if(!pp) return;
+  if(propArm){
+    const p = PROP_MAP[propArm];
+    pp.innerHTML = '<div class="phrase-gtitle">把「' + p.name + '」送给谁？</div><div class="prop-targets">' +
+      [0, 1, 2].map(s => '<button type="button" class="phrasebtn" onclick="sendPropTo(' + s + ')">' + seatDisplayName(s) + '</button>').join('') +
+      '<button type="button" class="phrasebtn" onclick="cancelPropArm()">再想想</button></div>';
+    return;
+  }
+  pp.innerHTML = '<div class="phrase-gtitle">互动道具 · 选一件，再点一位牌友</div><div class="prop-grid">' +
+    PROP_DEFS.map(p => {
+      const own = propOwned(p);
+      return '<button type="button" class="propbtn' + (own ? '' : ' locked') + '" onclick="armProp(\'' + p.id + '\')">' +
+        '<span class="prop-ic">' + propSvg(p.kind, 30) + '</span><span>' + p.name + '</span>' +
+        (own ? '' : '<span class="prop-lock">小铺可换</span>') + '</button>';
+    }).join('') + '</div>';
+}
+function armProp(id){
+  const p = PROP_MAP[id]; if(!p) return;
+  if(!propOwned(p)){
+    const pp = $('propPanel'); if(pp) pp.classList.remove('open');
+    centerMsg('这件道具在茶点小铺', '去小铺「道具」分类用茶点换，永久拥有');
+    return;
+  }
+  propArm = id; renderPropPanel();
+  try{ Snd.play('tap', .5); }catch(e){}
+}
+function cancelPropArm(){ propArm = null; renderPropPanel(); }
+function sendPropTo(dseat){
+  const p = PROP_MAP[propArm]; propArm = null;
+  const pp = $('propPanel'); if(pp) pp.classList.remove('open');
+  if(!p || !G) return;
+  const now = Date.now();
+  if(now - propLastAt < 4000){ centerMsg('道具歇一歇', '刚送过一件，隔几秒再送'); return; }
+  propLastAt = now;
+  propFxAt(dseat, p);
+  try{ if(p.id === 'bell' && Snd.ding) Snd.ding(.12); else Snd.play('tap', .6); }catch(e){}
+  if(G.online){
+    const caps = ON.state && ON.state.caps;
+    if(caps && caps.prop && ON.ws){ try{ ON.ws.send(JSON.stringify({ type:'prop', prop: p.id, to: (dseat + ON.seat) % 3 })); }catch(e){} }
+    else if(!propHintShown){ propHintShown = true; centerMsg('道具送出去了', '茶局房好友互发还要等茶肆升级，先在本机乐一乐'); }
+    return;
+  }
+  /* 单机: AI 收到回一句(角色口吻); 送自己只看特效 */
+  if(dseat !== 0){
+    const ck = G.aiChar[dseat];
+    setTimeout(() => { if(G && !G.online && !G.over) say(dseat, propReaction(p.id, ck)); }, paceDelay(750));
+  }
+}
+function propReaction(pid, ck){
+  const sp = PROP_REACT_SPECIAL[ck + ':' + pid];
+  if(sp) return sp;
+  const pool = PROP_REACT[pid] || PROP_REACT.tea;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+function propFxAt(dseat, p){
+  try{
+    const c = seatZoneCenter(dseat);
+    const el = document.createElement('div');
+    el.className = 'propfx';
+    el.innerHTML = '<span class="propic ' + (p.anim || '') + '">' + propSvg(p.kind, 38) + '</span>';
+    el.style.left = c.x + 'px'; el.style.top = (c.y - 30) + 'px';
+    document.body.appendChild(el);
+    bounceAvatar(dseat);
+    setTimeout(() => { if(el.remove) el.remove(); }, 2000);
+  }catch(e){}
+}
+
 /* ---------- v1.1: 音效与特效 ----------
    音效选型: CC0 采样优先(见同目录 素材清单-v1.1.md), 旋律类与升调用 Web Audio 合成补位;
    全程无任何角色语音/TTS。采样以 base64 内嵌, 首次用户手势后才初始化 AudioContext。
@@ -1908,7 +2081,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.2.8 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.3.0 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -2444,7 +2617,7 @@ function nextUnlockHint(){
   if(!(sd.link && sd.link.badge))
     return {txt: '点亮茶友徽章：去生涯页「支持作者」区，装上表情就能点亮，不花茶点。', act: 'showCareer()', btn: '去生涯页'};
   const t = tasksData();
-  const cand = SHOP_ITEMS.filter(it => it.cat !== 'card' && !shopOwned(it.id) && !isLimitedOff(it)).sort((a, b) => a.price - b.price);
+  const cand = SHOP_ITEMS.filter(it => it.cat !== 'card' && it.cat !== 'prop' && !shopOwned(it.id) && !isLimitedOff(it)).sort((a, b) => a.price - b.price);
   const can = cand.find(it => t.treats >= it.price);
   if(can) return {txt: '茶点已够换「' + can.name + '」，去小铺装备上。', act: 'showShop()', btn: '去小铺'};
   if(cand.length) return {txt: '再攒 ' + (cand[0].price - t.treats) + ' 枚茶点，可换「' + cand[0].name + '」。', act: 'showShop()', btn: '去小铺'};
@@ -2578,10 +2751,118 @@ function showCareer(){
     '<span class="rank-info">'+seasonLabel(rk.season)+'赛季 · 段位分 <b>'+rk.points+'</b><br>历史最高 '+tierName(histBestPts)+'</span></div>' +
     emptyBlock +
     '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>' +
-    '<button class="primary" onclick="showModeSelect()">返回场次选择</button>' +
+    '<button class="primary" onclick="showHonor()">茶会荣誉</button> <button class="ghost" onclick="showModeSelect()">返回场次选择</button>' +
     '<div class="career-note">总场次、胜率、积分与段位为历史累计；分项（地主/农民胜率、连胜、炸弹、春天）自 v1.2 起累计，不回填。只统计三场次，残局、每日与联机不计。</div>' +
     supportAuthorHTML();   /* v2.2: 生涯页脚支持作者区(页脚级存在感, 不弹窗不挡功能) */
   $('overlay').classList.add('show');
+}
+
+/* ---------- v2.3: 茶会荣誉页 ----------
+   荣誉分 = 当前段位分 + 残局总星 × 10 + 最佳连胜 × 25, 全部由既有存档派生,
+   不新增键、不落盘, 每次打开现算。称号按荣誉分阶梯。节日星单列展示不计分
+   (窗口限定内容, 不绑架总分)。荣誉图复用战报图同套视觉与交付管线。 */
+const HONOR_TITLES = [
+  [0, '茶肆新客'], [150, '茶肆熟客'], [350, '茶桌常客'], [650, '座上宾'],
+  [1000, '掌柜之友'], [1500, '文火茶人'], [2200, '茶肆荣誉掌柜'],
+];
+function honorTitleOf(score){ let t = HONOR_TITLES[0][1]; for(const pair of HONOR_TITLES) if(score >= pair[0]) t = pair[1]; return t; }
+function honorNextOf(score){ for(const pair of HONOR_TITLES) if(score < pair[0]) return { th: pair[0], name: pair[1] }; return null; }
+function honorData(){
+  const rk = rankData();
+  const stars = totalStars();
+  const best = careerData().best;
+  const score = rk.points + stars * 10 + best * 25;
+  return { score, rankPts: rk.points, rankName: tierName(rk.points), stars, festStars: festStarsTotal(),
+    best, games: stats.total, wins: stats.win, title: honorTitleOf(score), next: honorNextOf(score) };
+}
+function showHonor(){
+  elderContext = 'menu';
+  setPanelClass();
+  hideBubbles();
+  const hd = honorData();
+  const rows = [
+    ['段位', hd.rankName + ' · ' + hd.rankPts + ' 分'],
+    ['残局总星', hd.stars + ' / ' + (LEVELS.length * 3) + '（计 ' + (hd.stars * 10) + ' 分）'],
+    ['节日星（万圣）', hd.festStars + ' / ' + (FEST_LEVELS.length * 3) + '（展示纪念，不计分）'],
+    ['最佳连胜', hd.best + ' 连胜（计 ' + (hd.best * 25) + ' 分）'],
+    ['总场次', hd.games + ' 局 · ' + hd.wins + ' 胜'],
+  ];
+  $('panel').innerHTML =
+    '<h2>茶会荣誉</h2><div class="who-win">文火茶肆 · 本机荣誉（打开现算，只存本机）</div>' +
+    '<div class="honor-wrap"><span class="honor-title">' + hd.title + '</span>' +
+    '<div class="honor-score">' + hd.score + '</div><div class="support-small">荣誉分 = 段位分 + 残局总星 × 10 + 最佳连胜 × 25</div>' +
+    (hd.next ? '<div class="support-small">距「' + hd.next.name + '」还差 ' + (hd.next.th - hd.score) + ' 分</div>' : '<div class="support-small">已是茶肆最高荣誉</div>') + '</div>' +
+    '<table>' + rows.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('') + '</table>' +
+    '<div id="achSection"></div>' +
+    '<button class="primary" onclick="makeHonorImage()">生成荣誉图</button> ' +
+    '<button class="ghost" onclick="showCareer()">返回生涯</button>' +
+    '<div class="share-result" id="reportTip"></div>';
+  $('overlay').classList.add('show');
+  try{ renderAchievements(); }catch(e){}   /* v2.4: 成就徽章区(本版先留挂点) */
+}
+async function makeHonorImage(){
+  const tip = $('reportTip'); const setTip = t => { if(tip) tip.textContent = t; };
+  const hd = honorData();
+  setTip('正在生成荣誉图…');
+  const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350;
+  const ctx = cv.getContext ? cv.getContext('2d') : null;
+  if(!ctx){ setTip('当前环境不支持画布，荣誉图生成失败。'); return null; }
+  const av = await loadAvatarImg(CHARS.monkey.av);
+  const fid = equippedFrameId();
+  const frameImg = fid ? await loadAvatarImg(frameFileOf(fid)) : null;
+  drawHonorReport(ctx, hd, av, frameImg);
+  shareReportImage(cv);
+  return cv;
+}
+function drawHonorReport(ctx, hd, av, frameImg){
+  const W = 1080, H = 1350;
+  const F = '"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif';
+  const grd = ctx.createLinearGradient(0, 0, 0, H);
+  grd.addColorStop(0, '#1a4a43'); grd.addColorStop(1, '#0a2723');
+  ctx.fillStyle = grd; ctx.fillRect(0, 0, W, H);
+  const rg = ctx.createRadialGradient(540, 430, 60, 540, 430, 560);
+  rg.addColorStop(0, 'rgba(231,200,119,.20)'); rg.addColorStop(1, 'rgba(231,200,119,0)');
+  ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(201,162,77,.9)'; ctx.lineWidth = 3; ctx.strokeRect(28, 28, W - 56, H - 56);
+  ctx.strokeStyle = 'rgba(201,162,77,.35)'; ctx.lineWidth = 1; ctx.strokeRect(42, 42, W - 84, H - 84);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#e7c877'; ctx.font = '700 96px ' + F;
+  ctx.fillText('萌友斗地主', 540, 150);
+  ctx.fillStyle = '#b7c9bd'; ctx.font = '30px ' + F;
+  ctx.fillText('M Y S K M E · 文火茶肆 · 茶会荣誉', 540, 208);
+  ctx.fillStyle = '#f7efdc'; ctx.font = '34px ' + F;
+  ctx.fillText(shanghaiToday(), 540, 262);
+  drawAvatarCircle(ctx, av, 540, 470, 110, frameRingColor());
+  if(frameImg) ctx.drawImage(frameImg, 540 - 132, 470 - 132, 264, 264);
+  ctx.fillStyle = '#e7c877'; ctx.font = '700 54px ' + F;
+  ctx.fillText(hd.title, 540, 652);
+  ctx.fillStyle = '#f7efdc'; ctx.font = '900 150px ' + F;
+  ctx.fillText(String(hd.score), 540, 768);
+  ctx.fillStyle = '#cfe0d2'; ctx.font = '32px ' + F;
+  ctx.fillText('荣 誉 分', 540, 862);
+  const rows = [
+    ['段位', hd.rankName + ' · ' + hd.rankPts + ' 分'],
+    ['残局总星', hd.stars + ' / ' + (LEVELS.length * 3)],
+    ['最佳连胜', hd.best + ' 连胜'],
+    ['总场次', hd.games + ' 局 · ' + hd.wins + ' 胜'],
+  ];
+  const px = 110, pw = W - 220, py = 928, ph = 224;
+  ctx.fillStyle = 'rgba(247,239,220,.06)'; ctx.fillRect(px, py, pw, ph);
+  ctx.strokeStyle = 'rgba(201,162,77,.4)'; ctx.lineWidth = 1.5; ctx.strokeRect(px, py, pw, ph);
+  ctx.textAlign = 'left';
+  rows.forEach((row, i) => {
+    const col = i % 2, rw = Math.floor(i / 2);
+    const x = px + 44 + col * (pw / 2), y = py + 56 + rw * 100;
+    ctx.fillStyle = '#a9bcb0'; ctx.font = '30px ' + F;
+    ctx.fillText(row[0], x, y);
+    ctx.fillStyle = '#e7c877'; ctx.font = '700 33px ' + F;
+    ctx.fillText(row[1], x + 128, y);
+  });
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#e7c877'; ctx.font = '700 46px ' + F;
+  ctx.fillText('ddz.myskme.com', 540, 1232);
+  ctx.fillStyle = '#8a9a8e'; ctx.font = '26px ' + F;
+  ctx.fillText('萌友斗地主 · 和家人开一桌', 540, 1280);
 }
 
 /* ---------- v0.4: 大字模式(原长辈模式)状态 ----------
@@ -2798,6 +3079,7 @@ const ON = {
   expectResume: false, // 本次连接是回座尝试(被拒时回到联机面板)
   reconnects: 0,
   nick: '',
+  tourney: null,       // v2.3: 房内小赛本机计分状态(纯前端聚合, 不进协议)
 };
 function onEsc(s){ return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 function onlStatus(t){ const el = $('onlStatus'); if (el) el.textContent = t || ''; }
@@ -2889,6 +3171,7 @@ function onWsMessage(m){
   if (m.type === 'created' || m.type === 'joined'){
     ON.code = m.code; ON.token = m.token; ON.seat = m.seat; ON.active = true; ON.reconnects = 0;
     ON._roomCounted = false;
+    ON.tourney = null;   /* v2.3: 换房即清小赛计分 */
     return;
   }
   if (m.type === 'resumed'){
@@ -2933,6 +3216,14 @@ function onWsEvent(m){
     if (list && list[m.phraseId]){ say(disp(m.seat), list[m.phraseId]); Snd.ding(.09); }
     return;
   }
+  if (m.event === 'prop'){
+    /* v2.3: 联机互动道具(需后端 caps.prop 转发 {event:'prop', seat, to, prop} 才有此事件;
+       当前后端 v1.1.0 尚无此能力, 本分支先行待命, 后端点亮 caps.prop 后自动生效) */
+    if (m.seat === ON.seat) return;
+    const pd = PROP_MAP[m.prop];
+    if (pd && Number.isInteger(m.to)) propFxAt(disp(m.to), pd);
+    return;
+  }
   if (m.event === 'phraseImg'){
     /* v2.2: 联机表情气泡(后端 v1.1.0 转发 img 下标, 图在本地按序号取) */
     if (m.seat === ON.seat) return;
@@ -2967,6 +3258,7 @@ function onApplyState(st){
   if (!ON.active) return;
   /* v2.2: 周目标「本周开 2 次茶局房」—— 每进一房首次进入对局计 1 次 */
   if (st.phase !== 'lobby' && !ON._roomCounted){ ON._roomCounted = true; try{ weeklyEvent('room'); }catch(e){} }
+  try{ tourneyOnState(st); }catch(e){}   /* v2.3: 房内小赛计分(结算由服务端全房广播, 本机聚合) */
   if (st.phase === 'lobby'){ ON.inGame = false; renderOnlineLobby(st); return; }
   ON.inGame = true;
   $('overlay').classList.remove('show');
@@ -3000,6 +3292,7 @@ function renderOnlineLobby(st){
     '<div class="onl-code">' + st.code + '</div>' +
     '<div class="onl-row"><button class="ghost" onclick="onCopyInvite(this)">复制邀请</button><span class="onl-status" id="onlCopyTip"></span></div>' +
     '<div class="onl-members">' + rows + '</div>' +
+    tourneyLobbyHTML(st) +
     '<div class="onl-row">' +
       '<button class="ghost" onclick="onSendReady(' + (me && me.ready ? 'false' : 'true') + ')">' + (me && me.ready ? '取消准备' : '准备') + '</button>' +
       (st.hostSeat === ON.seat ? '<button class="primary" onclick="onSendStart()">开局</button>' : '<span class="onl-status">等房主开局…</span>') +
@@ -3028,6 +3321,7 @@ function onLeaveRoom(silent){
   ON.intentional = true;
   if (ON.ws){ try { ON.ws.close(); } catch (e) {} ON.ws = null; }
   ON.active = false; ON.inGame = false; ON.state = null;
+  ON.tourney = null;   /* v2.3: 离房清小赛计分 */
   ON.code = ''; ON.token = ''; ON.seat = -1; ON.reconnects = 0;
   setLaizi(0);
   elderContext = 'menu';
@@ -3246,6 +3540,131 @@ function renderOnlineSettlement(st){
   $('overlay').classList.add('show');
 }
 
+/* ---------- v2.3: 房内小赛(纯前端聚合, 不改协议) ----------
+   原理: 每局结算由服务端向全房广播同一份 settlement, 每台已开启计分的客户端
+   独立累计, 结果天然一致。房主在大厅点「发起小赛」, 其他成员点「同步计分」,
+   从下一局起连打 5 局; 按胜场排序、净胜分 tiebreak, 第 5 局结算后出房内榜
+   与海报图。无门票、无实物奖, 只有房内荣誉。断线/离房/换房则本机计分作废。 */
+function tourneyArm(byHost){
+  if(!ON.state) return;
+  ON.tourney = { games: 0, table: {}, lastKey: '', done: false, byHost: !!byHost };
+  renderOnlineLobby(ON.state);
+  onlStatus('小赛计分已开启：从下一局起连打 5 局，每局结算自动计分。');
+}
+function tourneyCancel(){ ON.tourney = null; if(ON.state) renderOnlineLobby(ON.state); }
+function tourneyOnState(st){
+  const t = ON.tourney;
+  if(!t || t.done) return;
+  if(st.phase !== 'settled' || !st.settlement) return;
+  const s = st.settlement;
+  const key = [s.winnerSeat, s.landlordSeat, s.base, s.mult, s.bombs, (s.deltas || []).join(',')].join('|');
+  if(key === t.lastKey) return;   // 同一局结算的重复推送(投票更新等)只计一次
+  t.lastKey = key;
+  st.seats.forEach((seatInfo, srv) => {
+    const row = t.table[srv] || (t.table[srv] = { w: 0, pts: 0, name: '牌友', ai: false, charKey: '' });
+    row.name = seatInfo.nickname || row.name;
+    row.ai = seatInfo.kind === 'ai';
+    row.charKey = seatInfo.charKey || '';
+    const landlordSide = srv === s.landlordSeat;
+    if(landlordSide === !!s.landlordWin) row.w++;
+    row.pts += (s.deltas && typeof s.deltas[srv] === 'number') ? s.deltas[srv] : 0;
+  });
+  t.games++;
+  if(t.games >= 5){ t.done = true; setTimeout(() => { if(ON.tourney === t && ON.inGame) showTourneyBoard(); }, 600); }
+}
+function tourneyRows(){
+  const t = ON.tourney; if(!t) return [];
+  return Object.keys(t.table).map(k => Object.assign({ srv: +k }, t.table[k]))
+    .sort((a, b) => (b.w - a.w) || (b.pts - a.pts));
+}
+function tourneyLobbyHTML(st){
+  const t = ON.tourney;
+  const isHost = st.hostSeat === ON.seat;
+  if(!t) return '<div class="onl-tour"><b>房内小赛</b><div class="onl-status">连打 5 局，按胜场与净胜分排个房内榜（无门票，只有荣誉）。房主发起后，每位成员各自点「同步计分」，五局后各自出榜，结果一致。</div>' +
+    '<div class="onl-row">' + (isHost ? '<button class="primary" onclick="tourneyArm(true)">发起小赛</button>' : '') +
+    '<button class="ghost" onclick="tourneyArm(false)">同步计分</button></div></div>';
+  return '<div class="onl-tour"><b>房内小赛 · 计分中</b><div class="onl-status">已计 ' + t.games + ' / 5 局' + (t.done ? ' · 已出榜' : '') + '。中途离房，本机计分作废。</div>' +
+    '<div class="onl-row"><button class="ghost" onclick="tourneyCancel()">取消计分</button>' +
+    (t.done ? '<button class="primary" onclick="showTourneyBoard()">看结算榜</button>' : '') + '</div></div>';
+}
+function showTourneyBoard(){
+  const t = ON.tourney; if(!t) return;
+  setPanelClass();
+  const rows = tourneyRows();
+  const champ = rows[0];
+  $('panel').innerHTML =
+    '<h2>房内小赛 · 结算榜</h2>' +
+    '<div class="who-win">连打 5 局 · 按胜场与净胜分排定（本机按全房广播的结算独立汇总）</div>' +
+    (champ ? '<div class="honor-wrap"><span class="honor-title">本桌小赛头名</span><div class="tour-champ">' + onEsc(champ.name) + (champ.ai ? '（AI）' : '') + ' · ' + champ.w + ' 胜</div></div>' : '') +
+    rows.map((r, i) => '<div class="tour-row' + (i === 0 ? ' top' : '') + '"><span>' + (i + 1) + '. ' + onEsc(r.name) + (r.ai ? '（AI）' : '') + (r.srv === ON.seat ? '（你）' : '') + '</span><span>' + r.w + ' 胜 · 净胜 ' + (r.pts >= 0 ? '+' : '−') + Math.abs(r.pts) + ' 分</span></div>').join('') +
+    '<div class="onl-row"><button class="primary" onclick="makeTourneyPoster()">生成小赛海报</button>' +
+    '<button class="ghost" onclick="tourneyEndToLobby()">返回大厅</button>' +
+    '<button class="ghost" onclick="onLeaveRoom(false)">离开房间</button></div>' +
+    '<div class="share-result" id="reportTip"></div>';
+  $('overlay').classList.add('show');
+}
+function tourneyEndToLobby(){ ON.tourney = null; onSendLobby(); }
+async function makeTourneyPoster(){
+  const tip = $('reportTip'); const setTip = t => { if(tip) tip.textContent = t; };
+  const rows = tourneyRows(); if(!rows.length){ setTip('还没有小赛数据。'); return; }
+  setTip('正在生成小赛海报…');
+  const cv = document.createElement('canvas'); cv.width = 1080; cv.height = 1350;
+  const ctx = cv.getContext ? cv.getContext('2d') : null;
+  if(!ctx){ setTip('当前环境不支持画布，海报生成失败。'); return null; }
+  const avs = {};
+  for(const r of rows) avs[r.srv] = await loadAvatarImg(r.charKey && CHARS[r.charKey] ? CHARS[r.charKey].av : CHARS.monkey.av);
+  drawTourneyReport(ctx, rows, avs);
+  shareReportImage(cv);
+  return cv;
+}
+function drawTourneyReport(ctx, rows, avs){
+  const W = 1080, H = 1350;
+  const F = '"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif';
+  const grd = ctx.createLinearGradient(0, 0, 0, H);
+  grd.addColorStop(0, '#1a4a43'); grd.addColorStop(1, '#0a2723');
+  ctx.fillStyle = grd; ctx.fillRect(0, 0, W, H);
+  const rg = ctx.createRadialGradient(540, 400, 60, 540, 400, 560);
+  rg.addColorStop(0, 'rgba(231,200,119,.20)'); rg.addColorStop(1, 'rgba(231,200,119,0)');
+  ctx.fillStyle = rg; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(201,162,77,.9)'; ctx.lineWidth = 3; ctx.strokeRect(28, 28, W - 56, H - 56);
+  ctx.strokeStyle = 'rgba(201,162,77,.35)'; ctx.lineWidth = 1; ctx.strokeRect(42, 42, W - 84, H - 84);
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#e7c877'; ctx.font = '700 96px ' + F;
+  ctx.fillText('萌友斗地主', 540, 150);
+  ctx.fillStyle = '#b7c9bd'; ctx.font = '30px ' + F;
+  ctx.fillText('M Y S K M E · 文火茶肆 · 房内小赛', 540, 208);
+  ctx.fillStyle = '#f7efdc'; ctx.font = '34px ' + F;
+  ctx.fillText('房码 ' + (ON.code || '') + ' · ' + shanghaiToday(), 540, 262);
+  const champ = rows[0];
+  if(champ){
+    drawAvatarCircle(ctx, avs[champ.srv], 540, 440, 100, '#c9a24d');
+    ctx.fillStyle = '#e7c877'; ctx.font = '700 30px ' + F;
+    ctx.fillText('小 赛 头 名', 540, 330);
+    ctx.fillStyle = '#f7efdc'; ctx.font = '700 52px ' + F;
+    ctx.fillText(String(champ.name || '牌友') + (champ.ai ? '（AI）' : ''), 540, 592);
+    ctx.fillStyle = '#cfe0d2'; ctx.font = '34px ' + F;
+    ctx.fillText(champ.w + ' 胜 · 净胜 ' + (champ.pts >= 0 ? '+' : '−') + Math.abs(champ.pts) + ' 分', 540, 646);
+  }
+  ctx.textAlign = 'left';
+  rows.forEach((r, i) => {
+    const y = 760 + i * 118;
+    ctx.fillStyle = i === 0 ? '#e7c877' : '#a9bcb0'; ctx.font = '700 40px ' + F;
+    ctx.fillText(String(i + 1), 128, y);
+    drawAvatarCircle(ctx, avs[r.srv], 218, y, 40, i === 0 ? '#c9a24d' : 'rgba(201,162,77,.4)');
+    ctx.fillStyle = '#f7efdc'; ctx.font = '700 38px ' + F;
+    ctx.fillText(String(r.name || '牌友') + (r.ai ? '（AI）' : '') + (r.srv === ON.seat ? '（你）' : ''), 282, y);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#e7c877'; ctx.font = '700 36px ' + F;
+    ctx.fillText(r.w + ' 胜 · ' + (r.pts >= 0 ? '+' : '−') + Math.abs(r.pts), 952, y);
+    ctx.textAlign = 'left';
+  });
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#e7c877'; ctx.font = '700 46px ' + F;
+  ctx.fillText('ddz.myskme.com', 540, 1232);
+  ctx.fillStyle = '#8a9a8e'; ctx.font = '26px ' + F;
+  ctx.fillText('萌友斗地主 · 和家人开一桌', 540, 1280);
+}
+
 /* ---------- 开局 ---------- */
 function startMode(m){ newGame(m); }
 
@@ -3289,7 +3708,7 @@ function showModeSelect(){
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.8</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.3.0</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
@@ -3521,12 +3940,53 @@ const FIRST_HINTS = [
   [3,13,13,13], [13,13], [5,5], [4], [3,3],
   [4,14,14,14], [4,4], [6,6], [10,10,10], [3,13,13,13],
 ];
+/* ---------- v2.3: 万圣节日残局(活动窗与商城限定同口径: halloweenWindow 10/20–11/2) ----------
+   数据由求解器逐关验证后定稿(见 残局工场/fest_verify_report.md); 进度存 challenge
+   键的 festStars/festBest 字段(复用既有结构按关卡扩展, 不新增键)。窗口外入口
+   隐藏, 已得星数保留, 次年返场可补打 —— 判定只看月日, 与年份无关。 */
+const FEST_LEVELS = [
+  { name:'南瓜灯守夜', landlord:0, chars:['fish','snake'], best:4, goal:'守夜先打对 K 探路——右手边四张 8 一露头，就让它先响；再用单张 2 夺回话头，三张 A 带走 9，大王最后落灯。', hands:[[17,15,14,14,14,13,13,9],[14,9,9,6,6,6,4],[12,8,8,8,8,6]] },
+  { name:'纸灯笼夜巡', landlord:0, chars:['teapot','egg'], best:3, goal:'先出对 J 把小炸钓出来——右手边的四张 4 一响，你的四张 8 再压回去；最后三张 Q 带着小王收灯，先炸 8 只会把夜巡打乱。', hands:[[16,12,12,12,11,11,8,8,8,8],[12,11,9,7,6,6,5],[6,6,5,5,4,4,4,4]] },
+  { name:'满月茶肆夜话', landlord:2, chars:['donkey','teapot'], best:3, goal:'地主只剩六张整牌——别急着亮大牌抢拍：小单一张张递，该拦时用单张 A 拦一手，陪队友把对子拆成单张接力走完。', hands:[[17,15,15,14,14,14,11,9,6,6,3],[14,12,12,11,11,9,9,6,4],[12,12,10,10,10,7]] },
+  { name:'南瓜马车陷阱', landlord:0, chars:['egg','donkey'], best:5, goal:'四张 A 先炸出去必输——开局只有对 6 能上梯子：一阶阶爬到对 Q 夺回牌权，单张 3 探路、大王压阵，最后四张 A 带走 7 和 8 收官。', hands:[[17,14,14,14,14,12,12,8,7,6,6,3],[10,10,10,7,7,7,5,4],[13,9,9,9,9,5]] },
+  { name:'夜巡收官局', landlord:0, chars:['monkey','snake'], best:4, goal:'收官夜巡从对 4 起步——对子爬到对 J 夺权，中段顺子只走 6 到 10，贪长就慢一手；最后三张 5 带对 Q 落灯。', hands:[[12,12,11,11,10,9,8,7,6,5,5,5,4,4],[9,9,9,8,8,8,7],[6,6,6,5,4,3,3]] },
+];
+const FEST_FIRST_HINTS = [
+  [13,13], [11,11], [3], [6,6], [4,4],
+];
+function festCellsHtml(){
+  if(!halloweenWindow() || !FEST_LEVELS.length) return '';
+  const cells = FEST_LEVELS.map((lv, i) => {
+    const st = challenge.festStars[i] || 0;
+    const best = festBest(i);
+    const bestLine = best ? '<div class="lvbest">最佳 ' + best + ' 手</div>' : '';
+    if(!festUnlocked(i))
+      return '<div class="levelcell fest locked"><div class="lvno">节日 ' + (i + 1) + '</div><div class="lvname">' + lv.name + '</div><div class="lvstars dim">未解锁</div></div>';
+    return '<button class="levelcell fest" onclick="startLevel(' + i + ',true)"><div class="lvno">节日 ' + (i + 1) + '</div><div class="lvname">' + lv.name + '</div><div class="lvstars">' + starStr(st) + '</div>' + bestLine + '</button>';
+  }).join('');
+  return '<div class="lvtier fest">万圣夜 · 节日残局（节日星 ' + festStarsTotal() + ' / ' + (FEST_LEVELS.length * 3) + '）</div>' + cells;
+}
 /* v2.0 查 bug 修复: 同 stats——challenge 键非法 JSON 时旧写法在下方形状守卫执行前就已抛错白屏; 解析本身先兜底 */
 let challenge = (()=>{ try{ const c = JSON.parse(localStorage.getItem('myskme_ddz_challenge')||'null'); if(c && typeof c==='object') return c; }catch(e){} return {stars:[]}; })();
 if(!Array.isArray(challenge.stars)) challenge.stars = [];
 /* v1.5: 每关个人最佳手数, 复用 challenge 键扩 bestPlays 字段(不新增键);
    旧存档无此字段时静默初始化为空数组, 星数等既有字段零改动。 */
 if(!Array.isArray(challenge.bestPlays)) challenge.bestPlays = [];
+/* v2.3: 万圣节日残局进度, 复用 challenge 键扩 festStars/festBest 字段(不新增键,
+   与 v1.5 bestPlays 同先例); 旧存档无此字段时静默初始化, 既有字段零改动。 */
+if(!Array.isArray(challenge.festStars)) challenge.festStars = [];
+if(!Array.isArray(challenge.festBest)) challenge.festBest = [];
+function festStarsTotal(){ return challenge.festStars.reduce((a, b) => a + (b || 0), 0); }
+function festBest(i){ const v = Array.isArray(challenge.festBest) ? challenge.festBest[i] : 0; return (Number.isInteger(v) && v > 0) ? v : 0; }
+function recordFestBest(i, plays){
+  if(!Array.isArray(challenge.festBest)) challenge.festBest = [];
+  if(!Number.isInteger(plays) || plays <= 0) return false;
+  const cur = festBest(i);
+  if(cur && plays >= cur) return false;
+  challenge.festBest[i] = plays;
+  return true;
+}
+function festUnlocked(i){ return i === 0 || (challenge.festStars[i - 1] || 0) >= 1; }
 function saveChallenge(){ try{ localStorage.setItem('myskme_ddz_challenge', JSON.stringify(challenge)); }catch(e){} }
 function challengeBest(i){ const v = Array.isArray(challenge.bestPlays) ? challenge.bestPlays[i] : 0; return (Number.isInteger(v) && v > 0) ? v : 0; }
 function recordChallengeBest(i, plays){
@@ -3699,7 +4159,7 @@ function showLevelSelect(){
     return head + '<button class="levelcell" onclick="startLevel('+i+')"><div class="lvno">第 '+(i+1)+' 关</div><div class="lvname">'+lv.name+'</div><div class="lvstars">'+starStr(st)+'</div>'+bestLine+'</button>';
   }).join('');
   $('panel').innerHTML = '<h2>残局闯关</h2><div class="who-win">总星 '+totalStars()+' / '+(LEVELS.length*3)+' · 通关解锁下一关</div>' +
-    '<div class="levelgrid">'+cells+'</div>' +
+    '<div class="levelgrid">'+festCellsHtml()+cells+'</div>' +
     '<button class="ghost" onclick="showModeSelect()">返回场次选择</button>';
   $('overlay').classList.add('show');
 }
@@ -3711,20 +4171,20 @@ function fabricateHands(handsVals){   // 按全局出现序号分配花色, 保�
     return {v, s: SUITS[i%4]};
   }));
 }
-function startLevel(idx){
+function startLevel(idx, fest){
   elderContext = 'challenge';
   setPanelClass();
   applyElderMode();
   setElderRecommendation(null);
-  const linkChallenge = (pendingChallenge && pendingChallenge.idx===idx) ? pendingChallenge : null;
-  const lv = LEVELS[idx];
+  const linkChallenge = (!fest && pendingChallenge && pendingChallenge.idx===idx) ? pendingChallenge : null;
+  const lv = fest ? FEST_LEVELS[idx] : LEVELS[idx];
   $('overlay').classList.remove('show');
   hideBubbles();
   setLaizi(0);
   window._gid = (window._gid||0)+1;
   G = {
     gid: window._gid,
-    mode:'challenge', laiziVal:0, challengeIdx: idx, linkChallenge, daily:false,
+    mode:'challenge', laiziVal:0, challengeIdx: idx, linkChallenge, daily:false, fest: !!fest,
     phase:'playing',
     hands: fabricateHands(lv.hands).map(sortCards),
     dipai: [],
@@ -3748,9 +4208,9 @@ function startLevel(idx){
   $('avR').src = CHARS[lv.chars[0]].av; $('nmR').textContent = CHARS[lv.chars[0]].name;
   $('avL').src = CHARS[lv.chars[1]].av; $('nmL').textContent = CHARS[lv.chars[1]].name;
   $('uiBase').textContent = '—'; $('uiMult').textContent = '×1';
-  $('uiMode').textContent = '残局 · 第 '+(idx+1)+' 关';
+  $('uiMode').textContent = fest ? '节日残局 · 万圣夜' : '残局 · 第 '+(idx+1)+' 关';
   const noteEl = $('modeNote');
-  noteEl.textContent = '第 '+(idx+1)+' 关《'+lv.name+'》：'+lv.goal+' '+lv.best+' 手内三星，'+(lv.best+1)+' 手内两星。';
+  noteEl.textContent = fest ? '节日关《'+lv.name+'》：'+lv.goal+' '+lv.best+' 手内三星，'+(lv.best+1)+' 手内两星。' : '第 '+(idx+1)+' 关《'+lv.name+'》：'+lv.goal+' '+lv.best+' 手内三星，'+(lv.best+1)+' 手内两星。';
   noteEl.classList.add('show');
   const banner = $('challengeBanner');
   if(linkChallenge){
@@ -3768,28 +4228,29 @@ function startLevel(idx){
   hintIdx = 0;
   renderAll();
   animateDeal(2);
-  centerMsg('第 '+(idx+1)+' 关 · '+lv.name, lv.landlord===0 ? '你是地主 · 由你先手出牌' : '你是农民 · 由你先手出牌');
+  centerMsg(fest ? '万圣夜 · '+lv.name : '第 '+(idx+1)+' 关 · '+lv.name, lv.landlord===0 ? '你是地主 · 由你先手出牌' : '你是农民 · 由你先手出牌');
   runTurn();
   saveResume();   /* v1.5: 残局/每日开局即写快照 */
 }
 function finishChallenge(winnerSeat){
   setPanelClass();
-  const lv = LEVELS[G.challengeIdx];
+  const lv = G.fest ? FEST_LEVELS[G.challengeIdx] : LEVELS[G.challengeIdx];
   const link = G.linkChallenge || null;
   const isDaily = !!G.daily;
   const playerWin = roleOf(winnerSeat) === roleOf(0);
   const myPlays = G.playsCount[0];
   let stars = 0;
   let dailyInfo = null;
-  G._chWasThree = ((challenge.stars[G.challengeIdx]||0) >= 3);   /* v2.1: 首次三星判定须在写新星数前取旧值 */
+  G._chWasThree = (((G.fest ? challenge.festStars : challenge.stars)[G.challengeIdx]||0) >= 3);   /* v2.1: 首次三星判定须在写新星数前取旧值; v2.3: 节日关读 festStars */
   if(playerWin){
     stars = myPlays<=lv.best ? 3 : (myPlays<=lv.best+1 ? 2 : 1);
     if(isDaily){ dailyInfo = recordDailyWin(); }
+    else if(G.fest){ if(!link && stars > (challenge.festStars[G.challengeIdx]||0)){ challenge.festStars[G.challengeIdx] = stars; saveChallenge(); } }
     else if(!link && stars > (challenge.stars[G.challengeIdx]||0)){ challenge.stars[G.challengeIdx] = stars; saveChallenge(); }
     /* v1.5: 个人最佳手数(好友挑战局不计; 与星数分开落盘, 刷新纪录才写) */
-    if(!link && recordChallengeBest(G.challengeIdx, myPlays)) saveChallenge();
+    if(!link && (G.fest ? recordFestBest(G.challengeIdx, myPlays) : recordChallengeBest(G.challengeIdx, myPlays))) saveChallenge();
     if(!link) taskEvent('win');   // v1.3: 每日任务「单机获胜一局」(残局/每日通关计, 好友挑战局不计)
-    if(!isDaily && !link) weeklyEvent('ch', G.challengeIdx);   // v2.2: 周目标「本周通关 3 关残局」(去重计关)
+    if(!isDaily && !link) weeklyEvent('ch', G.fest ? 1000 + G.challengeIdx : G.challengeIdx);   // v2.2: 周目标「本周通关 3 关残局」(去重计关); v2.3: 节日关以 1000+ 序号入集, 与正关不撞
   }
   G.reportSnap = {winnerSeat, stars, playerWin, plays: myPlays, daily: isDaily};   // v1.3: 战报图数据快照
   /* v2.1: 茶点产出 —— 残局/每日首通 +1(每日 1 次); 普通残局首次三星一次性 +2; 好友挑战局不计 */
@@ -3806,16 +4267,18 @@ function finishChallenge(winnerSeat){
   if(playerWin){
     desc = (winnerSeat===0 ? '你率先出完' : '队友 '+CHARS[G.aiChar[winnerSeat]].name+' 率先出完') +
       ' · 你共出牌 '+myPlays+' 手（最优 '+lv.best+' 手）';
-    if(!link && challengeBest(G.challengeIdx)) desc += '<br>你的最佳 '+challengeBest(G.challengeIdx)+' 手';
+    const myBestRec = G.fest ? festBest(G.challengeIdx) : challengeBest(G.challengeIdx);
+    if(!link && myBestRec) desc += '<br>你的最佳 '+myBestRec+' 手';
   } else {
     desc = CHARS[G.aiChar[winnerSeat]].name+' 率先出完 · 调整打法，重开本关再战';
   }
   const compare = challengeCompareText(link, stars, myPlays, playerWin);
   let btns = '';
-  if(playerWin && !isDaily) btns += '<button class="primary" onclick="shareChallenge('+G.challengeIdx+','+stars+','+myPlays+')">把这关发给朋友挑战</button> ';
-  btns += '<button class="primary" onclick="'+(isDaily ? 'startDaily()' : 'startLevel('+G.challengeIdx+')')+'">重开本关</button> ';
+  if(playerWin && !isDaily && !G.fest) btns += '<button class="primary" onclick="shareChallenge('+G.challengeIdx+','+stars+','+myPlays+')">把这关发给朋友挑战</button> ';
+  btns += '<button class="primary" onclick="'+(isDaily ? 'startDaily()' : 'startLevel('+G.challengeIdx+(G.fest ? ',true' : '')+')')+'">重开本关</button> ';
   btns += '<button class="ghost" onclick="makeReportImage(\'challenge\')">生成战报</button> ';
-  if(playerWin && !link && !isDaily && G.challengeIdx < LEVELS.length-1) btns += '<button class="primary" onclick="startLevel('+(G.challengeIdx+1)+')">下一关</button> ';
+  if(playerWin && !link && !isDaily && !G.fest && G.challengeIdx < LEVELS.length-1) btns += '<button class="primary" onclick="startLevel('+(G.challengeIdx+1)+')">下一关</button> ';
+  if(playerWin && !link && G.fest && G.challengeIdx < FEST_LEVELS.length-1 && festUnlocked(G.challengeIdx+1)) btns += '<button class="primary" onclick="startLevel('+(G.challengeIdx+1)+',true)">下一关</button> ';
   btns += '<button class="ghost" onclick="showLevelSelect()">返回选关</button> <button class="ghost" onclick="showModeSelect()">换个场</button>';
   $('panel').innerHTML =
     '<h2 class="'+(playerWin?'':'lose')+'">'+(playerWin?'过 关':'闯关失败')+'</h2>'+
@@ -3829,7 +4292,7 @@ function finishChallenge(winnerSeat){
     btns+
     (playerWin && !isDaily ? '<div class="share-result" id="shareResult"></div>' : '')+
     '<div class="share-result" id="reportTip"></div>'+
-    '<div class="stats">'+(isDaily ? '每日一局 · 连续完成 '+(dailyData().streak||0)+' 天' : '总星 '+totalStars()+' / '+(LEVELS.length*3))+'</div>';
+    '<div class="stats">'+(isDaily ? '每日一局 · 连续完成 '+(dailyData().streak||0)+' 天' : (G.fest ? '节日星 '+festStarsTotal()+' / '+(FEST_LEVELS.length*3) : '总星 '+totalStars()+' / '+(LEVELS.length*3)))+'</div>';
   $('overlay').classList.add('show');
   for(const s of [1,2]){
     const won = roleOf(s)===roleOf(winnerSeat);
@@ -4061,7 +4524,7 @@ function getPlayerHintCandidates(last){
    数据为 FIRST_HINTS 求解器预计算结果; 任一条件不满足返回 null, 回落上面的启发式管线。 */
 function solverFirstHint(last){
   if(!G || G.mode!=='challenge' || G.linkChallenge || G.playsCount[0]!==0 || last) return null;
-  const vals = FIRST_HINTS[G.challengeIdx];
+  const vals = (G.fest ? FEST_FIRST_HINTS : FIRST_HINTS)[G.challengeIdx];
   if(!vals || !vals.length) return null;
   const pool = G.hands[0].slice();
   const cards = [];
@@ -4575,6 +5038,7 @@ function hideBubbles(){
     if(el) el.classList.remove('show');
   }
   const pp = $('phrasePanel'); if(pp) pp.classList.remove('open');
+  const qp = $('propPanel'); if(qp) qp.classList.remove('open');
 }
 function renderDipai(reveal){
   $('dipaiCards').innerHTML = G.dipai.map(c=>'<img'+(reveal&&isWildCard(c)?' class="wild"':'')+' src="'+(reveal?cardFile(c):cardBackFile())+'" alt="">').join('');
@@ -4582,6 +5046,7 @@ function renderDipai(reveal){
 function renderAll(){
   renderHand(); renderFans(); renderZones(); renderRoles(); renderTurn(); renderCounter(); refreshPhraseUI();
   try{ updateStreakBadge(); }catch(e){}   /* v2.2: 连胜势能徽记 */
+  try{ refreshPropUI(); }catch(e){}   /* v2.3: 道具按钮随对局状态显隐 */
   $('uiMult').textContent = '×'+G.mult;
   try{ Mus.update(); }catch(e){}   /* v1.3.5: 音乐状态机跟随对局状态 */
 }
@@ -5046,6 +5511,10 @@ const SHOP_ITEMS = [
   {id:'fx_xinghuo', cat:'fx', name:'星火贺胜', file:'xinghuo', tier:'SR', price:58, desc:'胜利时星火绽放，金粉随后。'},
   {id:'fx_mantang', cat:'fx', name:'满堂金雨', file:'mantang', tier:'CR', price:88, desc:'双波金雨加花瓣，满堂喝彩。'},
   {id:'card_roll', cat:'card', name:'号码重置卡', file:'roll', tier:'N', price:8, desc:'用一张，重随一次茶号。概率与保底见靓号区。'},
+  /* v2.3: 互动道具动态款(对局道具栏使用, 永久拥有; 功能件, 不计 16 件收藏口径) */
+  {id:'prop_steam', cat:'prop', name:'茶香一缕', file:'steam', tier:'R', price:26, desc:'互动道具：对局里送出一缕茶香，永久拥有。'},
+  {id:'prop_bell', cat:'prop', name:'金铃轻响', file:'bell', tier:'SR', price:48, desc:'互动道具：对局里摇响金铃，清脆一声，永久拥有。'},
+  {id:'prop_fan', cat:'prop', name:'纸扇生风', file:'fan', tier:'SR', price:52, desc:'互动道具：对局里纸扇轻摇，送一阵清风，永久拥有。'},
 ];
 const XINGHUAN_ITEM = {id:'frame_xinghuan', cat:'frame', name:'星环', file:'xinghuan', tier:'SR', price:0, desc:'星空茶会套装专属，集齐套装点亮。'};
 const SHOP_ITEM_MAP = {};
@@ -5097,7 +5566,7 @@ function shopOwned(id){
 }
 function shopCollectCount(){
   let c = 0;
-  for(const it of SHOP_ITEMS){ if(it.cat !== 'card' && shopOwned(it.id)) c++; }
+  for(const it of SHOP_ITEMS){ if(it.cat !== 'card' && it.cat !== 'prop' && shopOwned(it.id)) c++; }   /* v2.3: 道具是功能件, 不计收藏 */
   if(shopData().sets.star) c++;   /* 星环占第 16 格 */
   return c;
 }
@@ -5518,8 +5987,10 @@ function shopItemHTML(it){
   else if(it.cat === 'back') preview = '<img class="shop-thumb back" src="assets/牌背-' + it.file + '.webp" alt="">';
   else if(it.cat === 'frame') preview = '<span class="avframe shop-av"><img class="avatar" src="assets/头像-monkey.webp" alt=""><img class="framering" src="' + frameFileOf(it.id) + '" alt=""></span>';
   else if(it.cat === 'fx') preview = '<div class="shop-thumb fxph">' + it.name + '</div>';
+  else if(it.cat === 'prop') preview = '<div class="shop-thumb fxph">' + propSvg(it.file, 46) + '</div>';
   let btn;
-  if(it.id === 'frame_xinghuan' && !owned) btn = '<span class="task-state">集齐星空茶会套装点亮</span>';
+  if(it.cat === 'prop' && owned) btn = '<span class="task-state done">已拥有 · 对局中点「道具」使用</span>';
+  else if(it.id === 'frame_xinghuan' && !owned) btn = '<span class="task-state">集齐星空茶会套装点亮</span>';
   else if(equipped) btn = it.cat === 'bg' ? '<span class="task-state done">使用中</span>' : '<button class="ghost" onclick="unequipItem(\'' + it.id + '\')">卸下</button>';
   else if(owned) btn = '<button class="primary" onclick="equipItem(\'' + it.id + '\')">装备</button>';
   else if(off) btn = '<span class="task-state">万圣窗口外 · 明年还会回来</span>';
@@ -5590,7 +6061,7 @@ function renderShop(){
   elderContext = 'menu';
   setPanelClass();
   const sd = shopData(), t = tasksData();
-  const tabs = [['all', '全部'], ['bg', '桌布'], ['back', '牌背'], ['frame', '头像框'], ['fx', '特效'], ['num', '靓号']];
+  const tabs = [['all', '全部'], ['bg', '桌布'], ['back', '牌背'], ['frame', '头像框'], ['fx', '特效'], ['prop', '道具'], ['num', '靓号']];
   let h = '<h2>茶点小铺</h2>' +
     '<div class="who-win">这里的东西都只能用打牌攒的茶点换，不花钱。</div>' +
     '<div class="rankbar"><span class="rank-badge">茶点 ' + t.treats + ' 枚</span><span class="rank-info">已收集 ' + shopCollectCount() + ' / 16<br>累计获得 ' + t.treatsEarned + ' 枚</span></div>' +
@@ -6073,17 +6544,17 @@ async function makeReportImage(kind){
   if(!G){ setTip('还没有对局数据，无法生成战报。'); return null; }
   let data, winnerSeat;
   if(kind==='challenge'){
-    const snap = G.reportSnap, lv = LEVELS[G.challengeIdx];
+    const snap = G.reportSnap, lv = G.fest ? FEST_LEVELS[G.challengeIdx] : LEVELS[G.challengeIdx];
     if(!snap || !lv){ setTip('还没有结算数据，无法生成战报。'); return null; }
     winnerSeat = snap.winnerSeat;
     data = {
       title: snap.playerWin ? '过 关' : '闯关失败', win: snap.playerWin,
-      modeName: snap.daily ? '每日一局' : '残局闯关',
-      sub: '第 '+(G.challengeIdx+1)+' 关《'+lv.name+'》 · '+(snap.playerWin ? '顺利过关' : '还差一步'),
+      modeName: snap.daily ? '每日一局' : (G.fest ? '节日残局 · 万圣夜' : '残局闯关'),
+      sub: (G.fest ? '万圣节日关' : '第 '+(G.challengeIdx+1)+' 关')+'《'+lv.name+'》 · '+(snap.playerWin ? '顺利过关' : '还差一步'),
       rows: [
         ['成绩', starStr(snap.stars)], ['你的手数', snap.plays+' 手'],
         ['最优手数', lv.best+' 手'], ['你的身份', G.landlord===0 ? '地主' : '农民'],
-        ['本局炸弹', G.bombs+' 个'], ['类型', snap.daily ? '每日一局' : '残局闯关'],
+        ['本局炸弹', G.bombs+' 个'], ['类型', snap.daily ? '每日一局' : (G.fest ? '节日残局' : '残局闯关')],
       ],
     };
   } else {
@@ -6198,6 +6669,7 @@ doPass = function(seat){ recordStep(seat, 'pass', null, null); lastShown[seat]={
 
 $('btnCounter').onclick = ()=> setTrackerOn(!trackerOn);
 $('btnPhrase').onclick = ()=> togglePhrasePanel();
+$('btnProps').onclick = ()=> togglePropPanel();
 $('btnStory').onclick = ()=> showStoryCodex('game');
 $('btnNew').onclick = ()=> showModeSelect();
 /* v1.1: 音效开关与首次手势初始化(浏览器自动播放策略) */
@@ -6249,7 +6721,7 @@ let resumeOffer = null;   // 本次打开时校验通过的快照 data(仅横幅
 
 function saveResume(){
   try{
-    if(!G || G.over || G.online || G.tutorial || G.linkChallenge) return;
+    if(!G || G.over || G.online || G.tutorial || G.linkChallenge || G.fest) return;   /* v2.3: 节日关不写续局快照(读端校验只认正关 LEVELS) */
     if(!RESUME_MODES.includes(G.mode)) return;
     let data = null;
     if(G.mode !== 'challenge' && G.phase === 'bidding'){
