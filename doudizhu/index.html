@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.3.0</title>
+<title>萌友斗地主 · 正式版 v2.4.0</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -963,6 +963,16 @@
   .tour-row{display:flex; justify-content:space-between; gap:10px; padding:6px 2px; border-bottom:1px dashed rgba(201,162,77,.18); font-size:15px;}
   .tour-row.top{color:#e7c877; font-weight:700;}
   .tour-champ{font-size:26px; font-weight:800; color:#f7efdc; margin-top:6px;}
+  /* ---------- v2.4: 成就徽章 ---------- */
+  .ach-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:8px 0;}
+  .ach-cell{display:flex; flex-direction:column; align-items:center; gap:2px; text-align:center; padding:10px 6px; border-radius:12px; border:1px solid rgba(201,162,77,.22); background:rgba(247,239,220,.03); color:#8a9a8e;}
+  .ach-cell .ach-ic{color:#6d7f72;}
+  .ach-cell.done{border-color:rgba(231,200,119,.65); background:rgba(231,200,119,.07); color:#f7efdc;}
+  .ach-cell.done .ach-ic{color:#e7c877;}
+  .ach-cell .ach-name{font-weight:700; font-size:14px; color:inherit;}
+  .ach-cell .ach-desc{font-size:11.5px; line-height:1.45; color:#a9bcb0;}
+  .ach-cell .ach-prog{font-size:11.5px; color:#a9bcb0;}
+  .ach-cell.done .ach-prog{color:#e7c877;}
 </style>
 </head>
 <body>
@@ -974,7 +984,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.3.0 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.4.0 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -2081,7 +2091,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.3.0 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.4.0 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -2577,6 +2587,7 @@ function careerData(){
       careerStore = {since:'v1.2', lg:0, lw:0, fg:0, fw:0, streak:0, best:0, bombs:0, springs:0};
     for(const k of ['lg','lw','fg','fw','streak','best','bombs','springs'])
       if(typeof careerStore[k]!=='number') careerStore[k]=0;
+    if(!Array.isArray(careerStore.achSeen)) careerStore.achSeen = [];   /* v2.4: 成就已提示标记(复用 career 键扩字段, 不新增键) */
   }
   return careerStore;
 }
@@ -2646,6 +2657,7 @@ function showCollection(){
     '<h2>收藏册</h2><div class="who-win">' + bgName + '桌 · 四条收集线，一屏看全</div>' +
     '<div class="coll-total"><div class="coll-pct">' + pct + '%</div><div class="shop-progress"><div class="shop-progress-fill" style="width:' + pct + '%"></div></div><div class="support-small" style="text-align:center">总进度按四条主线完成率平均；联动彩蛋线不计入。</div></div>' +
     linesHtml + linkHtml +
+    '<div class="coll-next"><b>成就徽章</b>已达成 ' + achUnlockedIds().length + ' / ' + ACH_DEFS.length + ' 枚<div style="margin-top:8px"><button class="primary" onclick="showHonor()">去荣誉页看徽章</button></div></div>' +
     '<div class="coll-next"><b>下一件最接近解锁</b>' + hint.txt +
     (hint.act ? '<div style="margin-top:8px"><button class="primary" onclick="' + hint.act + '">' + hint.btn + '</button></div>' : '') + '</div>' +
     '<button class="primary" onclick="showModeSelect()">返回场次选择</button>';
@@ -2863,6 +2875,84 @@ function drawHonorReport(ctx, hd, av, frameImg){
   ctx.fillText('ddz.myskme.com', 540, 1232);
   ctx.fillStyle = '#8a9a8e'; ctx.font = '26px ' + F;
   ctx.fillText('萌友斗地主 · 和家人开一桌', 540, 1280);
+}
+
+/* ---------- v2.4: 成就徽章(收口, 不新建系统) ----------
+   15 枚徽章全部由既有存档计数派生(生涯胜场/连胜、段位含历史最高、残局星数与
+   通关、收藏四线、茶点累计、本人炸弹、节日星), 打开页面现算, 不落盘存进度。
+   唯一落盘的是「已提示过」标记 career.achSeen(复用 career 键扩字段, 与
+   bestPlays/festStars 同先例, 不新增键): 结算面板据此给一行轻提示, 只提一次。 */
+function achHistBestPts(){ const rk = rankData(); return Math.max(rk.points, ...rk.history.map(h => h.points || 0)); }
+function achClearedCount(){ return challenge.stars.filter(v => (v || 0) >= 1).length; }
+function achFestClearedCount(){ return challenge.festStars.filter(v => (v || 0) >= 1).length; }
+const ACH_DEFS = [
+  { id:'first',   name:'初胜临门', icon:'sun',     desc:'赢下第一局三场次对局',        prog:() => [stats.win, 1] },
+  { id:'win50',   name:'五十胜',   icon:'star',    desc:'生涯累计赢下 50 局',          prog:() => [stats.win, 50] },
+  { id:'win150',  name:'百胜茶人', icon:'crown',   desc:'生涯累计赢下 150 局',         prog:() => [stats.win, 150] },
+  { id:'streak3', name:'三连捷',   icon:'stepsup', desc:'打出一次 3 连胜',             prog:() => [careerData().best, 3] },
+  { id:'streak8', name:'八连捷',   icon:'bolt',    desc:'打出一次 8 连胜',             prog:() => [careerData().best, 8] },
+  { id:'rank600', name:'黄金段位', icon:'diamond', desc:'段位分达到黄金(600 分)',      prog:() => [achHistBestPts(), 600] },
+  { id:'rank1500',name:'大师之席', icon:'diadem',  desc:'段位分达到大师(1500 分)',     prog:() => [achHistBestPts(), 1500] },
+  { id:'ch10',    name:'残局十关', icon:'steps',   desc:'通关 10 关残局',              prog:() => [achClearedCount(), 10] },
+  { id:'chall',   name:'残局全通', icon:'fullstar',desc:'通关全部残局',                prog:() => [achClearedCount(), LEVELS.length] },
+  { id:'chstars', name:'星光满袋', icon:'stars3',  desc:'残局总星达到 160',            prog:() => [totalStars(), 160] },
+  { id:'col8',    name:'小有收藏', icon:'box',     desc:'茶点小铺收集 8 件装扮',       prog:() => [shopCollectCount(), 8] },
+  { id:'colall',  name:'收藏圆满', icon:'ring',    desc:'收藏册四条主线全部圆满',      prog:() => [collectionPct(), 100] },
+  { id:'treats',  name:'茶点丰足', icon:'coin',    desc:'累计获得 300 枚茶点',         prog:() => [tasksData().treatsEarned, 300] },
+  { id:'bomb',    name:'连环炸响', icon:'bomb',    desc:'亲手打出 20 个炸弹',          prog:() => [careerData().bombs, 20] },
+  { id:'fest',    name:'万圣夜行', icon:'moon',    desc:'通关全部 5 关万圣节日残局',   prog:() => [achFestClearedCount(), FEST_LEVELS.length] },
+];
+function achSvg(kind, size){
+  const s = size || 30;
+  const head = '<svg width="' + s + '" height="' + s + '" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">';
+  const tail = '</svg>';
+  if(kind === 'sun') return head + '<circle cx="24" cy="27" r="8"/><path d="M24 10v4M10.5 16.5l2.8 2.8M37.5 16.5l-2.8 2.8M7 27h4M37 27h4M13 40l2.5-2.5M35 40l-2.5-2.5"/>' + tail;
+  if(kind === 'star') return head + '<path d="M24 7l4.9 10.6 11.6 1.3-8.6 7.8 2.4 11.4L24 32.4l-10.3 5.7 2.4-11.4-8.6-7.8 11.6-1.3z"/>' + tail;
+  if(kind === 'fullstar') return head + '<path d="M24 7l4.9 10.6 11.6 1.3-8.6 7.8 2.4 11.4L24 32.4l-10.3 5.7 2.4-11.4-8.6-7.8 11.6-1.3z" fill="currentColor" stroke="none"/>' + tail;
+  if(kind === 'crown') return head + '<path d="M8 35L6 15l10 7 8-11 8 11 10-7-2 20z"/><path d="M8 41h32"/>' + tail;
+  if(kind === 'diadem') return head + '<path d="M10 33a14 14 0 0 1 28 0"/><circle cx="24" cy="14" r="3"/><circle cx="11" cy="24" r="2.2"/><circle cx="37" cy="24" r="2.2"/><path d="M8 40h32"/>' + tail;
+  if(kind === 'stepsup') return head + '<path d="M8 40v-8h9v-9h9V14h9"/><path d="M31 10l6 3-3 6" /><path d="M37 13L28 22"/>' + tail;
+  if(kind === 'bolt') return head + '<path d="M27 4L12 28h9l-2 16 15-24h-9z"/>' + tail;
+  if(kind === 'diamond') return head + '<path d="M24 6l15 13-15 23L9 19z"/><path d="M9 19h30M24 6l-6 13 6 23M24 6l6 13-6 23"/>' + tail;
+  if(kind === 'steps') return head + '<path d="M6 42h9v-9h9v-9h9v-9h9"/><path d="M6 42h36" stroke-dasharray="0"/>' + tail;
+  if(kind === 'stars3') return head + '<path d="M24 5l2.4 5.2 5.7.6-4.2 3.9 1.2 5.6L24 17.5l-5.1 2.8 1.2-5.6-4.2-3.9 5.7-.6z"/><path d="M10 27l1.6 3.5 3.9.4-2.9 2.6.8 3.8L10 35.4l-3.4 1.9.8-3.8-2.9-2.6 3.9-.4zM38 27l1.6 3.5 3.9.4-2.9 2.6.8 3.8L38 35.4l-3.4 1.9.8-3.8-2.9-2.6 3.9-.4z"/>' + tail;
+  if(kind === 'box') return head + '<path d="M8 18l16-9 16 9v21H8z"/><path d="M8 18h32M24 9v30" /><path d="M17 27h14"/>' + tail;
+  if(kind === 'ring') return head + '<circle cx="24" cy="24" r="15"/><circle cx="24" cy="24" r="9"/>' + tail;
+  if(kind === 'coin') return head + '<circle cx="24" cy="24" r="16"/><rect x="18" y="18" width="12" height="12"/>' + tail;
+  if(kind === 'bomb') return head + '<circle cx="21" cy="29" r="12"/><path d="M29 19c1-4 4-6 8-7"/><path d="M40 8l1.5 3 3-1-1 3 3 1.5-3 1.5 1 3-3-1L40 21l-1-3-3-1.5 3-1.5-1-3 3 1z"/>' + tail;
+  if(kind === 'moon') return head + '<path d="M33 6a17 17 0 1 0 9 24A19 19 0 0 1 33 6z"/><path d="M36 12l1.2 2.8 2.8 1.2-2.8 1.2L36 20l-1.2-2.8L32 16l2.8-1.2z"/>' + tail;
+  return head + '<circle cx="24" cy="24" r="12"/>' + tail;
+}
+function achUnlockedIds(){ return ACH_DEFS.filter(d => { const p = d.prog(); return p[0] >= p[1]; }).map(d => d.id); }
+function checkAchievements(){
+  /* 返回本次新达成的徽章 def 数组; 同时把已读标记推进到当前已解锁集 */
+  try{
+    const c = careerData();
+    if(!Array.isArray(c.achSeen)) c.achSeen = [];
+    const unlocked = achUnlockedIds();
+    const fresh = unlocked.filter(id => !c.achSeen.includes(id));
+    if(fresh.length){ c.achSeen = unlocked.slice(); saveCareer(); }
+    return ACH_DEFS.filter(d => fresh.includes(d.id));
+  }catch(e){ return []; }
+}
+function achToastLine(){
+  const fresh = checkAchievements();
+  if(!fresh.length) return '';
+  return '<div class="challenge-compare">成就达成：' + fresh.map(d => d.name).join('、') + '（去生涯页「茶会荣誉」看徽章）</div>';
+}
+function renderAchievements(){
+  const el = $('achSection'); if(!el) return;
+  const got = achUnlockedIds().length;
+  el.innerHTML = '<h3 class="shop-h">成就徽章 · ' + got + ' / ' + ACH_DEFS.length + '</h3>' +
+    '<div class="ach-grid">' + ACH_DEFS.map(d => {
+      const p = d.prog(), done = p[0] >= p[1];
+      return '<div class="ach-cell' + (done ? ' done' : '') + '">' +
+        '<span class="ach-ic">' + achSvg(d.icon, 30) + '</span>' +
+        '<span class="ach-name">' + d.name + '</span>' +
+        '<span class="ach-desc">' + d.desc + '</span>' +
+        '<span class="ach-prog">' + (done ? '已达成' : Math.min(p[0], p[1]) + ' / ' + p[1]) + '</span></div>';
+    }).join('') + '</div>' +
+    '<div class="support-small">徽章进度全部由既有战绩现算：连胜与炸弹自 v1.2 起累计，其余为历史累计。</div>';
 }
 
 /* ---------- v0.4: 大字模式(原长辈模式)状态 ----------
@@ -3708,7 +3798,7 @@ function showModeSelect(){
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.3.0</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.4.0</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
@@ -3924,6 +4014,38 @@ const LEVELS = [
   { name:'茶肆终局·满堂', landlord:0, chars:['monkey','fish'], best:5,
     goal:'五十关的最后一桌：猴先生攥着四张 J 候你，鱼小姐在侧。先以三张 K 钓它出水，再让连对成长河、大王与对 2 压阵——满堂好局，只败在贪快。',
     hands:[[17,15,15,13,13,13,8,8,7,7,6,6,5,5,4,3],[16,14,14,12,11,11,11,11,10,9,6,4,4],[15,14,13,12,12,10,10,9,9,8,7,3]] },
+  /* ---------- v2.4: 残局二期 51–80(熟练 6 / 困难 12 / 专家 12; 每关带 tier 字段;
+     逐关过官方求解器全量验证, 见 残局工场/levels51_80_verify_report.md) ---------- */
+  { name:'试锋孤峰', landlord:0, chars:['monkey','teapot'], best:4, tier:'熟练', goal:'先以单张 9 试锋——对面单张 J 一露头，大王便压回去；中盘三张 10 带着对 3 过河，最后三张 2 带着 J 登顶收官。', hands:[[17,15,15,15,11,10,10,10,9,3,3],[12,12,11,11,5,5,5],[11,5,4,4,3,3]] },
+  { name:'连珠双响', landlord:0, chars:['fish','egg'], best:6, tier:'熟练', goal:'单张 3 先探深浅——左手四张 7 一响，你的四张 K 再压回去；余下单张用 2 守门，三张 9 带 6 收尾，先响的那一声总是败着。', hands:[[15,15,13,13,13,13,9,9,9,6,4,3],[12,12,12,11,9,7,7,7,7],[11,11,11,8,8,8,5,5,5]] },
+  { name:'四骨成局', landlord:0, chars:['teapot','donkey'], best:4, tier:'熟练', goal:'四张 Q 不急着响——先以三张 6 探路，对面三张 8 跟出后放它过去；小王夺回话头，四张 Q 带着 7 与 9 作四带二登场，对 K 最后落座。', hands:[[16,13,13,12,12,12,12,9,7,6,6,6],[14,13,10,9,8,8,8,7,7],[10,9,7,5,5,5,4,3,3]] },
+  { name:'三叠云梯', landlord:2, chars:['egg','snake'], best:4, tier:'熟练', goal:'地主在右手——三张一叠叠往上垒：三张 6 带对 8 起步，地主三张 J 跟上，你的三张 A 带对 2 登顶；末了单张 J 探路、大王收梯。', hands:[[17,15,15,14,14,14,11,8,8,6,6,6],[9,9,9,7,5,3],[13,13,11,11,11,8,8]] },
+  { name:'长河入海', landlord:0, chars:['donkey','monkey'], best:4, tier:'熟练', goal:'单张 6 先下水试深——大王在河口守门，对 K 压住中段，最后九张长顺 3 到 J 一气入海；顺子早放一手，河口就会失守。', hands:[[17,13,13,11,10,9,8,7,6,6,5,4,3],[14,12,12,7,7,7,3],[15,12,12,10,10,10,5,5,3]] },
+  { name:'双对守河', landlord:0, chars:['snake','fish'], best:4, tier:'熟练', goal:'对 7 先探营、对 2 守住河面，大王在手里压阵——八张顺子 3 到 10 是过河的主力，等对面大牌沉下去再一气放完；这一关赢在沉得住气，不把底牌一次亮尽。', hands:[[17,15,15,10,9,8,7,7,7,6,5,4,3],[12,6,5,4,4,4],[15,10,9,6,6,3,3]] },
+  { name:'三叠试金', landlord:0, chars:['monkey','teapot'], best:4, tier:'困难', goal:'三张 5 先上桌试金——对面三张 7、三张 Q 一路跟到高处，正好放它们过去；单张 K 夺回话头，三张 9 带对 8、三张 J 带走 2 收官。', hands:[[15,13,11,11,11,9,9,9,8,8,5,5,5],[13,12,11,10,10,7,7,7],[12,12,12,10,8,6,5,4]] },
+  { name:'对影爬梯', landlord:0, chars:['fish','egg'], best:5, tier:'困难', goal:'对子一阶阶往上爬：对 8 起步，对 Q 登顶夺权；单张 A 守门、顺子 5 到 9 过河，最后三张 4 带着大王落座——右手边藏着四张 10，梯子爬对了，它响不出来。', hands:[[17,14,12,12,9,8,8,8,7,6,5,4,4,4],[13,9,9,9,7,5,5,5],[14,10,10,10,10,6]] },
+  { name:'顺流登楼', landlord:0, chars:['teapot','donkey'], best:4, tier:'困难', goal:'对 Q 先登楼探路——四张 K 不炸，拆作三张 K 带走小 4；再让顺子 8 到 A 顺流而下，单张 10 最后落座。', hands:[[14,13,13,13,13,12,12,12,11,10,10,9,8,4],[15,14,12,9,9,9,6,5,4],[14,11,11,10,4,4]] },
+  { name:'四带先声', landlord:1, chars:['egg','snake'], best:4, tier:'困难', goal:'地主在左手——四张 8 不作炸弹，先作四带二带走 5 与 6 夺声；再以三张 K 带 7、对 A 压阵，单张 10 收尾。先炸出去，声势反而散了。', hands:[[14,14,13,13,13,10,8,8,8,8,7,6,5],[15,14,14,11,10,10,10],[11,6,5,5]] },
+  { name:'炸后听雨', landlord:0, chars:['donkey','monkey'], best:5, tier:'困难', goal:'四张 8 先作四带二带走 3 与 4——左手四张 5 一响，别抢，让它响完；雨过之后三张 Q 带 10 登场，小王与对 A 收尾。', hands:[[16,14,14,12,12,12,10,10,8,8,8,8,4,3],[10,7,5,5,5,5,4,4,4],[12,11,11,10,9,7,7,3]] },
+  { name:'小对开门', landlord:0, chars:['snake','fish'], best:5, tier:'困难', goal:'最小的对 3 先去开门——对子爬到对 Q 夺回话头，三张 A 带着对 5 压阵，顺子 3 到 7 过河，单张 6 最后合上门。', hands:[[14,14,14,12,12,7,6,6,5,5,5,4,3,3,3],[10,10,10,8,8,8,7],[11,11,11,9,9,9,6,5]] },
+  { name:'单锋对饮', landlord:0, chars:['monkey','teapot'], best:7, tier:'困难', goal:'这一桌只拼单张的胆气：单张 8 先敬一杯，对面四张 6 一响，你的四张 K 再回敬；余下 Q、A、2 一张张敬完，三张 10 带对 J 落杯收官。', hands:[[15,15,14,13,13,13,13,12,11,11,10,10,10,8],[8,8,7,6,6,6,6,5,5],[14,12,12,12,3,3]] },
+  { name:'接力到站', landlord:2, chars:['fish','egg'], best:5, tier:'困难', goal:'四张 4 不成炸，拆成两副对子分两轮递棒——地主四张 8 在半路响过之后，单张 K 由大王接回，单张 5 再递出去，队友以单张 9 到站；抢拍的人，接不到棒。', hands:[[17,15,15,13,13,13,10,9,7,7,5,4,4,4,4],[10,10,9,7,7],[14,14,13,8,8,8,8,5]] },
+  { name:'三响定音', landlord:0, chars:['teapot','donkey'], best:7, tier:'困难', goal:'三副炸弹同桌，先响的未必赢：三张 7 带对 5 开局，左手四张 4 先响，你的四张 6 再压一头；三响过后对 Q 探路、单张 A 定音收官。', hands:[[15,14,14,14,12,12,7,7,7,6,6,6,6,5,5],[13,13,13,12,7,4,4,4,4],[11,10,10,9,9,9,9]] },
+  { name:'三叠听风', landlord:0, chars:['egg','snake'], best:5, tier:'困难', goal:'三张 4 带 3 先听风——对面三张 10、三张 J 一路跟高，你的三张 Q 登顶夺权；单张 9 探路、大王守门，顺子 5 到 9 收尾。', hands:[[17,12,12,12,9,9,8,7,6,5,5,4,4,4,3],[10,10,10,10,6,5],[14,11,11,11,9,9,5,3,3]] },
+  { name:'让先守门', landlord:1, chars:['donkey','monkey'], best:5, tier:'困难', goal:'地主在左手——单张 J 先探：地主单张 2 一接，你的大王守门夺回话头；自己的对 2 随后压阵，顺子 7 到 J 过河，三张 4 带对 3 收尾。', hands:[[17,15,15,11,11,10,9,8,7,4,4,4,3,3],[15,15,12,12,12,11,9,9],[12,10,10,10,4]] },
+  { name:'云梯登空', landlord:0, chars:['snake','fish'], best:5, tier:'困难', goal:'对子是梯、三张是翼：对 6 起步一级级爬到对 K 夺权，最后 4、5 两副三张作飞机带着 7 与 9 登空收官；先拼飞机，梯子就断在半空。', hands:[[13,13,11,11,9,8,8,7,6,6,5,5,5,4,4,4],[12,11,7,7,5,4,3],[15,11,8,7,3,3,3]] },
+  { name:'一着定局', landlord:0, chars:['monkey','teapot'], best:7, tier:'专家', goal:'二十三种首手里只有单张 Q 一条活路——先以单张 Q 破局，单张 6 探路、单张 2 守门，再让三张 10 带对 5、三张 J 带 7、对 K 次第登场，单张 9 落子收官。', hands:[[15,13,13,12,11,11,11,10,10,10,9,7,6,5,5],[12,10,9,9,9,3,3],[13,13,4,4,4,3,3]] },
+  { name:'双炸对台', landlord:0, chars:['fish','egg'], best:7, tier:'专家', goal:'两副炸弹对台，先响的先输一半：对 8 起步、对 A 登顶，右手四张 6 一响，你的四张 10 再压回去；其后三张 9 带 7、对 J 与两张 Q 收尾。', hands:[[14,14,12,12,11,11,10,10,10,10,9,9,9,8,8,7],[13,13,13,13,7,4,4],[8,8,6,6,6,6,5,5]] },
+  { name:'独径通幽', landlord:1, chars:['teapot','donkey'], best:6, tier:'专家', goal:'首手只有单张 8 一条独径——顺着单张的链子走：地主单张 A 压顶时让大王守门，对 10、对 K 一级级夺权，三张 6 垫底，四张 7 带着 5 与 J 收官；四张 7 先响，独径就断了。', hands:[[17,13,13,11,10,10,8,7,7,7,7,6,6,6,5],[14,14,11,11,11,9,5,5,5],[10,9,4]] },
+  { name:'高低之间', landlord:0, chars:['egg','snake'], best:6, tier:'专家', goal:'先在单张的高低之间周旋：单张 7 探路，单张 2 与单张 J 两度夺权；中盘三张 4 带着对 Q 落子，顺子 9 到 K 过河，三张 A 带着大王收官。', hands:[[17,15,14,14,14,13,12,12,12,11,11,10,9,7,4,4,4],[9,8,8,8,5,5],[11,11,7,6,6,6]] },
+  { name:'断梯重接', landlord:0, chars:['donkey','monkey'], best:6, tier:'专家', goal:'对子爬梯半路被单张截断——别慌：对 4 起步、对 K 登顶，对 8 再探，单张被推高时大王守门，最后 5、6 两副三张作飞机带着 3 与 10 收官。', hands:[[17,13,13,10,8,8,7,6,6,6,5,5,5,4,4,3],[15,12,12,12,7,7,4],[15,11,11,10,9,9,5,3,3]] },
+  { name:'星斗满盘', landlord:0, chars:['snake','fish'], best:5, tier:'专家', goal:'满手都是大牌，先手偏要最小：单张 3 探路，一路单张敬到大王夺权；再让三张 Q 带对 7、四张 K 作四带二带走 8 与 J，三张 2 带 A 收官。', hands:[[17,15,15,15,14,13,13,13,13,12,12,12,11,8,7,7,3],[15,11,11,11,7,7],[10,10,10,9,6,3]] },
+  { name:'七程到站', landlord:2, chars:['monkey','teapot'], best:7, tier:'专家', goal:'这一程要走七手：单张 3 先上路，单张 J 夺回话头；对 7 探路、对 K 压过地主的对 10，大王守住隘口，顺子 7 到 J 过河，三张 Q 带 8 到站。', hands:[[17,13,13,12,12,12,11,11,10,9,8,8,7,7,7,3],[8,7,5,5,3],[11,11,10,10,10,5]] },
+  { name:'三叠余响', landlord:0, chars:['fish','egg'], best:6, tier:'专家', goal:'单张 3 先落子——左手四张 4 一响，你的四张 J 回敬压住；余响里三张 7 带 8、三张 10 带 9、三张 K 带 Q，一叠比一叠高，叠到顶就是收官。', hands:[[16,13,13,13,12,11,11,11,11,10,10,10,9,8,7,7,7,3],[9,9,4,4,4,4],[12,12,12,9,8,8]] },
+  { name:'四带双翼', landlord:0, chars:['teapot','donkey'], best:5, tier:'专家', goal:'单张 8 先探，单张 K 夺权——四张 A 不作炸弹，作四带二带走对 10 与对 J，像一双翅膀；大王守门之后，顺子 4 到 9 收尾。先炸 A，翅膀就没了。', hands:[[17,14,14,14,14,13,11,11,10,10,9,8,8,7,6,5,4],[12,12,12,9,9,9,4],[11,11,8,8,6,6,3]] },
+  { name:'四响惊堂', landlord:0, chars:['egg','snake'], best:7, tier:'专家', goal:'满堂四副炸弹，看谁沉得住气：单张 5 先落子，左手四张 7 响、你的四张 8 跟响，右手四张 Q 再响——最后你的四张 10 压堂，其后三张 9 带 3、对 J、单张 A 与对 4 收官。', hands:[[14,11,11,10,10,10,10,9,9,9,8,8,8,8,5,4,4,3],[7,7,7,7,5,5],[12,12,12,12,11,11,4]] },
+  { name:'陪走单程', landlord:2, chars:['donkey','monkey'], best:5, tier:'专家', goal:'陪队友走单张的接力：小单一张张递，单张 K 两度守门，对 5 起势之后把最后一棒交到队友手里——队友对 6 到站，你的四张 Q 留在手里不响，也不算输。', hands:[[17,13,13,12,12,12,12,10,10,6,6,5,5,3,3],[7,6,6,5],[13,11,11,9,9,9,3]] },
+  { name:'茶肆终局·满堂续席', landlord:0, chars:['snake','fish'], best:6, tier:'专家', goal:'八十关的最后一桌，满堂续席：三张 5 带 3 先开席，左手四张 10 一响莫抢；对 A 压阵、对 4 与对 9 轮转，单张 A 守门，最后 7、8 两副三张作飞机带着 6 与大王满堂收官。', hands:[[17,14,14,14,9,9,8,8,8,7,7,7,6,5,5,5,4,4,3],[10,10,10,10,9,9,4],[7,5,4,3,3,3]] },
 ];
 /* v1.5: 求解级首手(每关一条, 由求解器首手分析预计算并经测试断言与求解器一致):
    残局中玩家尚未出第一手且由玩家首出时, 「提示」优先给这一手, 免费不限次;
@@ -3939,6 +4061,8 @@ const FIRST_HINTS = [
   [5,5], [4,14,14,14], [4,4], [4], [3],
   [3,13,13,13], [13,13], [5,5], [4], [3,3],
   [4,14,14,14], [4,4], [6,6], [10,10,10], [3,13,13,13],
+  [9], [3], [13,13], [11], [6], [17], [5,5,5], [14], [12,12], [14,14], [10,10], [3,3], [8], [4,4], [14], [3,4,4,4], [11], [6,6], [12], [8,8],
+  [8], [7], [10], [3], [3], [3], [8], [5], [3], [6],
 ];
 /* ---------- v2.3: 万圣节日残局(活动窗与商城限定同口径: halloweenWindow 10/20–11/2) ----------
    数据由求解器逐关验证后定稿(见 残局工场/fest_verify_report.md); 进度存 challenge
@@ -3957,7 +4081,7 @@ const FEST_FIRST_HINTS = [
 function festCellsHtml(){
   if(!halloweenWindow() || !FEST_LEVELS.length) return '';
   const cells = FEST_LEVELS.map((lv, i) => {
-    const st = challenge.festStars[i] || 0;
+    const st = (Array.isArray(challenge.festStars) ? challenge.festStars : [])[i] || 0;
     const best = festBest(i);
     const bestLine = best ? '<div class="lvbest">最佳 ' + best + ' 手</div>' : '';
     if(!festUnlocked(i))
@@ -3976,7 +4100,7 @@ if(!Array.isArray(challenge.bestPlays)) challenge.bestPlays = [];
    与 v1.5 bestPlays 同先例); 旧存档无此字段时静默初始化, 既有字段零改动。 */
 if(!Array.isArray(challenge.festStars)) challenge.festStars = [];
 if(!Array.isArray(challenge.festBest)) challenge.festBest = [];
-function festStarsTotal(){ return challenge.festStars.reduce((a, b) => a + (b || 0), 0); }
+function festStarsTotal(){ return (Array.isArray(challenge.festStars) ? challenge.festStars : []).reduce((a, b) => a + (b || 0), 0); }
 function festBest(i){ const v = Array.isArray(challenge.festBest) ? challenge.festBest[i] : 0; return (Number.isInteger(v) && v > 0) ? v : 0; }
 function recordFestBest(i, plays){
   if(!Array.isArray(challenge.festBest)) challenge.festBest = [];
@@ -3986,7 +4110,7 @@ function recordFestBest(i, plays){
   challenge.festBest[i] = plays;
   return true;
 }
-function festUnlocked(i){ return i === 0 || (challenge.festStars[i - 1] || 0) >= 1; }
+function festUnlocked(i){ return i === 0 || ((Array.isArray(challenge.festStars) ? challenge.festStars : [])[i - 1] || 0) >= 1; }
 function saveChallenge(){ try{ localStorage.setItem('myskme_ddz_challenge', JSON.stringify(challenge)); }catch(e){} }
 function challengeBest(i){ const v = Array.isArray(challenge.bestPlays) ? challenge.bestPlays[i] : 0; return (Number.isInteger(v) && v > 0) ? v : 0; }
 function recordChallengeBest(i, plays){
@@ -4147,11 +4271,11 @@ function showLevelSelect(){
   window._gid = (window._gid||0)+1;
   if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
   /* v1.5: 难度档标签(1–10 入门 / 11–20 进阶 / 21–30 熟练 / 31–40 困难 / 41–50 专家) + 个人最佳手数 */
-  const tierOf = i => i < 10 ? '入门' : (i < 20 ? '进阶' : (i < 30 ? '熟练' : (i < 40 ? '困难' : '专家')));
+  const tierOf = i => i < 50 ? (i < 10 ? '入门' : (i < 20 ? '进阶' : (i < 30 ? '熟练' : (i < 40 ? '困难' : '专家')))) + '档' : '二期 · ' + (LEVELS[i].tier || '专家') + '档';   /* v2.4: 二期按关卡 tier 字段分组 */
   let lastTier = '';
   const cells = LEVELS.map((lv,i)=>{
     const st = challenge.stars[i]||0;
-    const head = tierOf(i) !== lastTier ? (lastTier = tierOf(i), '<div class="lvtier">'+lastTier+'档</div>') : '';
+    const head = tierOf(i) !== lastTier ? (lastTier = tierOf(i), '<div class="lvtier">'+lastTier+'</div>') : '';
     const best = challengeBest(i);
     const bestLine = best ? '<div class="lvbest">最佳 '+best+' 手</div>' : '';
     if(!levelUnlocked(i))
@@ -4289,6 +4413,7 @@ function finishChallenge(winnerSeat){
     (compare ? '<div class="challenge-compare">'+compare+'</div>' : '')+
     treatsLine() +
     taskNewLine()+
+    achToastLine() +
     btns+
     (playerWin && !isDaily ? '<div class="share-result" id="shareResult"></div>' : '')+
     '<div class="share-result" id="reportTip"></div>'+
@@ -4987,6 +5112,7 @@ function renderSettlement(){
       momentumLine() +
       treatsLine() +
       taskNewLine()+
+      achToastLine() +
       '<div class="share-result" id="reportTip"></div>';
   } else {
     $('panel').innerHTML =
@@ -5001,6 +5127,7 @@ function renderSettlement(){
       momentumLine() +
       treatsLine() +
       taskNewLine()+
+      achToastLine() +
       '<div class="share-result" id="reportTip"></div>'+
       '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局</div>';
   }
