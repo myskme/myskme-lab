@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.4</title>
+<title>萌友斗地主 · 原型 v1.4.1</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="萌友斗地主">
 <!-- v1.4: 首屏关键图(桌面背景)提前并行加载 -->
-<link rel="preload" as="image" href="assets/桌布-茶肆夜话.webp" fetchpriority="high">
+<link rel="preload" as="image" id="bgPreload" href="assets/桌布-茶肆夜话.webp" fetchpriority="high">
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -161,7 +161,7 @@
   }
   #actionBar{display:flex; justify-content:center; align-items:center; gap:12px; min-height:44px; margin-bottom:2px; flex-wrap:wrap;}
   #actionBar button{min-height:44px;}
-  #topbar button{min-height:38px;}
+  #topbar button{min-height:44px;}   /* v1.4.1: 触控尺寸补齐 44(原 38) */
   .levelswitch .levelbtn{min-height:44px;}
   #actionBar .turntip{font-size:14px; color:var(--gold-l); letter-spacing:1px;}
   #meRow{display:flex; align-items:flex-end; gap:10px;}
@@ -213,7 +213,7 @@
   #bubP{bottom:calc(100% + 8px); top:auto; left:50%; transform:translate(-50%,4px); width:max-content;}
   #bubP.show{transform:translate(-50%,0);}
   #bubP::after{left:50%; margin-left:-7px;}
-  #btnPhrase{padding:3px 12px; font-size:12.5px; border-radius:999px; letter-spacing:1px; min-height:32px;}
+  #btnPhrase{padding:3px 12px; font-size:12.5px; border-radius:999px; letter-spacing:1px; min-height:44px;}   /* v1.4.1: 触控补齐 44(原 32) */
   #phrasePanel{
     display:none; flex-wrap:wrap; gap:7px; justify-content:center; padding:7px 10px; margin-bottom:4px;
     background:rgba(7,24,21,.82); border:1px solid rgba(201,162,77,.4); border-radius:12px;
@@ -222,6 +222,7 @@
   #phrasePanel .phrasebtn{
     padding:6px 13px; font-size:13.5px; border-radius:999px; letter-spacing:.5px;
     background:rgba(247,239,220,.1); border-color:rgba(201,162,77,.55);
+    min-height:44px; display:inline-flex; align-items:center;   /* v1.4.1: 触控补齐 44 */
   }
   body.elder #phrasePanel .phrasebtn{font-size:17px; padding:10px 18px;}
   .panel .career-note{font-size:12px; color:#a9bcb0; margin-top:10px; line-height:1.55;}
@@ -682,7 +683,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small>原型 v1.4 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">原型 v1.4.1 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1603,6 +1604,26 @@ try{
 function saveSetting(k, v){
   try{ ddzSettings[k] = v; localStorage.setItem('myskme_ddz_settings', JSON.stringify(ddzSettings)); }catch(e){}
 }
+/* v1.4.1: 桌布切换 —— 三张既有桌布资产(茶肆夜话/桃园午后/金榜大厅)此前只有茶肆夜话接入页面,
+   本版在场次面板设置区补齐切换; 选择存 myskme_ddz_settings.bg, 不新增存档键。 */
+const TABLECLOTHS = ['茶肆夜话', '桃园午后', '金榜大厅'];
+let bgName = TABLECLOTHS.includes(ddzSettings.bg) ? ddzSettings.bg : '茶肆夜话';
+function applyTablecloth(){
+  const bg = document.getElementById('bg');
+  if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
+  const tv = document.getElementById('titleVer');
+  if(tv) tv.textContent = '原型 v1.4.1 · ' + bgName + '桌';
+  const pl = document.getElementById('bgPreload');
+  if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
+}
+function setTablecloth(name){
+  if(!TABLECLOTHS.includes(name)) return;
+  bgName = name;
+  saveSetting('bg', name);
+  applyTablecloth();
+  document.querySelectorAll('[data-bg]').forEach(b=>b.classList.toggle('on', b.dataset.bg===name));
+}
+try{ applyTablecloth(); }catch(e){}
 let soundOn = (typeof ddzSettings.sound === 'boolean') ? ddzSettings.sound
   : localStorage.getItem('myskme_ddz_sound') !== '0';
 function renderSoundBtn(){
@@ -2714,8 +2735,8 @@ function renderOnlineSettlement(st){
     ['地主', landlordName],
     ['赢家', winnerName + (s.landlordWin ? '（地主方）' : '（农民方）')],
     ['底分', s.base + ' 分'],
-    ['炸弹', s.bombs + ' 个'],
-    ['春天', s.spring ? '是' : '否'],
+    ['炸弹', s.bombs + ' 个（×' + Math.pow(2, s.bombs) + '）'],   /* v1.4.1: 倍数拆解与单机结算同口径 */
+    ['春天', s.spring ? '是（×2）' : '否'],
     ['最终倍数', '×' + s.mult],
     ['我的得分', (myDelta >= 0 ? '+' : '−') + Math.abs(myDelta)],
   ];
@@ -2747,7 +2768,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一点数为癞子（金框标记），可当任意普通牌，不能当大小王。癞子炸弹是软炸，硬炸更大，王炸最大。'],
     ['noshuffle','不洗牌场','整副牌成组分发，顺子、连对、炸弹更易成型。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.4</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.4.1</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked, true)"><span><b>大字模式</b><small>大字大牌、慢节奏，发亮的牌可直接出。三场次生效。按屏幕自动推荐，可手动改。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
@@ -2759,6 +2780,9 @@ function showModeSelect(){
     [['full','动效·流畅'],['std','动效·标准'],['lite','动效·精简']].map(t=>'<button type="button" class="levelbtn" data-motion="'+t[0]+'" onclick="setMotionTier(\''+t[0]+'\')">'+t[1]+'</button>').join('') +
     '<small>精简＝关粒子与辉光，当次生效，低档机推荐。音效与顶栏同步。</small></div>' +
     '<div class="musiccredit">音乐：Liyan — elerya（CC-BY 3.0）；大厅曲与紧张曲为 CC0 作品。来源：OpenGameArt。</div>' +
+    '<div class="levelswitch"><span class="lvlab">桌布</span>' +
+    TABLECLOTHS.map(t=>'<button type="button" class="levelbtn'+(bgName===t?' on':'')+'" data-bg="'+t+'" onclick="setTablecloth(\''+t+'\')">'+t+'</button>').join('') +
+    '<small>三张桌布随心换，选择记在设置里。</small></div>' +
     modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
     '<button class="modebtn" onclick="startTutorial()"><b>新手教学局</b><span>'+(tutorialData().done ? '已完成，可重温。' : '第一次打？先来这一局。')+'边打边学：叫分、出牌、管上、配合。不计战绩与段位。</span></button>' +
     '<button class="modebtn" onclick="showOnlinePanel()"><b>联机茶局房</b><span>建房发房码，家人输码即进；空位 AI 补，掉线自动重连。</span></button>' +
