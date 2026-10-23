@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.7.0</title>
+<title>萌友斗地主 · 正式版 v2.0.0</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -689,7 +689,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">原型 v1.7.0 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.0.0 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1618,7 +1618,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '原型 v1.7.0 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.0.0 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -1639,7 +1639,7 @@ function renderSoundBtn(){
 }
 function setSoundOn(on){
   soundOn = !!on;
-  localStorage.setItem('myskme_ddz_sound', soundOn ? '1' : '0');
+  try{ localStorage.setItem('myskme_ddz_sound', soundOn ? '1' : '0'); }catch(e){}
   saveSetting('sound', soundOn);   /* v1.3.5: 同步进统一设置键 */
   renderSoundBtn();
   const sc = $('setSound'); if(sc) sc.checked = soundOn;
@@ -2008,9 +2008,12 @@ function animateDeal(count){
 
 let G=null;       // 对局状态
 let hintIdx=0;
-let stats=JSON.parse(localStorage.getItem('myskme_ddz_stats')||'{"win":0,"total":0,"points":0}');
+/* v2.0 查 bug 修复: 顶层 JSON.parse 加 try/catch 与形状校验——stats 键损坏(非法 JSON)时旧写法会在脚本求值期抛错整页白屏; 现静默回退默认 */
+let stats=(()=>{ try{ const s=JSON.parse(localStorage.getItem('myskme_ddz_stats')||'null');
+  if(s && typeof s==='object' && typeof s.win==='number' && typeof s.total==='number' && typeof s.points==='number') return s;
+}catch(e){} return {win:0,total:0,points:0}; })();
 
-function saveStats(){ localStorage.setItem('myskme_ddz_stats', JSON.stringify(stats)); }
+function saveStats(){ try{ localStorage.setItem('myskme_ddz_stats', JSON.stringify(stats)); }catch(e){} }
 function renderStats(){ $('uiStats').textContent = stats.win+' 胜 / '+stats.total+' 局'; renderTierChip(); }
 /* v1.3.1: 顶栏段位 chip 与段位徽记(纯呈现)。chip 直读段位存档换算, 不调 rankData(),
    避免仅因刷新顶栏就触发赛季初始化/存档写入; 徽记为 CSS 几何分级, 与生涯页/结算共用。 */
@@ -2052,7 +2055,7 @@ function rankDeltaFor(myWin, score){ return myWin ? score + RANK_WIN_BASE : -(sc
 function currentSeason(){ const d = new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); }
 function seasonLabel(s){ const p = String(s||'').split('-'); return p.length===2 ? p[0]+' 年 '+Number(p[1])+' 月' : String(s||''); }
 let rankStore = null;
-function saveRank(){ localStorage.setItem('myskme_ddz_rank', JSON.stringify(rankStore)); }
+function saveRank(){ try{ localStorage.setItem('myskme_ddz_rank', JSON.stringify(rankStore)); }catch(e){} }
 function rankData(){
   if(!rankStore){
     try{ rankStore = JSON.parse(localStorage.getItem('myskme_ddz_rank')||'null'); }catch(e){ rankStore = null; }
@@ -2110,7 +2113,7 @@ function careerData(){
   }
   return careerStore;
 }
-function saveCareer(){ localStorage.setItem('myskme_ddz_career', JSON.stringify(careerData())); }
+function saveCareer(){ try{ localStorage.setItem('myskme_ddz_career', JSON.stringify(careerData())); }catch(e){} }
 function recordCareerResult(myWin, spring){
   const c = careerData();
   if(G.landlord===0){ c.lg++; if(myWin) c.lw++; } else { c.fg++; if(myWin) c.fw++; }
@@ -2172,7 +2175,7 @@ if(!LEVEL_NAMES[aiLevel]) aiLevel = 'normal';
 function setAiLevel(v){
   if(!LEVEL_NAMES[v]) return;
   aiLevel = v;
-  localStorage.setItem('myskme_ddz_level', v);
+  try{ localStorage.setItem('myskme_ddz_level', v); }catch(e){}
   document.querySelectorAll('.levelbtn').forEach(b=>b.classList.toggle('on', b.dataset.level===v));
   const ui = $('uiLevel'); if(ui) ui.textContent = LEVEL_NAMES[v];
 }
@@ -2198,7 +2201,7 @@ function applyElderMode(){
 function setElderMode(on, fromUser){
   elderMode = !!on;
   if(fromUser){ elderManual = true; saveSetting('elder', elderMode); }   // v1.3.5: 手动值入统一设置键, 此后不再被设备默认覆盖
-  localStorage.setItem('myskme_ddz_elder', elderMode?'1':'0');
+  try{ localStorage.setItem('myskme_ddz_elder', elderMode?'1':'0'); }catch(e){}
   if(!elderMode){ elderRecPlay = null; elderRecCards.clear(); }
   applyElderMode();
   if(G) renderAll();
@@ -2273,9 +2276,10 @@ const STORIES = {
     '猴先生和鱼小姐为了一局牌争输赢，蛇慢悠悠地说：『你俩争的不是牌，是谁先低头。』两人一愣，各自笑出了声。',
   ],
 };
-let storyProgress = JSON.parse(localStorage.getItem('myskme_ddz_story')||'{"defeats":{}}');
+/* v2.0 查 bug 修复: 同 stats——story 键非法 JSON 时旧写法在下方形状守卫执行前就已抛错白屏; 解析本身先兜底 */
+let storyProgress = (()=>{ try{ return JSON.parse(localStorage.getItem('myskme_ddz_story')||'{"defeats":{}}'); }catch(e){ return {defeats:{}}; } })();
 if(!storyProgress || typeof storyProgress!=='object' || !storyProgress.defeats || typeof storyProgress.defeats!=='object') storyProgress = {defeats:{}};
-function saveStoryProgress(){ localStorage.setItem('myskme_ddz_story', JSON.stringify(storyProgress)); }
+function saveStoryProgress(){ try{ localStorage.setItem('myskme_ddz_story', JSON.stringify(storyProgress)); }catch(e){} }
 function storyDefeatCount(key){ return storyProgress.defeats[key] || 0; }
 function storyPieceUnlocked(key, idx){
   if(idx===0) return true;
@@ -2395,7 +2399,7 @@ function showOnlinePanel(prefill){
 function onReadNick(){
   const v = ($('onlNick') && $('onlNick').value || '').trim();
   ON.nick = v || '牌友';
-  localStorage.setItem('myskme_ddz_nick', ON.nick);
+  try{ localStorage.setItem('myskme_ddz_nick', ON.nick); }catch(e){}
   return ON.nick;
 }
 function onCreateRoom(){
@@ -2775,7 +2779,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一点数为癞子（金框标记），可当任意普通牌，不能当大小王。癞子炸弹是软炸，硬炸更大，王炸最大。'],
     ['noshuffle','不洗牌场','整副牌成组分发，顺子、连对、炸弹更易成型。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.7.0</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 正式版 v2.0.0</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked, true)"><span><b>大字模式</b><small>大字大牌、慢节奏，发亮的牌可直接出。三场次生效。按屏幕自动推荐，可手动改。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
@@ -2974,9 +2978,9 @@ const LEVELS = [
   { name:'高空三飞', landlord:0, chars:['monkey','teapot'], best:6,
     goal:'三副三张升到高空——先拆哪一副、单张 6 给谁当翅膀，决定这趟高空飞行能不能落地；抢先拼飞机，只会散在半空。',
     hands:[[16,14,14,12,12,12,11,11,11,10,10,10,6],[15,11,9,7,5,4],[15,8,8,8,8,6,6,4,4,3,3]] },
-  { name:'茶肆终局·再聚', landlord:0, chars:['monkey','fish'], best:5,
-    goal:'五十关的最后一桌，猴先生与鱼小姐在对面联手——还是茶肆的老规矩：小牌探路、长顺过河、大牌收官。五十关走完，这杯茶才算喝到最后。',
-    hands:[[17,15,14,14,13,13,13,11,10,9,8,7,6,3],[16,15,14,12,12,11,11,10,9,8,5,4],[15,13,12,11,10,10,9,9,8,7,6,4,4,4,3]] },
+  { name:'茶肆终局·满堂', landlord:0, chars:['monkey','fish'], best:5,
+    goal:'五十关的最后一桌：猴先生攥着四张 J 候你，鱼小姐在侧。先以三张 K 钓它出水，再让连对成长河、大王与对 2 压阵——满堂好局，只败在贪快。',
+    hands:[[17,15,15,13,13,13,8,8,7,7,6,6,5,5,4,3],[16,14,14,12,11,11,11,11,10,9,6,4,4],[15,14,13,12,12,10,10,9,9,8,7,3]] },
 ];
 /* v1.5: 求解级首手(每关一条, 由求解器首手分析预计算并经测试断言与求解器一致):
    残局中玩家尚未出第一手且由玩家首出时, 「提示」优先给这一手, 免费不限次;
@@ -2991,14 +2995,15 @@ const FIRST_HINTS = [
   [5,5], [3,4,5,6,7,8,9], [6,6], [9,9,9], [3,3],
   [5,5], [4,14,14,14], [4,4], [4], [3],
   [3,13,13,13], [13,13], [5,5], [4], [3,3],
-  [4,14,14,14], [4,4], [6,6], [10,10,10], [6,7,8,9,10,11],
+  [4,14,14,14], [4,4], [6,6], [10,10,10], [3,13,13,13],
 ];
-let challenge = JSON.parse(localStorage.getItem('myskme_ddz_challenge')||'{"stars":[]}');
+/* v2.0 查 bug 修复: 同 stats——challenge 键非法 JSON 时旧写法在下方形状守卫执行前就已抛错白屏; 解析本身先兜底 */
+let challenge = (()=>{ try{ const c = JSON.parse(localStorage.getItem('myskme_ddz_challenge')||'null'); if(c && typeof c==='object') return c; }catch(e){} return {stars:[]}; })();
 if(!Array.isArray(challenge.stars)) challenge.stars = [];
 /* v1.5: 每关个人最佳手数, 复用 challenge 键扩 bestPlays 字段(不新增键);
    旧存档无此字段时静默初始化为空数组, 星数等既有字段零改动。 */
 if(!Array.isArray(challenge.bestPlays)) challenge.bestPlays = [];
-function saveChallenge(){ localStorage.setItem('myskme_ddz_challenge', JSON.stringify(challenge)); }
+function saveChallenge(){ try{ localStorage.setItem('myskme_ddz_challenge', JSON.stringify(challenge)); }catch(e){} }
 function challengeBest(i){ const v = Array.isArray(challenge.bestPlays) ? challenge.bestPlays[i] : 0; return (Number.isInteger(v) && v > 0) ? v : 0; }
 function recordChallengeBest(i, plays){
   if(!Array.isArray(challenge.bestPlays)) challenge.bestPlays = [];
@@ -3050,7 +3055,7 @@ function dailyData(){
   }
   return dailyStore;
 }
-function saveDaily(){ localStorage.setItem('myskme_ddz_daily', JSON.stringify(dailyStore)); }
+function saveDaily(){ try{ localStorage.setItem('myskme_ddz_daily', JSON.stringify(dailyStore)); }catch(e){} }
 function recordDailyWin(){
   const d = dailyData();
   if(d.done) return d;
@@ -4077,7 +4082,7 @@ function renderHand(){
 let trackerOn = localStorage.getItem('myskme_ddz_cardtracker') !== '0';
 function setTrackerOn(on){
   trackerOn = !!on;
-  localStorage.setItem('myskme_ddz_cardtracker', trackerOn ? '1' : '0');
+  try{ localStorage.setItem('myskme_ddz_cardtracker', trackerOn ? '1' : '0'); }catch(e){}
   renderCounter();
 }
 function trackerRemaining(){
@@ -4142,7 +4147,7 @@ function tasksData(){
   }
   return tasksStore;
 }
-function saveTasks(){ localStorage.setItem('myskme_ddz_tasks', JSON.stringify(tasksStore)); }
+function saveTasks(){ try{ localStorage.setItem('myskme_ddz_tasks', JSON.stringify(tasksStore)); }catch(e){} }
 function taskEvent(kind){
   const t = tasksData();
   if(t.flags[kind]) return;
@@ -4221,7 +4226,7 @@ function tutorialData(){
   }
   return tutorialStore;
 }
-function saveTutorial(){ localStorage.setItem('myskme_ddz_tutorial', JSON.stringify(tutorialData())); }
+function saveTutorial(){ try{ localStorage.setItem('myskme_ddz_tutorial', JSON.stringify(tutorialData())); }catch(e){} }
 
 let tutToastTimer = 0;
 function tutShow(html, blocking){
