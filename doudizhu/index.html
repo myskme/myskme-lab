@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.2.0</title>
+<title>萌友斗地主 · 正式版 v2.2.1</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -854,7 +854,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.0 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.1 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1814,7 +1814,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.2.0 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.2.1 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -3184,12 +3184,12 @@ function showModeSelect(){
   if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
   const modes = [
     ['classic','经典场','标准规则，随机发牌。'],
-    ['laizi','癞子场','每局随机一点数为癞子（金框标记），可当任意普通牌，不能当大小王。癞子炸弹是软炸，硬炸更大，王炸最大。'],
+    ['laizi','癞子场','随机一点为癞子，可当任意普通牌。'],
     ['noshuffle','不洗牌场','整副牌成组分发，顺子、连对、炸弹更易成型。'],
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.0</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.1</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
