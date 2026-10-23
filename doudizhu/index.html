@@ -3,7 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.3.5</title>
+<title>萌友斗地主 · 原型 v1.4</title>
+<!-- v1.4: PWA(可安装/离线可玩) -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#123a36">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="萌友斗地主">
+<!-- v1.4: 首屏关键图(桌面背景)提前并行加载 -->
+<link rel="preload" as="image" href="assets/桌布-茶肆夜话.webp" fetchpriority="high">
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -671,7 +682,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small>原型 v1.3.5 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small>原型 v1.4 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -2736,7 +2747,7 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一点数为癞子（金框标记），可当任意普通牌，不能当大小王。癞子炸弹是软炸，硬炸更大，王炸最大。'],
     ['noshuffle','不洗牌场','整副牌成组分发，顺子、连对、炸弹更易成型。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.3.5</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.4</div>' +
     rankBarHTML() +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked, true)"><span><b>大字模式</b><small>大字大牌、慢节奏，发亮的牌可直接出。三场次生效。按屏幕自动推荐，可手动改。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
@@ -4564,6 +4575,14 @@ window.addEventListener('load', ()=>{
     if(rp) showOnlinePanel(rp.trim().toUpperCase());
   }
 });
+
+/* v1.4: Service Worker 注册(离线可玩). 失败静默降级, 不影响正常游玩。
+   策略在 sw.js: HTML 网络优先 + 静态资产缓存优先; 发版须同步 bump sw.js 的 CACHE 版本号。 */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    try{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){}
+  });
+}
 </script>
 </body>
 </html>
