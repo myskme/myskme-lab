@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 原型 v1.3.3</title>
+<title>萌友斗地主 · 原型 v1.3.4</title>
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -669,7 +669,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small>原型 v1.3.3 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small>原型 v1.3.4 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1983,7 +1983,7 @@ function showCareer(){
     ['每日一局', '已连续完成 '+(dailyData().streak||0)+' 天'],
   ];
   const emptyBlock = (stats.total===0 && careerGames===0)
-    ? '<div class="empty-state"><div class="big">暂无对局记录</div><p>打完第一局经典场、癞子场或不洗牌场，<br>这里就会记下你的战绩与段位。</p></div>' : '';
+    ? '<div class="empty-state"><div class="big">暂无对局记录</div><p>打完第一局三场次对局，战绩与段位记在这里。</p></div>' : '';
   $('panel').innerHTML =
     '<h2>战绩生涯</h2><div class="who-win">茶肆夜话桌 · 你的牌桌履历</div>' +
     '<div class="rankbar">' + tierBadgeHTML(rk.points) +
@@ -1991,7 +1991,7 @@ function showCareer(){
     emptyBlock +
     '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>' +
     '<button class="primary" onclick="showModeSelect()">返回场次选择</button>' +
-    '<div class="career-note">总场次、总胜率、累计积分与段位为全部历史累计；地主/农民胜率、连胜、炸弹与春天自 v1.2 起累计（此前对局无分项记录，不回填）。生涯只统计经典/癞子/不洗牌三场次，残局、每日一局与联机不计入。</div>';
+    '<div class="career-note">总场次、胜率、积分与段位为历史累计；分项（地主/农民胜率、连胜、炸弹、春天）自 v1.2 起累计，不回填。只统计三场次，残局、每日与联机不计。</div>';
   $('overlay').classList.add('show');
 }
 
@@ -2099,7 +2099,7 @@ function storyPieceUnlocked(key, idx){
   return storyDefeatCount(key) >= 4 && totalStars() >= 6;
 }
 function storyPieceCondition(idx){
-  return idx===1 ? '击败该角色 2 次后解锁' : '击败该角色 4 次，且残局总星达到 6 星后解锁';
+  return idx===1 ? '击败该角色 2 次后解锁' : '击败该角色 4 次，且残局总星满 6 星';
 }
 function storyUnlockedFor(key){ return [0,1,2].filter(i=>storyPieceUnlocked(key, i)).length; }
 function unlockedStoryCount(){ return Object.keys(CHARS).reduce((sum,key)=>sum + storyUnlockedFor(key), 0); }
@@ -2194,7 +2194,7 @@ function showOnlinePanel(prefill){
   const nick = localStorage.getItem('myskme_ddz_nick') || '';
   $('panel').innerHTML =
     '<h2>联机茶局房</h2>' +
-    '<div class="who-win">和家人异地开一桌：你建房，把房码或邀请链接发到家庭群里，长辈点开输房码就能进。空位有 AI 补位，掉线能自动重连回座。</div>' +
+    '<div class="who-win">建房发房码，家人输码即进；空位 AI 补，掉线自动重连。</div>' +
     '<div class="onl-block"><b>你的昵称</b>' +
     '<label class="onl-line"><input class="onl-input" id="onlNick" maxlength="12" placeholder="如：爸爸" value="' + onEsc(nick) + '"></label></div>' +
     '<div class="onl-block"><b>建一个新房间</b>' +
@@ -2248,7 +2248,7 @@ function onConnect(path, hello){
   };
 }
 function onConnectFail(){
-  onlStatus('联机服务暂时连不上。本地预览要先启动后端（在 后端 目录运行 npm run local），正式版会指向线上地址。单机场次不受影响，可以先玩单机。');
+  onlStatus('联机服务连不上，先玩单机吧。（本地预览需先在 后端 目录运行 npm run local）');
   centerMsg('联机服务连不上', '可以先玩单机');
 }
 function onScheduleReconnect(){
@@ -2353,7 +2353,7 @@ function renderOnlineLobby(st){
   const inviteText = '来打一局萌友斗地主，茶局房房码 ' + st.code + '，点链接直接进：' + link;
   $('panel').innerHTML =
     '<h2>联机茶局房 · 大厅</h2>' +
-    '<div class="who-win">' + (st.config.mode === 'laizi' ? '癞子场' : '经典场') + (st.config.elderFriendly ? ' · 长辈友好房' : '') + ' · 把房码或链接发给家人，不必等满，房主随时可开局（空位 AI 补）</div>' +
+    '<div class="who-win">' + (st.config.mode === 'laizi' ? '癞子场' : '经典场') + (st.config.elderFriendly ? ' · 长辈友好房' : '') + ' · 发房码邀家人；不必等满，房主可随时开局（空位 AI 补）</div>' +
     '<div class="onl-code">' + st.code + '</div>' +
     '<div class="onl-row"><button class="ghost" onclick="onCopyInvite(this)">复制邀请</button><span class="onl-status" id="onlCopyTip"></span></div>' +
     '<div class="onl-members">' + rows + '</div>' +
@@ -2371,7 +2371,7 @@ function onCopyInvite(){
   const link = ON.inviteLink || '';
   const text = ON.inviteText || link;   // 邀请语 + 房码 + 链接, 粘贴到家庭群就能直接用
   const tip = $('onlCopyTip');
-  const done = () => { if (tip) tip.textContent = '邀请已复制，发到家庭群里，家人点开就能进'; };
+  const done = () => { if (tip) tip.textContent = '邀请已复制，发给家人点开即进'; };
   if (navigator.clipboard && navigator.clipboard.writeText)
     navigator.clipboard.writeText(text).then(done, () => { if (tip) tip.textContent = '复制失败，手动发这段：' + text; });
   else if (tip) tip.textContent = '把这段发给家人：' + text;
@@ -2429,8 +2429,8 @@ function applyOnlineGameState(st){
   $('uiMode').textContent = '联机 · ' + (st.config.mode === 'laizi' ? '癞子场' : '经典场') + (st.config.elderFriendly ? ' · 长辈友好房' : '');
   const noteEl = $('modeNote');
   noteEl.textContent = (st.config.elderFriendly ? '长辈友好房：节奏放慢、不催促。' : '') + (st.config.mode === 'laizi'
-    ? '联机癞子场：癞子点 ' + rankName(g.laiziVal) + '，规则与单机癞子场一致，出牌由服务端判定。'
-    : '联机茶局房：出牌由服务端判定；断线会自动重连，空位由 AI 补位。');
+    ? '联机癞子场：癞子点 ' + rankName(g.laiziVal) + '，规则同单机，服务端判定。'
+    : '联机茶局房：服务端判定；断线自动重连，空位 AI 补位。');
   noteEl.classList.add('show');
   $('dipai').style.display = '';
   renderDipai(g.landlord >= 0);
@@ -2544,7 +2544,7 @@ function renderOnlineSettlement(st){
     '<div class="onl-row"><button class="primary" onclick="onSendAgain()">再来一局（已点 ' + votes + ' / ' + humans + ' 人）</button>' +
     (st.hostSeat === ON.seat ? '<button class="ghost" onclick="onSendStart()">房主直接再开</button>' : '') +
     '<button class="ghost" onclick="onSendLobby()">返回大厅</button> <button class="ghost" onclick="onLeaveRoom(false)">离开房间</button></div>' +
-    '<div class="onl-status">再来一局：所有在线的真人都点一遍就自动开局；房主也可以直接再开。</div>';
+    '<div class="onl-status">再来一局：真人都点即开局，房主也可直接开。</div>';
   if (elderActive()){
     // 长辈简版: 与单机长辈结算同口径, 只显输赢与我的得分, 不铺明细表
     $('panel').innerHTML =
@@ -2587,28 +2587,28 @@ function showModeSelect(){
   window._gid = (window._gid||0)+1;
   if(G){ G.gid = window._gid; G.over = true; }   // 作废进行中的对局循环
   const modes = [
-    ['classic','经典场','标准斗地主规则，随机洗牌发牌，全牌型对决。'],
-    ['laizi','癞子场','每局随机一个点数（3 到 2）为癞子点，该点全部牌为万能牌并带金框标记。癞子可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'],
-    ['noshuffle','不洗牌场','成包发牌：顺子、连对、三张、炸弹成组分发，牌局明显更成型；全副仍为 54 张不重复，三人各 17 张加 3 张底牌。'],
+    ['classic','经典场','标准规则，随机发牌。'],
+    ['laizi','癞子场','每局随机一点数为癞子（金框标记），可当任意普通牌，不能当大小王。癞子炸弹是软炸，硬炸更大，王炸最大。'],
+    ['noshuffle','不洗牌场','整副牌成组分发，顺子、连对、炸弹更易成型。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.3.3</div>' +
+  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 原型 v1.3.4</div>' +
     rankBarHTML() +
-    '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢慢打、发亮的牌可以直接出；打开后进入经典场、癞子场或不洗牌场生效。</small></span></label>' +
+    '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked)"><span><b>长辈模式</b><small>大字大牌、慢节奏，发亮的牌可直接出。三场次生效。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
     ['easy','normal','expert'].map(lv=>'<button type="button" class="levelbtn'+(aiLevel===lv?' on':'')+'" data-level="'+lv+'" onclick="setAiLevel(\''+lv+'\')">'+LEVEL_NAMES[lv]+'</button>').join('') +
-    '<small>简单：随性出牌、很少用炸弹。普通：默认打法。高手：会记牌、护住整牌型、卡着时机才炸。残局闯关不受难度影响。</small></div>' +
+    '<small>简单：随性出牌。普通：默认。高手：会记牌、留整牌型、择时炸。残局不受影响。</small></div>' +
     '<div class="levelswitch"><span class="lvlab">设置</span>' +
     '<label class="setchk"><input type="checkbox" id="setSound" onchange="setSoundOn(this.checked)"> 音效</label>' +
     [['full','动效·流畅'],['std','动效·标准'],['lite','动效·精简']].map(t=>'<button type="button" class="levelbtn" data-motion="'+t[0]+'" onclick="setMotionTier(\''+t[0]+'\')">'+t[1]+'</button>').join('') +
-    '<small>动效：流畅＝特效全开；标准＝默认；精简＝关粒子特效与辉光（当次生效，低档机推荐）。音效开关与顶栏「音效」按钮同步；长辈模式在上方开关。</small></div>' +
+    '<small>精简＝关粒子与辉光，当次生效，低档机推荐。音效与顶栏同步。</small></div>' +
     modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
-    '<button class="modebtn" onclick="startTutorial()"><b>新手教学局</b><span>'+(tutorialData().done ? '已完成，可重温。' : '第一次打？先来这一局。')+'跟着提示打完一局：叫分定地主、出牌成型、管上规则、农民配合，一边打一边学；不计战绩与段位。</span></button>' +
-    '<button class="modebtn" onclick="showOnlinePanel()"><b>联机茶局房</b><span>和家人异地开一桌：建房后把房码或邀请链接发到家庭群，长辈点开输房码就能进；空位有 AI 补位，掉线能自动重连回座。</span></button>' +
+    '<button class="modebtn" onclick="startTutorial()"><b>新手教学局</b><span>'+(tutorialData().done ? '已完成，可重温。' : '第一次打？先来这一局。')+'边打边学：叫分、出牌、管上、配合。不计战绩与段位。</span></button>' +
+    '<button class="modebtn" onclick="showOnlinePanel()"><b>联机茶局房</b><span>建房发房码，家人输码即进；空位 AI 补，掉线自动重连。</span></button>' +
     dailyEntryHTML() +
     tasksEntryHTML() +
-    '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>二十关固定残局，按最优防守设计：大牌控场、顺子先行、炸弹收尾、送队友先走……通关赢星解锁下一关，三星看你用几手打完。当前总星 '+totalStars()+' / 60。</span></button>' +
-    '<button class="modebtn" onclick="showStoryCodex(\'menu\')"><b>故事图鉴</b><span>六位角色各 3 篇小故事，已解锁 '+unlockedStoryCount()+' / 18 篇。赢下对局击败角色，再攒够残局星数，逐篇打开。</span></button>' +
-    '<button class="modebtn" onclick="showCareer()"><b>战绩生涯</b><span>总场次、总胜率、地主与农民分项、连胜、炸弹与春天，外加段位履历，一页看全。</span></button>' +
+    '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>20 关固定残局：通关赢星解锁下一关，手数越少星越高。当前总星 '+totalStars()+' / 60。</span></button>' +
+    '<button class="modebtn" onclick="showStoryCodex(\'menu\')"><b>故事图鉴</b><span>六位角色各 3 篇，已解锁 '+unlockedStoryCount()+' / 18 篇。击败角色、攒残局星逐篇解锁。</span></button>' +
+    '<button class="modebtn" onclick="showCareer()"><b>战绩生涯</b><span>总场次、胜率、分项、连胜与段位履历，一页看全。</span></button>' +
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
   $('overlay').classList.add('show');
   const uiLv = $('uiLevel'); if(uiLv) uiLv.textContent = LEVEL_NAMES[aiLevel];
@@ -2622,64 +2622,64 @@ function showModeSelect(){
    best = 求解器给出的最优玩家出牌手数 (获胜且手数<=best 得三星, <=best+1 得两星, 获胜得一星)。 */
 const LEVELS = [
   { name:'大牌控场', landlord:0, chars:['fish','donkey'], best:6,
-    goal:'你是地主，先手出牌。大牌都在你手里，但先出哪张大有讲究——沉住气，先放小牌，大牌留着控场收官。',
+    goal:'大牌都在你手里，但先出哪张大有讲究——沉住气，先放小牌，大牌留着控场收官。',
     hands:[[17,15,14,9,9,6,3],[16,11,10,9,8,7],[15,14,14,12,10,5,4]] },
   { name:'顺子先行', landlord:0, chars:['snake','egg'], best:3,
-    goal:'你是地主，先手出牌。你有高顺和对 2，对面藏着大王与一副低顺——先把成型的牌打出去，别给对面的顺子留机会。',
+    goal:'你有高顺和对 2，对面藏着大王与一副低顺——先把成型的牌打出去，别给对面的顺子留机会。',
     hands:[[15,15,13,12,11,10,9,4],[17,9,8,7,6,5,3],[16,14,14,12,10,7,6]] },
   { name:'炸弹收尾', landlord:0, chars:['fish','snake'], best:5,
-    goal:'你是地主，先手出牌。对面藏着一副小炸弹——先送出一张小牌作饵，等小炸弹露头，再用你的大炸弹压回去收尾。',
+    goal:'对面藏着一副小炸弹——先送出一张小牌作饵，等小炸弹露头，再用你的大炸弹压回去收尾。',
     hands:[[14,13,11,11,11,11,9,4],[8,8,8,8,3],[15,12,9,5]] },
   { name:'王炸时机', landlord:0, chars:['snake','donkey'], best:3,
-    goal:'你是地主，先手出牌。王炸下早了必输——沉住气，等对面的炸弹先露头，再用王炸压住它。',
+    goal:'王炸下早了必输——沉住气，等对面的炸弹先露头，再用王炸压住它。',
     hands:[[17,16,12,12,12,7,4],[15,11,8,8,8,8,5],[15,13,10,9,6,5,3]] },
   { name:'拆对陷阱', landlord:0, chars:['egg','fish'], best:3,
-    goal:'你是地主，先手出牌。三张 K 可以带牌，但带法不同、结局不同——把对 A 拆去当翅膀，整局就会被大牌堵死。',
+    goal:'三张 K 可以带牌，但带法不同、结局不同——把对 A 拆去当翅膀，整局就会被大牌堵死。',
     hands:[[14,14,13,13,13,8,4],[15,12,10,9,5,3],[16,15,11,10,7,5]] },
   { name:'送队友先走', landlord:2, chars:['teapot','snake'], best:3,
-    goal:'你是农民，先手出牌。队友只剩两张牌——先送小牌，把出牌权递到队友手里；手里的大牌抢先出，反而会害了全队。',
+    goal:'队友只剩两张牌——先送小牌，把出牌权递到队友手里；手里的大牌抢先出，反而会害了全队。',
     hands:[[17,15,10,8,4,3],[12,5],[16,13,13,13,10,10]] },
   { name:'三带一诱饵', landlord:0, chars:['fish','egg'], best:4,
-    goal:'你是地主，先手出牌。左手边藏着炸弹和一张 A——先用三带一作饵，把炸弹钓出来，再稳稳收尾。',
+    goal:'左手边藏着炸弹和一张 A——先用三带一作饵，把炸弹钓出来，再稳稳收尾。',
     hands:[[15,15,12,12,12,9,3],[15,13,10,7,6,5],[14,8,8,8,8,5]] },
   { name:'连对压制', landlord:0, chars:['donkey','snake'], best:3,
-    goal:'你是地主，先手出牌。连对一出，对面的对 K、对 Q 都只能旁观——次序错了，就会被单张大牌缠死。',
+    goal:'连对一出，对面的对 K、对 Q 都只能旁观——次序错了，就会被单张大牌缠死。',
     hands:[[15,14,7,7,6,6,5,5],[16,13,13,11,9,8,4],[17,12,12,10,9,8,3]] },
   { name:'飞机收尾', landlord:0, chars:['egg','fish'], best:1,
-    goal:'你是地主，先手出牌。手里的飞机能一手清台——犹豫拆打，就会被对面的炸弹抢走先机。',
+    goal:'手里的飞机能一手清台——犹豫拆打，就会被对面的炸弹抢走先机。',
     hands:[[9,5,5,5,4,4,4,3],[17,15,13,11,10,7],[12,8,8,8,8,6]] },
   { name:'终局决战', landlord:0, chars:['snake','fish'], best:3,
-    goal:'你是地主，先手出牌。终局决战：三张、顺子与大牌俱全，环环相扣——找出获胜线，把优势稳稳打到底。',
+    goal:'终局决战：三张、顺子与大牌俱全，环环相扣——找出获胜线，把优势稳稳打到底。',
     hands:[[17,13,13,13,11,10,9,8,7,3],[16,15,14,12,11,10,6,5,3],[15,15,12,11,9,8,6,5,4]] },
   { name:'长顺破空', landlord:0, chars:['fish','egg'], best:4,
-    goal:'你是地主，先手出牌。一条长顺铺满手牌——整顺先行还是先探大牌？对面大小王分家，沉住气，别被单张缠住。',
+    goal:'一条长顺铺满手牌——整顺先行还是先探大牌？对面大小王分家，沉住气，别被单张缠住。',
     hands:[[15,14,13,12,11,10,9,8,7,7,3],[16,14,13,11,10,8,6,5],[17,12,11,9,8,6,4,4]] },
   { name:'双炸夹击', landlord:0, chars:['snake','donkey'], best:3,
-    goal:'你是地主，先手出牌。左右各藏一副炸弹——你手里的四张 K 不只是炸弹，换个打法，它还能一手带走两张散牌。',
+    goal:'左右各藏一副炸弹——你手里的四张 K 不只是炸弹，换个打法，它还能一手带走两张散牌。',
     hands:[[17,16,13,13,13,13,10,9,4],[8,8,8,8,14,12,5],[6,6,6,6,15,11,3]] },
   { name:'接力棒', landlord:2, chars:['teapot','snake'], best:3,
-    goal:'你是农民，先手出牌。队友只剩三张：一副对 Q 和一张 5——先喂小牌，再用对子把出牌权递到队友手里；大牌抢先出，只会把节奏送给地主。',
+    goal:'队友只剩三张：一副对 Q 和一张 5——先喂小牌，再用对子把出牌权递到队友手里；大牌抢先出，只会把节奏送给地主。',
     hands:[[17,16,10,10,6,6,3],[12,12,5],[15,15,14,14,13,9,8]] },
   { name:'飞机对决', landlord:0, chars:['egg','fish'], best:3,
-    goal:'你是地主，先手出牌。对面藏着四张 5——飞机先飞，还是对 2 先行？次序不同，结局不同。',
+    goal:'对面藏着四张 5——飞机先飞，还是对 2 先行？次序不同，结局不同。',
     hands:[[12,12,12,11,11,11,15,15,9,3],[17,14,13,10,8,6,4],[16,13,10,9,5,5,5,5]] },
   { name:'连对长城', landlord:0, chars:['donkey','snake'], best:3,
-    goal:'你是地主，先手出牌。五副对子连成一线——连对一出，对面的对 2 也只能拆开单走，别给他们留喘息的空当。',
+    goal:'五副对子连成一线——连对一出，对面的对 2 也只能拆开单走，别给他们留喘息的空当。',
     hands:[[14,14,13,13,12,12,11,11,10,10,17,3],[16,15,15,13,11,9,8,6],[15,14,12,10,9,7,5,4,4]] },
   { name:'王炸对决', landlord:0, chars:['snake','fish'], best:4,
-    goal:'你是地主，先手出牌。对面的四张 A 是全场最大的炸弹——你的王炸和四张 J 各只有一次出手，算准谁先逼谁亮底。',
+    goal:'对面的四张 A 是全场最大的炸弹——你的王炸和四张 J 各只有一次出手，算准谁先逼谁亮底。',
     hands:[[17,16,15,11,11,11,11,8,8,5,3],[14,14,14,14,13,12,10,7],[15,13,13,12,12,10,9,6,4]] },
   { name:'三飞连环', landlord:0, chars:['fish','teapot'], best:6,
-    goal:'你是地主，先手出牌。三副三张排成一列，翅膀只有两张牌能当——哪副留着收尾、哪两张当翅膀，差一张就是满盘皆输。',
+    goal:'三副三张排成一列，翅膀只有两张牌能当——哪副留着收尾、哪两张当翅膀，差一张就是满盘皆输。',
     hands:[[16,14,14,13,13,13,12,12,12,11,11,11,6],[15,10,9,7,5,4],[15,8,8,8,8,4,4]] },
   { name:'残局读心', landlord:2, chars:['donkey','fish'], best:6,
-    goal:'你是农民，先手出牌。地主步步逼近——你手里的对 K、大王各有各的用法，拦错一次，队友的对 3 就成了摆设。',
+    goal:'地主步步逼近——你手里的对 K、大王各有各的用法，拦错一次，队友的对 3 就成了摆设。',
     hands:[[17,15,13,13,9,7,4],[14,11,8,6,3,3],[16,15,14,12,12,10,5]] },
   { name:'连环炸', landlord:0, chars:['egg','snake'], best:7,
-    goal:'你是地主，先手出牌。全场的炸弹大半在对家手里——四张 A 和王炸要留着接连环炸，散牌先行，一步都不能错。',
+    goal:'全场的炸弹大半在对家手里——四张 A 和王炸要留着接连环炸，散牌先行，一步都不能错。',
     hands:[[17,16,14,14,14,14,11,8,5,3],[15,15,6,6,4],[13,13,13,13,10,10]] },
   { name:'茶肆终局', landlord:0, chars:['snake','fish'], best:5,
-    goal:'你是地主，先手出牌。四十一张牌的残局决战：三张、对子、长顺俱全，对面还埋着四张 4——把每一分优势算清，稳稳打到底。',
+    goal:'四十一张牌的残局决战：三张、对子、长顺俱全，对面还埋着四张 4——把每一分优势算清，稳稳打到底。',
     hands:[[17,15,14,14,13,13,13,11,10,9,8,7,6,3],[16,15,14,12,12,11,11,10,9,8,5,4],[15,13,12,11,10,10,9,9,8,7,6,4,4,4,3]] },
 ];
 let challenge = JSON.parse(localStorage.getItem('myskme_ddz_challenge')||'{"stars":[]}');
@@ -2752,7 +2752,7 @@ function startDaily(){
   if(G) G.daily = true;
   const lv = LEVELS[G.challengeIdx];
   const noteEl = $('modeNote');
-  noteEl.textContent = '每日一局 · 第 ' + (G.challengeIdx + 1) + ' 关《' + lv.name + '》：今天所有人都是这一局。通关记入每日连续记录，不影响残局闯关星数。';
+  noteEl.textContent = '每日一局 · 第 ' + (G.challengeIdx + 1) + ' 关《' + lv.name + '》：全桌同题。记入连续记录，不影响残局星数。';
   const banner = $('challengeBanner');
   banner.textContent = '每日一局 · ' + shanghaiToday() + ' · 连续完成 ' + (dailyData().streak || 0) + ' 天';
   banner.classList.add('show');
@@ -2883,7 +2883,7 @@ function startLevel(idx){
   $('uiBase').textContent = '—'; $('uiMult').textContent = '×1';
   $('uiMode').textContent = '残局 · 第 '+(idx+1)+' 关';
   const noteEl = $('modeNote');
-  noteEl.textContent = '第 '+(idx+1)+' 关《'+lv.name+'》：'+lv.goal+' 本关 '+lv.best+' 手内获胜得三星，'+(lv.best+1)+' 手内得两星。';
+  noteEl.textContent = '第 '+(idx+1)+' 关《'+lv.name+'》：'+lv.goal+' '+lv.best+' 手内三星，'+(lv.best+1)+' 手内两星。';
   noteEl.classList.add('show');
   const banner = $('challengeBanner');
   if(linkChallenge){
@@ -2939,8 +2939,8 @@ function finishChallenge(winnerSeat){
     '<h2 class="'+(playerWin?'':'lose')+'">'+(playerWin?'过 关':'闯关失败')+'</h2>'+
     '<div class="lvstars big">'+starStr(stars)+'</div>'+
     '<div class="who-win">'+desc+'</div>'+
-    (isDaily && playerWin ? '<div class="challenge-compare">每日一局完成 · 已连续完成 '+(dailyInfo ? dailyInfo.streak : 1)+' 天。明天再来，题目会换。</div>' : '')+
-    (isDaily && !playerWin ? '<div class="challenge-compare">每日一局还没过关，重开本关再试——今天所有人都是这一局。</div>' : '')+
+    (isDaily && playerWin ? '<div class="challenge-compare">每日一局完成 · 连续 '+(dailyInfo ? dailyInfo.streak : 1)+' 天。明天换新题。</div>' : '')+
+    (isDaily && !playerWin ? '<div class="challenge-compare">还没过关，重开再试——今天全桌同题。</div>' : '')+
     (compare ? '<div class="challenge-compare">'+compare+'</div>' : '')+
     taskNewLine()+
     btns+
@@ -2999,8 +2999,8 @@ function newGame(mode){
   $('uiMode').textContent = mode==='laizi' ? '癞子场 · '+rankName(LAIZI_VAL)+' 癞' : (mode==='noshuffle' ? '不洗牌场' : '经典场');
   const noteEl = $('modeNote');
   noteEl.textContent = mode==='laizi'
-    ? '癞子点 '+rankName(LAIZI_VAL)+'：该点全部牌为万能牌（金框加「癞」标记），可替代任意普通点数，不能替代大小王；含癞子的炸弹为软炸，硬炸压软炸，王炸最高。'
-    : mode==='noshuffle' ? '不洗牌场：成包发牌，顺子、连对、三张、炸弹更成型；全副仍为 54 张。'
+    ? '癞子点 '+rankName(LAIZI_VAL)+'：金框带「癞」，可当任意普通牌，不能当大小王。软炸小于硬炸，王炸最大。'
+    : mode==='noshuffle' ? '不洗牌场：成组发牌，牌型更易成型。'
     : '经典场：标准规则，随机洗牌发牌。';
   noteEl.classList.add('show');
   lastShown[0]=lastShown[1]=lastShown[2]=null;
@@ -3482,7 +3482,7 @@ function renderReview(){
   const bar = $('actionBar'); bar.innerHTML = '';
   const note = document.createElement('span'); note.className = 'review-note'; note.textContent = reviewNarration();
   bar.appendChild(note);
-  const openNote = document.createElement('span'); openNote.className = 'review-note open-note'; openNote.textContent = '复盘亮牌：看清对手的牌，学得更明白';
+  const openNote = document.createElement('span'); openNote.className = 'review-note open-note'; openNote.textContent = '复盘亮牌：对手手牌可见';
   bar.appendChild(openNote);
   const mkBtn = (label, fn, disabled)=>{
     const b = document.createElement('button');
@@ -3755,9 +3755,9 @@ function renderCounter(){
    (钩子分别在 finishGame / finishChallenge / doPlay / recordDailyWin, 均已排除教学与联机)。
    本地单机记录, 不做防改时间处理(口径见任务面板注脚)。 */
 const TASK_DEFS = [
-  ['daily', '完成每日一局', '把今天的每日一局打通关。'],
-  ['win',   '单机获胜一局', '在单机对局中赢下一局（经典 / 癞子 / 不洗牌 / 残局 / 每日一局；教学局与联机不计）。'],
-  ['bomb',  '打出一炸',     '在单机对局中由你亲手打出一副炸弹或王炸。'],
+  ['daily', '完成每日一局', '打通今天的每日一局。'],
+  ['win',   '单机获胜一局', '单机赢一局（教学局、联机不计）。'],
+  ['bomb',  '打出一炸',     '单机亲手打出炸弹或王炸。'],
 ];
 let tasksStore = null;
 function tasksData(){
@@ -3820,16 +3820,16 @@ function showTasks(){
   $('panel').innerHTML =
     '<h2>每日任务</h2><div class="who-win">'+shanghaiToday()+' · 今日完成 '+tasksDoneCount()+' / 3</div>' +
     rowsHtml +
-    '<div class="rankbar"><span class="rank-badge">茶点 '+t.treats+' 枚</span><span class="rank-info">每日任务的纪念计数，与段位分互不相干<br>只记在战绩生涯里，不可兑换任何东西</span></div>' +
+    '<div class="rankbar"><span class="rank-badge">茶点 '+t.treats+' 枚</span><span class="rank-info">任务纪念计数，与段位分无关<br>只记在生涯里，不可兑换</span></div>' +
     '<button class="primary" onclick="showModeSelect()">返回场次选择</button>' +
-    '<div class="career-note">任务按 Asia/Shanghai 日期刷新，跨日自动重置；茶点只增不减。这是本地单机记录，不做防改时间处理。</div>';
+    '<div class="career-note">按 Asia/Shanghai 日期刷新；茶点只增不减。本地记录，不防改时间。</div>';
   $('overlay').classList.add('show');
 }
 /* 结算面板里的一行新完成提示(本局刚点亮的任务) */
 function taskNewLine(){
   if(!G || !G._taskNew || !G._taskNew.length) return '';
   const names = G._taskNew.map(k => { const d = TASK_DEFS.find(x=>x[0]===k); return d ? d[1] : k; });
-  return '<div class="rank-line">每日任务新完成：'+names.join('、')+'（回场次面板「每日任务」领茶点）</div>';
+  return '<div class="rank-line">每日任务新完成：'+names.join('、')+'（去「每日任务」领茶点）</div>';
 }
 
 /* ---------- 新手教学局 ----------
@@ -3922,7 +3922,7 @@ function startTutorial(){
   $('uiBase').textContent='—'; $('uiMult').textContent='×1';
   $('uiMode').textContent = '教学局';
   const noteEl = $('modeNote');
-  noteEl.textContent = '教学局：跟着提示打完这一局，学会叫分、出牌与管上；不计战绩与段位。';
+  noteEl.textContent = '教学局：跟着提示打完，不计战绩与段位。';
   noteEl.classList.add('show');
   lastShown[0]=lastShown[1]=lastShown[2]=null;
   $('actionBar').innerHTML='';
@@ -3930,7 +3930,7 @@ function startTutorial(){
   animateDeal(2);
   const gid = G.gid;
   (async ()=>{
-    await tutAsk('欢迎来到教学局。牌已经发好了，并且从大到小排好了序：大王最大，往下是小王、2、A、K、Q……最小的是 3。先学第一件事：谁当地主。', '开始');
+    await tutAsk('欢迎来到教学局。手牌已按大小排好：大王最大，然后是小王、2、A、K……3 最小。先学第一件事：叫分定地主。', '开始');
     if(!G || G.gid!==gid || G.over) return;
     await tutBidding(gid);
   })();
@@ -3938,7 +3938,7 @@ function startTutorial(){
 async function tutBidding(gid){
   G.phase = 'bidding';
   renderDipai(false);
-  centerMsg('叫分环节', '轮流叫分，叫分最高的人当地主');
+  centerMsg('叫分环节', '叫分最高者当地主');
   G.turn = 1; renderTurn();
   await sleep(paceDelay(650)); if(!G || G.gid!==gid) return;
   showBid(1, 0);
@@ -3951,7 +3951,7 @@ async function tutBidding(gid){
     if(!G || G.gid!==gid) return;
     if(bid > 0){ showBid(0, bid); G.landlord = 0; G.base = bid; break; }
     showBid(0, 0);
-    await tutAsk('先试着叫一次分：叫分最高的人当地主，能把桌上三张底牌拿走，手牌一下从 17 张变 20 张。这一局，咱们就叫它。', '再叫一次');
+    await tutAsk('先试着叫一次分：最高者当地主，拿走三张底牌，手牌 17 张变 20 张。这局咱们叫。', '再叫一次');
     if(!G || G.gid!==gid) return;
   }
   G.mult = 1;
@@ -3960,7 +3960,7 @@ async function tutBidding(gid){
   renderDipai(true);
   centerMsg('你是地主', '底分 '+G.base+' 分 · 倍数 ×1');
   renderAll();
-  await tutAsk('这三张就是底牌，现在归你了。留意一下：加上底牌里的两张 8，你手里凑齐了四张 8——这叫炸弹，能管全场的大牌，先记住它的样子，别急着用。接下来由地主先出牌，就是你。', '知道了');
+  await tutAsk('这三张底牌归你了。加上底牌的两张 8，你凑齐四张 8——这是炸弹，能管全场，先别用。地主先出牌，就是你。', '知道了');
   if(!G || G.gid!==gid) return;
   G.phase = 'playing'; G.turn = 0; G.lastPlay = null; G.lastOwner = -1; G.passStreak = 0;
   renderAll();
@@ -3988,13 +3988,13 @@ async function tutPlayerTurn(){
   const last = (G.lastOwner===0 || G.lastOwner<0) ? null : G.lastPlay;
   if(G.tut.stage==='lead' && !G.tut.leadBriefed){
     G.tut.leadBriefed = true;
-    await tutAsk('地主先出牌，也就是你先出。先练最基本的一手——对子：两张点数一样的牌。下面发亮的都是你手里的对子，任选一对，再点「出牌」。', '知道了');
+    await tutAsk('你先出。先练对子：两张同点。发亮的都是对子，任选一对点「出牌」。', '知道了');
     if(!G || G.gid!==gid || G.over || G.turn!==0) return;
   }
   if(G.tut.stage==='follow' && last && !G.tut.followBriefed){
     G.tut.followBriefed = true;
     const nm = CHARS[G.aiChar[G.lastOwner]].name;
-    await tutAsk(nm+'刚刚用'+describePlay(last.info)+'管上了你的对子——这就叫「管上」：必须出相同的牌型，而且点数比它大。现在轮到你管回去：用更大的对子，或者干脆用炸弹。这手先别点「不出」。', '知道了');
+    await tutAsk(nm+'用'+describePlay(last.info)+'管上了你——「管上」就是出同牌型、点数更大。轮到你：用更大的对子，或炸弹。这手先别点「不出」。', '知道了');
     if(!G || G.gid!==gid || G.over || G.turn!==0) return;
   }
   tutArmActions();
@@ -4023,17 +4023,17 @@ function tutArmActions(){
     const info = resolvePlayInfo(cards, last ? last.info : null);
     if(!info){
       Snd.play('deny', .8);
-      tutToast('这几张凑不成一组牌。单张、对子、三张、顺子都有各自的成型规矩，换一手试试。');
+      tutToast('这几张凑不成牌型，换一手试试。');
       return;
     }
     if(G.tut.stage==='lead' && info.type!=='pair'){
       Snd.play('deny', .8);
-      tutToast('先练对子：两张一样点数的牌一起出。把多选的牌点掉，只留一对。');
+      tutToast('先练对子：点掉多选的，只留一对同点牌。');
       return;
     }
     if(last && !canBeat(info, last.info)){
       Snd.play('deny', .8);
-      tutToast('这手管不上对面：要出同样的牌型、点数更大；炸弹和王炸是谁都能管的例外。');
+      tutToast('管不上：要同牌型、点数更大；炸弹、王炸例外。');
       return;
     }
     if(G.tut.stage==='lead') G.tut.stage = 'follow';
@@ -4044,7 +4044,7 @@ function tutArmActions(){
   bPass.onclick = ()=>{
     if(G.tut.stage==='follow'){
       Snd.play('deny', .8);
-      tutToast('这手先别过：你手里有更大的对子，炸弹也能管。试着管上它，实在不行再过。');
+      tutToast('这手先别过：你有更大的对子，炸弹也能管。先试着管上。');
       return;
     }
     bar.innerHTML=''; hintIdx=0; G.selected.clear(); tutHide();
@@ -4088,12 +4088,12 @@ function tutOnPlay(seat, info){
   if(!info || !G.tut) return;
   const T = G.tut.taught;
   const NAMES = {
-    straight:'顺子：五张以上连续的单张，比如 5、6、7、8、9。注意 2 和大小王不能排进顺子。',
+    straight:'顺子：五张以上连续单张，如 5、6、7、8、9。2 和大小王不能入顺。',
     pairs:'连对：至少三副对子连着出，比如 3、3、4、4、5、5。',
-    plane:'飞机：两组以上的三张连着出，还可以带同等数量的散牌或对子作翅膀。',
+    plane:'飞机：两组以上三张连出，可带等量散牌或对子。',
     trio1:'三带一：三张同点，再带一张散牌。',
     trio2:'三带二：三张同点，再带一副对子。',
-    four2:'四带二：四张同点带两张散牌——注意这不算炸弹，管不了普通牌型之外的东西。',
+    four2:'四带二：四张同点带两张散牌，不算炸弹。',
   };
   if(NAMES[info.type] && !T[info.type]){
     T[info.type] = 1;
@@ -4103,8 +4103,8 @@ function tutOnPlay(seat, info){
   if(isBombLike(info) && !T.bomb){
     T.bomb = 1;
     tutToast(info.type==='rocket'
-      ? '王炸：大王小王合璧，全场最大的牌，谁也管不了它。出手后倍数翻倍。'
-      : '炸弹出手：四张同点，什么牌型都能管。倍数已经翻倍，现在是 ×'+G.mult+'。');
+      ? '王炸：大小王合璧，全场最大。出手倍数翻倍。'
+      : '炸弹出手：四张同点，通管全场。倍数翻倍，现 ×'+G.mult+'。');
   }
 }
 function tutOnPass(seat){
@@ -4112,7 +4112,7 @@ function tutOnPass(seat){
   if(seat===0 || G.lastOwner<0) return;
   if(isPartner(seat, G.lastOwner)){
     G.tut.taught.coop = 1;
-    tutToast('注意看：'+CHARS[G.aiChar[seat]].name+'没有压队友的牌——农民是同一队，要给队友让路，两个人合力拦地主。斗地主不只是比谁牌大，还要看配合。');
+    tutToast('注意看：'+CHARS[G.aiChar[seat]].name+'没压队友——农民同队，要让路、合力拦地主。');
   }
 }
 function finishTutorial(winnerSeat){
@@ -4141,7 +4141,7 @@ function finishTutorial(winnerSeat){
     '<h2 class="'+(myWin?'':'lose')+'">'+(myWin?'胜 利':'败 北')+'</h2>'+
     '<div class="who-win">教学局结束 · '+(winnerSeat===0?'你率先出完':CHARS[G.aiChar[winnerSeat]].name+' 率先出完')+'</div>'+
     '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>'+
-    '<div class="challenge-compare">这一局走完了全程：叫分定地主、底牌归地主；出牌先成型，管上要同型更大；炸弹翻倍，春天翻倍；农民是队友，要互相让路。教学局不计战绩与段位。</div>'+
+    '<div class="challenge-compare">全程走完：叫分定地主、底牌归地主；管上同型更大；炸弹、春天翻倍；农民互相让路。教学局不计战绩与段位。</div>'+
     '<button class="primary" onclick="startTutorial()">再学一局</button> <button class="ghost" onclick="showModeSelect()">去打正式场</button>'+
     '<div class="stats">教学局已完成 · 之后可随时从场次面板重温</div>';
   $('overlay').classList.add('show');
