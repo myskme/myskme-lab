@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.1.0</title>
+<title>萌友斗地主 · 正式版 v2.2.0</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -726,6 +726,123 @@
   .blackcard.locked{border-color:rgba(166,124,61,.35); box-shadow:none;}
   .blackcard .bc-no.dim{color:#5c665e; font-size:26px;}
   body.elder .shop-idesc{font-size:14.5px;}
+
+  /* ---------- v2.2: 势能与秀场 ---------- */
+  /* 连胜势能徽记(对局中常驻, 只在单机三场次且连胜>=2 时出现) */
+  #streakBadge{margin-top:2px; text-align:center;}
+  #streakBadge .sk-t{font-size:11.5px; font-weight:700; color:#f3d98a; letter-spacing:1px; text-shadow:0 1px 4px rgba(0,0,0,.6);}
+  #streakBadge .sk-bar{width:56px; height:4px; border-radius:3px; background:rgba(247,239,220,.18); margin:3px auto 0; overflow:hidden;}
+  #streakBadge .sk-fill{height:100%; border-radius:3px; background:linear-gradient(90deg,#d9822b,#f3d98a);}
+  body.elder #streakBadge .sk-t{font-size:14px;}
+  .streak-line{color:#f3d98a;}
+  /* 表情气泡(图片版气泡) */
+  .bubble img.bubimg{width:64px; height:64px; display:block; border-radius:8px;}
+  body.elder .bubble img.bubimg{width:80px; height:80px;}
+  /* 台词面板分组(台词 / 表情气泡) */
+  #phrasePanel.open{flex-direction:column; align-items:stretch;}
+  .phrase-gtitle{width:100%; text-align:center; font-size:11.5px; color:#a9bcb0; letter-spacing:2px; margin:2px 0 1px;}
+  .phrase-words,.phrase-imgs{display:flex; flex-wrap:wrap; gap:7px; justify-content:center;}
+  .phrase-imgbtn{padding:4px; border-radius:12px; background:rgba(247,239,220,.1); border:1px solid rgba(201,162,77,.55); min-height:44px; min-width:44px; cursor:pointer;}
+  .phrase-imgbtn img{width:44px; height:44px; display:block; border-radius:8px;}
+  body.elder .phrase-imgbtn img{width:56px; height:56px;}
+  .phrase-hint{width:100%; margin-top:6px; background:none; border:none; color:#a9bcb0; font-size:12.5px; letter-spacing:.5px; cursor:pointer; min-height:44px; font-family:inherit;}
+  /* 收藏册 */
+  .coll-total{text-align:center; margin:10px 0 4px;}
+  .coll-pct{font-size:40px; font-weight:800; color:var(--gold-l); letter-spacing:1px;}
+  .coll-line{text-align:left; margin:10px 0;}
+  .coll-line .coll-h{display:flex; justify-content:space-between; font-size:14.5px; margin-bottom:2px;}
+  .coll-line .coll-h b{color:var(--cream);}
+  .coll-line .coll-h span{color:#a9bcb0; font-size:13px;}
+  .coll-next{background:rgba(201,162,77,.1); border:1px solid rgba(201,162,77,.4); border-radius:12px; padding:10px 12px; margin:12px 0; text-align:left;}
+  .coll-next b{color:var(--gold-l); display:block; margin-bottom:3px; font-size:13px; letter-spacing:1px;}
+  .coll-link-line{display:flex; align-items:center; gap:12px; text-align:left; margin:8px 0;}
+  .coll-link-line .cell{width:56px; height:56px; border-radius:12px; background:rgba(247,239,220,.06); border:1px solid rgba(201,162,77,.3); display:flex; align-items:center; justify-content:center; flex:none;}
+  .coll-link-line .cell img{width:44px; height:44px;}
+  .coll-link-line .cell.empty{color:#5c665e; font-size:11px; text-align:center; line-height:1.4; padding:4px;}
+  /* 生涯页脚: 支持作者区 */
+  .support-zone{margin-top:16px; border-top:1px solid rgba(166,124,61,.35); padding-top:10px; text-align:left;}
+  .support-zone h3{font-size:13px; color:#a9bcb0; letter-spacing:2px; margin:0 0 8px; font-weight:600;}
+  .support-main{display:flex; gap:12px; align-items:flex-start;}
+  .support-cover{width:48px; height:48px; border-radius:10px; flex:none; aspect-ratio:1;}
+  .support-txt{flex:1; min-width:0;}
+  .support-txt b{display:block; font-size:14.5px; color:var(--cream);}
+  .support-txt p{margin:3px 0 6px; font-size:12.5px; color:#cfe0d2; line-height:1.5;}
+  .support-btns{display:flex; gap:14px; align-items:center; flex-wrap:wrap;}
+  .support-btn{border:1px solid rgba(201,162,77,.6); color:var(--gold-l); background:none; border-radius:999px; padding:6px 14px; font-size:13px; cursor:pointer; min-height:44px; font-family:inherit;}
+  .support-linklike{background:none; border:none; color:#a9bcb0; font-size:13px; cursor:pointer; min-height:44px; font-family:inherit; padding:6px 2px;}
+  .support-small{font-size:11.5px; color:#8a9a8e; margin-top:6px; line-height:1.5;}
+  .qr-card{margin-top:10px; background:#f7efdc; border:1px solid #a67c3d; border-radius:12px; padding:12px; text-align:center;}
+  .qr-card img{width:180px; height:180px; aspect-ratio:1;}
+  .qr-card p{color:#0a2723; font-size:12.5px; margin:8px 0 2px;}
+  .qr-card a{color:#7a5a1e; font-size:12.5px;}
+  @media (min-width:900px){ .qr-card img{width:220px; height:220px;} }
+  .badge-row{display:flex; align-items:center; gap:10px; margin-top:12px;}
+  .badge-img{width:40px; height:40px; flex:none;}
+  .badge-img.off{filter:grayscale(.7); opacity:.55;}
+  @keyframes badgePop{0%{transform:scale(.6);}55%{transform:scale(1.18);}100%{transform:scale(1);}}
+  .badge-img.justlit{animation:badgePop .7s ease both; filter:drop-shadow(0 0 8px rgba(231,200,119,.8));}
+  @media (prefers-reduced-motion: reduce){ .badge-img.justlit{animation:none;} }
+  .badge-row .b-txt{flex:1; font-size:13.5px; color:var(--cream); line-height:1.5;}
+  .badge-row .b-txt small{display:block; color:#8a9a8e; font-size:11.5px;}
+  .link-confirm{margin-top:8px; background:rgba(247,239,220,.05); border:1px solid rgba(201,162,77,.3); border-radius:10px; padding:9px 11px; font-size:13.5px;}
+  .link-confirm .row{display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;}
+  .link-confirm small{display:block; color:#8a9a8e; font-size:11.5px; margin-top:7px; line-height:1.5;}
+  /* 感谢卡(茶笺) */
+  .thankcard{margin-top:10px; background:linear-gradient(160deg,#f9f2df,#f1e5c8); border:1.5px solid #a67c3d; box-shadow:inset 0 0 0 4px #f7efdc, inset 0 0 0 5.5px rgba(166,124,61,.55); border-radius:14px; padding:16px 18px; color:#0a2723; text-align:center; max-width:520px;}
+  .thankcard .tc-eyebrow{font-size:11.5px; letter-spacing:3px; color:#7a5a1e;}
+  .thankcard .tc-av{width:56px; height:56px; border-radius:50%; border:2px solid #a67c3d; margin:8px auto 4px; display:block;}
+  .thankcard .tc-body{font-size:15px; line-height:1.8; margin:6px 0;}
+  .thankcard .tc-sign{border-top:1px solid rgba(166,124,61,.5); margin-top:10px; padding-top:8px; font-size:14px; letter-spacing:2px;}
+  .thankcard .tc-note{font-size:11px; color:#5c665e; margin-top:8px; line-height:1.5;}
+  body.elder .support-zone h3{font-size:15px;}
+  body.elder .support-btn, body.elder .support-linklike{min-height:48px; font-size:15px;}
+  /* ---------- v2.2: 首页分组图标卡 ---------- */
+  .mg-title{font-size:12.5px; color:#a9bcb0; letter-spacing:3px; margin:16px 2px 8px; text-align:left;}
+  .mg-title:first-of-type{margin-top:6px;}
+  .menucards{display:grid; grid-template-columns:1fr; gap:9px;}
+  @media (min-width:760px){ .panel{width:min(94vw,860px);} .menucards{grid-template-columns:1fr 1fr;} .mcard.main{grid-column:1 / -1;} }
+  .mcard{display:flex; gap:12px; align-items:flex-start; width:100%; text-align:left; margin:0; padding:12px 14px; border-radius:12px; background:rgba(247,239,220,.045); border:1px solid rgba(201,162,77,.28); color:var(--cream); cursor:pointer; font-family:inherit;}
+  .mcard:hover{filter:brightness(1.25);}
+  .mcard .mtxt{flex:1; min-width:0;}
+  .mcard b{display:block; font-size:16.5px; letter-spacing:1px; color:var(--gold-l);}
+  .mcard span{display:block; font-size:12px; line-height:1.55; color:#cfe0d2; margin-top:3px;}
+  .mcard .daily-meta{color:#a9bcb0; font-size:11.5px;}
+  .mcard.main{padding:18px 16px; background:linear-gradient(140deg, rgba(231,200,119,.16), rgba(166,124,61,.07)); border:1.5px solid rgba(231,200,119,.65);}
+  .mcard.main b{font-size:20px;}
+  .mcard.main span{font-size:13px;}
+  .mcard.main .micon{width:54px; height:54px; border-radius:14px;}
+  .mcard.main .micon svg{width:30px; height:30px;}
+  .micon{flex:none; width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center;}
+  .micon svg{width:24px; height:24px; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+  .micon.t-gold{color:#e7c877; background:rgba(231,200,119,.13);}
+  .micon.t-bronze{color:#d9a860; background:rgba(166,124,61,.16);}
+  .micon.t-teal{color:#8fd0c2; background:rgba(26,74,67,.55);}
+  .micon.t-cream{color:#f7efdc; background:rgba(247,239,220,.1);}
+  .menu-set{background:rgba(247,239,220,.04); border:1px solid rgba(201,162,77,.22); border-radius:12px; padding:6px 12px 10px; margin-top:9px; text-align:left;}
+  body.elder .mcard{padding:16px;}
+  body.elder .mcard b{font-size:19px;}
+  body.elder .mcard span{font-size:14.5px;}
+  body.elder .micon{width:48px; height:48px;}
+  .onl-look{margin-top:4px; display:flex; gap:5px; flex-wrap:wrap;}
+  /* ---------- v2.2: 首屏 Hero(复用定稿桌布「六友围炉」作氛围底, 不新画角色) ---------- */
+  .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
+  .hero{position:relative; border-radius:14px; overflow:hidden; margin:2px 0 10px; border:1px solid rgba(201,162,77,.45); background:#0a2723 url('assets/桌布-六友围炉.webp') center 28%/cover no-repeat;}
+  .hero-in{background:linear-gradient(90deg, rgba(5,16,13,.85) 25%, rgba(5,16,13,.35) 70%, rgba(5,16,13,.08)); padding:20px 18px 16px; text-align:left;}
+  .hero-title{font-size:34px; font-weight:800; letter-spacing:4px; color:#f7efdc; text-shadow:0 2px 10px rgba(0,0,0,.55); line-height:1.15;}
+  .hero-sub{color:var(--gold-l); letter-spacing:2px; font-size:13px; margin-top:5px;}
+  .hero-tag{color:#ece4cb; font-size:13.5px; margin-top:9px; letter-spacing:.5px;}
+  @media (min-width:900px){ .hero-in{padding:30px 28px 24px;} .hero-title{font-size:44px;} .hero-tag{font-size:15px;} }
+  body.elder .hero-title{font-size:37px;}
+  body.elder .hero-tag{font-size:16px;}
+  /* ---------- v2.2 首屏打磨(截图复核后修订) ---------- */
+  .mcard.main .micon{box-shadow:0 0 0 1px rgba(240,212,136,.35), 0 6px 18px rgba(201,162,77,.28);}
+  @media (max-width:560px){
+    .hero-in{background:linear-gradient(180deg, rgba(5,16,13,.80) 0%, rgba(5,16,13,.58) 55%, rgba(5,16,13,.40) 100%);}
+    .hero-sub, .hero-tag{text-shadow:0 1px 6px rgba(0,0,0,.85);}
+    .rankbar{gap:9px; padding:9px 11px;}
+    .rank-badge{font-size:14px; padding:4px 11px;}
+    .rank-info{font-size:12.5px; line-height:1.5;}
+  }
 </style>
 </head>
 <body>
@@ -737,7 +854,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.1.0 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.0 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -783,7 +900,7 @@
     <div id="meRow">
       <div id="meInfo">
         <img class="avatar" src="assets/头像-monkey.webp" alt="">
-        <div class="nm">你</div><div class="role" id="roleP">农民</div>
+        <div class="nm">你</div><div class="role" id="roleP">农民</div><div id="streakBadge" style="display:none"></div>
         <button class="ghost" id="btnPhrase" style="display:none">台词</button>
         <div class="bubble" id="bubP"></div>
       </div>
@@ -1611,12 +1728,41 @@ function refreshPhraseUI(){
   b.style.display = okk ? '' : 'none';
   if(!okk){ const pp = $('phrasePanel'); if(pp) pp.classList.remove('open'); }
 }
+/* v2.2: 表情气泡套装(专辑原图静态帧; 分工: 文字台词 = 角色口吻,
+   表情气泡 = 玩家本人的情绪贴纸; AI 永不发; 联机需 caps.phraseImg) */
+const PHRASE_IMGS = ['等一下', '没听清', '等你消息', '一起吧', '可以吗', '帮个忙', '发错了', '算我一个'];
+function phraseImgUnlocked(){ const sd = shopData(); return !!(sd.link && sd.link.phrases); }
+function phraseImgCapable(){
+  if(!phraseImgUnlocked()) return false;
+  if(G && G.online) return !!(ON.state && ON.state.caps && ON.state.caps.phraseImg);
+  return true;
+}
 function togglePhrasePanel(){
   const pp = $('phrasePanel'); if(!pp || !phraseCapable()) return;
   if(pp.classList.contains('open')){ pp.classList.remove('open'); return; }
+  let html = '';
+  if(phraseImgCapable()){
+    html += '<div class="phrase-gtitle">表情气泡</div><div class="phrase-imgs">' +
+      PHRASE_IMGS.map((n,i)=>'<button type="button" class="phrase-imgbtn" onclick="sendPhraseImg('+i+')"><img src="assets/表情-'+n+'.webp" alt="'+n+'"></button>').join('') + '</div>';
+  }
   const list = PHRASES[myPhraseCharKey()] || PHRASES.monkey;
-  pp.innerHTML = list.map((t,i)=>'<button type="button" class="phrasebtn" onclick="sendPhrase('+i+')">'+t+'</button>').join('');
+  html += '<div class="phrase-gtitle">台词</div><div class="phrase-words">' +
+    list.map((t,i)=>'<button type="button" class="phrasebtn" onclick="sendPhrase('+i+')">'+t+'</button>').join('') + '</div>';
+  if(!phraseImgUnlocked() && !(G && G.online))
+    html += '<button type="button" class="phrase-hint" onclick="phraseImgHint()">表情气泡在生涯页点亮茶友徽章后解锁 ›</button>';
+  pp.innerHTML = html;
   pp.classList.add('open');
+}
+function phraseImgHint(){
+  const pp = $('phrasePanel'); if(pp) pp.classList.remove('open');
+  centerMsg('先打完这局', '去生涯页点亮茶友徽章，表情气泡就解锁了');
+}
+function sendPhraseImg(idx){
+  const name = PHRASE_IMGS[idx]; if(!name) return;
+  const pp = $('phrasePanel'); if(pp) pp.classList.remove('open');
+  sayImg(0, name);
+  Snd.play('tap', .5);
+  if(G && G.online && ON.ws) ON.ws.send(JSON.stringify({ type:'phraseImg', img: idx }));
 }
 function sendPhrase(idx){
   const list = PHRASES[myPhraseCharKey()] || PHRASES.monkey;
@@ -1668,7 +1814,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.1.0 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.2.0 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -2172,6 +2318,136 @@ function recordCareerResult(myWin, spring){
   if(spring) c.springs++;
   saveCareer();
 }
+
+/* ---------- 收藏册总进度页(四条主线 + 联动彩蛋线) ----------
+   总进度只按四条主线算(图鉴 18 篇 / 残局 150 星 / 商城 16 格 / 靓号 5 档,
+   各线完成率取平均); 联动线(茶友徽章)独立展示, 不进总进度分母(设计稿 §1.3)。 */
+function numTierCollected(){
+  const sd = shopData(), set = new Set();
+  if(sd.num && sd.num.tier) set.add(sd.num.tier);
+  ((sd.num && sd.num.vault) || []).forEach(v => { if(v && v.tier) set.add(v.tier); });
+  return set.size;
+}
+function collectionLines(){
+  return [
+    {name: '故事图鉴', got: unlockedStoryCount(), total: 18, act: "showStoryCodex('menu')", btn: '去图鉴'},
+    {name: '残局闯关', got: totalStars(), total: LEVELS.length * 3, act: 'showLevelSelect()', btn: '去闯关'},
+    {name: '茶点小铺', got: shopCollectCount(), total: 16, act: 'showShop()', btn: '去小铺'},
+    {name: '靓号收集', got: numTierCollected(), total: 5, act: 'showShop()', btn: '去靓号区'},
+  ];
+}
+function collectionPct(){
+  const ls = collectionLines();
+  const avg = ls.reduce((a, l) => a + Math.min(l.got, l.total) / l.total, 0) / ls.length;
+  return Math.round(avg * 100);
+}
+function nextUnlockHint(){
+  const sd = shopData();
+  if(!(sd.link && sd.link.badge))
+    return {txt: '点亮茶友徽章：去生涯页「支持作者」区，装上表情就能点亮，不花茶点。', act: 'showCareer()', btn: '去生涯页'};
+  const t = tasksData();
+  const cand = SHOP_ITEMS.filter(it => it.cat !== 'card' && !shopOwned(it.id) && !isLimitedOff(it)).sort((a, b) => a.price - b.price);
+  const can = cand.find(it => t.treats >= it.price);
+  if(can) return {txt: '茶点已够换「' + can.name + '」，去小铺装备上。', act: 'showShop()', btn: '去小铺'};
+  if(cand.length) return {txt: '再攒 ' + (cand[0].price - t.treats) + ' 枚茶点，可换「' + cand[0].name + '」。', act: 'showShop()', btn: '去小铺'};
+  const nx = challenge.stars.findIndex(v => (v || 0) < 3);
+  if(nx >= 0) return {txt: '残局第 ' + (nx + 1) + ' 关《' + LEVELS[nx].name + '》还可以再冲星。', act: 'showLevelSelect()', btn: '去闯关'};
+  return {txt: '四条收集线都圆满了，新内容在路上。', act: '', btn: ''};
+}
+function showCollection(){
+  elderContext = 'menu';
+  setPanelClass();
+  hideBubbles();
+  const ls = collectionLines();
+  const pct = collectionPct();
+  const hint = nextUnlockHint();
+  const lit = !!(shopData().link && shopData().link.badge);
+  const linesHtml = ls.map(l =>
+    '<div class="coll-line"><div class="coll-h"><b>' + l.name + '</b><span>' + l.got + ' / ' + l.total + '</span></div>' +
+    '<div class="shop-progress"><div class="shop-progress-fill" style="width:' + Math.round(Math.min(l.got, l.total) / l.total * 100) + '%"></div></div>' +
+    '<button class="ghost" onclick="' + l.act + '">' + l.btn + '</button></div>').join('');
+  const linkHtml =
+    '<div class="coll-line"><div class="coll-h"><b>联动彩蛋</b><span>' + (lit ? '茶友徽章已点亮' : '尚未点亮') + '</span></div>' +
+    '<div class="coll-link-line"><button class="cell" style="cursor:pointer;background:none" onclick="showCareer()"><img src="assets/徽章-茶友.png" alt="" style="' + (lit ? '' : 'filter:grayscale(.7);opacity:.55') + '"></button>' +
+    '<div class="b-txt" style="flex:1;font-size:13.5px;line-height:1.55">茶友徽章' + (lit ? ' 已点亮（在生涯页支持作者区）。' : '：点徽章回生涯页点亮。') + '</div>' +
+    '<div class="cell empty">节日联动<br>敬请期待</div></div></div>';
+  $('panel').innerHTML =
+    '<h2>收藏册</h2><div class="who-win">' + bgName + '桌 · 四条收集线，一屏看全</div>' +
+    '<div class="coll-total"><div class="coll-pct">' + pct + '%</div><div class="shop-progress"><div class="shop-progress-fill" style="width:' + pct + '%"></div></div><div class="support-small" style="text-align:center">总进度按四条主线完成率平均；联动彩蛋线不计入。</div></div>' +
+    linesHtml + linkHtml +
+    '<div class="coll-next"><b>下一件最接近解锁</b>' + hint.txt +
+    (hint.act ? '<div style="margin-top:8px"><button class="primary" onclick="' + hint.act + '">' + hint.btn + '</button></div>' : '') + '</div>' +
+    '<button class="primary" onclick="showModeSelect()">返回场次选择</button>';
+  $('overlay').classList.add('show');
+}
+
+/* ---------- 支持作者 + 联动彩蛋(设计稿《设计-v2.2-支持作者与联动彩蛋》) ----------
+   链接形态: author = 「猴先生」形象合集跳转链接(覆盖 4 张猴先生系列专辑,
+   平台无作者主页网页链接, 此为最接近的单入口); album = 主推专辑短链(兜底)。
+   二维码只有专辑码(平台官方, 已离线解码校验落点 = 专辑短链)。 */
+const LINK_CFG = {
+  author: 'http://weixin.qq.com/jumpemoticonstore?token=AAshJxQFAAABAAAAAAARoAa3t9ZVD6gtkPTaahAAAABQfF0uS5S5suW',
+  album: 'https://w.url.cn/s/ALWElHy',
+  qr: 'assets/联动-专辑码.png',
+  cover: 'assets/联动-专辑封面.webp',
+};
+let linkJustLit = false;
+function linkGo(){
+  const inWx = /MicroMessenger/i.test(navigator.userAgent || '');
+  const url = LINK_CFG.author || LINK_CFG.album;
+  if(inWx && url){ location.href = url; return; }
+  const q = $('linkQr');
+  if(q) q.style.display = (q.style.display === 'none' || !q.style.display) ? '' : 'none';
+}
+function toggleLinkThanks(){
+  const el = $('linkThanks');
+  if(el) el.style.display = (el.style.display === 'none' || !el.style.display) ? '' : 'none';
+}
+function linkBadgeAsk(){
+  const el = $('linkConfirm');
+  if(el) el.style.display = '';
+}
+function linkBadgeCancel(){
+  const el = $('linkConfirm');
+  if(el) el.style.display = 'none';
+}
+function linkBadgeLight(){
+  const sd = shopData();
+  const now = Date.now();
+  sd.link.badge = now; sd.link.phrases = now; sd.link.at = now;
+  saveShop();
+  linkJustLit = true;
+  try{ Snd.play('win', .6); }catch(e){}
+  showCareer();
+}
+function thankCardHTML(){
+  return '<div class="thankcard"><div class="tc-eyebrow">作者的感谢</div>' +
+    '<img class="tc-av" src="assets/头像-monkey.webp" alt="">' +
+    '<div class="tc-body">在表情那边请我们喝的那杯茶，喝到啦。<br>鱼小姐说回请你一杯——就是这张卡。<br>以后文火茶肆的灯，算你一份。</div>' +
+    '<div class="tc-sign">—— 猴先生 与 鱼小姐</div>' +
+    '<div class="tc-note">这张卡人人可读，与是否赞赏无关。心意到了，就是茶友。</div></div>';
+}
+function supportAuthorHTML(){
+  const sd = shopData(), lit = !!(sd.link && sd.link.badge);
+  const litDate = lit ? new Date(sd.link.at).toLocaleDateString('zh-CN') : '';
+  const just = linkJustLit; linkJustLit = false;
+  return '<div class="support-zone"><h3>支持作者</h3>' +
+    '<div class="support-main"><img class="support-cover" src="' + LINK_CFG.cover + '" alt="">' +
+    '<div class="support-txt"><b>猴先生和他的朋友们 · 微信表情</b><p>牌桌上的人，也在你的聊天里。</p>' +
+    '<div class="support-btns"><button class="support-btn" onclick="linkGo()">去表情商店</button>' +
+    '<button class="support-linklike" onclick="toggleLinkThanks()">读感谢卡 ›</button></div>' +
+    '<div class="support-small">专辑页里可以赞赏，请我们喝杯茶。</div></div></div>' +
+    '<div class="qr-card" id="linkQr" style="display:none"><img src="' + LINK_CFG.qr + '" alt="表情商店二维码"><p>微信扫码，进表情商店。也可以让家人扫这个码。</p><a href="' + LINK_CFG.album + '" target="_blank" rel="noopener">在电脑上打开《猴先生与鱼小姐》专辑页</a></div>' +
+    '<div id="linkThanks" style="display:none">' + thankCardHTML() + '</div>' +
+    '<div class="badge-row"><img class="badge-img' + (lit ? '' : ' off') + (just ? ' justlit' : '') + '" src="assets/徽章-茶友.png" alt="茶友徽章">' +
+    (lit
+      ? '<div class="b-txt">茶友徽章 · 已点亮<small>' + litDate + ' 点亮 · 局内表情气泡已解锁，在台词面板里。</small></div><button class="support-linklike" onclick="toggleLinkThanks()">读感谢卡 ›</button>'
+      : '<div class="b-txt">茶友徽章<small>下载表情回来，点亮徽章 + 解锁局内表情气泡。</small></div><button class="support-btn" onclick="linkBadgeAsk()">点亮茶友徽章</button>') +
+    '</div>' +
+    (lit ? '' : '<div class="link-confirm" id="linkConfirm" style="display:none">表情装上了吗？装上了，徽章就是你的。<div class="row"><button class="primary" onclick="linkBadgeLight()">点亮徽章</button><button class="ghost" onclick="linkBadgeCancel()">还没装</button></div><small>小游戏没有账号，点亮全凭自觉——文火茶肆里都是自己人。</small></div>') +
+    '</div>';
+}
+
 function showCareer(){
   elderContext = 'menu';
   setPanelClass();
@@ -2205,7 +2481,8 @@ function showCareer(){
     emptyBlock +
     '<table>'+rows.map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')+'</table>' +
     '<button class="primary" onclick="showModeSelect()">返回场次选择</button>' +
-    '<div class="career-note">总场次、胜率、积分与段位为历史累计；分项（地主/农民胜率、连胜、炸弹、春天）自 v1.2 起累计，不回填。只统计三场次，残局、每日与联机不计。</div>';
+    '<div class="career-note">总场次、胜率、积分与段位为历史累计；分项（地主/农民胜率、连胜、炸弹、春天）自 v1.2 起累计，不回填。只统计三场次，残局、每日与联机不计。</div>' +
+    supportAuthorHTML();   /* v2.2: 生涯页脚支持作者区(页脚级存在感, 不弹窗不挡功能) */
   $('overlay').classList.add('show');
 }
 
@@ -2453,19 +2730,28 @@ function onReadNick(){
   try{ localStorage.setItem('myskme_ddz_nick', ON.nick); }catch(e){}
   return ON.nick;
 }
+/* v2.2: 我的装扮摘要(look)—— 随建房/入房上报, 服务端白名单清洗后透传;
+   旧后端忽略未知字段, 新后端未部署时前端读不到对方 look 即不渲染(优雅降级)。 */
+function myLook(){
+  try{
+    const sd = shopData(), bc = blackCardState();
+    const back = (ddzSettings.back && SHOP_ITEM_MAP[ddzSettings.back] && shopOwned(ddzSettings.back)) ? ddzSettings.back : null;
+    return { back, frame: equippedFrameId(), tier: sd.num ? sd.num.tier : null, black: bc.unlocked ? 1 : 0, gold: bc.gold ? 1 : 0 };
+  }catch(e){ return null; }
+}
 function onCreateRoom(){
   onReadNick();
   const mode = $('onlMode').value === 'laizi' ? 'laizi' : 'classic';
   const elderFriendly = !!$('onlElder').checked;
   onlStatus('正在连接联机服务…');
-  onConnect('/ws/new', { type: 'create', nickname: ON.nick, mode, elderFriendly });
+  onConnect('/ws/new', { type: 'create', nickname: ON.nick, mode, elderFriendly, look: myLook() });
 }
 function onJoinRoom(){
   onReadNick();
   const code = (($('onlCode') && $('onlCode').value) || '').trim().toUpperCase();
   if (!/^[A-HJ-NP-Z2-9]{6}$/.test(code)){ onlStatus('房码是 6 位字母和数字，核对一下再试'); return; }
   onlStatus('正在连接联机服务…');
-  onConnect('/ws/' + code, { type: 'join', nickname: ON.nick });
+  onConnect('/ws/' + code, { type: 'join', nickname: ON.nick, look: myLook() });
 }
 function onConnect(path, hello){
   if (ON.ws){ ON.intentional = true; try { ON.ws.close(); } catch (e) {} ON.ws = null; }
@@ -2504,6 +2790,7 @@ function onScheduleReconnect(){
 function onWsMessage(m){
   if (m.type === 'created' || m.type === 'joined'){
     ON.code = m.code; ON.token = m.token; ON.seat = m.seat; ON.active = true; ON.reconnects = 0;
+    ON._roomCounted = false;
     return;
   }
   if (m.type === 'resumed'){
@@ -2548,6 +2835,13 @@ function onWsEvent(m){
     if (list && list[m.phraseId]){ say(disp(m.seat), list[m.phraseId]); Snd.ding(.09); }
     return;
   }
+  if (m.event === 'phraseImg'){
+    /* v2.2: 联机表情气泡(后端 v1.1.0 转发 img 下标, 图在本地按序号取) */
+    if (m.seat === ON.seat) return;
+    const nm = PHRASE_IMGS[m.img];
+    if (nm){ sayImg(disp(m.seat), nm); Snd.ding(.09); }
+    return;
+  }
   if (m.event === 'play' && m.info && isBombLike(m.info)){
     fxText(m.info.type === 'rocket' ? '王 炸' : (m.info.soft ? '软 炸' : '炸 弹'));
     /* v1.1: 联机炸弹/王炸同样给音效与特效(仅表现层, 不动协议) */
@@ -2573,6 +2867,8 @@ function onWsEvent(m){
 }
 function onApplyState(st){
   if (!ON.active) return;
+  /* v2.2: 周目标「本周开 2 次茶局房」—— 每进一房首次进入对局计 1 次 */
+  if (st.phase !== 'lobby' && !ON._roomCounted){ ON._roomCounted = true; try{ weeklyEvent('room'); }catch(e){} }
   if (st.phase === 'lobby'){ ON.inGame = false; renderOnlineLobby(st); return; }
   ON.inGame = true;
   $('overlay').classList.remove('show');
@@ -2585,8 +2881,18 @@ function renderOnlineLobby(st){
   const rows = st.seats.map(s => {
     const who = s.kind === 'empty' ? '空位（开局后 AI 补位）' : (s.kind === 'ai' ? onEsc(s.nickname) + '（AI）' : onEsc(s.nickname));
     const tags = [s.host ? '房主' : '', s.seat === ON.seat ? '你' : '', s.kind === 'human' ? (s.trustee ? '托管中' : (s.connected ? '在线' : '已断线')) : '', s.kind === 'human' && s.ready ? '已准备' : ''].filter(Boolean).join(' · ');
-    const av = s.charKey ? '<img class="avatar" src="' + CHARS[s.charKey].av + '" alt="">' : '<span class="avatar onl-noav"></span>';
-    return '<div class="onl-member">' + av + '<div class="onl-mwho"><b>' + who + '</b>' + (tags ? '<span>' + tags + '</span>' : '') + '</div></div>';
+    let av = s.charKey ? '<img class="avatar" src="' + CHARS[s.charKey].av + '" alt="">' : '<span class="avatar onl-noav"></span>';
+    /* v2.2: 对方装扮(look)—— 头像框环 + 茶号档位签 + 黑卡签; 无 look 不渲染 */
+    let lookHtml = '';
+    const lk = s.look;
+    if (lk && s.kind === 'human'){
+      if (lk.frame && FRAME_FILE[lk.frame]) av = '<span class="avframe">' + av + '<img class="framering" src="' + FRAME_FILE[lk.frame] + '" alt=""></span>';
+      const bits = [];
+      if (lk.tier) bits.push('<span class="tier-tag t-' + lk.tier + '">' + NUM_TIER_SYM[lk.tier] + ' ' + NUM_TIER_NAME[lk.tier] + '档</span>');
+      if (lk.black) bits.push('<span class="tier-tag t-CR">' + (lk.gold ? '曜金黑卡' : '黑卡') + '</span>');
+      if (bits.length) lookHtml = '<div class="onl-look">' + bits.join(' ') + '</div>';
+    }
+    return '<div class="onl-member">' + av + '<div class="onl-mwho"><b>' + who + '</b>' + (tags ? '<span>' + tags + '</span>' : '') + lookHtml + '</div></div>';
   }).join('');
   const link = location.origin + location.pathname + '?room=' + st.code;
   const inviteText = '来打一局萌友斗地主，茶局房房码 ' + st.code + '，点链接直接进：' + link;
@@ -2629,6 +2935,30 @@ function onLeaveRoom(silent){
   elderContext = 'menu';
   if (!silent) showModeSelect();
 }
+/* v2.2: 对局座位装扮渲染 —— 头像框环(包 .avframe, 与 applyFrameDOM 同法)、
+   黑卡名色、茶号档位符号缀名; look 为空(旧后端/AI/未上报)时只清环不报错。 */
+function applySeatLook(side, look){
+  try{
+    const img = $(side === 'R' ? 'avR' : 'avL');
+    if(!img || !img.parentNode) return;
+    let wrap = img.parentNode;
+    const hasWrap = !!(wrap.classList && wrap.classList.contains('avframe'));
+    let ring = hasWrap && wrap.querySelector ? wrap.querySelector('img.framering') : null;
+    if(look && look.frame && FRAME_FILE[look.frame]){
+      if(!hasWrap){
+        wrap = document.createElement('span'); wrap.className = 'avframe';
+        img.parentNode.insertBefore(wrap, img); wrap.appendChild(img);
+      }
+      if(!ring){ ring = document.createElement('img'); ring.className = 'framering'; ring.alt = ''; wrap.appendChild(ring); }
+      ring.src = FRAME_FILE[look.frame];
+    } else if(ring && ring.remove){ ring.remove(); }
+    const nm = $(side === 'R' ? 'nmR' : 'nmL');
+    if(nm){
+      nm.style.color = look ? (look.gold ? '#f3d98a' : (look.black ? '#e7c877' : '')) : '';
+      if(look && look.tier && nm.textContent.indexOf('·') < 0) nm.textContent += ' · ' + NUM_TIER_SYM[look.tier];
+    }
+  }catch(e){}
+}
 /* 服务端 state -> G 镜像(显示坐标: 自己恒为 0 号位, 下家 1 号=右, 上家 2 号=左), 复用单机渲染 */
 function applyOnlineGameState(st){
   const g = st.game;
@@ -2664,6 +2994,10 @@ function applyOnlineGameState(st){
   const sR = st.seats[srv(1)], sL = st.seats[srv(2)];
   if (sR.charKey){ $('avR').src = CHARS[sR.charKey].av; $('nmR').textContent = sR.nickname + (sR.trustee ? '（托管中）' : ''); }
   if (sL.charKey){ $('avL').src = CHARS[sL.charKey].av; $('nmL').textContent = sL.nickname + (sL.trustee ? '（托管中）' : ''); }
+  /* v2.2: 对方装扮出镜 —— 座位框环/名色(applySeatLook) + 对方手牌扇用其牌背 */
+  ON.lookByDisp = { 1: sR.look || null, 2: sL.look || null };
+  applySeatLook('R', sR.look);
+  applySeatLook('L', sL.look);
   $('uiBase').textContent = g.base ? g.base + ' 分' : '—';
   $('uiMode').textContent = '联机 · ' + (st.config.mode === 'laizi' ? '癞子场' : '经典场') + (st.config.elderFriendly ? ' · 长辈友好房' : '');
   const noteEl = $('modeNote');
@@ -2814,6 +3148,28 @@ function renderOnlineSettlement(st){
 
 /* ---------- 开局 ---------- */
 function startMode(m){ newGame(m); }
+
+/* ---------- v2.2: 首页图标卡(Lucide/Heroicons 风格线形图标, 内联 SVG, MIT 图形语言自绘路径; 严禁 emoji) ---------- */
+const MENU_ICONS = {
+  crown: '<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M4.5 8.2 8.6 12 12 6.2 15.4 12l4.1-3.8-1.3 9.3H5.8L4.5 8.2Z"/><path d="M5.8 20.5h12.4"/></svg>',
+  dice: '<svg viewBox="0 0 24 24" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1.3" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1.3" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.3" fill="currentColor" stroke="none"/></svg>',
+  layers: '<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M12 3.5 3.5 8 12 12.5 20.5 8 12 3.5Z"/><path d="m4.6 12.4 7.4 4.1 7.4-4.1"/><path d="m4.6 16.4 7.4 4.1 7.4-4.1"/></svg>',
+  cap: '<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M12 4 2.8 8.8 12 13.6l9.2-4.8L12 4Z"/><path d="M6.8 11.3v4.2c0 1.6 2.3 2.9 5.2 2.9s5.2-1.3 5.2-2.9v-4.2"/><path d="M21.2 8.8v5"/></svg>',
+  users: '<svg viewBox="0 0 24 24" stroke="currentColor"><circle cx="9" cy="8.2" r="3.4"/><path d="M3.6 19.6c.6-3.1 2.7-4.8 5.4-4.8s4.8 1.7 5.4 4.8"/><path d="M15.5 5.1a3.4 3.4 0 0 1 0 6.4M17.8 15.2c1.5.8 2.4 2.2 2.7 4.4"/></svg>',
+  target: '<svg viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.8"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg>',
+  sun: '<svg viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="4"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"/></svg>',
+  trophy: '<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M7.5 4h9v5.2a4.5 4.5 0 0 1-9 0V4Z"/><path d="M7.5 5.2H4.6a2.9 2.9 0 0 0 3 4.4M16.5 5.2h2.9a2.9 2.9 0 0 1-3 4.4"/><path d="M12 13.7v3M9.5 20h5M10 16.7h4"/></svg>',
+  bookmark: '<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M6.5 3.8h11V20l-5.5-3.8L6.5 20V3.8Z"/></svg>',
+  book: '<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M12 6.2C10.2 4.8 7.6 4.2 4.5 4.4v13.1c3.1-.2 5.7.4 7.5 1.8 1.8-1.4 4.4-2 7.5-1.8V4.4c-3.1-.2-5.7.4-7.5 1.8Z"/><path d="M12 6.2v13.1"/></svg>',
+  bag: '<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5.6 8h12.8l-1.1 12.2H6.7L5.6 8Z"/><path d="M9 10V6.6a3 3 0 0 1 6 0V10"/></svg>',
+  tasks: '<svg viewBox="0 0 24 24" stroke="currentColor"><path d="m4 6.2 1.4 1.4 2.8-2.8M4 13l1.4 1.4 2.8-2.8M4 19.8l1.4 1.4 2.8-2.8M11.5 6h8.5M11.5 13h8.5M11.5 20h8.5"/></svg>',
+  flag: '<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M5.5 21.5v-17"/><path d="M5.5 4.8c4-2.1 6.8 1.9 12 .3v8.6c-5.2 1.6-8-2.4-12-.3"/></svg>',
+};
+function mcard(icon, tone, title, desc, onclick, meta, cls){
+  return '<button class="mcard' + (cls ? ' ' + cls : '') + '" onclick="' + onclick + '"><span class="micon ' + tone + '">' + (MENU_ICONS[icon] || '') + '</span>' +
+    '<span class="mtxt"><b>' + title + '</b><span>' + desc + '</span>' + (meta ? '<span class="daily-meta">' + meta + '</span>' : '') + '</span></button>';
+}
+
 function showModeSelect(){
   if (ON.active) onLeaveRoom(true);   // 回到场次选择 = 离开联机房间(静默)
   review = null;
@@ -2831,8 +3187,31 @@ function showModeSelect(){
     ['laizi','癞子场','每局随机一点数为癞子（金框标记），可当任意普通牌，不能当大小王。癞子炸弹是软炸，硬炸更大，王炸最大。'],
     ['noshuffle','不洗牌场','整副牌成组分发，顺子、连对、炸弹更易成型。'],
   ];
-  $('panel').innerHTML = '<h2>选择场次</h2><div class="who-win">萌友斗地主 · 正式版 v2.1.0</div>' +
+  $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
+    '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.0</div>' +
+    '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
+    '<div class="mg-title">开 局</div><div class="menucards">' +
+    mcard('crown', 't-gold', '经典场', modes[0][2], "startMode('classic')", '', 'main') +
+    mcard('dice', 't-teal', '癞子场', modes[1][2], "startMode('laizi')") +
+    mcard('layers', 't-bronze', '不洗牌场', modes[2][2], "startMode('noshuffle')") +
+    mcard('cap', 't-cream', '新手教学局', (tutorialData().done ? '已完成，可重温。' : '第一次打？先来这一局。') + '边打边学：叫分、出牌、管上、配合。不计战绩与段位。', 'startTutorial()') +
+    '</div>' +
+    '<div class="mg-title">玩点别的</div><div class="menucards">' +
+    mcard('target', 't-gold', '残局闯关', LEVELS.length + ' 关固定残局：通关赢星解锁下一关，手数越少星越高。', 'showLevelSelect()', '当前总星 ' + totalStars() + ' / ' + (LEVELS.length * 3)) +
+    dailyEntryHTML() +
+    mcard('users', 't-teal', '联机茶局房', '建房发房码，家人输码即进；空位 AI 补，掉线自动重连。', 'showOnlinePanel()') +
+    '</div>' +
+    '<div class="mg-title">我 的</div><div class="menucards">' +
+    mcard('trophy', 't-bronze', '战绩生涯', '总场次、胜率、分项、连胜与段位履历，一页看全。', 'showCareer()') +
+    mcard('bookmark', 't-teal', '收藏册', '图鉴、残局、装扮与靓号的收集总进度。', 'showCollection()', '已完成 ' + collectionPct() + '%') +
+    mcard('book', 't-cream', '故事图鉴', '六位角色各 3 篇，击败角色、攒残局星逐篇解锁。', "showStoryCodex('menu')", '已解锁 ' + unlockedStoryCount() + ' / 18 篇') +
+    shopEntryHTML() +
+    tasksEntryHTML() +
+    weeklyEntryHTML() +
+    '</div>' +
+    '<div class="mg-title">设 置</div><div class="menu-set">' +
     '<label class="elder-toggle" for="elderToggle"><input type="checkbox" id="elderToggle" onchange="setElderMode(this.checked, true)"><span><b>大字模式</b><small>大字大牌、慢节奏，发亮的牌可直接出。三场次生效。按屏幕自动推荐，可手动改。</small></span></label>' +
     '<div class="levelswitch"><span class="lvlab">AI 难度</span>' +
     ['easy','normal','expert'].map(lv=>'<button type="button" class="levelbtn'+(aiLevel===lv?' on':'')+'" data-level="'+lv+'" onclick="setAiLevel(\''+lv+'\')">'+LEVEL_NAMES[lv]+'</button>').join('') +
@@ -2846,15 +3225,7 @@ function showModeSelect(){
     '<div class="levelswitch"><span class="lvlab">桌布</span>' +
     TABLECLOTHS.map(t=>'<button type="button" class="levelbtn'+(bgName===t?' on':'')+'" data-bg="'+t+'" onclick="setTablecloth(\''+t+'\')">'+t+'</button>').join('') +
     '<small>桌布随心换，选择记在设置里；更多桌布在「茶点小铺」里换。</small></div>' +
-    modes.map(m=>'<button class="modebtn" onclick="startMode(\''+m[0]+'\')"><b>'+m[1]+'</b><span>'+m[2]+'</span></button>').join('') +
-    '<button class="modebtn" onclick="startTutorial()"><b>新手教学局</b><span>'+(tutorialData().done ? '已完成，可重温。' : '第一次打？先来这一局。')+'边打边学：叫分、出牌、管上、配合。不计战绩与段位。</span></button>' +
-    '<button class="modebtn" onclick="showOnlinePanel()"><b>联机茶局房</b><span>建房发房码，家人输码即进；空位 AI 补，掉线自动重连。</span></button>' +
-    dailyEntryHTML() +
-    tasksEntryHTML() +
-    shopEntryHTML() +
-    '<button class="modebtn" onclick="showLevelSelect()"><b>残局闯关</b><span>'+LEVELS.length+' 关固定残局：通关赢星解锁下一关，手数越少星越高。当前总星 '+totalStars()+' / '+(LEVELS.length*3)+'。</span></button>' +
-    '<button class="modebtn" onclick="showStoryCodex(\'menu\')"><b>故事图鉴</b><span>六位角色各 3 篇，已解锁 '+unlockedStoryCount()+' / 18 篇。击败角色、攒残局星逐篇解锁。</span></button>' +
-    '<button class="modebtn" onclick="showCareer()"><b>战绩生涯</b><span>总场次、胜率、分项、连胜与段位履历，一页看全。</span></button>' +
+    '</div>' +
     '<div class="stats">战绩 '+stats.win+' 胜 / '+stats.total+' 局 · 累计积分 '+stats.points+'</div>';
   $('overlay').classList.add('show');
   const uiLv = $('uiLevel'); if(uiLv) uiLv.textContent = LEVEL_NAMES[aiLevel];
@@ -3126,7 +3497,7 @@ function dailyEntryHTML(){
   const meta = d.done
     ? '今日已完成 · 连续完成 ' + d.streak + ' 天'
     : '今日未挑战' + (d.streak > 0 ? ' · 已连续完成 ' + d.streak + ' 天' : '') + ' · 每天一局，全桌同题';
-  return '<button class="modebtn" onclick="startDaily()"><b>每日一局</b><span>第 ' + (idx + 1) + ' 关《' + lv.name + '》</span><span class="daily-meta">' + meta + '</span></button>';
+  return mcard('sun', 't-gold', '每日一局', '第 ' + (idx + 1) + ' 关《' + lv.name + '》', 'startDaily()', meta);
 }
 function startDaily(){
   startLevel(dailyLevelIdx());
@@ -3318,6 +3689,7 @@ function finishChallenge(winnerSeat){
     /* v1.5: 个人最佳手数(好友挑战局不计; 与星数分开落盘, 刷新纪录才写) */
     if(!link && recordChallengeBest(G.challengeIdx, myPlays)) saveChallenge();
     if(!link) taskEvent('win');   // v1.3: 每日任务「单机获胜一局」(残局/每日通关计, 好友挑战局不计)
+    if(!isDaily && !link) weeklyEvent('ch', G.challengeIdx);   // v2.2: 周目标「本周通关 3 关残局」(去重计关)
   }
   G.reportSnap = {winnerSeat, stars, playerWin, plays: myPlays, daily: isDaily};   // v1.3: 战报图数据快照
   /* v2.1: 茶点产出 —— 残局/每日首通 +1(每日 1 次); 普通残局首次三星一次性 +2; 好友挑战局不计 */
@@ -3987,7 +4359,10 @@ function finishGame(winnerSeat){
   renderAll();
   const rankInfo = applyRankResult(myWin, score);   // v0.8: 三场次计入赛季段位(残局已在上方分流, 不会走到这里)
   recordCareerResult(myWin, spring);   // v1.2: 生涯分项累计(与段位同口径, 仅三场次)
+  /* v2.2: 连胜里程碑(3/5/10)结算特效 —— 只庆祝赢的势头, 输局不提连胜 */
+  if(myWin && STREAK_MILESTONES.slice(0, 3).includes(careerData().streak)){ fxText(careerData().streak + ' 连胜'); try{ Snd.play('win', .7); }catch(e){} }
   if(myWin) taskEvent('win');   // v1.3: 每日任务「单机获胜一局」
+  if(myWin && !G.online) weeklyEvent('win');   // v2.2: 周目标「本周单机赢 10 局」(联机不走本函数, 双保险)
   /* v2.1: 茶点产出 —— 单机获胜 +1, 每日上限 3(教学/联机不走本函数, 口径与任务一致) */
   G._treatsGain = 0;
   if(myWin && !G.online){ const tt = tasksData(); const w = tt.earn.win||0; if(w<3){ tt.earn.win = w+1; saveTasks(); creditTreats(1); G._treatsGain = 1; } }
@@ -4026,6 +4401,7 @@ function renderSettlement(){
       '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+reportBtn+
       '<button class="ghost elder-detail-btn" id="btnElderCalc" aria-expanded="false" onclick="toggleElderCalc()">看看怎么算的</button>'+
       '<div class="elder-detail" id="elderCalc" hidden>'+detailTable+'</div>'+
+      momentumLine() +
       treatsLine() +
       taskNewLine()+
       '<div class="share-result" id="reportTip"></div>';
@@ -4039,6 +4415,7 @@ function renderSettlement(){
       (rankInfo && rankInfo.promoted ? '<div class="rankup-banner">升段：'+rankInfo.name+'</div>' : '')+
       (rankInfo ? '<div class="rank-line settle-rank">'+tierBadgeHTML(rankInfo.afterPts)+'<span class="rk-txt">段位分 '+rankInfo.afterPts+'（'+(rankInfo.delta>=0?'+':'−')+Math.abs(rankInfo.delta)+'）</span></div>' : '')+
       '<button class="primary" onclick="newGame()">再来一局（同场）</button> <button class="ghost" onclick="showModeSelect()">换个场</button>'+reviewBtn+reportBtn+
+      momentumLine() +
       treatsLine() +
       taskNewLine()+
       '<div class="share-result" id="reportTip"></div>'+
@@ -4063,6 +4440,14 @@ function say(seat, text){
   clearTimeout(bubbleTimers[seat]);
   bubbleTimers[seat] = setTimeout(()=>el.classList.remove('show'), paceDelay(2000));   // 2 秒自动淡出, 新气泡重置计时
 }
+function sayImg(seat, name){
+  const el = seat===0 ? $('bubP') : (seat===1 ? $('bubR') : $('bubL'));
+  if(!el) return;
+  el.innerHTML = '<img class="bubimg" src="assets/表情-'+name+'.webp" alt="">';
+  el.classList.add('show');
+  clearTimeout(bubbleTimers[seat]);
+  bubbleTimers[seat] = setTimeout(()=>el.classList.remove('show'), paceDelay(2600));   /* 2.6 秒: 给看图留时间 */
+}
 function hideBubbles(){
   for(const seat of [0,1,2]){
     clearTimeout(bubbleTimers[seat]);
@@ -4076,6 +4461,7 @@ function renderDipai(reveal){
 }
 function renderAll(){
   renderHand(); renderFans(); renderZones(); renderRoles(); renderTurn(); renderCounter(); refreshPhraseUI();
+  try{ updateStreakBadge(); }catch(e){}   /* v2.2: 连胜势能徽记 */
   $('uiMult').textContent = '×'+G.mult;
   try{ Mus.update(); }catch(e){}   /* v1.3.5: 音乐状态机跟随对局状态 */
 }
@@ -4088,14 +4474,22 @@ function renderTurn(){
   $('seatL').classList.toggle('turn', G.turn===2 && !G.over);
   $('meInfo').classList.toggle('turn', G.turn===0 && !G.over && G.phase==='playing');
 }
+function cardBackFileFor(seat){
+  /* v2.2: 联机时对方手牌扇用对方 look 的牌背; 其余情况用自己的装备牌背 */
+  if(G && G.online && ON.lookByDisp){
+    const lk = ON.lookByDisp[seat];
+    if(lk && lk.back && SHOP_ITEM_MAP[lk.back]) return 'assets/牌背-' + SHOP_ITEM_MAP[lk.back].file + '.webp';
+  }
+  return cardBackFile();
+}
 function renderFans(){
-  const mk=(el,n)=>{
+  const mk=(el,n,backFile)=>{
     const fan=$(el); fan.innerHTML='';
     const show=Math.min(n,7);
-    for(let i=0;i<show;i++){ const im=document.createElement('img'); im.src=cardBackFile(); im.style.left=(i*8)+'px'; im.style.zIndex=i; fan.appendChild(im); }
+    for(let i=0;i<show;i++){ const im=document.createElement('img'); im.src=backFile; im.style.left=(i*8)+'px'; im.style.zIndex=i; fan.appendChild(im); }
     const b=document.createElement('div'); b.className='countbadge'+(n<=3?' low':''); b.textContent=n; fan.appendChild(b);
   };
-  mk('fanR', G.hands[1].length); mk('fanL', G.hands[2].length);
+  mk('fanR', G.hands[1].length, cardBackFileFor(1)); mk('fanL', G.hands[2].length, cardBackFileFor(2));
 }
 function zoneCards(cards){
   return cards.map(c=>'<img class="pcard'+(isWildCard(c)?' wild':'')+'" src="'+cardFile(c)+'" alt="">').join('');
@@ -4227,6 +4621,16 @@ function tasksData(){
     tasksStore.earn = {};
     saveTasks();
   }
+  /* v2.2: 周目标状态与日任务同键(myskme_ddz_tasks.week, 不新增键):
+     {wk: ISO 周, wins: 三场次单机胜场, ch: 本周通关过的残局关卡下标(去重),
+      rooms: 联机开局次数, claimed: {win/ch/room 各是否已领}}; 跨周自动清零。 */
+  const wkNow = isoWeekStr();
+  if(!tasksStore.week || typeof tasksStore.week !== 'object' || tasksStore.week.wk !== wkNow)
+    tasksStore.week = {wk: wkNow, wins: 0, ch: [], rooms: 0, claimed: {}};
+  if(typeof tasksStore.week.wins !== 'number') tasksStore.week.wins = 0;
+  if(typeof tasksStore.week.rooms !== 'number') tasksStore.week.rooms = 0;
+  if(!Array.isArray(tasksStore.week.ch)) tasksStore.week.ch = [];
+  if(!tasksStore.week.claimed || typeof tasksStore.week.claimed !== 'object') tasksStore.week.claimed = {};
   return tasksStore;
 }
 function saveTasks(){ try{ localStorage.setItem('myskme_ddz_tasks', JSON.stringify(tasksStore)); }catch(e){} }
@@ -4253,7 +4657,7 @@ function tasksDoneCount(){ const t = tasksData(); return TASK_DEFS.filter(d=>t.f
 function tasksEntryHTML(){
   const t = tasksData();
   const claimable = TASK_DEFS.some(d=>t.flags[d[0]] && !t.claimed[d[0]]);
-  return '<button class="modebtn" onclick="showTasks()"><b>每日任务</b><span>今日完成 '+tasksDoneCount()+' / 3'+(claimable?' · 有茶点可领':'')+'</span><span class="daily-meta">茶点余额 '+t.treats+' 枚 · 在「茶点小铺」换装扮</span></button>';
+  return mcard('tasks', 't-bronze', '每日任务', '三条小任务，完成领茶点', 'showTasks()', '今日完成 ' + tasksDoneCount() + ' / 3' + (claimable ? ' · 有茶点可领' : '') + ' · 茶点余额 ' + t.treats + ' 枚');
 }
 function showTasks(){
   elderContext = 'menu';
@@ -4281,6 +4685,108 @@ function taskNewLine(){
   if(!G || !G._taskNew || !G._taskNew.length) return '';
   const names = G._taskNew.map(k => { const d = TASK_DEFS.find(x=>x[0]===k); return d ? d[1] : k; });
   return '<div class="rank-line">每日任务新完成：'+names.join('、')+'（去「每日任务」领茶点）</div>';
+}
+
+
+/* ================= v2.2: 势能与秀场 =================
+   本段含: 连胜势能可视化 / 周目标(代签到) / 收藏册总进度页 /
+   支持作者与联动彩蛋(生涯页脚模块、感谢卡、茶友徽章、表情气泡)。
+   存档口径: 不新增键 —— 周目标存 myskme_ddz_tasks.week; 联动状态存
+   myskme_ddz_shop.link{badge, phrases, at}; 奖励共用 shop.share 周回馈池。 */
+
+/* ---------- 连胜势能(数据源 = 生涯 streak, 仅三场次单机累计) ----------
+   口径: 只放大赢的势头 —— 输局不展示任何连胜中断信息; 势能徽记只在
+   单机三场次对局中出现(联机/残局/每日/教学不计连胜, 亦不展示)。 */
+const STREAK_MILESTONES = [3, 5, 10, 15, 20, 30];
+function streakNextMilestone(st){ for(const m of STREAK_MILESTONES){ if(st < m) return m; } return null; }
+function updateStreakBadge(){
+  const el = $('streakBadge'); if(!el) return;
+  const okMode = G && !G.online && !G.tutorial && G.mode !== 'challenge';
+  const st = okMode ? careerData().streak : 0;
+  if(!okMode || st < 2){ el.style.display = 'none'; el.innerHTML = ''; return; }
+  const nxt = streakNextMilestone(st);
+  const pct = nxt ? Math.round(st / nxt * 100) : 100;
+  el.style.display = '';
+  el.innerHTML = '<div class="sk-t">连胜 ×' + st + '</div><div class="sk-bar"><div class="sk-fill" style="width:' + pct + '%"></div></div>';
+}
+function momentumLine(){
+  if(!G || !G.result || !G.result.myWin) return '';
+  const st = careerData().streak;
+  if(st < 2) return '';
+  const mile = STREAK_MILESTONES.includes(st);
+  const nxt = streakNextMilestone(st);
+  return '<div class="rank-line streak-line">' + (mile ? '连胜势能正旺：' + st + ' 连胜' : '连胜势能 ×' + st) +
+    (nxt ? ' · 再赢 ' + (nxt - st) + ' 局到 ' + nxt + ' 连胜' : ' · 已是本桌最长势头') + '</div>';
+}
+
+/* ---------- 周目标(代签到: 以周为粒度, 漏打不罚, 无断签惩罚) ----------
+   奖励: 每项目标 +1 茶点, 领取时从 shop.share 周回馈池(3 枚/周, 与分享
+   回馈共用)扣 —— 不新开产出口; 池满时目标保留已达标状态, 下周再领。 */
+const WEEK_DEFS = [
+  ['win',  '本周单机赢 10 局', '三场次单机获胜累计（教学、联机、残局不计）。', 10],
+  ['ch',   '本周通关 3 关残局', '通关不同残局关卡累计（每日一局、好友挑战不计）。', 3],
+  ['room', '本周开 2 次茶局房', '联机茶局房开局次数（家人或 AI 补位都算）。', 2],
+];
+function weeklyProgress(key){
+  const w = tasksData().week;
+  if(key === 'win') return Math.min(w.wins | 0, 10);
+  if(key === 'ch') return Math.min((w.ch || []).length, 3);
+  if(key === 'room') return Math.min(w.rooms | 0, 2);
+  return 0;
+}
+function weeklyEvent(kind, val){
+  const t = tasksData(), w = t.week;
+  if(kind === 'win') w.wins = (w.wins | 0) + 1;
+  else if(kind === 'ch'){ if(!w.ch.includes(val)) w.ch.push(val); }
+  else if(kind === 'room') w.rooms = (w.rooms | 0) + 1;
+  else return;
+  saveTasks();
+}
+function weeklyClaimable(){
+  const w = tasksData().week;
+  return WEEK_DEFS.some(d => weeklyProgress(d[0]) >= d[3] && !w.claimed[d[0]]);
+}
+let weeklyMsg = '';
+function claimWeeklyGoal(key){
+  const t = tasksData(), w = t.week;
+  const def = WEEK_DEFS.find(d => d[0] === key);
+  if(!def || weeklyProgress(key) < def[3] || w.claimed[key]) return;
+  if(!weeklyPoolTake()){ weeklyMsg = '本周茶点回馈池已领满（与分享回馈共用，3 枚/周），下周再来领。'; showWeekly(); return; }
+  w.claimed[key] = 1;
+  saveTasks();
+  creditTreats(1);
+  try{ Snd.play('coins', .8); }catch(e){}
+  weeklyMsg = '已领取 1 枚茶点。';
+  showWeekly();
+}
+function weeklyEntryHTML(){
+  const done = WEEK_DEFS.filter(d => tasksData().week.claimed[d[0]]).length;
+  const claim = weeklyClaimable();
+  return mcard('flag', 't-teal', '周目标', '本周茶会目标，漏打不罚', 'showWeekly()',
+    '本周已领 ' + done + ' / 3' + (claim ? ' · 有茶点可领' : ''));
+}
+function showWeekly(){
+  elderContext = 'menu';
+  setPanelClass();
+  hideBubbles();
+  const t = tasksData(), w = t.week;
+  const rowsHtml = WEEK_DEFS.map(d => {
+    const prog = weeklyProgress(d[0]), done = prog >= d[3], claimed = !!w.claimed[d[0]];
+    const state = claimed
+      ? '<span class="task-state done">已领取</span>'
+      : done ? '<button class="primary" onclick="claimWeeklyGoal(\'' + d[0] + '\')">领取茶点</button>'
+             : '<span class="task-state">' + prog + ' / ' + d[3] + '</span>';
+    return '<div class="task-row"><div class="task-info"><b>' + d[1] + '</b><span>' + d[2] + '进度 ' + prog + ' / ' + d[3] + '。</span></div>' + state + '</div>';
+  }).join('');
+  $('panel').innerHTML =
+    '<h2>周目标</h2><div class="who-win">' + w.wk + ' · 本周茶会目标，慢慢攒</div>' +
+    rowsHtml +
+    (weeklyMsg ? '<div class="rank-line">' + weeklyMsg + '</div>' : '') +
+    '<div class="rankbar"><span class="rank-badge">茶点余额 ' + t.treats + ' 枚</span><span class="rank-info">周目标奖励与分享回馈共用每周回馈池（3 枚/周）</span></div>' +
+    '<button class="primary" onclick="showModeSelect()">返回场次选择</button>' +
+    '<div class="career-note">按周（Asia/Shanghai 所在 ISO 周）累计，周一清零重来。漏打不罚，没有断签惩罚；达标后在本周内领取。</div>';
+  $('overlay').classList.add('show');
+  weeklyMsg = '';
 }
 
 /* ================= v2.1: 茶点小铺(积分商城轻量版) =================
@@ -4385,6 +4891,12 @@ function shopData(){
     if(typeof n.rolls !== 'number') n.rolls = 0;
     if(!NUM_TIERS.includes(n.tier)) n.tier = classifyNum(n.no);
   }
+  /* v2.2: link 子对象(支持作者联动状态, 设计稿 §5): {badge, phrases, at} 均为
+     时间戳 ms, 0 = 未点亮。非对象/字段非数即回退全 0 —— 损坏最坏只是徽章回
+     未点亮, 不伤任何既有数据; 不新增存档键, 16 键总数不变。 */
+  if(!shopStore.link || typeof shopStore.link !== 'object') shopStore.link = {badge: 0, phrases: 0, at: 0};
+  for(const k of ['badge', 'phrases', 'at'])
+    if(typeof shopStore.link[k] !== 'number' || !(shopStore.link[k] >= 0)) shopStore.link[k] = 0;
   return shopStore;
 }
 function saveShop(){ try{ localStorage.setItem('myskme_ddz_shop', JSON.stringify(shopStore)); }catch(e){} }
@@ -4423,11 +4935,25 @@ function isoWeekStr(){
   const wk = 1 + Math.round((t - firstThu) / (7 * 24 * 3600 * 1000));
   return t.getUTCFullYear() + '-W' + String(wk).padStart(2, '0');
 }
-function creditShareTreat(){
+/* v2.2: 周回馈池 —— 分享回馈与周目标奖励共用同一个周上限(3 枚/周), 计数存
+   shop.share {d, dc(分享日计数), w, wc(周池已用)}。周目标不另开产出口:
+   领奖时从这个池里扣, 池满即领不到(目标进度保留, 下周池刷新后再领)。 */
+function sharePoolRoll(){
   const sd = shopData();
   const sh = sd.share, today = shanghaiToday(), wk = isoWeekStr();
   if(sh.d !== today){ sh.d = today; sh.dc = 0; }
   if(sh.w !== wk){ sh.w = wk; sh.wc = 0; }
+  return sh;
+}
+function weeklyPoolTake(){
+  const sh = sharePoolRoll();
+  if((sh.wc | 0) >= 3){ saveShop(); return false; }
+  sh.wc = (sh.wc | 0) + 1;
+  saveShop();
+  return true;
+}
+function creditShareTreat(){
+  const sh = sharePoolRoll();
   if((sh.dc | 0) >= 1 || (sh.wc | 0) >= 3){ saveShop(); return 0; }
   sh.dc = (sh.dc | 0) + 1; sh.wc = (sh.wc | 0) + 1;
   saveShop();
@@ -4789,7 +5315,7 @@ function showShop(){
 function shopEntryHTML(){
   const t = tasksData();
   shopData();
-  return '<button class="modebtn" onclick="showShop()"><b>茶点小铺</b><span>只用打牌攒的茶点换装扮，不花钱</span><span class="daily-meta">茶点 ' + t.treats + ' 枚 · 已收集 ' + shopCollectCount() + ' / 16</span></button>';
+  return mcard('bag', 't-gold', '茶点小铺', '只用打牌攒的茶点换装扮，不花钱', 'showShop()', '茶点 ' + t.treats + ' 枚 · 已收集 ' + shopCollectCount() + ' / 16');
 }
 function tierTag(tier){ return '<span class="tier-tag t-' + tier + '">' + NUM_TIER_SYM[tier] + ' ' + NUM_TIER_NAME[tier] + '</span>'; }
 function shopItemHTML(it){
