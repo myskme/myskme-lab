@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.2.6</title>
+<title>萌友斗地主 · 正式版 v2.2.7</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -194,6 +194,21 @@
   #hand img.hcard.deal{animation:dealIn .3s ease backwards;}
   #hand img.hcard.sel{transform:translateY(-17px); box-shadow:0 0 0 2.5px var(--gold-l), 0 10px 18px rgba(0,0,0,.55);}
   #hand img.hcard:active{filter:brightness(1.06);}
+
+  /* v2.2.7: 真机长按看牌 —— ① 游戏区禁掉系统长按菜单: iOS Safari 长按 <img> 会弹"存储图像"、
+     安卓 Chrome 长按弹图片菜单, 都打断看牌; 此处以 touch-callout/user-drag 关闭, contextmenu 由 JS 在 #app 拦截。
+     body 已有全局 user-select:none; #overlay 里的房码/昵称输入与战报图不在 #app 内, 不受影响。
+     ② 自家"按住看大图"预览层 #cardPeek: 固定定位、JS 按手牌上方居中摆位并夹进视口, 不拦截触摸。 */
+  #app{ -webkit-touch-callout:none; }
+  #app img{ -webkit-user-drag:none; }
+  #hand img.hcard{ -webkit-touch-callout:none; }
+  #cardPeek{
+    position:fixed; z-index:18; display:none; pointer-events:none;
+    padding:9px; border-radius:16px; background:rgba(4,14,12,.74);
+    box-shadow:0 16px 44px rgba(0,0,0,.65), 0 0 0 1.5px rgba(201,162,77,.55);
+  }
+  #cardPeek.show{display:block;}
+  #cardPeek img{display:block; border-radius:9px; background:#fff; box-shadow:0 8px 22px rgba(0,0,0,.5);}
 
   /* ---------- 结算弹层 ---------- */
   #overlay{
@@ -930,7 +945,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.6 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.7 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -985,6 +1000,7 @@
   </div>
 </div>
 
+<div id="cardPeek"><img id="cardPeekImg" alt=""></div>
 <div id="flashFx"></div>
 <canvas id="fxCanvas"></canvas>
 <div id="overlay"><div class="panel" id="panel"></div></div>
@@ -1890,7 +1906,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.2.6 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.2.7 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -3271,7 +3287,7 @@ function showModeSelect(){
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.6</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.7</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
@@ -4611,9 +4627,49 @@ function seatZoneHTML(seat){
   return zoneCards(z.cards) + tag;
 }
 function renderZonePass(seat){ lastShown[seat]={pass:true}; }
+/* ---------- v2.2.7: 长按看牌(按住手牌约 250ms 不动 → 手牌上方浮出大图, 松手即消) ----------
+   判定口径: pointerdown 起计时, 250ms 内位移超过 10px 视为滑动/误触、取消本次长按(不影响随后 click 点选);
+   长按成立后滑动可逐张换看(elementFromPoint 取指下最上层手牌), 移出手牌区预览隐藏但手势仍算长按;
+   pointerup/pointercancel(文档级捕获)统一收尾: 收预览, 并在 500ms 内吞掉紧随的 click —— 长按只看牌,
+   绝不改变选中状态, 也不触发出牌/提示等任何动作。点选语义(v2.2.2 提示态优先)与弹起量测(v2.2.5)不变。
+   仅玩家手牌(renderHand 的 .hwrap)挂手势; AI/对手牌背无此入口。 */
+let lpTimer = null, lpId = null, lpX = 0, lpY = 0, lpFired = false, lpSuppressUntil = 0;
+function lpClearTimer(){ if(lpTimer){ clearTimeout(lpTimer); lpTimer = null; } }
+function hidePeek(){ const pk = $('cardPeek'); if(pk) pk.classList.remove('show'); }
+function showPeek(src){
+  const pk = $('cardPeek'), pim = $('cardPeekImg'), handEl = $('hand');
+  if(!pk || !pim || !handEl) return;
+  if(pim.src !== src) pim.src = src;
+  const hr = handEl.getBoundingClientRect();
+  const cw = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cw')) || 76;
+  const vw = window.innerWidth, pad = 9;
+  /* 宽约牌宽 2.4 倍, 同时被视口宽与"手牌上方可用高"夹住, 保证完整不裁、不出屏 */
+  let w = Math.min(cw * 2.4, vw - 24 - pad * 2, Math.max(56, (hr.top - 30 - pad * 2) / 1.4));
+  pim.style.width = w + 'px'; pim.style.height = (w * 1.4) + 'px';
+  pk.style.left = Math.max(4, (vw - (w + pad * 2)) / 2) + 'px';
+  pk.style.top = Math.max(6, hr.top - 10 - (w * 1.4 + pad * 2)) + 'px';
+  pk.classList.add('show');
+}
+function lpEnd(e){
+  if(lpId === null) return;
+  if(e && e.pointerId !== undefined && e.pointerId !== lpId) return;
+  lpClearTimer();
+  if(lpFired){ hidePeek(); lpSuppressUntil = Date.now() + 500; }
+  lpId = null; lpFired = false;
+}
+if(typeof document.addEventListener === 'function'){
+  document.addEventListener('pointerup', lpEnd, true);
+  document.addEventListener('pointercancel', lpEnd, true);
+}
+/* 游戏区拦截 contextmenu: 安卓长按/桌面右键的系统菜单一律不弹(输入框都在 #overlay 面板, 不受影响) */
+if($('app')) $('app').addEventListener('contextmenu', e => { e.preventDefault(); });
+
 /* v2.2.5: 发牌入场动画按局(gid)只播一次 —— 记住已播过入场的 gid, 点牌/出牌重渲染不再整手重播 */
 let handAnimGid = null;
 function renderHand(){
+  /* v2.2.7: 手牌重建时收掉长按预览并作废进行中的长按手势(旧 wrap 节点即将移除); 已成立的长按仍吞掉随后 click */
+  if(lpFired) lpSuppressUntil = Date.now() + 500;
+  lpClearTimer(); lpId = null; lpFired = false; hidePeek();
   const handEl = $('hand'); handEl.innerHTML='';
   const hand = G.hands[0];
   const n = hand.length;
@@ -4630,13 +4686,31 @@ function renderHand(){
     const im = document.createElement('img');
     im.src = cardFile(c); im.className='hcard'+(dealIn?' deal':'')+(G.selected.has(i)?' sel':'')+(isWildCard(c)?' wild':'')+((elderActive() && elderRecCards.has(c))?' rec':''); im.alt='';
     if(dealIn) im.style.animationDelay = (i*0.018)+'s';
+    im.draggable = false;   /* v2.2.7: 与 CSS -webkit-user-drag 互为兜底, 防桌面拖图 */
     wrap.appendChild(im);
     if(isWildCard(c)){
       const tag = document.createElement('span');
       tag.className = 'wildtag'; tag.textContent = '癞';
       wrap.appendChild(tag);
     }
+    /* v2.2.7: 长按看牌手势 —— 快速点按仍走下面 onclick 点选; 按住 250ms 不动只浮大图、不动选中态 */
+    wrap.addEventListener('pointerdown', e=>{
+      if(e.button) return;
+      lpClearTimer(); lpId = e.pointerId; lpX = e.clientX; lpY = e.clientY; lpFired = false;
+      const src = im.src;
+      lpTimer = setTimeout(()=>{ lpTimer = null; lpFired = true; showPeek(src); }, 250);
+    });
+    wrap.addEventListener('pointermove', e=>{
+      if(lpId === null || e.pointerId !== lpId) return;
+      const dx = e.clientX - lpX, dy = e.clientY - lpY;
+      if(!lpFired){ if(dx*dx + dy*dy > 100) lpClearTimer(); return; }
+      let n = document.elementFromPoint(e.clientX, e.clientY);
+      while(n && !(n.classList && n.classList.contains('hwrap'))) n = n.parentElement;
+      const img2 = n ? n.querySelector('img.hcard') : null;
+      if(img2) showPeek(img2.src); else hidePeek();
+    });
     wrap.onclick = ()=>{
+      if(Date.now() < lpSuppressUntil) return;   /* v2.2.7: 长按松手紧随的 click 不触发点选 */
       if(G.phase!=='playing' || G.turn!==0 || G.over) return;
       /* v2.2.2: 手动点牌永远优先于提示预选 —— 提示态下点组外牌, 先整组落下、从这张重新选;
          点已选牌(含预选中的)取消它; 两种情况都退出提示态并清掉长辈推荐高亮/自动出牌载荷。 */
