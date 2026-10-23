@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.2.3</title>
+<title>萌友斗地主 · 正式版 v2.2.4</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -20,9 +20,9 @@
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
     --gold:#c9a24d; --gold-l:#e7c877; --cream:#f7efdc; --paper:#f3e9d2;
     --red:#b03a2e; --ink:#22312c;
-    --cw:76px;          /* 手牌宽 */
-    --pw:52px;          /* 已出牌宽 */
-    --dw:44px;          /* 底牌宽 */
+    --cw:90px;          /* 手牌宽 (v2.2.4: 整体放大一档, 长辈反馈看不清牌) */
+    --pw:58px;          /* 已出牌宽 */
+    --dw:48px;          /* 底牌宽 */
     --radius:10px;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -79,6 +79,12 @@
   #counterBar .cell span{font-size:10px; color:#a9bcb0;}
   #counterBar .cell.out{opacity:.32;}
   #counterBar .cell.red b{color:#ff9a8a;}
+  /* v2.2.4: 记牌器可折叠 —— 收起态只剩一颗「记牌」小钮, 不再整条占位 */
+  #counterBar.mini{padding:3px 12px;}
+  .cfold{font-size:12px; line-height:1.2; padding:4px 14px; min-height:30px; border-radius:999px; letter-spacing:2px; flex:none;}
+  #counterBar .cfold{margin-left:auto;}
+  #counterBar.mini .cfold{margin-left:0;}
+  body.elder .cfold{font-size:15px; min-height:40px; padding:6px 18px;}
 
   /* ---------- 桌面 ---------- */
   #table{flex:1; position:relative; min-height:0;}
@@ -172,7 +178,7 @@
   #meInfo .role{font-size:11px; color:#b7c9bd;}
   #hand{
     flex:1; display:flex; align-items:flex-end; justify-content:center;
-    min-height:calc(var(--cw)*1.4 + 20px); padding-top:20px; overflow:hidden;
+    min-height:calc(var(--cw)*1.4 + 24px); padding-top:24px; overflow:hidden;
   }
   #hand img.hcard{
     width:var(--cw); height:calc(var(--cw)*1.4); border-radius:8px; flex:none;
@@ -328,7 +334,7 @@
   .elder-detail-btn{display:block; margin:12px auto 0;}
   .elder-detail[hidden]{display:none;}
   .elder-detail{margin-top:12px;}
-  html.elder{--cw:104px; --pw:72px; --dw:60px;}
+  html.elder{--cw:122px; --pw:80px; --dw:66px;}
   body.elder #topbar{gap:12px; padding:12px;}
   body.elder #topbar .title{font-size:23px;}
   body.elder #topbar .title small{display:none;}
@@ -414,14 +420,14 @@
 
   /* ---------- 双断点 ---------- */
   @media (min-width:900px){
-    :root{ --cw:88px; --pw:60px; --dw:52px; }
+    :root{ --cw:104px; --pw:66px; --dw:56px; }
     .seat{width:230px;}
     .avatar{width:56px; height:56px;}
     #meInfo .avatar{width:62px; height:62px;}
     #centerMsg{font-size:25px;}
   }
   @media (max-width:640px){
-    :root{ --cw:64px; --pw:48px; --dw:40px; }
+    :root{ --cw:78px; --pw:54px; --dw:44px; }
     #topbar{gap:6px; padding:calc(6px + env(safe-area-inset-top, 0px)) 8px 6px;}
     #topbar .title{font-size:14.5px;}
     #topbar .title small{display:none;}
@@ -441,13 +447,16 @@
     .bubble{max-width:132px; font-size:12px;}
     #meInfo .avatar{width:42px; height:42px;}
     #meInfo .nm{font-size:12px;}
+    /* v2.2.4: 小屏横向留白让给手牌(牌放大后保 20 张不溢出) */
+    #playerArea{padding-left:6px; padding-right:6px;}
+    #meRow{gap:6px;}
   }
 
   @media (min-width:900px){
-    html.elder{--cw:119px; --pw:81px; --dw:70px;}
+    html.elder{--cw:136px; --pw:88px; --dw:76px;}
   }
   @media (max-width:640px){
-    html.elder{--cw:86px; --pw:65px; --dw:54px;}
+    html.elder{--cw:100px; --pw:72px; --dw:58px;}
     body.elder #topbar{gap:7px; padding:8px;}
     body.elder #topbar .title{font-size:19px;}
     body.elder .chip{font-size:15px; padding:6px 10px;}
@@ -824,9 +833,9 @@
   body.elder .mcard span{font-size:14.5px;}
   body.elder .micon{width:58px; height:58px;}
   .onl-look{margin-top:4px; display:flex; gap:5px; flex-wrap:wrap;}
-  /* ---------- v2.2: 首屏 Hero(复用定稿桌布「六友围炉」作氛围底, 不新画角色) ---------- */
+  /* ---------- v2.2: 首屏 Hero 氛围底 ---------- v2.2.4: 换「六友围桌打牌」牌局图(旧合影画的是桌游棋盘、与斗地主不符, 用户判定换图; 商城桌布「六友围炉」商品本身不动) */
   .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
-  .hero{position:relative; border-radius:14px; overflow:hidden; margin:2px 0 10px; border:1px solid rgba(201,162,77,.45); background:#0a2723 url('assets/桌布-六友围炉.webp') center 28%/cover no-repeat;}
+  .hero{position:relative; border-radius:14px; overflow:hidden; margin:2px 0 10px; border:1px solid rgba(201,162,77,.45); background:#0a2723 url('assets/hero-六友牌局.webp') center 32%/cover no-repeat;}
   .hero-in{background:linear-gradient(90deg, rgba(5,16,13,.85) 25%, rgba(5,16,13,.35) 70%, rgba(5,16,13,.08)); padding:20px 18px 16px; text-align:left;}
   .hero-title{font-size:34px; font-weight:800; letter-spacing:4px; color:#f7efdc; text-shadow:0 2px 10px rgba(0,0,0,.55); line-height:1.15;}
   .hero-sub{color:var(--gold-l); letter-spacing:2px; font-size:13px; margin-top:5px;}
@@ -854,7 +863,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.3 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.4 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1814,7 +1823,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.2.3 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.2.4 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -3195,7 +3204,7 @@ function showModeSelect(){
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.3</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.4</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
@@ -3227,7 +3236,7 @@ function showModeSelect(){
     '<label class="setchk"><input type="checkbox" id="setMusic" onchange="setMusicOn(this.checked)"> 音乐</label>' +
     [['full','动效·流畅'],['std','动效·标准'],['lite','动效·精简']].map(t=>'<button type="button" class="levelbtn" data-motion="'+t[0]+'" onclick="setMotionTier(\''+t[0]+'\')">'+t[1]+'</button>').join('') +
     '<small>精简＝关粒子与辉光，当次生效，低档机推荐。音效与顶栏同步。</small></div>' +
-    '<div class="musiccredit">音乐：Liyan — elerya（CC-BY 3.0）；大厅曲与紧张曲为 CC0 作品。来源：OpenGameArt。</div>' +
+    '<div class="musiccredit">对局音乐：elerya — Liyan（CC-BY 3.0）</div>' +
     '<div class="levelswitch"><span class="lvlab">桌布</span>' +
     TABLECLOTHS.map(t=>'<button type="button" class="levelbtn'+(bgName===t?' on':'')+'" data-bg="'+t+'" onclick="setTablecloth(\''+t+'\')">'+t+'</button>').join('') +
     '<small>桌布随心换，选择记在设置里；更多桌布在「茶点小铺」里换。</small></div>' +
@@ -4566,6 +4575,10 @@ function renderHand(){
      playedCount 是服务端统计的全部已出牌, 不含任何隐藏信息推断。
    开关存 myskme_ddz_cardtracker(默认开); 长辈模式格子字号自动加大(见 CSS)。 */
 let trackerOn = localStorage.getItem('myskme_ddz_cardtracker') !== '0';
+/* v2.2.4: 记牌器折叠态 —— 只在本次对局内保持(不新增存档键); 每局按 gid 重置默认:
+   长辈/大字模式(elderActive)默认收起、只剩一颗「记牌」小钮, 普通模式默认展开(沿用旧观感)。 */
+let counterFold = false, counterFoldGid = null;
+function toggleCounterFold(){ counterFold = !counterFold; renderCounter(); }
 function setTrackerOn(on){
   trackerOn = !!on;
   try{ localStorage.setItem('myskme_ddz_cardtracker', trackerOn ? '1' : '0'); }catch(e){}
@@ -4587,14 +4600,21 @@ function trackerRemaining(){
 function renderCounter(){
   const bar = $('counterBar');
   if(!bar) return;
-  if(!trackerOn || !G || !G.hands){ bar.classList.remove('open'); bar.innerHTML=''; return; }
+  if(!trackerOn || !G || !G.hands){ bar.classList.remove('open','mini'); bar.innerHTML=''; return; }
+  if(G.gid !== counterFoldGid){ counterFoldGid = G.gid; counterFold = elderActive(); }
+  if(counterFold){
+    bar.innerHTML = '<button class="cfold" onclick="toggleCounterFold()">记牌 &#8250;</button>';
+    bar.classList.add('open'); bar.classList.add('mini');
+    return;
+  }
+  bar.classList.remove('mini');
   const left = trackerRemaining();
   const order=[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17];
   const nm={11:'J',12:'Q',13:'K',14:'A',15:'2',16:'小王',17:'大王'};
   bar.innerHTML = '<span class="lab">未露面</span>' + order.map(v=>{
     const isLz = G.mode==='laizi' && v===G.laiziVal;
     return '<div class="cell'+(left[v]===0?' out':'')+(v>=16?' red':'')+(isLz?' wildcell':'')+'"><b>'+left[v]+'</b><span>'+(nm[v]||v)+(isLz?'·癞':'')+'</span></div>';
-  }).join('');
+  }).join('') + '<button class="cfold" onclick="toggleCounterFold()">收起</button>';
   bar.classList.add('open');
 }
 

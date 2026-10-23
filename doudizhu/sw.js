@@ -1,8 +1,8 @@
-/* 萌友斗地主 Service Worker · v2.2.2
+/* 萌友斗地主 Service Worker · v2.2.4
    策略: 游戏 HTML 网络优先(保证新版及时到达, 失败回退缓存);
          静态资产(牌图/头像/桌布/音乐/图标)缓存优先, 首次用到即存运行时缓存。
    !! 发版纪律: 每次发版必须 bump 下方 CACHE 版本号(见 发版清单-PWA.md), 否则旧缓存不刷新 !! */
-const CACHE = 'ddz-v2.2.3';
+const CACHE = 'ddz-v2.2.4';
 const CORE = [
   './',
   './index.html',
