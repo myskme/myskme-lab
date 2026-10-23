@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.2.2</title>
+<title>萌友斗地主 · 正式版 v2.2.3</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -801,7 +801,7 @@
   .mg-title:first-of-type{margin-top:6px;}
   .menucards{display:grid; grid-template-columns:1fr; gap:9px;}
   @media (min-width:760px){ .panel{width:min(94vw,860px);} .menucards{grid-template-columns:1fr 1fr;} .mcard.main{grid-column:1 / -1;} }
-  .mcard{display:flex; gap:12px; align-items:flex-start; width:100%; text-align:left; margin:0; padding:12px 14px; border-radius:12px; background:rgba(247,239,220,.045); border:1px solid rgba(201,162,77,.28); color:var(--cream); cursor:pointer; font-family:inherit;}
+  .mcard{display:flex; gap:12px; align-items:center; width:100%; text-align:left; margin:0; padding:12px 14px; border-radius:12px; background:rgba(247,239,220,.045); border:1px solid rgba(201,162,77,.28); color:var(--cream); cursor:pointer; font-family:inherit;}
   .mcard:hover{filter:brightness(1.25);}
   .mcard .mtxt{flex:1; min-width:0;}
   .mcard b{display:block; font-size:16.5px; letter-spacing:1px; color:var(--gold-l);}
@@ -810,19 +810,19 @@
   .mcard.main{padding:18px 16px; background:linear-gradient(140deg, rgba(231,200,119,.16), rgba(166,124,61,.07)); border:1.5px solid rgba(231,200,119,.65);}
   .mcard.main b{font-size:20px;}
   .mcard.main span{font-size:13px;}
-  .mcard.main .micon{width:54px; height:54px; border-radius:14px;}
-  .mcard.main .micon svg{width:30px; height:30px;}
-  .micon{flex:none; width:42px; height:42px; border-radius:11px; display:flex; align-items:center; justify-content:center;}
-  .micon svg{width:24px; height:24px; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
-  .micon.t-gold{color:#e7c877; background:rgba(231,200,119,.13);}
-  .micon.t-bronze{color:#d9a860; background:rgba(166,124,61,.16);}
-  .micon.t-teal{color:#8fd0c2; background:rgba(26,74,67,.55);}
-  .micon.t-cream{color:#f7efdc; background:rgba(247,239,220,.1);}
+  /* v2.2.3: 图标座全站统一 —— 52px 深青座面 + 1px 古铜描边 + 极淡金色内辉光, 色调只区分图标本体颜色;
+     选择器须压过 .mcard span 的 display:block, 否则 flex 居中失效、图形缩在座面左上角(用户实报观感) */
+  .mcard .micon{flex:none; width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; margin-top:0; background:radial-gradient(circle at 50% 36%, rgba(35,94,80,.9), rgba(10,39,35,.94)); border:1px solid rgba(201,162,77,.55); box-shadow:inset 0 0 14px rgba(231,200,119,.13), inset 0 1px 0 rgba(247,239,220,.07), 0 0 10px rgba(201,162,77,.09);}
+  .micon svg{width:27px; height:27px; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+  .micon.t-gold{color:#e7c877;}
+  .micon.t-bronze{color:#d9a860;}
+  .micon.t-teal{color:#8fd0c2;}
+  .micon.t-cream{color:#f7efdc;}
   .menu-set{background:rgba(247,239,220,.04); border:1px solid rgba(201,162,77,.22); border-radius:12px; padding:6px 12px 10px; margin-top:9px; text-align:left;}
   body.elder .mcard{padding:16px;}
   body.elder .mcard b{font-size:19px;}
   body.elder .mcard span{font-size:14.5px;}
-  body.elder .micon{width:48px; height:48px;}
+  body.elder .micon{width:58px; height:58px;}
   .onl-look{margin-top:4px; display:flex; gap:5px; flex-wrap:wrap;}
   /* ---------- v2.2: 首屏 Hero(复用定稿桌布「六友围炉」作氛围底, 不新画角色) ---------- */
   .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap;}
@@ -835,7 +835,7 @@
   body.elder .hero-title{font-size:37px;}
   body.elder .hero-tag{font-size:16px;}
   /* ---------- v2.2 首屏打磨(截图复核后修订) ---------- */
-  .mcard.main .micon{box-shadow:0 0 0 1px rgba(240,212,136,.35), 0 6px 18px rgba(201,162,77,.28);}
+  .mcard.main .micon{border-color:rgba(240,212,136,.9); box-shadow:inset 0 0 16px rgba(231,200,119,.22), 0 0 0 1px rgba(240,212,136,.35), 0 6px 18px rgba(201,162,77,.32);}
   @media (max-width:560px){
     .hero-in{background:linear-gradient(180deg, rgba(5,16,13,.80) 0%, rgba(5,16,13,.58) 55%, rgba(5,16,13,.40) 100%);}
     .hero-sub, .hero-tag{text-shadow:0 1px 6px rgba(0,0,0,.85);}
@@ -854,7 +854,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.2 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.3 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1814,7 +1814,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.2.2 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.2.3 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -3195,7 +3195,7 @@ function showModeSelect(){
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.2</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.3</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
