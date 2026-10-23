@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.2.4</title>
+<title>萌友斗地主 · 正式版 v2.2.5</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#123a36">
@@ -183,8 +183,13 @@
   #hand img.hcard{
     width:var(--cw); height:calc(var(--cw)*1.4); border-radius:8px; flex:none;
     box-shadow:0 4px 10px rgba(0,0,0,.5); cursor:pointer; background:#fff;
-    transition:transform .13s ease, box-shadow .13s ease; animation:dealIn .3s ease both;
+    transition:transform .13s ease, box-shadow .13s ease;
   }
+  /* v2.2.5: 入场动画只挂 .deal 类(由 renderHand 仅在本局首次渲染手牌时打上), 且填充只用 backwards。
+     旧写法把 dealIn 以 both 填充挂在每张手牌上: forwards 填充的 to{transform:none} 永久压过
+     .sel 的 translateY(-17px), 选中只剩金圈、没有弹起; 且每次点牌重建全手牌都整手重播约 0.6s。
+     改后: 动画结束即回归常态样式, .sel 弹起成立; 点牌重渲染不再带 .deal, 不重播。 */
+  #hand img.hcard.deal{animation:dealIn .3s ease backwards;}
   #hand img.hcard.sel{transform:translateY(-17px); box-shadow:0 0 0 2.5px var(--gold-l), 0 10px 18px rgba(0,0,0,.55);}
   #hand img.hcard:active{filter:brightness(1.06);}
 
@@ -355,7 +360,7 @@
   body.elder .countbadge{font-size:15px; min-width:27px; height:27px; line-height:27px;}
   body.elder .bubble{max-width:260px; font-size:17px; line-height:1.5; padding:10px 14px;}
   body.elder .playzone img.pcard{animation-duration:.56s;}
-  body.elder #hand img.hcard{animation-duration:.6s;}
+  body.elder #hand img.hcard.deal{animation-duration:.6s;}
   body.elder #hand img.hcard.rec{box-shadow:0 0 0 5px var(--gold-l), 0 0 26px rgba(231,200,119,.95), 0 8px 18px rgba(0,0,0,.6);}
   body.elder #hand img.hcard.sel{transform:translateY(-22px);}
   body.elder .wildtag{width:30px; height:30px; line-height:30px; font-size:17px;}
@@ -852,6 +857,66 @@
     .rank-badge{font-size:14px; padding:4px 11px;}
     .rank-info{font-size:12.5px; line-height:1.5;}
   }
+  /* ---------- v2.2.5: 矮横屏适配(横屏且高≤520, 与自动大字兜底阈值同口径) ----------
+     校对实测 844×390: #table 高度塌为 0, 桌面绝对定位子元素(底牌/出牌区)溢出盖住操作栏;
+     长辈自动大字态更甚(整行按钮被盖、手牌下沿出屏、页面可滚)。本档只做装得下处理:
+     顶栏压成一行、桌面给不塌的高度与层叠(玩家区整体压过桌面元素)、牌尺寸收紧至不出屏。
+     竖屏各档与横 1180×820(高>520)不进本档, 现状不动。 */
+  @media (orientation:landscape) and (max-height:520px){
+    :root{ --cw:58px; --pw:42px; --dw:34px; }
+    html.elder{ --cw:60px; --pw:46px; --dw:36px; }
+    #topbar{flex-wrap:nowrap; gap:6px; padding:4px 10px;}
+    #topbar .title{font-size:15px;}
+    #topbar .title small{display:none;}
+    .chip{font-size:12px; padding:2px 8px;}
+    /* 一行塞不下全部信息: 次级 chip(难度/战绩, 与长辈模式同口径隐藏)让位, 按钮禁换行防被挤成竖排高钮 */
+    #topbar .chip.elder-hide{display:none;}
+    #topbar button{min-height:36px; padding:4px 10px; font-size:13px; white-space:nowrap; flex:none;}
+    #modeNote.show{display:none;}
+    #counterBar{padding:3px 10px; font-size:11px;}
+    #counterBar .cell{min-width:26px; padding:1px 2px;}
+    #counterBar .cell b{font-size:12px;}
+    #counterBar .cell span{font-size:10px;}
+    #table{flex:1 1 auto; min-height:108px; z-index:1;}
+    .seat{width:150px;}
+    .seat .who{padding:3px 10px 3px 3px;}
+    .avatar{width:36px; height:36px;}
+    .who .nm{font-size:12.5px;}
+    .backfan{transform:scale(.78); transform-origin:top center;}
+    #seatL{left:1%; top:2%;} #seatR{right:1%; top:2%;}
+    #zoneL{left:2%; top:38%;} #zoneR{right:2%; top:38%;}
+    #zoneP{bottom:0;}
+    #dipai{top:2px;}
+    #dipai .lab{display:none;}
+    #centerMsg{font-size:16px; top:30%;}
+    .fx-pop{font-size:30px;}
+    .bubble{max-width:140px; font-size:12px;}
+    #playerArea{z-index:6; padding:0 8px calc(2px + env(safe-area-inset-bottom));}
+    #actionBar{min-height:38px; gap:8px; margin-bottom:0;}
+    #hand{padding-top:23px; min-height:calc(var(--cw)*1.4 + 23px);}
+    #hand img.hcard{display:block;}   /* 消除内联图基线间隙的几 px 额外高度 */
+    #actionBar button{min-height:38px; padding:5px 12px;}
+    #meInfo .avatar{width:40px; height:40px;}
+    #meInfo .nm{font-size:12px;}
+    /* 长辈档同档回收(自动开大字的规则不变, 只把尺寸压到装得下) */
+    body.elder #topbar{gap:6px; padding:5px 10px;}
+    body.elder #topbar .title{font-size:18px;}
+    body.elder .chip{font-size:13px; padding:4px 9px;}
+    body.elder .chip b{font-size:15px;}
+    body.elder button{min-height:42px; padding:6px 14px; font-size:15px; border-radius:10px;}
+    body.elder #actionBar{gap:10px; min-height:44px;}
+    body.elder #actionBar .elder-auto{min-height:44px; padding:8px 16px; font-size:17px;}
+    body.elder .avatar{width:44px; height:44px;}
+    body.elder #meInfo .avatar{width:40px; height:40px;}
+    body.elder #meInfo{gap:2px;}
+    body.elder #btnPhrase{min-height:36px; padding:4px 10px; font-size:13px;}
+    body.elder #counterBar .cell{min-width:30px; padding:2px 3px;}
+    body.elder #counterBar .cell b{font-size:14px;}
+    body.elder #counterBar .cell span{font-size:11px;}
+    body.elder .cfold{font-size:13px; min-height:33px; padding:4px 14px;}
+    body.elder #centerMsg{font-size:20px;}
+    body.elder .bubble{max-width:180px; font-size:14px;}
+  }
 </style>
 </head>
 <body>
@@ -863,7 +928,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.4 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.2.5 · 茶肆夜话桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -1823,7 +1888,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.2.4 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.2.5 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -3078,7 +3143,7 @@ function renderOnlinePlayBar(st){
   tip.textContent = last ? '轮到你出牌' : '由你首出，点选手牌后出牌';
   bar.appendChild(tip);
   const bHint = document.createElement('button'); bHint.className = 'ghost'; bHint.textContent = '提示';
-  const bPlay = document.createElement('button'); bPlay.className = 'primary'; bPlay.textContent = '出牌'; bPlay.id = 'btnPlay'; bPlay.disabled = true;
+  const bPlay = document.createElement('button'); bPlay.className = 'primary'; bPlay.textContent = '出牌'; bPlay.id = 'btnPlay'; bPlay.disabled = !selectionPlayInfo();
   const bPass = document.createElement('button'); bPass.textContent = '不出'; bPass.disabled = !last;
   bHint.onclick = () => {
     const cand = getPlayerHintCandidates(last);
@@ -3087,7 +3152,7 @@ function renderOnlinePlayBar(st){
     G.selected = new Set(p.cards.map(c => G.hands[0].indexOf(c)));
     hintSel = true;
     renderHand();
-    bPlay.disabled = G.selected.size === 0;
+    refreshPlayBtn(bPlay);
   };
   bPlay.onclick = () => {
     const cards = [...G.selected].sort((a, b) => a - b).map(i => G.hands[0][i]);
@@ -3204,7 +3269,7 @@ function showModeSelect(){
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.4</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.2.5</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
@@ -3988,6 +4053,22 @@ function solverFirstHint(last){
   const info = analyzeCards(cards);
   return info ? {cards, info} : null;
 }
+/* v2.2.5: 「出牌」置灰与点击校验同源 —— 选择一变就用引擎 resolvePlayInfo 评估当前选择:
+   空选或牌型不成立 → 置灰(旧行为是按钮看着能点、点了才被拦截+弹提示, 反馈含糊);
+   牌型成立但管不上 → 保持可点: 那属于策略误判而非无效选择, 且癞子跟牌时 resolvePlayInfo
+   已先从全部读法里挑能管上的一种, 不会误灰; 点击仍有「管不上」提示兜底。
+   单机/联机/教学三处操作栏共用; 长辈「按提示出牌」按钮不走这里, 不受影响。 */
+function selectionPlayInfo(){
+  if(!G || !G.hands || !G.hands[0] || !G.selected || !G.selected.size) return null;
+  const cards = [...G.selected].sort((a,b)=>a-b).map(i=>G.hands[0][i]);
+  if(cards.some(c=>!c)) return null;
+  const last = (G.lastOwner===0 || G.lastOwner<0) ? null : G.lastPlay;
+  return resolvePlayInfo(cards, last ? last.info : null);
+}
+function refreshPlayBtn(el){
+  const bp = el || $('btnPlay'); if(!bp) return;
+  bp.disabled = !selectionPlayInfo();
+}
 function enablePlayerActions(){
   centerMsg('', '');
   Snd.play('hint', .45);
@@ -4000,7 +4081,7 @@ function enablePlayerActions(){
   tip.textContent = last ? '轮到你出牌' : '由你首出，点选手牌后出牌';
   bar.appendChild(tip);
   const bHint = document.createElement('button'); bHint.className='ghost'; bHint.textContent='提示';
-  const bPlay = document.createElement('button'); bPlay.className='primary'; bPlay.textContent = elderActive() ? '出选中的牌' : '出牌'; bPlay.id='btnPlay'; bPlay.disabled = G.selected.size===0;
+  const bPlay = document.createElement('button'); bPlay.className='primary'; bPlay.textContent = elderActive() ? '出选中的牌' : '出牌'; bPlay.id='btnPlay'; bPlay.disabled = !selectionPlayInfo();
   const bPass = document.createElement('button'); bPass.textContent='不出'; bPass.disabled = !last;
   let bAuto = null;
   if(elderActive()){
@@ -4028,7 +4109,7 @@ function enablePlayerActions(){
       hintSel = true;
       hintIdx = 0;
       renderHand();
-      bPlay.disabled = G.selected.size===0;
+      refreshPlayBtn(bPlay);
       centerMsg('最优首手', '这一手经求解器验证，是本关的最优开局之一');
       return;
     }
@@ -4039,7 +4120,7 @@ function enablePlayerActions(){
     hintSel = true;
     if(elderActive()){ setElderRecommendation(p); if(bAuto) bAuto.disabled = false; }
     renderHand();
-    bPlay.disabled = G.selected.size===0;   // 关键修复: 提示选牌后同步「出牌」按钮状态(此前一直禁用, 造成死锁)
+    refreshPlayBtn(bPlay);   // 提示选牌后同步「出牌」按钮状态(v2.2.5 起与点击校验同源: 牌型不成立即置灰)
   };
   bPlay.onclick = ()=>{
     const cards = [...G.selected].sort((a,b)=>a-b).map(i=>G.hands[0][i]);
@@ -4071,7 +4152,7 @@ function enablePlayerActions(){
       if(bAuto) bAuto.disabled = false;
       tip.textContent = last ? '轮到你了，跟着发亮的牌出就行' : '轮到你了，发亮的这一组可以直接出';
       renderHand();
-      bPlay.disabled = G.selected.size===0;
+      refreshPlayBtn(bPlay);
     } else {
       tip.textContent = '这手不用出，点「不出」就行';
     }
@@ -4528,10 +4609,14 @@ function seatZoneHTML(seat){
   return zoneCards(z.cards) + tag;
 }
 function renderZonePass(seat){ lastShown[seat]={pass:true}; }
+/* v2.2.5: 发牌入场动画按局(gid)只播一次 —— 记住已播过入场的 gid, 点牌/出牌重渲染不再整手重播 */
+let handAnimGid = null;
 function renderHand(){
   const handEl = $('hand'); handEl.innerHTML='';
   const hand = G.hands[0];
   const n = hand.length;
+  const dealIn = G.gid !== handAnimGid;
+  if(dealIn) handAnimGid = G.gid;
   const cw = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cw')) || 76;
   const avail = handEl.clientWidth || window.innerWidth - 90;
   const step = n>1 ? Math.min(cw*0.44, Math.max(elderActive()?7:12,(avail-cw)/(n-1))) : 0;
@@ -4541,8 +4626,8 @@ function renderHand(){
     wrap.style.marginLeft = i===0 ? '0' : (-(cw-step))+'px';
     wrap.style.zIndex = i;
     const im = document.createElement('img');
-    im.src = cardFile(c); im.className='hcard'+(G.selected.has(i)?' sel':'')+(isWildCard(c)?' wild':'')+((elderActive() && elderRecCards.has(c))?' rec':''); im.alt='';
-    im.style.animationDelay = (i*0.018)+'s';
+    im.src = cardFile(c); im.className='hcard'+(dealIn?' deal':'')+(G.selected.has(i)?' sel':'')+(isWildCard(c)?' wild':'')+((elderActive() && elderRecCards.has(c))?' rec':''); im.alt='';
+    if(dealIn) im.style.animationDelay = (i*0.018)+'s';
     wrap.appendChild(im);
     if(isWildCard(c)){
       const tag = document.createElement('span');
@@ -4559,7 +4644,7 @@ function renderHand(){
       hintSel = false;
       Snd.play('select', selecting ? .8 : .45);
       hintIdx = 0; centerMsg('', ''); setElderRecommendation(null); renderHand();
-      const bp = $('btnPlay'); if(bp) bp.disabled = G.selected.size===0;
+      refreshPlayBtn();
       const ba = $('btnElderAuto'); if(ba) ba.disabled = true;
     };
     handEl.appendChild(wrap);
@@ -5647,7 +5732,7 @@ function tutArmActions(){
   tip.textContent = G.tut.stage==='lead' ? '选一对牌，点「出牌」' : (last ? '轮到你管上' : '由你出牌');
   bar.appendChild(tip);
   const bHint = document.createElement('button'); bHint.className='ghost'; bHint.textContent='提示';
-  const bPlay = document.createElement('button'); bPlay.className='primary'; bPlay.textContent='出牌'; bPlay.id='btnPlay'; bPlay.disabled = G.selected.size===0;
+  const bPlay = document.createElement('button'); bPlay.className='primary'; bPlay.textContent='出牌'; bPlay.id='btnPlay'; bPlay.disabled = !selectionPlayInfo();
   const bPass = document.createElement('button'); bPass.textContent='不出'; bPass.disabled = !last;
   bHint.onclick = ()=>{
     const cand = getPlayerHintCandidates(last);
@@ -5656,7 +5741,7 @@ function tutArmActions(){
     G.selected = new Set(p.cards.map(c=>G.hands[0].indexOf(c)));
     hintSel = true;
     renderHand(); tutApplyGlow();
-    bPlay.disabled = G.selected.size===0;
+    refreshPlayBtn(bPlay);
   };
   bPlay.onclick = ()=>{
     const cards = [...G.selected].sort((a,b)=>a-b).map(i=>G.hands[0][i]);
