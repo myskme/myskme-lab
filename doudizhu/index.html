@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.5.1</title>
+<title>萌友斗地主 · 正式版 v2.5.2</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#f7efdc">
@@ -1079,7 +1079,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.5.1 · 桃园午后桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.5.2 · 桃园午后桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -2187,7 +2187,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.5.1 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.5.2 · ' + bgName + '桌';
   const ins = document.getElementById('introSub');
   if(ins) ins.textContent = bgName.split('').join(' ') + ' 桌';
   const pl = document.getElementById('bgPreload');
@@ -2355,7 +2355,7 @@ const Snd = {
 };
 /* v2.5.0: 背景音乐 —— Web Audio 程序合成(替代三首 MP3, 零文件、零版权、离线可用)。
    大调五声音阶(C 大调五声), 三角波主音 + 正弦贝斯 + 轻噪声镲, 摇摆八分音符。
-   三态同主题: 大厅轻柔舒缓(72BPM, 稀疏长音) / 对局活泼跳跃(104BPM, 摇摆) / 紧张版同主题加快(132BPM, 加打击乐, 是"兴奋的急"不是"恐怖的紧", 全程大调、严禁小调阴森进行曲)。
+   三态同主题: 大厅轻柔舒缓(72BPM, 稀疏长音) / 对局活泼跳跃(88BPM, 摇摆; v2.5.2 由 104 下调, 玩家反馈过快) / 紧张版同主题加快(132BPM, 加打击乐, 是"兴奋的急"不是"恐怖的紧", 全程大调、严禁小调阴森进行曲)。
    音量恒定 0.20(不高于旧 MP3); 开关仍走 myskme_ddz_settings.music; 首次用户手势后才初始化;
    页面切后台自动暂停、回前台恢复; Audio 不可用/无头环境一律静默跳过, 绝不报错。 */
 const MUSIC_VOL = 0.20;        // 音乐恒定音量, 明显低于音效(约 -14dB)
@@ -2380,7 +2380,7 @@ const Mus = {
     return 'lobby';
   },
   params(){
-    if(this.state === 'game') return { bpm:104, leadEvery:1, leadDur:.26, bassEvery:4, hatEvery:2, kick:false };
+    if(this.state === 'game') return { bpm:88, leadEvery:1, leadDur:.26, bassEvery:4, hatEvery:2, kick:false };
     if(this.state === 'tense') return { bpm:132, leadEvery:1, leadDur:.2, bassEvery:2, hatEvery:1, kick:true };
     return { bpm:72, leadEvery:2, leadDur:.5, bassEvery:8, hatEvery:0, kick:false };   // lobby
   },
@@ -4020,7 +4020,7 @@ function showModeSelect(){
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.5.1</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.5.2</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
