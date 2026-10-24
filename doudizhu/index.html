@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.4.0</title>
+<title>萌友斗地主 · 正式版 v2.5.0</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#123a36">
+<meta name="theme-color" content="#f7efdc">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="萌友斗地主">
 <!-- v1.4: 首屏关键图(桌面背景)提前并行加载 -->
-<link rel="preload" as="image" id="bgPreload" href="assets/桌布-茶肆夜话.webp" fetchpriority="high">
+<link rel="preload" as="image" id="bgPreload" href="assets/桌布-桃园午后.webp" fetchpriority="high">
 <style>
   :root{
     --teal:#123a36; --teal-deep:#0b2622; --teal-panel:rgba(10,32,29,.82);
@@ -32,8 +32,8 @@
     color:var(--cream); overflow:hidden; background:var(--teal-deep);
     user-select:none; -webkit-user-select:none;
   }
-  #bg{position:fixed; inset:0; background:url('assets/桌布-茶肆夜话.webp') center/cover no-repeat; z-index:0;}
-  #bg::after{content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 42%, rgba(6,20,17,.38), rgba(5,17,14,.78) 78%);}
+  #bg{position:fixed; inset:0; background:url('assets/桌布-桃园午后.webp') center/cover no-repeat; z-index:0;}
+  #bg::after{content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 42%, rgba(6,20,17,.15), rgba(5,17,14,.45) 78%);}
 
   #app{position:relative; z-index:1; height:100dvh; display:flex; flex-direction:column;}
 
@@ -135,7 +135,7 @@
     background:rgba(64,42,10,.9); border:1.5px solid rgba(231,200,119,.85); color:#f3d98b;
     padding:4px 12px; border-radius:999px; font-size:13px; letter-spacing:2px; align-self:center; animation:playIn .2s ease both;
   }
-  @keyframes playIn{from{opacity:0; transform:translateY(14px) scale(.92);} to{opacity:1; transform:none;}}
+  @keyframes playIn{from{opacity:0; transform:translateY(14px) scale(.92);} 60%{opacity:1; transform:translateY(-3px) scale(1.04);} to{opacity:1; transform:none;}}
   @keyframes dealIn{from{opacity:0; transform:translateY(-16px);} to{opacity:1; transform:none;}}
 
   /* ---------- 底牌 ---------- */
@@ -579,7 +579,7 @@
   body.motion-lite .playzone.flowfx::after{display:none;}
   .levelswitch .setchk{display:inline-flex; align-items:center; gap:7px; font-size:14.5px; color:var(--cream); cursor:pointer; padding:6px 4px;}
   .levelswitch .setchk input{width:22px; height:22px; accent-color:var(--gold);}
-  /* ---------- v1.3.5: 背景音乐 ---------- 设置区下方音乐署名小字(CC-BY 要求) */
+  /* ---------- v2.5.0: 背景音乐 ---------- 设置区下方音乐说明小字(程序合成, 无署名要求) */
   .musiccredit{font-size:12px; color:#9db3a4; line-height:1.5; margin:0 0 8px;}
 
   /* ---------- v1.3.1: 美术与呈现打磨 ----------
@@ -596,7 +596,7 @@
   /* (1) 牌桌氛围: 桌面中心暖光池 + 边缘暗角 + 行动区锚点 */
   #bg::after{background:
     radial-gradient(ellipse 72% 48% at 50% 46%, rgba(255,196,96,.12), transparent 70%),
-    radial-gradient(ellipse at 50% 42%, rgba(6,20,17,.34), rgba(5,17,14,.8) 80%);}
+    radial-gradient(ellipse at 50% 42%, rgba(6,20,17,.15), rgba(5,17,14,.45) 80%);}
   #bg{animation:bgIn .9s var(--ez) both;}
   @keyframes bgIn{from{filter:brightness(.55) saturate(.92);} to{filter:brightness(1) saturate(1);}}
   #table::before{content:''; position:absolute; left:50%; top:46%; width:min(74vw,660px); height:48%;
@@ -947,13 +947,13 @@
   .propbtn.locked{opacity:.55;}
   .propbtn .prop-lock{font-size:11px; color:#a9bcb0;}
   .prop-targets{display:flex; flex-wrap:wrap; gap:7px; justify-content:center;}
-  .propfx{position:fixed; z-index:95; width:76px; height:76px; margin:-38px 0 0 -38px; pointer-events:none; display:flex; align-items:center; justify-content:center; animation:propRise 1.9s ease-out forwards;}
-  .propfx .propic{width:64px; height:64px; border-radius:50%; background:radial-gradient(circle at 50% 38%, #27584e, #123129); border:2px solid rgba(231,200,119,.85); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 24px rgba(0,0,0,.45);}
-  .propfx .propic.wig{animation:propWig .45s ease-in-out 3;}
-  .propfx .propic.pulse{animation:propPulse .45s ease-in-out 3;}
-  @keyframes propRise{0%{opacity:0; transform:translateY(14px) scale(.7);}18%{opacity:1; transform:translateY(0) scale(1.05);}30%{transform:translateY(-4px) scale(1);}75%{opacity:1;}100%{opacity:0; transform:translateY(-52px) scale(1);}}
-  @keyframes propWig{0%,100%{transform:rotate(0deg);}25%{transform:rotate(-13deg);}75%{transform:rotate(13deg);}}
-  @keyframes propPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.14);}}
+  .propfx{position:fixed; z-index:95; width:88px; height:88px; margin:-44px 0 0 -44px; pointer-events:none; display:flex; align-items:center; justify-content:center; animation:propRise 2.6s ease-out forwards;}
+  .propfx .propic{width:72px; height:72px; border-radius:50%; background:radial-gradient(circle at 50% 38%, #27584e, #123129); border:2px solid rgba(231,200,119,.85); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 24px rgba(0,0,0,.45);}
+  .propfx .propic.wig{animation:propWig .5s ease-in-out 5;}
+  .propfx .propic.pulse{animation:propPulse .5s ease-in-out 5;}
+  @keyframes propRise{0%{opacity:0; transform:translateY(14px) scale(.7);}14%{opacity:1; transform:translateY(0) scale(1.08);}24%{transform:translateY(-6px) scale(1);}75%{opacity:1;}100%{opacity:0; transform:translateY(-64px) scale(1);}}
+  @keyframes propWig{0%,100%{transform:rotate(0deg);}25%{transform:rotate(-16deg);}75%{transform:rotate(16deg);}}
+  @keyframes propPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
   .honor-wrap{text-align:center; margin:12px 0 6px;}
   .honor-title{display:inline-block; padding:5px 18px; border-radius:999px; border:1px solid rgba(231,200,119,.75); color:#e7c877; font-weight:700; letter-spacing:2px; background:rgba(231,200,119,.08);}
   .honor-score{font-size:54px; font-weight:900; color:#e7c877; line-height:1.15;}
@@ -973,6 +973,101 @@
   .ach-cell .ach-desc{font-size:11.5px; line-height:1.45; color:#a9bcb0;}
   .ach-cell .ach-prog{font-size:11.5px; color:#a9bcb0;}
   .ach-cell.done .ach-prog{color:#e7c877;}
+
+  /* ---------- v2.5.0: 明亮奶油面板 + 新特效 ----------
+     大面积深色面板改走 TCG 卡背同款暖奶油纸色 + 深青金边; 面板内浅色底上的文字一律改深青/深棕,
+     金色只留在深色底元素上(深青按钮、段位格、黑卡、图标座)。深色底小部件(段位格、黑卡、顶栏、底牌盒)不动。 */
+  .panel{background:linear-gradient(180deg,#fbf6e9,#f3e9d2); border:1.5px solid var(--gold); color:var(--ink); box-shadow:0 18px 44px rgba(60,40,10,.28);}
+  .panel h2{color:#14524a;}
+  .panel h2.lose{color:#8a7a5f;}
+  .panel .who-win{color:#4a5d54;}
+  .panel td{color:#3a443d;}
+  .panel td:last-child{color:#14524a;}
+  .panel .stats{color:#6d7d72;}
+  .panel .career-note{color:#6d7d72;}
+  .panel .modebtn b{color:#14524a;}
+  .panel .modebtn span{color:#4a5d54;}
+  .panel .lvtier{color:#14524a;}
+  .panel .lvstars.big{color:#8a6d1f;}
+  .panel .elder-result{color:#14524a;}
+  .panel .elder-toggle{background:rgba(255,255,255,.55); color:var(--ink);}
+  .panel .elder-toggle b{color:#14524a;}
+  .panel .elder-toggle small{color:#4a5d54;}
+  .panel .levelswitch{background:rgba(255,255,255,.55);}
+  .panel .levelswitch .lvlab{color:#14524a;}
+  .panel .levelswitch small{color:#4a5d54;}
+  .panel .levelswitch .setchk{color:#3a443d;}
+  .panel .musiccredit{color:#6d7d72;}
+  .panel .mg-title{color:#6d7d72;}
+  .panel .menu-set{background:rgba(255,255,255,.5);}
+  .panel .mcard{background:rgba(255,255,255,.6); color:var(--ink);}
+  .panel .mcard b{color:#14524a;}
+  .panel .mcard span{color:#4a5d54;}
+  .panel .mcard .daily-meta{color:#6d7d72;}
+  .panel .shop-item{background:rgba(255,255,255,.6); color:var(--ink);}
+  .panel .shop-idesc{color:#5a6a60;}
+  .panel .shop-h{color:#14524a;}
+  .panel .shop-item .tier-tag{color:#8a6d1f;}
+  .panel .shop-item .tier-tag.t-N{color:#6d7d72;}
+  .panel .shop-item .tier-tag.t-CR{color:#8a6d1f; background:rgba(166,124,61,.12);}
+  .panel .shop-set{background:rgba(255,255,255,.6);}
+  .panel .shop-preview{color:#5a6a60;}
+  .panel .pity-row{color:#5a6a60;}
+  .panel .shop-progress{background:rgba(201,162,77,.25);}
+  .panel .pity-bar{background:rgba(201,162,77,.25);}
+  .panel .task-state{color:#6d7d72;}
+  .panel .task-info span{color:#4a5d54;}
+  .panel .rank-line{color:#3a443d;}
+  .panel .rank-info{color:#4a5d54;}
+  .panel .settle-score{color:#8a6d1f; text-shadow:none;}
+  .panel .settle-score.lose{color:#8a7a5f;}
+  .panel .settle-sub{color:#6d7d72;}
+  .panel .review-note.open-note{color:#6d7d72;}
+  .panel .empty-state p{color:#6d7d72;}
+  .panel .story-char b{color:#14524a;}
+  .panel .story-char span{color:#4a5d54;}
+  .panel .story-head h3{color:#14524a;}
+  .panel .story-head p{color:#4a5d54;}
+  .panel .story-lock{background:rgba(255,255,255,.55);}
+  .panel .story-lock .q{color:#8a7a5f;}
+  .panel .story-lock span{color:#6d7d72;}
+  .panel .challenge-compare{color:#3a443d; background:rgba(255,255,255,.55);}
+  .panel .coll-line .coll-h b{color:#14524a;}
+  .panel .coll-line .coll-h span{color:#6d7d72;}
+  .panel .coll-link-line .cell{background:rgba(255,255,255,.6);}
+  .panel .phrase-gtitle{color:#6d7d72;}
+  .panel .phrase-imgbtn{background:rgba(255,255,255,.6);}
+  .panel .phrase-hint{color:#6d7d72;}
+  .panel .support-txt b{color:#14524a;}
+  .panel .support-txt p{color:#4a5d54;}
+  .panel .support-btn{color:#8a6d1f;}
+  .panel .support-linklike{color:#6d7d72;}
+  .panel .support-small{color:#8a7a5f;}
+  .panel .badge-row .b-txt{color:#3a443d;}
+  .panel .link-confirm{background:rgba(255,255,255,.55); color:var(--ink);}
+  .panel .ach-cell{background:rgba(255,255,255,.55); color:#6d7d72;}
+  .panel .ach-cell.done{background:rgba(231,200,119,.18); color:#3a443d;}
+  .panel .ach-cell.done .ach-ic{color:#8a6d1f;}
+  .panel .ach-cell .ach-desc{color:#6d7d72;}
+  .panel .ach-cell .ach-prog{color:#6d7d72;}
+  .panel .ach-cell.done .ach-prog{color:#8a6d1f;}
+  /* 炸弹扩散金环 */
+  .fxring{position:fixed; z-index:95; width:120px; height:120px; margin:-60px 0 0 -60px; border-radius:50%; border:5px solid rgba(231,200,119,.95); box-shadow:0 0 24px rgba(231,200,119,.8), inset 0 0 24px rgba(231,200,119,.6); pointer-events:none; animation:ringOut .8s ease-out forwards;}
+  @keyframes ringOut{from{transform:scale(.3); opacity:1;} to{transform:scale(2.4); opacity:0;}}
+  /* 王炸火箭斜飞过屏(纯 CSS 形状, 带尾焰) */
+  .rocketfx{position:fixed; left:0; top:58%; z-index:96; width:120px; height:44px; margin:-22px 0 0 -60px; pointer-events:none; animation:rocketFly 1s cubic-bezier(.3,.7,.4,1) forwards;}
+  .rocketfx .rbody{position:absolute; left:34px; top:6px; width:56px; height:32px; border-radius:16px 22px 22px 16px; background:linear-gradient(180deg,#fdf3d0,#e7c877 55%,#c9a24d); border:2px solid #8a6d1f; box-shadow:0 4px 14px rgba(0,0,0,.35);}
+  .rocketfx .rwin{position:absolute; left:66px; top:15px; width:14px; height:14px; border-radius:50%; background:#123a36; border:2px solid #f7efdc;}
+  .rocketfx .rfin{position:absolute; left:34px; top:-4px; width:22px; height:14px; background:#b03a2e; clip-path:polygon(0 100%,100% 100%,100% 0);}
+  .rocketfx .rflame{position:absolute; left:-6px; top:10px; width:38px; height:24px; background:radial-gradient(ellipse at 100% 50%, #fff7cc, #ffb347 45%, #ff6a00 75%, transparent 78%); clip-path:polygon(0 50%,100% 0,100% 100%); animation:flameFlick .12s infinite alternate;}
+  @keyframes rocketFly{from{transform:translate(-25vw,0) rotate(-24deg); opacity:0;} 12%{opacity:1;} to{transform:translate(115vw,-46vh) rotate(-24deg); opacity:1;}}
+  @keyframes flameFlick{from{transform:scaleX(.85);} to{transform:scaleX(1.15);}}
+  /* 飞机剪影飞过屏(纯 CSS 形状) */
+  .planefx{position:fixed; left:0; top:22%; z-index:96; width:150px; height:60px; pointer-events:none; animation:planeFly 1.15s linear forwards;}
+  .planefx .pfus{position:absolute; left:10px; top:22px; width:120px; height:16px; border-radius:8px 20px 20px 8px; background:linear-gradient(180deg,#fdf3d0,#d9a94f); box-shadow:0 3px 10px rgba(0,0,0,.3);}
+  .planefx .pwing{position:absolute; left:58px; top:30px; width:52px; height:34px; background:#b03a2e; clip-path:polygon(0 0,100% 0,30% 100%);}
+  .planefx .ptail{position:absolute; left:14px; top:8px; width:26px; height:18px; background:#123a36; clip-path:polygon(0 100%,100% 100%,30% 0);}
+  @keyframes planeFly{from{transform:translateX(-20vw);} to{transform:translateX(120vw);}}
 </style>
 </head>
 <body>
@@ -984,7 +1079,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.4.0 · 茶肆夜话桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.5.0 · 桃园午后桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -2050,6 +2145,7 @@ function propReaction(pid, ck){
   return pool[Math.floor(Math.random() * pool.length)];
 }
 function propFxAt(dseat, p){
+  if(!fxAllowed()) return;
   try{
     const c = seatZoneCenter(dseat);
     const el = document.createElement('div');
@@ -2058,7 +2154,7 @@ function propFxAt(dseat, p){
     el.style.left = c.x + 'px'; el.style.top = (c.y - 30) + 'px';
     document.body.appendChild(el);
     bounceAvatar(dseat);
-    setTimeout(() => { if(el.remove) el.remove(); }, 2000);
+    setTimeout(() => { if(el.remove) el.remove(); }, 2700);
   }catch(e){}
 }
 
@@ -2086,12 +2182,12 @@ function saveSetting(k, v){
 const TABLECLOTHS = ['茶肆夜话', '桃园午后', '金榜大厅'];
 /* v2.1: 已拥有的商城桌布由文末商城段 shopFixBg() 在初始化时并入本表(只增内容, 不改绑定);
    商城桌布作 bg 时此处首检不通过先落默认, shopFixBg 随即按 settings.bg 纠正。 */
-let bgName = TABLECLOTHS.includes(ddzSettings.bg) ? ddzSettings.bg : '茶肆夜话';
+let bgName = TABLECLOTHS.includes(ddzSettings.bg) ? ddzSettings.bg : '桃园午后';
 function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.4.0 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.5.0 · ' + bgName + '桌';
   const pl = document.getElementById('bgPreload');
   if(pl) pl.setAttribute('href', 'assets/桌布-' + bgName + '.webp');
 }
@@ -2226,37 +2322,47 @@ const Snd = {
     }catch(e){}
     setTimeout(() => this.play('rocket', 1), 400);
   },
+  boom(){   // v2.5.0: 合成爆破音(噪声爆散 + 低频下潜, 不依赖采样)
+    if(!soundOn || !this.ensure()) return;
+    if(typeof review !== 'undefined' && review) return;
+    try{
+      const ctx = this.ctx, t0 = ctx.currentTime;
+      const len = Math.floor(ctx.sampleRate * .5);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2);
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const flt = ctx.createBiquadFilter(); flt.type = 'lowpass';
+      flt.frequency.setValueAtTime(900, t0);
+      flt.frequency.exponentialRampToValueAtTime(120, t0 + .45);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(this.vol(.5), t0);
+      g.gain.exponentialRampToValueAtTime(.001, t0 + .5);
+      src.connect(flt); flt.connect(g); g.connect(this.master);
+      src.start(t0); src.stop(t0 + .55);
+      const o = ctx.createOscillator(), og = ctx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(150, t0);
+      o.frequency.exponentialRampToValueAtTime(42, t0 + .4);
+      og.gain.setValueAtTime(this.vol(.5), t0);
+      og.gain.exponentialRampToValueAtTime(.001, t0 + .45);
+      o.connect(og); og.connect(this.master);
+      o.start(t0); o.stop(t0 + .5);
+    }catch(e){}
+  },
 };
-/* v1.3.5: 背景音乐(结构借鉴品类第一名的三态设计: 大厅轻快民乐 / 对局舒缓 / 剩<=2张转紧张)。
-   曲目为 CC0 与 CC-BY 授权录音(署名见场次面板设置行下), 经 ffmpeg 做交叉淡变无缝循环。
-   开关存统一设置键 myskme_ddz_settings.music; 双 <audio> 交叉淡变切换; 首次手势后才启动(浏览器自动播放政策);
+/* v2.5.0: 背景音乐 —— Web Audio 程序合成(替代三首 MP3, 零文件、零版权、离线可用)。
+   大调五声音阶(C 大调五声), 三角波主音 + 正弦贝斯 + 轻噪声镲, 摇摆八分音符。
+   三态同主题: 大厅轻柔舒缓(72BPM, 稀疏长音) / 对局活泼跳跃(104BPM, 摇摆) / 紧张版同主题加快(132BPM, 加打击乐, 是"兴奋的急"不是"恐怖的紧", 全程大调、严禁小调阴森进行曲)。
+   音量恒定 0.20(不高于旧 MP3); 开关仍走 myskme_ddz_settings.music; 首次用户手势后才初始化;
    页面切后台自动暂停、回前台恢复; Audio 不可用/无头环境一律静默跳过, 绝不报错。 */
 const MUSIC_VOL = 0.20;        // 音乐恒定音量, 明显低于音效(约 -14dB)
-const MUSIC_FADE_MS = 1200;    // 状态切换交叉淡变时长
-const MUSIC_SRC = { lobby:'assets/music-lobby.mp3', game:'assets/music-game.mp3', tense:'assets/music-tense.mp3' };
+const MUSIC_SCALE = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99, 880.00];  // C 大调五声两组
+const MUSIC_THEME = [0, 2, 4, 5, 4, 2, 0, -1, 2, 4, 5, 7, 5, 4, 2, 0];  // 欢快拱形旋律骨架, -1 = 休止
+const MUSIC_BASS = [130.81, 98.00, 130.81, 98.00];  // 每小节根音: C - G 交替
 let musicOn = (typeof ddzSettings.music === 'boolean') ? ddzSettings.music : true;   // 已存手动值优先, 否则默认开
 const Mus = {
-  state:'', pi:0, cur:null, started:false, hidden:false, wasPlaying:false,
-  mkPlayer(){
-    if(typeof Audio === 'undefined') return null;
-    try{ const a = new Audio(); a.loop = true; a.preload = 'auto'; a.volume = 0; return a; }catch(e){ return null; }
-  },
-  players:null,
-  ensure(){
-    if(this.players) return !!this.players[0];
-    this.players = [this.mkPlayer(), this.mkPlayer()];
-    return !!this.players[0];
-  },
-  fade(p, target, ms, onDone){
-    if(!p){ if(onDone) onDone(); return; }
-    if(p._ft) clearInterval(p._ft);
-    const from = p.volume, steps = Math.max(1, Math.round(ms/50)); let i = 0;
-    p._ft = setInterval(()=>{
-      i++;
-      try{ p.volume = Math.max(0, Math.min(1, from + (target - from) * i / steps)); }catch(e){}
-      if(i >= steps){ clearInterval(p._ft); p._ft = 0; if(onDone) onDone(); }
-    }, 50);
-  },
+  state:'', started:false, hidden:false, wasPlaying:false, timer:0, step:0, nextT:0, gain:null,
   desired(){
     try{
       const ov = $('overlay');
@@ -2271,6 +2377,86 @@ const Mus = {
     }catch(e){}
     return 'lobby';
   },
+  params(){
+    if(this.state === 'game') return { bpm:104, leadEvery:1, leadDur:.26, bassEvery:4, hatEvery:2, kick:false };
+    if(this.state === 'tense') return { bpm:132, leadEvery:1, leadDur:.2, bassEvery:2, hatEvery:1, kick:true };
+    return { bpm:72, leadEvery:2, leadDur:.5, bassEvery:8, hatEvery:0, kick:false };   // lobby
+  },
+  ensure(){
+    if(!Snd.ensure()) return false;
+    try{
+      if(!this.gain){ this.gain = Snd.ctx.createGain(); this.gain.gain.value = 0; this.gain.connect(Snd.master); }
+      return !!this.gain;
+    }catch(e){ return false; }
+  },
+  note(freq, t, dur, type, vol){
+    try{
+      const o = Snd.ctx.createOscillator(), g = Snd.ctx.createGain();
+      o.type = type; o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(vol, t + .015);
+      g.gain.exponentialRampToValueAtTime(.001, t + dur);
+      o.connect(g); g.connect(this.gain);
+      o.start(t); o.stop(t + dur + .05);
+    }catch(e){}
+  },
+  hat(t, vol){
+    try{
+      const ctx = Snd.ctx, len = Math.floor(ctx.sampleRate * .04);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+      for(let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const flt = ctx.createBiquadFilter(); flt.type = 'highpass'; flt.frequency.value = 6000;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.001, t + .04);
+      src.connect(flt); flt.connect(g); g.connect(this.gain);
+      src.start(t); src.stop(t + .05);
+    }catch(e){}
+  },
+  kickDrum(t){
+    try{
+      const o = Snd.ctx.createOscillator(), g = Snd.ctx.createGain();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(120, t);
+      o.frequency.exponentialRampToValueAtTime(48, t + .1);
+      g.gain.setValueAtTime(.5, t); g.gain.exponentialRampToValueAtTime(.001, t + .12);
+      o.connect(g); g.connect(this.gain);
+      o.start(t); o.stop(t + .15);
+    }catch(e){}
+  },
+  scheduleStep(step, t){
+    const p = this.params();
+    if(step % p.leadEvery === 0){
+      const idx = MUSIC_THEME[step % MUSIC_THEME.length];
+      if(idx >= 0) this.note(MUSIC_SCALE[idx], t, p.leadDur, 'triangle', .55);
+    }
+    if(step % p.bassEvery === 0) this.note(MUSIC_BASS[(step / p.bassEvery) % MUSIC_BASS.length], t, .4, 'sine', .5);
+    if(p.hatEvery && step % p.hatEvery === 0) this.hat(t, .16);
+    if(p.kick && step % 4 === 0) this.kickDrum(t);
+  },
+  tick(){
+    try{
+      if(!Snd.ctx || !this.gain) return;
+      const p = this.params();
+      const base = 60 / p.bpm / 2;   // 八分音符时值
+      while(this.nextT < Snd.ctx.currentTime + .35){
+        const swing = (this.step % 2 === 1) ? base * .22 : 0;   // 摇摆: 奇数拍稍拖后
+        this.scheduleStep(this.step, this.nextT + swing);
+        this.nextT += base; this.step++;
+      }
+    }catch(e){}
+  },
+  start(){
+    this.stopTimer();
+    if(!this.ensure()) return;
+    try{ this.gain.gain.cancelScheduledValues(Snd.ctx.currentTime); this.gain.gain.setTargetAtTime(MUSIC_VOL, Snd.ctx.currentTime, .1); }catch(e){}
+    this.step = 0; this.nextT = Snd.ctx.currentTime + .06;
+    this.timer = setInterval(() => this.tick(), 120);
+  },
+  stopTimer(){
+    if(this.timer){ clearInterval(this.timer); this.timer = 0; }
+    try{ if(this.gain) this.gain.gain.setTargetAtTime(0, Snd.ctx.currentTime, .05); }catch(e){}
+  },
   kick(){   // 首次用户手势后启动
     if(this.started || !musicOn) return;
     if(!this.ensure()) return;
@@ -2280,38 +2466,22 @@ const Mus = {
   update(force){
     if(!musicOn || !this.started || this.hidden) return;
     const want = this.desired();
-    if(!force && want === this.state) return;
-    if(!this.ensure()) return;
-    const src = MUSIC_SRC[want]; if(!src) return;
-    const nxt = this.players[this.pi ^ 1] || this.players[0];
-    const old = this.players[this.pi];
-    if(!nxt) return;
+    if(!force && want === this.state && this.timer) return;
     this.state = want;
-    try{
-      if(nxt._msrc !== src){ nxt.src = src; nxt._msrc = src; }
-      const pr = nxt.play(); if(pr && pr.catch) pr.catch(()=>{});
-    }catch(e){}
-    this.fade(nxt, MUSIC_VOL, MUSIC_FADE_MS);
-    if(old && old !== nxt) this.fade(old, 0, MUSIC_FADE_MS, ()=>{ try{ old.pause(); }catch(e){} });
-    this.pi ^= 1;
-    this.cur = nxt;
+    this.start();
   },
   stopAll(){
-    if(!this.players) return;
-    for(const p of this.players){
-      if(!p) continue;
-      this.fade(p, 0, 300, ()=>{ try{ p.pause(); }catch(e){} });
-    }
-    this.state = ''; this.cur = null;
+    this.stopTimer();
+    this.state = '';
   },
   suspend(){
-    this.wasPlaying = !!(this.cur && !this.cur.paused);
-    if(this.cur){ if(this.cur._ft) clearInterval(this.cur._ft); try{ this.cur.pause(); }catch(e){} }
+    this.wasPlaying = !!this.timer;
+    this.stopTimer();
   },
   resume(){
-    if(!this.wasPlaying || !this.cur) return;
-    try{ const pr = this.cur.play(); if(pr && pr.catch) pr.catch(()=>{}); }catch(e){}
-    if(this.cur.volume < MUSIC_VOL) this.fade(this.cur, MUSIC_VOL, 400);
+    if(!this.wasPlaying) return;
+    this.wasPlaying = false;
+    if(musicOn && this.started) this.update(true);
   }
 };
 function setMusicOn(on){
@@ -2331,6 +2501,16 @@ if(typeof document.addEventListener === 'function'){
     else if(musicOn && Mus.started) Mus.resume();
   }, false);
 }
+/* v2.5.0: 特效总开关 —— 存入统一设置键 myskme_ddz_settings.effects(默认开, 不新增存档键)。
+   注意: ddzSettings.fx 是商城庆祝特效的装备 id, 与本开关无关, 不可复用。
+   关后只保留最基础的出牌动画, 不闪不震不出大字不飞特效。 */
+let effectsOn = (typeof ddzSettings.effects === 'boolean') ? ddzSettings.effects : true;
+function setEffectsOn(on){
+  effectsOn = !!on;
+  saveSetting('effects', effectsOn);
+  const se = $('setEffects'); if(se) se.checked = effectsOn;
+}
+function fxAllowed(){ return effectsOn; }
 /* 特效画布: 炸弹/火箭辉光爆发、春天花瓣、胜利金粉。精灵图为 PIL 渲染后内嵌。
    prefers-reduced-motion 时整体停用(界面只保留 CSS 淡入淡出); 长辈模式粒子减半且不震屏。 */
 const Fx = {
@@ -2373,6 +2553,7 @@ const Fx = {
     this.raf = requestAnimationFrame(step);
   },
   spawn(n, gen){
+    if(!fxAllowed()) return;
     if(REDUCED_MOTION || motionTier === 'lite') return;
     this.init();
     if(!this.cx) return;
@@ -2412,6 +2593,7 @@ const Fx = {
   },
 };
 function flashFx(kind){
+  if(!fxAllowed()) return;
   if(REDUCED_MOTION || motionTier === 'lite' || typeof requestAnimationFrame !== 'function') return;
   const el = $('flashFx');
   if(!el) return;
@@ -2424,6 +2606,7 @@ function flashFx(kind){
   }));
 }
 function shakeScreen(){
+  if(!fxAllowed()) return;
   if(REDUCED_MOTION || motionTier === 'lite' || elderActive()) return;
   document.body.classList.remove('shake');
   void document.body.offsetWidth;
@@ -2431,6 +2614,7 @@ function shakeScreen(){
   setTimeout(() => document.body.classList.remove('shake'), 520);
 }
 function bounceAvatar(seat){
+  if(!fxAllowed()) return;
   const el = seat === 0 ? document.querySelector('#meInfo .avatar') : $(seat === 1 ? 'avR' : 'avL');
   if(!el) return;
   el.classList.remove('bounce');
@@ -2448,6 +2632,7 @@ function seatZoneCenter(seat){
 }
 /* v1.3.3: 顺子/连对/飞机的流光扫过(出牌区金色光带, 纯呈现) */
 function zoneFlow(dseat){
+  if(!fxAllowed()) return;
   if(REDUCED_MOTION || motionTier === 'lite') return;
   const el = $(dseat === 0 ? 'zoneP' : dseat === 1 ? 'zoneR' : 'zoneL');
   if(!el) return;
@@ -2455,6 +2640,39 @@ function zoneFlow(dseat){
   void el.offsetWidth;
   el.classList.add('flowfx');
   setTimeout(() => el.classList.remove('flowfx'), 900);
+}
+/* v2.5.0: 炸弹扩散金环(覆盖层, 不拦截点击) */
+function fxRing(x, y){
+  if(!fxAllowed()) return;
+  try{
+    const el = document.createElement('div');
+    el.className = 'fxring';
+    el.style.left = x + 'px'; el.style.top = y + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => { if(el.remove) el.remove(); }, 850);
+  }catch(e){}
+}
+/* v2.5.0: 王炸火箭斜飞过屏(纯 CSS 形状 + 尾焰) */
+function rocketFly(){
+  if(!fxAllowed()) return;
+  try{
+    const el = document.createElement('div');
+    el.className = 'rocketfx';
+    el.innerHTML = '<span class="rflame"></span><span class="rfin"></span><span class="rbody"></span><span class="rwin"></span>';
+    document.body.appendChild(el);
+    setTimeout(() => { if(el.remove) el.remove(); }, 1100);
+  }catch(e){}
+}
+/* v2.5.0: 飞机剪影飞过屏(纯 CSS 形状) */
+function planeFly(){
+  if(!fxAllowed()) return;
+  try{
+    const el = document.createElement('div');
+    el.className = 'planefx';
+    el.innerHTML = '<span class="ptail"></span><span class="pfus"></span><span class="pwing"></span>';
+    document.body.appendChild(el);
+    setTimeout(() => { if(el.remove) el.remove(); }, 1250);
+  }catch(e){}
 }
 function animateDeal(count){
   if(REDUCED_MOTION) return;
@@ -3325,15 +3543,17 @@ function onWsEvent(m){
     fxText(m.info.type === 'rocket' ? '王 炸' : (m.info.soft ? '软 炸' : '炸 弹'));
     /* v1.1: 联机炸弹/王炸同样给音效与特效(仅表现层, 不动协议) */
     const c = seatZoneCenter(disp(m.seat));
-    if (m.info.type === 'rocket'){ Snd.rocketLaunch(); setTimeout(()=>Fx.burst(c.x, c.y, true), 380); }
-    else { Snd.play('bomb'); Fx.burst(c.x, c.y, false); }
+    if (m.info.type === 'rocket'){ Snd.rocketLaunch(); rocketFly(); setTimeout(()=>Fx.burst(c.x, c.y, true), 380); }
+    else { Snd.boom(); Fx.burst(c.x, c.y, false); fxRing(c.x, c.y); }
   }
   else if (m.event === 'play' && m.info){
     /* v1.3.3: 联机普通出牌补音效(此前仅炸弹有声); 顺子/连对/飞机给专属音型+流光 */
     if (m.info.type === 'straight' || m.info.type === 'pairs' || m.info.type === 'plane'){
       Snd.combo(m.info.type);
       zoneFlow(disp(m.seat));
-      if (m.info.type === 'plane') fxText('飞 机');
+      if (m.info.type === 'plane'){ fxText('飞 机'); planeFly(); }
+      else if (m.info.type === 'straight') fxText('顺 子');
+      else if (m.info.type === 'pairs') fxText('连 对');
     } else {
       Snd.play('place', .65, 0.96 + Math.random() * 0.08);
     }
@@ -3798,7 +4018,7 @@ function showModeSelect(){
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.4.0</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.5.0</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
@@ -3828,9 +4048,10 @@ function showModeSelect(){
     '<div class="levelswitch"><span class="lvlab">设置</span>' +
     '<label class="setchk"><input type="checkbox" id="setSound" onchange="setSoundOn(this.checked)"> 音效</label>' +
     '<label class="setchk"><input type="checkbox" id="setMusic" onchange="setMusicOn(this.checked)"> 音乐</label>' +
+    '<label class="setchk"><input type="checkbox" id="setEffects" onchange="setEffectsOn(this.checked)"> 特效</label>' +
     [['full','动效·流畅'],['std','动效·标准'],['lite','动效·精简']].map(t=>'<button type="button" class="levelbtn" data-motion="'+t[0]+'" onclick="setMotionTier(\''+t[0]+'\')">'+t[1]+'</button>').join('') +
     '<small>精简＝关粒子与辉光，当次生效，低档机推荐。音效与顶栏同步。</small></div>' +
-    '<div class="musiccredit">对局音乐：elerya — Liyan（CC-BY 3.0）</div>' +
+    '<div class="musiccredit">背景音乐：程序合成 · 大调五声音阶（无外部音频文件，离线可用）</div>' +
     '<div class="levelswitch"><span class="lvlab">桌布</span>' +
     TABLECLOTHS.map(t=>'<button type="button" class="levelbtn'+(bgName===t?' on':'')+'" data-bg="'+t+'" onclick="setTablecloth(\''+t+'\')">'+t+'</button>').join('') +
     '<small>桌布随心换，选择记在设置里；更多桌布在「茶点小铺」里换。</small></div>' +
@@ -3840,6 +4061,7 @@ function showModeSelect(){
   const uiLv = $('uiLevel'); if(uiLv) uiLv.textContent = LEVEL_NAMES[aiLevel];
   const ss = $('setSound'); if(ss) ss.checked = soundOn;
   const smu = $('setMusic'); if(smu) smu.checked = musicOn;
+  const sef = $('setEffects'); if(sef) sef.checked = effectsOn;
   syncMotionBtns();
   applyElderMode();
   try{ Mus.update(); }catch(e){}   /* v1.3.5: 回到场次面板 -> 大厅音乐 */
@@ -5060,7 +5282,7 @@ function finishGame(winnerSeat){
   const score = G.base * G.mult;
   /* v1.1: 结算音效与特效(春天花瓣雨 / 胜利金粉 / 金币声; 失败保持克制) */
   if(spring){ fxText('春 天'); Snd.spring(); Fx.petals(); }
-  if(myWin){ Snd.win(); Snd.play('coins', .9); shopCelebrate(); bounceAvatar(winnerSeat); } else { Snd.lose(); }
+  if(myWin){ Snd.win(); Snd.play('coins', .9); shopCelebrate(); if(!spring) Fx.petals(); bounceAvatar(winnerSeat); } else { Snd.lose(); }
   stats.total++; if(myWin){ stats.win++; stats.points += score; } else stats.points -= score;
   saveStats(); renderStats();
   recordStoryDefeats(myWin);
@@ -5141,7 +5363,7 @@ function centerMsg(t, sub){
   clearTimeout(centerTimer);
   if(t) centerTimer = setTimeout(()=>{ $('centerMsg').innerHTML=''; }, paceDelay(3000));   // 兜底: 任何横幅 3 秒自动消失
 }
-function fxText(t){ const el=$('fxPop'); el.textContent=t; el.classList.remove('boom'); void el.offsetWidth; el.classList.add('boom'); }
+function fxText(t){ if(!fxAllowed()) return; const el=$('fxPop'); el.textContent=t; el.classList.remove('boom'); void el.offsetWidth; el.classList.add('boom'); }
 let bubbleTimers={};
 function say(seat, text){
   const el = seat===0 ? $('bubP') : (seat===1 ? $('bubR') : $('bubL'));
@@ -6596,7 +6818,7 @@ function drawReport(ctx, data, avs, winnerSeat){
   ctx.fillStyle = '#e7c877'; ctx.font = '700 96px ' + F;
   ctx.fillText('萌友斗地主', 540, 150);
   ctx.fillStyle = '#b7c9bd'; ctx.font = '30px ' + F;
-  ctx.fillText('M Y S K M E · ' + (data.bgName || '茶肆夜话') + ' 桌', 540, 208);   /* v2.1: 副标题跟随当前桌布 */
+  ctx.fillText('M Y S K M E · ' + (data.bgName || '桃园午后') + ' 桌', 540, 208);   /* v2.1: 副标题跟随当前桌布 */
   ctx.fillStyle = '#f7efdc'; ctx.font = '34px ' + F;
   ctx.fillText(data.modeName + ' · ' + shanghaiToday(), 540, 262);
   /* v2.1: 全员战报带茶号行 */
@@ -6778,14 +7000,16 @@ doPlay = function(seat, cards, info){
   /* v1.1: 出牌音效与特效(表现层, 不影响引擎与记录) */
   if(inf && isBombLike(inf)){
     const c = seatZoneCenter(seat);
-    if(inf.type === 'rocket'){ Snd.rocketLaunch(); setTimeout(()=>Fx.burst(c.x, c.y, true), 380); }
-    else { Snd.play('bomb'); Fx.burst(c.x, c.y, false); }
+    if(inf.type === 'rocket'){ Snd.rocketLaunch(); rocketFly(); fxText('王 炸'); setTimeout(()=>Fx.burst(c.x, c.y, true), 380); }
+    else { Snd.boom(); Fx.burst(c.x, c.y, false); fxRing(c.x, c.y); fxText(inf.soft ? '软 炸' : '炸 弹'); }
     for(const s of [0,1,2]) if(s !== seat) setTimeout(()=>bounceAvatar(s), 60);
   } else if(inf && (inf.type === 'straight' || inf.type === 'pairs' || inf.type === 'plane')){
     /* v1.3.3: 顺子/连对/飞机专属音型 + 流光(明显区别于普通出牌, 低于炸弹层级) */
     Snd.combo(inf.type);
     zoneFlow(seat);
-    if(inf.type === 'plane') fxText('飞 机');
+    if(inf.type === 'plane'){ fxText('飞 机'); planeFly(); }
+    else if(inf.type === 'straight') fxText('顺 子');
+    else if(inf.type === 'pairs') fxText('连 对');
   } else {
     Snd.play('place', .9, 0.96 + Math.random() * 0.08);
   }
