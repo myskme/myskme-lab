@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>萌友斗地主 · 正式版 v2.5.3</title>
+<title>萌友斗地主 · 正式版 v2.5.4</title>
 <!-- v1.4: PWA(可安装/离线可玩) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#f7efdc">
@@ -1079,7 +1079,7 @@
 </div></div>
 <div id="app">
   <div id="topbar">
-    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.5.3 · 桃园午后桌</small></div>
+    <div class="title">萌友斗地主 <small id="titleVer">正式版 v2.5.4 · 桃园午后桌</small></div>
     <div class="chip">倍数 <b id="uiMult">×1</b></div>
     <div class="chip">底分 <b id="uiBase">—</b></div>
     <div class="chip">场次 <b id="uiMode">经典场</b></div>
@@ -2187,7 +2187,7 @@ function applyTablecloth(){
   const bg = document.getElementById('bg');
   if(bg) bg.style.backgroundImage = "url('assets/桌布-" + bgName + ".webp')";
   const tv = document.getElementById('titleVer');
-  if(tv) tv.textContent = '正式版 v2.5.3 · ' + bgName + '桌';
+  if(tv) tv.textContent = '正式版 v2.5.4 · ' + bgName + '桌';
   const ins = document.getElementById('introSub');
   if(ins) ins.textContent = bgName.split('').join(' ') + ' 桌';
   const pl = document.getElementById('bgPreload');
@@ -4020,7 +4020,7 @@ function showModeSelect(){
   ];
   $('panel').innerHTML = '<h2 class="sr-only">选择场次</h2>' +
     '<div class="hero"><div class="hero-in"><div class="hero-title">萌友斗地主</div>' +
-    '<div class="hero-sub">文火茶肆 · 正式版 v2.5.3</div>' +
+    '<div class="hero-sub">文火茶肆 · 正式版 v2.5.4</div>' +
     '<div class="hero-tag">别人要开会员才有的，我们打开就有。</div></div></div>' +
     rankBarHTML() +
     '<div class="mg-title">开 局</div><div class="menucards">' +
@@ -6091,7 +6091,10 @@ function drawTier(minTier){
   return 'CR';
 }
 function newPlayerNumber(){
-  const tier = drawTier('R');
+  // 首号只出好记/吉利：黑卡点亮条件含当前号码，首号若出豹子/绝世会让新号开局即解锁
+  // （test_shop B 节“初始黑卡未点亮”即此底线），故豹子以上须靠后续收集解锁。
+  let tier = drawTier('R');
+  while(NUM_TIERS.indexOf(tier) >= 3) tier = drawTier('R');
   return {no: genNumber(tier), tier, rolls: 0, pity: {r:0, sr:0, ssr:0}, vault: [], cards: 0, cardDay: '', cardBought: 0};
 }
 function rollNumber(){
